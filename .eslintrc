@@ -1,0 +1,13 @@
+{
+    "extends": "eslint:recommended",
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "rules": {
+      "semi": ["error", "never"],
+      "quotes": ["error", "single"],
+      "no-process-env": "error",
+      "no-console": "off"
+    }
+}
