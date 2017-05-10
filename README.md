@@ -11,7 +11,7 @@ Next, get an api key from https://steamcommunity.com/dev/apikey. Either set this
 as an environment variable or a variable in a `.env` file - name must be
 `STEAM_API_KEY`.
 
-Finally, set `.env` or environment variables for HOST and PORT.
+Finally, set `.env` or environment variables for `HOST` and `PORT`.
 
 ## Running
 To run locally:
