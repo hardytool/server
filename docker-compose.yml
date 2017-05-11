@@ -17,5 +17,8 @@ services:
     image: 'library/postgres:latest'
     restart: 'always'
     environment:
-      - 'POSTGRES_DB=test_db'
+      - 'POSTGRES_USER'
+      - 'POSTGRES_PASSWORD'
+      - 'PGDATA'
+      - 'POSTGRES_DB'
     network_mode: 'default'

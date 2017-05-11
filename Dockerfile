@@ -4,6 +4,8 @@ COPY . /src
 
 WORKDIR /src
 
+RUN npm install --production
+
 EXPOSE 8080
 
 ENTRYPOINT ["npm"]
