@@ -10,7 +10,7 @@ services:
     environment:
       - 'STEAM_API_KEY'
       - 'HOST'
-      - 'PORT'
+      - 'PORT=8080'
     network_mode: 'default'
 
   db:
@@ -19,6 +19,6 @@ services:
     environment:
       - 'POSTGRES_USER'
       - 'POSTGRES_PASSWORD'
-      - 'PGDATA'
-      - 'POSTGRES_DB'
+      - 'PGDATA=/var/lib/postgresql/data'
+      - 'POSTGRES_DB=seal'
     network_mode: 'default'
