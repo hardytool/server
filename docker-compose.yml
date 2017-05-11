@@ -3,14 +3,14 @@ services:
   server:
     build: .
     ports:
-      - '8080:8080'
+      - '${PORT}:${PORT}'
     links:
       - 'db'
     restart: 'always'
     environment:
       - 'STEAM_API_KEY'
       - 'HOST'
-      - 'PORT=8080'
+      - 'PORT'
     network_mode: 'default'
 
   db:

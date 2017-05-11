@@ -15,6 +15,8 @@ var pg = require('pg')
 var app = express()
 var pool = new pg.Pool(config.db)
 
+console.dir(config, { depth: null })
+
 passport.serializeUser(function(user, done) {
   done(null, user)
 })

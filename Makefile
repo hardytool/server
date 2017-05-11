@@ -13,4 +13,7 @@ run:
 		-e "STEAM_API_KEY=$(STEAM_API_KEY)" \
 		seal-server
 
-.PHONY: test build run
+compose:
+	HOST=$(HOST) PORT=8080 STEAM_API_KEY=$(STEAM_API_KEY) docker-compose up
+
+.PHONY: test build run compose
