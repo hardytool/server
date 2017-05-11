@@ -13,4 +13,4 @@ run:
 		-e "STEAM_API_KEY=$(STEAM_API_KEY)" \
 		seal-server
 
-.PHONY: run
+.PHONY: test build run
