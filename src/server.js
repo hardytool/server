@@ -1,18 +1,19 @@
-/*eslint no-process-env:off*/
-require('dotenv').load()
-var bodyParser = require('body-parser')
-var config = require('./config')(process.env)
-var cookieParser = require('cookie-parser')
+var env = require('./env')
+var config = require('./config')(env)
 //var credentials = require('./credentials')(config)
-var express = require('express')
 var http = require('http')
 //var https = require('https')
-var passport = require('passport')
+var express = require('express')
+var bodyParser = require('body-parser')
+var cookieParser = require('cookie-parser')
 var session = require('express-session')
 var static = require('serve-static')
+var passport = require('passport')
 var steam = require('passport-steam')
+var pg = require('pg')
 
 var app = express()
+var pool = new pg.Pool(config.db)
 
 passport.serializeUser(function(user, done) {
   done(null, user)
@@ -23,9 +24,9 @@ passport.deserializeUser(function(user, done) {
 })
 
 passport.use(new steam.Strategy({
-    returnURL: 'http://' + config.host + ':' + config.port + '/auth/steam/return',
-    realm: 'http://' + config.host + ':' + config.port,
-    apiKey: config.steam_api_key
+    returnURL: 'http://' + config.server.host + ':' + config.server.port + '/auth/steam/return',
+    realm: 'http://' + config.server.host + ':' + config.server.port,
+    apiKey: config.server.steam_api_key
   }, function(identifier, profile, done) {
     return done(undefined, { id: identifier, profile: profile })
   }
@@ -63,7 +64,7 @@ app.get('/logout', function(req, res) {
   res.redirect('/')
 })
 
-http.createServer(app).listen(config.port, function() {
-  console.log('Listening to HTTP connections on port ' + config.port)
+http.createServer(app).listen(config.server.port, function() {
+  console.log('Listening to HTTP connections on port ' + config.server.port)
 })
-//https.createServer(credentials, app).listen(config.https_port)
+//https.createServer(credentials, app).listen(config.server.https_port)

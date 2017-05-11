@@ -1,0 +1,21 @@
+version: '3'
+services:
+  server:
+    build: .
+    ports:
+      - '8080:8080'
+    links:
+      - 'db'
+    restart: 'always'
+    environment:
+      - 'STEAM_API_KEY'
+      - 'HOST'
+      - 'PORT'
+    network_mode: 'default'
+
+  db:
+    image: 'library/postgres:latest'
+    restart: 'always'
+    environment:
+      - 'POSTGRES_DB=test_db'
+    network_mode: 'default'

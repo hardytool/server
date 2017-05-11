@@ -8,6 +8,7 @@
       "semi": ["error", "never"],
       "quotes": ["error", "single"],
       "no-process-env": "error",
-      "no-console": "off"
+      "no-console": "off",
+      "global-require": "error"
     }
 }
