@@ -7,7 +7,6 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
 var session = require('express-session')
-var static = require('serve-static')
 var passport = require('passport')
 var steam = require('passport-steam')
 var pg = require('pg')
@@ -34,7 +33,6 @@ passport.use(new steam.Strategy({
   }
 ))
 
-app.use(static('public'))
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -46,7 +44,7 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.get('/', function (req, res) {
+app.get('/hello', function (req, res) {
   if (req.user) {
     res.send('<div>hello ' + req.user.profile.displayName
       + '!</div><div><a href="/logout">Log out</a></div>')
@@ -57,13 +55,14 @@ app.get('/', function (req, res) {
 
 app.get('/auth/steam', passport.authenticate('steam'))
 app.get('/auth/steam/return',
-  passport.authenticate('steam', { failureRedirect: '/login' }),
+  passport.authenticate('steam',
+    { failureRedirect: config.server.website_url + '/login' }),
   function(req, res) {
-    res.redirect('/')
+    res.redirect(config.server.website_url)
   })
 app.get('/logout', function(req, res) {
   req.logout()
-  res.redirect('/')
+  res.redirect(config.server.website_url)
 })
 
 http.createServer(app).listen(config.server.port, function() {
