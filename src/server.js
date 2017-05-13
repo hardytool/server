@@ -10,6 +10,7 @@ var session = require('express-session')
 var passport = require('passport')
 var steam = require('passport-steam')
 var pg = require('pg')
+var roster = require('./routes/roster')
 
 var app = express()
 var pool = new pg.Pool(config.db)
@@ -64,6 +65,7 @@ app.get('/logout', function(req, res) {
   req.logout()
   res.redirect(config.server.website_url)
 })
+app.get('/roster', roster)
 
 http.createServer(app).listen(config.server.port, function() {
   console.log('Listening to HTTP connections on port ' + config.server.port)
