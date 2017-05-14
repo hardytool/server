@@ -11,6 +11,7 @@ run:
 		-e "HOST=$(HOST)" \
 		-e "PORT=8080" \
 		-e "STEAM_API_KEY=$(STEAM_API_KEY)" \
+		-e "NODE_ENV=production" \
 		seal-server
 
 compose:

@@ -11,6 +11,7 @@ services:
       - 'STEAM_API_KEY'
       - 'HOST'
       - 'PORT'
+      - 'NODE_ENV=production'
     network_mode: 'default'
 
   db:
