@@ -2,6 +2,15 @@ function migrateIfNeeded(db, migrations) {
   // 2 - check if the migrations table exists
   // 3 - get latest migration from table if exists
   // 4 - get latest migration from list of migrations
+  migrations.sort(function(a, b) {
+    if (a.name < b.name) {
+      return -1
+    }
+    if (a.name > b.name) {
+      return 1
+    }
+    return 0
+  })
   migrations.forEach(function(migration) {
     console.log(migration.contents)
     db.query(migration.contents, function(err) {

@@ -1,11 +1,16 @@
 FROM library/node:latest
 
-COPY . /src
+RUN apt-get update && \
+  apt-get install -y postgresql redis-tools
 
 WORKDIR /src
 
+COPY package.json /src/package.json
+
 RUN npm install --production
 
-ENTRYPOINT ["npm"]
+COPY . /src
 
-CMD ["start"]
+ENTRYPOINT ["./wait.sh"]
+
+CMD ["db", "npm", "start"]

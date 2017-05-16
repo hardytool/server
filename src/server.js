@@ -25,10 +25,15 @@ console.dir(config, { depth: null })
 migrations.migrateIfNeeded(pool, [
   {
     name: '002',
-    contents: sql`CREATE TABLE seal.user (
+    contents: `
+    CREATE TABLE IF NOT EXISTS seal.user (
       user_id uuid PRIMARY KEY,
-      name text,
+      name text
     );`
+  },
+  {
+    name: '001',
+    contents: 'CREATE SCHEMA IF NOT EXISTS seal;'
   }
 ])
 
