@@ -6,12 +6,15 @@ services:
       - '${PORT}:${PORT}'
     links:
       - 'db'
+      - 'redis'
     restart: 'always'
     environment:
       - 'STEAM_API_KEY'
       - 'HOST'
       - 'PORT'
       - 'NODE_ENV=production'
+      - 'REDIS_HOST=redis'
+      - 'REDIS_PORT=6379'
     network_mode: 'default'
 
   db:
@@ -22,4 +25,9 @@ services:
       - 'POSTGRES_PASSWORD'
       - 'PGDATA=/var/lib/postgresql/data'
       - 'POSTGRES_DB=seal'
+    network_mode: 'default'
+
+  redis:
+    image: 'library/redis:latest'
+    restart: 'always'
     network_mode: 'default'

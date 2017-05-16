@@ -1,20 +1,28 @@
 HOST?=$(shell docker-machine ip)
+PORT?="8000"
+REDIS_HOST?="redis"
+REDIS_PORT?="6379"
 
 test:
 	echo "$(HOST)"
+	echo "$(PORT)"
+	echo "$(REDIS_HOST)"
+	echo "$(REDIS_PORT)"
 
 build:
-	docker build -t=seal-server .
+	HOST=$(HOST) \
+	PORT=$(PORT) \
+	STEAM_API_KEY=$(STEAM_API_KEY) \
+	REDIS_HOST=$(REDIS_HOST) \
+	REDIS_PORT=$(REDIS_PORT) \
+	docker-compose build
 
 run:
-	docker run -it -p 8080:8080 \
-		-e "HOST=$(HOST)" \
-		-e "PORT=8080" \
-		-e "STEAM_API_KEY=$(STEAM_API_KEY)" \
-		-e "NODE_ENV=production" \
-		seal-server
+	HOST=$(HOST) \
+	PORT=$(PORT) \
+	STEAM_API_KEY=$(STEAM_API_KEY) \
+	REDIS_HOST=$(REDIS_HOST) \
+	REDIS_PORT=$(REDIS_PORT) \
+	docker-compose up
 
-compose:
-	HOST=$(HOST) PORT=8080 STEAM_API_KEY=$(STEAM_API_KEY) docker-compose up
-
-.PHONY: test build run compose
+.PHONY: test build run

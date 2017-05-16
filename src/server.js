@@ -10,14 +10,27 @@ var session = require('express-session')
 var passport = require('passport')
 var steam = require('passport-steam')
 var pg = require('pg')
+var sql = require('pg-sql').sql
+var RedisStore = require('connect-redis')(session)
 var roster = require('./routes/roster')
 var user = require('./routes/roster')
 var standings = require('./routes/standings')
+var migrations = require('./migrations')
 
 var app = express()
 var pool = new pg.Pool(config.db)
 
 console.dir(config, { depth: null })
+
+migrations.migrateIfNeeded(pool, [
+  {
+    name: '002',
+    contents: sql`CREATE TABLE seal.user (
+      user_id uuid PRIMARY KEY,
+      name text,
+    );`
+  }
+])
 
 passport.serializeUser(function(user, done) {
   done(null, user)
@@ -36,11 +49,15 @@ passport.use(new steam.Strategy({
   }
 ))
 
-app.use(cookieParser())
+app.use(cookieParser(config.server.secret))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(session({
-  secret: 'keyboard cat',
+  store: new RedisStore({
+    host: config.redis.host,
+    port: config.redis.port
+  }),
+  secret: config.server.secret,
   resave: true,
   saveUninitialized: true
 }))
@@ -61,7 +78,11 @@ app.get('/auth/steam/return',
   passport.authenticate('steam',
     { failureRedirect: config.server.website_url + '/login' }),
   function(req, res) {
-    res.redirect(config.server.website_url)
+    if (!config.server.website_url) {
+      res.redirect('/hello')
+    } else {
+      res.redirect(config.server.website_url)
+    }
   })
 app.get('/logout', function(req, res) {
   req.logout()
