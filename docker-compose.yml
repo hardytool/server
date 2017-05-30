@@ -15,19 +15,31 @@ services:
       - 'NODE_ENV=production'
       - 'REDIS_HOST=redis'
       - 'REDIS_PORT=6379'
+      - 'POSTGRES_DB'
+      - 'POSTGRES_USER'
+      - 'POSTGRES_PASSWORD'
     network_mode: 'default'
 
   db:
     image: 'library/postgres:latest'
     restart: 'always'
+    ports:
+      - '5432:5432'
     environment:
       - 'POSTGRES_USER'
       - 'POSTGRES_PASSWORD'
       - 'PGDATA=/var/lib/postgresql/data'
       - 'POSTGRES_DB=seal'
+    volumes:
+      - 'db:/var/lib/postgresql/data'
     network_mode: 'default'
 
   redis:
     image: 'library/redis:latest'
     restart: 'always'
+    ports:
+      - '6379:6379'
     network_mode: 'default'
+
+volumes:
+  db:
