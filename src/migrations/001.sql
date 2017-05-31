@@ -25,7 +25,8 @@ CREATE TABLE team (
   id uuid PRIMARY KEY NOT NULL,
   season_id uuid NOT NULL,
   name varchar(100) NOT NULL,
-  logo varchar(300)
+  logo varchar(300),
+  seed integer NOT NULL
 );
 
 CREATE TABLE player (

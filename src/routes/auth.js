@@ -38,14 +38,13 @@ function steamPassport(db, identifier, profile, done) {
     ${avatar}
   )
   `
-  Promises.all(db.query(upsert).then(() => {
-    }).catch(err => {
-      if (err) {
-        console.error(err)
-      }
-    })
-  )
-  return done(null, { id: identifier, profile: profile })
+  db.query(upsert).then(() => {
+    done(null, { id: identifier, profile: profile })
+  }).catch(err => {
+    if (err) {
+      console.error(err)
+    }
+  })
 }
 
 function expandUser(db, user) {
@@ -58,10 +57,13 @@ function expandUser(db, user) {
   WHERE
     steam_id = ${id.toString()}
   `
-  console.dir(select, {depth: null})
   return db.query(select).then(result => {
     user.isAdmin = result.rows[0].is_admin
     return Promise.resolve(user)
+  }).catch(err => {
+    if (err) {
+      console.error(err)
+    }
   })
 }
 

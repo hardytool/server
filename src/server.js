@@ -43,7 +43,6 @@ startup.then(versions => {
 
   passport.deserializeUser(function(user, done) {
     auth.expandUser(user).then(user => {
-      console.dir(user)
       done(null, user)
     })
   })
