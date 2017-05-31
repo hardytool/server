@@ -12,11 +12,12 @@ var session = require('express-session')
 var passport = require('passport')
 var steam = require('passport-steam')
 var pg = require('pg')
+var pool = new pg.Pool(config.db)
 var RedisStore = require('connect-redis')(session)
 var migrations = require('./migrations')
 
 // Auth routes
-var auth = require('./routes/auth')(config)
+var auth = require('./routes/auth')(config, pool)
 
 // Page routes
 var index = require('./routes/index')
@@ -28,7 +29,6 @@ var user = require('./routes/roster')
 var standings = require('./routes/standings')
 
 var app = express()
-var pool = new pg.Pool(config.db)
 
 console.dir(config, { depth: null })
 
@@ -49,7 +49,7 @@ startup.then(versions => {
       realm: 'http://' + config.server.host + ':' + config.server.port,
       apiKey: config.server.steam_api_key
     }, function(identifier, profile, done) {
-      return done(undefined, { id: identifier, profile: profile })
+      return done(null, { id: identifier, profile: profile })
     }
   ))
 

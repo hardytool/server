@@ -22,8 +22,8 @@ function config(env) {
       idleTimeoutMillis: 30000
     },
     redis: {
-      host: env.REDIS_HOST || false,
-      port: env.REDIS_PORT || false
+      host: env.REDIS_HOST || 'redis',
+      port: env.REDIS_PORT || 6379
     }
   }
 }
