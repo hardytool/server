@@ -14,6 +14,7 @@ var steam = require('passport-steam')
 var pg = require('pg')
 var pool = new pg.Pool(config.db)
 var RedisStore = require('connect-redis')(session)
+
 var migrations = require('./migrations')
 
 // Auth routes
@@ -35,23 +36,23 @@ console.dir(config, { depth: null })
 var startup = migrations.migrateIfNeeded(pool, migrations.getMigrations(fs, path, path.join(__dirname, 'migrations')))
 
 startup.then(versions => {
-  console.log(`RUN ${versions.filter(version => version === false).length} MIGRATIONS`)
+  console.log(`RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)
   passport.serializeUser(function(user, done) {
     done(null, user)
   })
 
   passport.deserializeUser(function(user, done) {
-    done(null, user)
+    auth.expandUser(user).then(user => {
+      console.dir(user)
+      done(null, user)
+    })
   })
 
   passport.use(new steam.Strategy({
       returnURL: 'http://' + config.server.host + ':' + config.server.port + '/auth/steam/return',
       realm: 'http://' + config.server.host + ':' + config.server.port,
       apiKey: config.server.steam_api_key
-    }, function(identifier, profile, done) {
-      return done(null, { id: identifier, profile: profile })
-    }
-  ))
+    }, auth.steamPassport))
 
   app.use(cookieParser(config.server.secret))
   app.use(bodyParser.json())

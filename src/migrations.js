@@ -15,9 +15,7 @@ function migrateIfNeeded(db, migrations) {
     return 0
   })
 
-  return Promise.each(migrations, migration => {
-    console.log(migration.name)
-
+  return Promise.mapSeries(migrations, migration => {
     return db.query('SELECT version FROM migration').catch(() => {
       console.log('MIGRATION TABLE DOES NOT EXIST')
     }).then(result => {
@@ -25,7 +23,7 @@ function migrateIfNeeded(db, migrations) {
       var contained = versions.indexOf(migration.name) > -1
 
       if (!contained) {
-        console.log('RUNNING MIGRATION')
+        console.log(`RUNNING MIGRATION ${migration.name}`)
         return db.query(migration.contents).then(() => {
           console.log('UPDATING MIGRATION VERSION')
           var insert = sql`
@@ -42,7 +40,7 @@ function migrateIfNeeded(db, migrations) {
         }).then(result => {
           console.log(result)
           console.log(`VERSION: ${result.rows[0].version}`)
-          return Promise.resolve(result)
+          return Promise.resolve(result.rows[0].version)
         })
       } else {
         console.log('MIGRATION ALREADY RUN')
