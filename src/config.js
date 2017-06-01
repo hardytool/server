@@ -24,6 +24,13 @@ function config(env) {
     redis: {
       host: env.REDIS_HOST || 'redis',
       port: env.REDIS_PORT || 6379
+    },
+    steam: {
+      username: env.STEAM_BOT_USERNAME || false,
+      password: env.STEAM_BOT_PASSWORD || false
+    },
+    templates: {
+      title: 'SEAL DotA'
     }
   }
 }

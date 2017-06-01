@@ -1,0 +1,9 @@
+doctype html
+html(lang="en")
+  head
+    title= title + ' : ' + subtitle
+  body
+    h1 Seasons
+    ul
+      each season in seasons
+        li= season.number + ' - ' + season.name

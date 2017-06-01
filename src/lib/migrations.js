@@ -1,3 +1,5 @@
+var fs = require('fs')
+var path = require('path')
 var sql = require('pg-sql').sql
 var Promise = require('bluebird')
 
@@ -19,7 +21,9 @@ function migrateIfNeeded(db, migrations) {
     return db.query('SELECT version FROM migration').catch(() => {
       console.log('MIGRATION TABLE DOES NOT EXIST')
     }).then(result => {
-      var versions = result ? result.rows.map(row => { return row.version }) : []
+      var versions = result
+        ? result.rows.map(row => { return row.version })
+        : []
       var contained = versions.indexOf(migration.name) > -1
 
       if (!contained) {
@@ -52,14 +56,14 @@ function migrateIfNeeded(db, migrations) {
 
 // Default implementation
 // directory should be path.join(__dirname, 'migrations')
-function getMigrations(fs, path, directory) {
+function getMigrations(directory) {
   var results = []
   fs.readdirSync(directory).forEach(file => {
     var f = path.join(directory, file)
     var stat = fs.statSync(f)
 
     if (stat && stat.isDirectory()) {
-        results = results.concat(getMigrations(path.join(f)))
+        results = results.concat(getMigrations(f))
     } else {
       results.push({
         name: path.basename(file, path.extname(file)),
@@ -70,7 +74,9 @@ function getMigrations(fs, path, directory) {
   return results
 }
 
-module.exports = {
-  getMigrations: getMigrations,
-  migrateIfNeeded: migrateIfNeeded
+module.exports = db => {
+  return {
+    getMigrations: getMigrations,
+    migrateIfNeeded: migrateIfNeeded.bind(null, db)
+  }
 }

@@ -12,34 +12,38 @@ CREATE TABLE steam_user (
 );
 
 CREATE TABLE season (
-  id uuid PRIMARY KEY NOT NULL,
+  id varchar(50) PRIMARY KEY NOT NULL,
   number integer NOT NULL,
-  name varchar(100) NOT NULL
+  name varchar(100) NOT NULL,
+  UNIQUE(number)
 );
 
 CREATE TABLE admin (
-  steam_id varchar(50) NOT NULL
+  steam_id varchar(50) PRIMARY KEY NOT NULL
 );
 
 CREATE TABLE team (
-  id uuid PRIMARY KEY NOT NULL,
-  season_id uuid NOT NULL,
+  id varchar(50) PRIMARY KEY NOT NULL,
+  season_id varchar(50) NOT NULL,
   name varchar(100) NOT NULL,
   logo varchar(300),
-  seed integer NOT NULL
+  seed integer NOT NULL,
+  UNIQUE(season_id, name)
 );
 
 CREATE TABLE player (
-  id uuid PRIMARY KEY NOT NULL,
-  season_id uuid NOT NULL,
+  id varchar(50) PRIMARY KEY NOT NULL,
+  season_id varchar(50) NOT NULL,
   steam_id varchar(50) NOT NULL,
   will_captain boolean NOT NULL,
   captain_approved boolean NOT NULL,
-  is_vouched boolean NOT NULL
+  is_vouched boolean NOT NULL,
+  UNIQUE(steam_id)
 );
 
 CREATE TABLE team_player (
-  team_id uuid NOT NULL,
-  player_id uuid NOT NULL,
-  is_captain boolean NOT NULL
+  team_id varchar(50) NOT NULL,
+  player_id varchar(50) NOT NULL,
+  is_captain boolean NOT NULL,
+  UNIQUE(team_id, player_id)
 );

@@ -9,6 +9,7 @@
       "quotes": ["error", "single"],
       "no-process-env": "error",
       "no-console": "off",
-      "global-require": "error"
+      "global-require": "error",
+      "max-len": ["error", 80]
     }
 }

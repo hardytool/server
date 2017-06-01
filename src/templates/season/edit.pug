@@ -1,0 +1,15 @@
+doctype html
+html(lang='en')
+  head
+    title= title + ' : ' + subtitle
+  body
+    h1 Create Season
+    form(method='post' action='/seasons/edit')
+      div
+        label(for='number') Number
+        input(id='number' type='number' name='number')
+      div
+        label(for='name') Name
+        input(id='name' type='text' name='name')
+      div
+        button Create
