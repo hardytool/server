@@ -1,0 +1,32 @@
+doctype html
+html(lang='en')
+  head
+    title= title
+  body
+    style(type='text/css').
+      #name {
+        display: inline-block;
+        vertical-align: middle;
+      }
+      #avatar {
+        display: inline-block;
+        vertical-align: middle;
+        height: 1.25em;
+      }
+    if user
+      div
+        span(id='name') Hey #{user.displayName}!
+        img(id='avatar' src=user.avatar)
+    else
+      div
+        span(id='name') Hey there!
+    ul
+      if user.isAdmin
+        li
+          a(href='/seasons') Seasons
+      if user
+        li
+          a(href='/logout') Log out
+      else
+        li
+          a(href='/auth/steam') Log in

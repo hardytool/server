@@ -1,9 +1,25 @@
 doctype html
 html(lang="en")
   head
-    title= title + ' : ' + subtitle
+    title #{title} : Season List
   body
     h1 Seasons
-    ul
+    table
+      tr
+        th Number
+        th Name
+        th Teams
+        th Series
+        th Edit
       each season in seasons
-        li= season.number + ' - ' + season.name
+        tr
+          td= season.number
+          td= season.name
+          td
+            a(href='/seasons/' + season.vanity + '/teams') teams
+          td
+            a(href='/seasons/' + season.vanity + '/series') series
+          td
+            a(href='/seasons/edit/' + season.vanity) edit
+    a(href='/seasons/create')
+      button Add season

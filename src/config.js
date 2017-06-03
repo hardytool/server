@@ -19,7 +19,7 @@ function config(env) {
       // maximum number of clients in client pool
       max: env.POSTGRES_POOL_MAX || 10,
       // duration that clients are kept open while idle
-      idleTimeoutMillis: 30000
+      idleTimeoutMillis: env.POSTGRES_TIMEOUT || 30000
     },
     redis: {
       host: env.REDIS_HOST || 'redis',
@@ -30,7 +30,8 @@ function config(env) {
       password: env.STEAM_BOT_PASSWORD || false
     },
     templates: {
-      title: 'SEAL DotA'
+      title: 'SEAL DotA',
+      host: (env.HOST || 'localhost') + (env.PORT ? ':' + env.PORT : ':80')
     }
   }
 }

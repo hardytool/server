@@ -1,0 +1,27 @@
+doctype html
+html(lang='en')
+  head
+    title #{title} : #{verb} Team - #{season.name} #{team ? ' - ' + team.name : ''}
+  body
+    h1 #{verb} Team - #{season.name} #{team ? ' - ' + team.name : ''}
+    form(method='post' action='/teams/edit')
+      if team
+        input(type='hidden' name='id' value=team.id)
+      input(type='hidden' name='season_id' value=season.id)
+      div
+        label(for='name') Name:
+        input(id='name' type='text' name='name' value=(team ? team.name : ''))
+      div
+        label(for='logo') Logo:
+        input(id='logo' type='text' name='logo' value=(team ? team.logo : ''))
+      div
+        label(for='seed') Seed:
+        input(id='seed' type='number' name='seed' value=(team ? team.seed : ''))
+      div
+        button Submit
+    if team
+      form(method='post' action='/teams/delete')
+        input(type='hidden' name='season_id' value=season.id)
+        input(type='hidden' name='id' value=team.id)
+        div
+          button Delete

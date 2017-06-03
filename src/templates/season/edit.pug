@@ -1,15 +1,22 @@
 doctype html
 html(lang='en')
   head
-    title= title + ' : ' + subtitle
+    title #{title} : #{verb} Season #{season ? season.number : ''}
   body
-    h1 Create Season
+    h1 #{verb} Season #{season ? season.number : ''}
     form(method='post' action='/seasons/edit')
+      if season
+        input(type='hidden' name='id' value=season.id)
       div
-        label(for='number') Number
-        input(id='number' type='number' name='number')
+        label(for='number') Number:
+        input(id='number' type='number' name='number' value=(season ? season.number : ''))
       div
-        label(for='name') Name
-        input(id='name' type='text' name='name')
+        label(for='name') Name:
+        input(id='name' type='text' name='name' value=(season ? season.name : ''))
       div
-        button Create
+        button Submit
+    if season
+      form(method='post' action='/seasons/delete/')
+        input(type='hidden' name='id' value=season.id)
+        div
+          button Delete

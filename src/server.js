@@ -28,15 +28,17 @@ var migrations = require('./lib/migrations')(pool)
 var mmr = require('./lib/mmr')(dota2)
 var auth = require('./lib/auth')(config, pool, mmr)
 var season = require('./lib/season')(pool)
-//var team = require('./lib/team')(config, pool)
+var team = require('./lib/team')(pool)
+var series = require('./lib/series')(pool)
 
 // Auth routes
 var openid = require('./api/openid')(config)
 
 // Page routes
-var index = require('./pages/index')(auth)
-var seasons = require('./pages/seasons')(templates, season)
-var teams = require('./pages/teams')
+var indexPages = require('./pages/index')(templates, auth)
+var seasonPages = require('./pages/seasons')(templates, season)
+var teamPages = require('./pages/teams')(templates, season, team)
+var seriesPages = require('./pages/series')(templates, season, team, series)
 
 // API routes
 // none currently
@@ -99,12 +101,28 @@ app.get('/auth/steam/return',
   openid.steamIdReturn)
 app.get('/logout', openid.logout)
 
-app.get(index.home.route, index.home.handler)
-app.get(seasons.list.route, seasons.list.handler)
-app.get(seasons.create.route, seasons.create.handler)
-app.get(seasons.edit.route, seasons.edit.handler)
+app.get(indexPages.home.route, indexPages.home.handler)
 
-app.post(seasons.post.route, seasons.post.handler)
+app.get(seasonPages.list.route, seasonPages.list.handler)
+app.get(seasonPages.create.route, seasonPages.create.handler)
+app.get(seasonPages.edit.route, seasonPages.edit.handler)
+
+app.post(seasonPages.post.route, seasonPages.post.handler)
+app.post(seasonPages.remove.route, seasonPages.remove.handler)
+
+app.get(teamPages.list.route, teamPages.list.handler)
+app.get(teamPages.create.route, teamPages.create.handler)
+app.get(teamPages.edit.route, teamPages.edit.handler)
+
+app.post(teamPages.post.route, teamPages.post.handler)
+app.post(teamPages.remove.route, teamPages.remove.handler)
+
+app.get(seriesPages.list.route, seriesPages.list.handler)
+app.get(seriesPages.create.route, seriesPages.create.handler)
+app.get(seriesPages.edit.route, seriesPages.edit.handler)
+
+app.post(seriesPages.post.route, seriesPages.post.handler)
+app.post(seriesPages.remove.route, seriesPages.remove.handler)
 
 migrations.migrateIfNeeded(
   migrations.getMigrations(path.join(__dirname, 'migrations')))
@@ -125,15 +143,27 @@ migrations.migrateIfNeeded(
     if (res.eresult == Steam.EResult.OK) {
       dota2.launch()
       dota2.on('ready', () => {
-
-        http.createServer(app).listen(config.server.port, () => {
-          console.log('Listening to HTTP connections on port ' +
-            config.server.port)
-        })
-        //https.createServer(credentials, app).listen(config.server.https_port)
+        mmr.available = true
       })
     }
   })
+
+  steam.on('error', err => {
+    mmr.available = false
+    console.error(err)
+    if (err.message === 'Disconnected') {
+      steam.connect()
+    }
+    else {
+      throw err
+    }
+  })
+
+  http.createServer(app).listen(config.server.port, () => {
+    console.log('Listening to HTTP connections on port ' +
+      config.server.port)
+  })
+  //https.createServer(credentials, app).listen(config.server.https_port)
 }).catch(err => {
   console.error(err)
 })

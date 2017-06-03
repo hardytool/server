@@ -1,12 +1,18 @@
+var emojify = require('../lib/emojify')
+var shortid = require('shortid')
+
 function list(templates, season, req, res) {
   if (!req.user) {
     res.sendStatus(403)
     return
   }
 
-  season.getSeasonList().then(seasons => {
+  season.getSeasons().then(seasons => {
+    seasons = seasons.map(season => {
+      season.vanity = emojify.emojify(season.id)
+      return season
+    })
     var html = templates.season.list({
-      subtitle: 'Seasons List',
       seasons: seasons
     })
 
@@ -17,14 +23,14 @@ function list(templates, season, req, res) {
   })
 }
 
-function create(templates, season, req, res) {
+function create(templates, req, res) {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
     return
   }
 
   var html = templates.season.edit({
-    subtitle: 'Create Season',
+    verb: 'Create'
   })
 
   res.send(html)
@@ -36,12 +42,12 @@ function edit(templates, season, req, res) {
     return
   }
 
-  var id = req.params.id
+  var id = emojify.unemojify(req.params.id)
 
   season.getSeason(id).then(season => {
     var html = templates.season.edit({
-      subtitle: `Edit Season ${season.number}`,
-      seasons: [ season ]
+      verb: 'Edit',
+      season: season
     })
 
     res.send(html)
@@ -57,8 +63,25 @@ function post(season, req, res) {
     return
   }
 
+  var id = req.body.id ? req.body.id : shortid.generate()
+  var s = req.body
+  s.id = id
 
-  season.saveSeason(req.body).then(() => {
+  season.saveSeason(s).then(() => {
+    res.redirect('/seasons')
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
+function remove(season, req, res) {
+  if (!req.user || !req.user.isAdmin) {
+    res.sendStatus(403)
+    return
+  }
+
+  season.deleteSeason(req.body.id).then(() => {
     res.redirect('/seasons')
   }).catch(err => {
     console.error(err)
@@ -74,7 +97,7 @@ module.exports = (templates, season) => {
     },
     create: {
       route: '/seasons/create',
-      handler: create.bind(null, templates, season),
+      handler: create.bind(null, templates),
     },
     edit: {
       route: '/seasons/edit/:id',
@@ -83,6 +106,10 @@ module.exports = (templates, season) => {
     post: {
       route: '/seasons/edit',
       handler: post.bind(null, season)
+    },
+    remove: {
+      route: '/seasons/delete',
+      handler: remove.bind(null, season)
     }
   }
 }

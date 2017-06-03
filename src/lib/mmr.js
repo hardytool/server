@@ -1,4 +1,9 @@
+var available = false
+
 function getMMR(dota2, id, cb) {
+  if (!available) {
+    cb(new Error('DotA 2 client not running'), null)
+  }
   dota2.requestProfileCard(id, function(err, result) {
     if (err) {
       cb(err, null)
@@ -23,6 +28,7 @@ function getMMR(dota2, id, cb) {
 
 module.exports = dota2 => {
   return {
+    available: available,
     getMMR: getMMR.bind(null, dota2)
   }
 }

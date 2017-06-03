@@ -1,46 +1,21 @@
-function home(auth, req, res) {
-  var html = null
-  var profile = req.user.profile
+function home(templates, auth, req, res) {
+  var user = null
   if (req.user) {
-    html = `
-    <style type="text/css">
-      #name {
-        display: inline-block;
-        vertical-align: middle;
-      }
-      #avatar {
-        display: inline-block;
-        vertical-align: middle;
-        height: 1.25em;
-      }
-    </style>
-    <div>
-      <span id="name">Hey ${profile.displayName}!</span>
-      <img id="avatar" src="${auth.getAvatar(profile)}">
-    </div>
-    <br>
-    <div>
-      <a href="/logout">Log out</a>
-    </div>
-    `
-  } else {
-    html = `
-      <div>Hey there!</div>
-      <br>
-      <div>
-        <a href="/auth/steam">Log in</a>
-      </div>
-      `
+    user = req.user.profile
+    user.avatar = auth.getAvatar(user)
+    user.isAdmin = req.user.isAdmin
   }
+
+  var html = templates.index({ user: user })
 
   res.send(html)
 }
 
-module.exports = auth => {
+module.exports = (templates, auth) => {
   return {
     home: {
       route: '/',
-      handler: home.bind(null, auth)
+      handler: home.bind(null, templates, auth)
     }
   }
 }

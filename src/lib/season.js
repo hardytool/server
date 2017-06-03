@@ -1,7 +1,6 @@
 var sql = require('pg-sql').sql
-var shortid = require('shortid')
 
-function getSeasonList(db) {
+function getSeasons(db) {
   var select = sql`
   SELECT
     id,
@@ -39,7 +38,7 @@ function saveSeason(db, season) {
       number,
       name
     ) VALUES (
-      ${shortid.generate()},
+      ${season.id},
       ${season.number},
       ${season.name}
     ) ON CONFLICT (
@@ -53,10 +52,21 @@ function saveSeason(db, season) {
   return db.query(upsert)
 }
 
+function deleteSeason(db, id) {
+  var query = sql`
+  DELETE FROM
+    season
+  WHERE
+    id = ${id}
+  `
+  return db.query(query)
+}
+
 module.exports = db => {
   return {
-    getSeasonList: getSeasonList.bind(null, db),
+    getSeasons: getSeasons.bind(null, db),
     getSeason: getSeason.bind(null, db),
-    saveSeason: saveSeason.bind(null, db)
+    saveSeason: saveSeason.bind(null, db),
+    deleteSeason: deleteSeason.bind(null, db)
   }
 }

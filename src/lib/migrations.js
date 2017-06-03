@@ -42,7 +42,6 @@ function migrateIfNeeded(db, migrations) {
             RETURNING version;`
           return db.query(insert)
         }).then(result => {
-          console.log(result)
           console.log(`VERSION: ${result.rows[0].version}`)
           return Promise.resolve(result.rows[0].version)
         })

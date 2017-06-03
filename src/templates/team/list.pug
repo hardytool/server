@@ -1,0 +1,28 @@
+doctype html
+html(lang="en")
+  head
+    title #{title} : #{season ? season.name : ''} Team List
+  body
+    style(type='text/css').
+      .logo {
+        display: inline-block;
+        vertical-align: middle;
+        height: 1.25em;
+      }
+    h1 #{season ? season.name : ''} Teams
+    table
+      tr
+        th Name
+        th Logo
+        th Seed
+        th Edit
+      each team in teams
+        tr
+          td= team.name
+          td
+            img(class='logo' src=team.logo)
+          td= team.seed
+          td
+            a(href='/seasons/' + season.vanity + '/teams/edit/' + team.vanity) edit
+    a(href='/seasons/' + season.vanity + '/teams/create')
+      button Add team
