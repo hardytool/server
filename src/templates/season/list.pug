@@ -10,6 +10,8 @@ html(lang="en")
         th Name
         th Teams
         th Series
+        th Standings
+        th Matchups
         th Edit
       each season in seasons
         tr
@@ -19,6 +21,10 @@ html(lang="en")
             a(href='/seasons/' + season.vanity + '/teams') teams
           td
             a(href='/seasons/' + season.vanity + '/series') series
+          td
+            a(href='/seasons/' + season.vanity + '/standings') standings
+          td
+            a(href='/seasons/' + season.vanity + '/matchups') matchups
           td
             a(href='/seasons/edit/' + season.vanity) edit
     a(href='/seasons/create')
