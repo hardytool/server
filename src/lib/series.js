@@ -20,11 +20,11 @@ function getSeries(db, criteria) {
     away_team.logo as away_team_logo
   FROM
     series
-  JOIN
+  FULL OUTER JOIN
     team AS home_team
   ON
     home_team.id = series.home_team_id
-  JOIN
+  FULL OUTER JOIN
     team AS away_team
   ON
     away_team.id = series.away_team_id
@@ -125,10 +125,88 @@ function deleteSeries(db, id) {
   return db.query(query)
 }
 
+function getNextSerial(db, season_id, serial) {
+  return Promise.resolve(serial).then(serial => {
+    if (serial) {
+      return Promise.resolve(serial)
+    } else {
+      var query = sql`
+      SELECT
+        COALESCE(MAX(serial), 0) + 1 as serial
+      FROM
+        series
+      WHERE
+        season_id = ${season_id}
+      `
+      return db.query(query).then(result => {
+        return result.rows[0].serial
+      })
+    }
+  })
+}
+
+function getStandings(db, season_id, serial) {
+  return getNextSerial(db, season_id, serial).then(serial => {
+    var query = sql`
+    SELECT
+      team.id,
+      team.name,
+      team.logo,
+      team.seed,
+      COALESCE(standings.wins, 0) as wins,
+      COALESCE(standings.losses, 0) as losses
+    FROM (
+      SELECT
+        team_id,
+        SUM(standings.win) wins,
+        SUM(standings.loss) losses
+      FROM (
+        SELECT
+          season_id,
+          home_team_id team_id,
+          home_points win,
+          away_points loss
+        FROM
+          series
+        WHERE
+          serial < ${serial}
+        UNION ALL
+        SELECT
+          season_id,
+          away_team_id team_id,
+          away_points win,
+          home_points loss
+        FROM
+          series
+        WHERE
+          serial < ${serial}
+      ) standings
+      WHERE
+        season_id = ${season_id}
+      GROUP BY
+        team_id
+    ) standings
+    FULL OUTER JOIN
+      team
+    ON
+      team.id = standings.team_id
+    ORDER BY
+      (2 * standings.wins) DESC,
+      (2 * standings.wins - standings.losses) DESC,
+      team.seed DESC
+    `
+    return db.query(query).then(result => {
+      return result.rows
+    })
+  })
+}
+
 module.exports = db => {
   return {
     getSeries: getSeries.bind(null, db),
     saveSeries: saveSeries.bind(null, db),
-    deleteSeries: deleteSeries.bind(null, db)
+    deleteSeries: deleteSeries.bind(null, db),
+    getNextSerial: getNextSerial.bind(null, db),
+    getStandings: getStandings.bind(null, db)
   }
 }

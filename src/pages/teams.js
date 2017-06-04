@@ -10,6 +10,8 @@ function list(templates, season, team, req, res) {
   var season_id = emojify.unemojify(req.params.season_id)
 
   season.getSeason(season_id).then(season => {
+    console.dir(season_id)
+    console.dir(season)
     season.vanity = emojify.emojify(season.id)
     return team.getTeams(season_id).then(teams => {
       teams = teams.map(team => {

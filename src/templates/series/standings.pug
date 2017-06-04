@@ -1,0 +1,25 @@
+doctype html
+html(lang="en")
+  head
+    title #{title} : #{season.name} Standings
+  body
+    style(type='text/css').
+      .logo {
+        display: inline-block;
+        vertical-align: middle;
+        height: 1.25em;
+      }
+    h1 #{season.name} Standings
+    table
+      tr
+        th Team Name
+        th Team Logo
+        th Wins
+        th Losses
+      each standing in standings
+        tr
+          td= standing.name
+          td
+            img(class='logo' src=standing.logo)
+          td= standing.wins
+          td= standing.losses

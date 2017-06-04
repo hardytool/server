@@ -14,6 +14,7 @@ html(lang='en')
       div
         label(for='home_team_id') Home Team:
         select(id='home_team_id' name='home_team_id')
+          option(value='') BYE
           each team in teams
             if series && team.id === series.home.id
               option(value=team.id selected)= team.name
@@ -25,6 +26,7 @@ html(lang='en')
       div
         label(for='away_team_id') Away Team:
         select(id='away_team_id' name='away_team_id')
+          option(value='') BYE
           each team in teams
             if series && team.id === series.away.id
               option(value=team.id selected)= team.name

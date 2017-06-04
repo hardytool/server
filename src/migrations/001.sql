@@ -57,7 +57,7 @@ CREATE TABLE series (
   serial integer NOT NULL,
   season_id varchar(50) NOT NULL REFERENCES season (id),
   home_team_id varchar(50) NOT NULL REFERENCES team (id),
-  away_team_id varchar(50) NOT NULL REFERENCES team (id),
+  away_team_id varchar(50) REFERENCES team (id),
   home_points integer NOT NULL,
   away_points integer NOT NULL,
   match_1_id varchar(50),

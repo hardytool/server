@@ -1,0 +1,20 @@
+doctype html
+html(lang="en")
+  head
+    title #{title} : #{season.name} Week #{serial} Matchups
+  body
+    style(type='text/css').
+      .logo {
+        display: inline-block;
+        vertical-align: middle;
+        height: 1.25em;
+      }
+    h1 #{season.name} Week #{serial} Matchups
+    table
+      tr
+        th Home Team
+        th Away Team
+      each matchup in matchups
+        tr
+          td= matchup.home.name
+          td= matchup.away.name
