@@ -8,7 +8,10 @@ function config(env) {
       ssL_crt: env.SSL_CRT || './server.crt',
       steam_api_key: env.STEAM_API_KEY || false,
       website_url: (!env.WEBSITE_URL) ? false : ('//' + env.WEBSITE_URL),
-      secret: env.SECRET || 'seriously you should set an actual secret this is not secure'
+      secret: env.SECRET || 'seriously you should set an actual secret this ' +
+        'is not secure',
+      domains: env.DOMAINS.split(',') || [ 'localhost' ],
+      email: env.ADMIN_EMAIL || false
     },
     db: {
       user: env.POSTGRES_USER || env.PGUSER || false,
