@@ -3,7 +3,7 @@ function config(env) {
     server: {
       host: env.HOST || 'localhost',
       port: env.PORT || 80,
-      https_port: env.HTTPS_PORT || 433,
+      https_port: env.HTTPS_PORT || 443,
       ssl_key: env.SSL_KEY || false,
       ssl_cert: env.SSL_CERT || false,
       ssl_ca: env.SSL_CA || false,

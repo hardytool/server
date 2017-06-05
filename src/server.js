@@ -63,13 +63,11 @@ passport.deserializeUser((user, done) => {
   })
 })
 
+var realm = 'http' + (credentials ? 's' : '') + '://' + config.server.host +
+      ':' + config.server.port
 passport.use(new passportSteam.Strategy({
-    returnURL: 'http://' +
-      config.server.host +
-      ':' +
-      config.server.port +
-      '/auth/steam/return',
-    realm: 'http://' + config.server.host + ':' + config.server.port,
+    returnURL: realm + '/auth/steam/return',
+    realm: realm,
     apiKey: config.server.steam_api_key
   }, (identifier, profile, done) =>  {
     auth.createUser(profile, err => {
