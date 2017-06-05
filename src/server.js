@@ -20,6 +20,7 @@ var steam = new Steam.SteamClient()
 var Dota2 = require('dota2')
 var dota2 = new Dota2.Dota2Client(steam, true, true)
 var steamUser = new Steam.SteamUser(steam)
+var redirectHttps = require('redirect-https')
 
 // lib
 var credentials = require('./lib/credentials')(config.server)
@@ -162,16 +163,24 @@ migrations.migrateIfNeeded(
       }
     })
 
-    http.createServer(app).listen(config.server.port, () => {
-      console.log('Listening to HTTP connections on port ' +
-        config.server.port)
-    })
     if (credentials) {
+      http.createServer(redirectHttps({
+        port: config.server.https_port,
+        trustProxy: true
+      })).listen(config.server.port, () => {
+        console.log('Redirecting from HTTP to HTTPS on port ' +
+          config.server.port)
+      })
       https.createServer(credentials, app).listen(config.server.https_port,
         () => {
           console.log('Listening to HTTPS connections on port ' +
             config.server.https_port)
         })
+    } else {
+      http.createServer(app).listen(config.server.port, () => {
+        console.log('Listening to HTTP connections on port ' +
+          config.server.port)
+      })
     }
 }).catch(err => {
   console.error(err)
