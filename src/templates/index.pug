@@ -21,10 +21,10 @@ html(lang='en')
       div
         span(id='name') Hey there!
     ul
-      if user.isAdmin
-        li
-          a(href='/seasons') Seasons
       if user
+        if user.isAdmin
+          li
+            a(href='/seasons') Seasons
         li
           a(href='/logout') Log out
       else
