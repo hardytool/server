@@ -64,7 +64,7 @@ passport.deserializeUser((user, done) => {
 })
 
 var realm = 'http' + (credentials ? 's' : '') + '://' + config.server.host +
-      ':' + config.server.port
+      ':' + (credentials ? config.server.https_port : config.server.port)
 passport.use(new passportSteam.Strategy({
     returnURL: realm + '/auth/steam/return',
     realm: realm,

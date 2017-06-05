@@ -3,6 +3,7 @@ var available = false
 function getMMR(dota2, id, cb) {
   if (!available) {
     cb(new Error('DotA 2 client not running'), null)
+    return
   }
   dota2.requestProfileCard(id, function(err, result) {
     if (err) {
