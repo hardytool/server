@@ -5,8 +5,7 @@ var config = require('./config')(env)
 // Node & NPM
 var path = require('path')
 var http = require('http')
-var https = require('https')
-var redirectHttps = require('redirect-https')
+//var https = require('https')
 var express = require('express')
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
@@ -21,7 +20,6 @@ var steam = new Steam.SteamClient()
 var Dota2 = require('dota2')
 var dota2 = new Dota2.Dota2Client(steam, true, true)
 var steamUser = new Steam.SteamUser(steam)
-var greenlock = require('greenlock-express')
 
 // lib
 var templates = require('./lib/templates')(
@@ -50,27 +48,6 @@ var seriesPages = require('./pages/series')(templates, season, team, series)
 console.dir(config, { depth: null })
 
 var app = express()
-
-var lex = greenlock.create({
-  server: 'staging',
-  debug: true,
-  approveDomains: function(opts, certs, cb) {
-    /*var domains = config.server.domains
-    opts.domains = opts.domains.filter(domain => {
-      return domains.includes(domain)
-    })*/
-    if (certs) {
-      opts.domains = certs.altnames/*.filter(name => {
-        return domains.includes(name)
-      })*/
-    } else {
-      opts.email = config.server.email
-      opts.agreeTos = true
-    }
-
-    cb(null, { options: opts, certs: certs })
-  }
-})
 
 passport.serializeUser((user, done) => {
   done(null, user)
@@ -152,64 +129,43 @@ app.post(seriesPages.remove.route, seriesPages.remove.handler)
 migrations.migrateIfNeeded(
   migrations.getMigrations(path.join(__dirname, 'migrations')))
   .then(versions => {
-    console.log(
-      `RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)
+  console.log(
+    `RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)
 
-    /*
-    steam.connect()
+  steam.connect()
 
-    steam.on('connected', () => {
-      steamUser.logOn({
-        account_name: config.steam.username,
-        password: config.steam.password
-      })
+  steam.on('connected', () => {
+    steamUser.logOn({
+      account_name: config.steam.username,
+      password: config.steam.password
     })
+  })
 
-    steam.on('logOnResponse', res => {
-      if (res.eresult == Steam.EResult.OK) {
-        dota2.launch()
-        dota2.on('ready', () => {
-          mmr.available = true
-        })
-      }
-    })
-
-    steam.on('error', err => {
-      mmr.available = false
-      console.error(err)
-      if (err.message === 'Disconnected') {
-        steam.connect()
-      }
-      else {
-        throw err
-      }
-
-    })
-    */
-
-    /*http.createServer(app).listen(config.server.port, () => {
-      console.log('Listening to HTTP connections on port ' +
-        config.server.port)
-    })*/
-    //https.createServer(credentials, app).listen(config.server.https_port)
-    http.createServer(lex.middleware(redirectHttps({
-      port: config.server.https_port,
-      trustProxy: true
-    }))).listen(
-      Number.parseInt(config.server.https_port) + 8000,
-      function () {
-        console.log('Listening on', this.address())
+  steam.on('logOnResponse', res => {
+    if (res.eresult == Steam.EResult.OK) {
+      dota2.launch()
+      dota2.on('ready', () => {
+        mmr.available = true
       })
-    http.createServer(lex.middleware(app)).listen(
-      config.server.port,
-      function () {
-        console.log('Listening on', this.address())
-      })
-    https.createServer(lex.httpsOptions, lex.middleware(app)).listen(
-      config.server.https_port,
-      function() {
-        console.log('Listening on', this.address())
-      })
+    }
+  })
+
+  steam.on('error', err => {
+    mmr.available = false
+    console.error(err)
+    if (err.message === 'Disconnected') {
+      steam.connect()
+    }
+    else {
+      throw err
+    }
+  })
+
+  http.createServer(app).listen(config.server.port, () => {
+    console.log('Listening to HTTP connections on port ' +
+      config.server.port)
+  })
+  //https.createServer(credentials, app).listen(config.server.https_port)
 }).catch(err => {
   console.error(err)
 })
