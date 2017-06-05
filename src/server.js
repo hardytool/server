@@ -20,10 +20,10 @@ var steam = new Steam.SteamClient()
 var Dota2 = require('dota2')
 var dota2 = new Dota2.Dota2Client(steam, true, true)
 var steamUser = new Steam.SteamUser(steam)
-var templates = require('./templates')(
-  path.join(__dirname, 'templates'), config.templates)
 
 // lib
+var templates = require('./lib/templates')(
+  path.join(__dirname, 'templates'), config.templates)
 var migrations = require('./lib/migrations')(pool)
 var mmr = require('./lib/mmr')(dota2)
 var auth = require('./lib/auth')(config, pool, mmr)
