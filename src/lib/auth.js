@@ -17,8 +17,8 @@ function createUser(db, mmr, profile, cb) {
       ${id.toString()},
       ${name},
       ${avatar},
-      ${result.solo},
-      ${result.party}
+      ${result ? result.solo : 0},
+      ${result ? result.party : 0}
     )
     ON CONFLICT (
       steam_id
@@ -30,8 +30,8 @@ function createUser(db, mmr, profile, cb) {
     ) = (
       ${name},
       ${avatar},
-      ${result.solo},
-      ${result.party}
+      ${result ? result.solo : 0},
+      ${result ? result.party : 0}
     )
     `
     db.query(upsert).then(() => {
