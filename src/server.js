@@ -5,7 +5,7 @@ var config = require('./config')(env)
 // Node & NPM
 var path = require('path')
 var http = require('http')
-//var https = require('https')
+var https = require('https')
 var express = require('express')
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
@@ -22,6 +22,7 @@ var dota2 = new Dota2.Dota2Client(steam, true, true)
 var steamUser = new Steam.SteamUser(steam)
 
 // lib
+var credentials = require('./lib/credentials')(config.server)
 var templates = require('./lib/templates')(
   path.join(__dirname, 'templates'), config.templates)
 var migrations = require('./lib/migrations')(pool)
@@ -129,43 +130,49 @@ app.post(seriesPages.remove.route, seriesPages.remove.handler)
 migrations.migrateIfNeeded(
   migrations.getMigrations(path.join(__dirname, 'migrations')))
   .then(versions => {
-  console.log(
-    `RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)
+    console.log(
+      `RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)
 
-  steam.connect()
+    steam.connect()
 
-  steam.on('connected', () => {
-    steamUser.logOn({
-      account_name: config.steam.username,
-      password: config.steam.password
-    })
-  })
-
-  steam.on('logOnResponse', res => {
-    if (res.eresult == Steam.EResult.OK) {
-      dota2.launch()
-      dota2.on('ready', () => {
-        mmr.available = true
+    steam.on('connected', () => {
+      steamUser.logOn({
+        account_name: config.steam.username,
+        password: config.steam.password
       })
-    }
-  })
+    })
 
-  steam.on('error', err => {
-    mmr.available = false
-    console.error(err)
-    if (err.message === 'Disconnected') {
-      steam.connect()
-    }
-    else {
-      throw err
-    }
-  })
+    steam.on('logOnResponse', res => {
+      if (res.eresult == Steam.EResult.OK) {
+        dota2.launch()
+        dota2.on('ready', () => {
+          mmr.available = true
+        })
+      }
+    })
 
-  http.createServer(app).listen(config.server.port, () => {
-    console.log('Listening to HTTP connections on port ' +
-      config.server.port)
-  })
-  //https.createServer(credentials, app).listen(config.server.https_port)
+    steam.on('error', err => {
+      mmr.available = false
+      console.error(err)
+      if (err.message === 'Disconnected') {
+        steam.connect()
+      }
+      else {
+        throw err
+      }
+    })
+
+    http.createServer(app).listen(config.server.port, () => {
+      console.log('Listening to HTTP connections on port ' +
+        config.server.port)
+    })
+    if (credentials) {
+      https.createServer(credentials, app).listen(config.server.https_port,
+        () => {
+          console.log('Listening to HTTPS connections on port ' +
+            config.server.https_port)
+        })
+    }
 }).catch(err => {
   console.error(err)
 })

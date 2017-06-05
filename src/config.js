@@ -4,11 +4,12 @@ function config(env) {
       host: env.HOST || 'localhost',
       port: env.PORT || 80,
       https_port: env.HTTPS_PORT || 433,
-      ssl_key: env.SSL_KEY || './server.key',
-      ssL_crt: env.SSL_CRT || './server.crt',
+      ssl_key: env.SSL_KEY || false,
+      ssl_cert: env.SSL_CERT || false,
+      ssl_ca: env.SSL_CA || false,
       steam_api_key: env.STEAM_API_KEY || false,
       website_url: (!env.WEBSITE_URL) ? false : ('//' + env.WEBSITE_URL),
-      secret: env.SECRET || 'seriously you should set an actual secret this is not secure'
+      secret: env.SECRET || false
     },
     db: {
       user: env.POSTGRES_USER || env.PGUSER || false,
