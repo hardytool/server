@@ -132,34 +132,36 @@ migrations.migrateIfNeeded(
     console.log(
       `RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)
 
-    steam.connect()
+    if (config.steam.username && config.steam.password) {
+      steam.connect()
 
-    steam.on('connected', () => {
-      steamUser.logOn({
-        account_name: config.steam.username,
-        password: config.steam.password
-      })
-    })
-
-    steam.on('logOnResponse', res => {
-      if (res.eresult == Steam.EResult.OK) {
-        dota2.launch()
-        dota2.on('ready', () => {
-          mmr.available = true
+      steam.on('connected', () => {
+        steamUser.logOn({
+          account_name: config.steam.username,
+          password: config.steam.password
         })
-      }
-    })
+      })
 
-    steam.on('error', err => {
-      mmr.available = false
-      console.error(err)
-      if (err.message === 'Disconnected') {
-        steam.connect()
-      }
-      else {
-        throw err
-      }
-    })
+      steam.on('logOnResponse', res => {
+        if (res.eresult == Steam.EResult.OK) {
+          dota2.launch()
+          dota2.on('ready', () => {
+            mmr.available = true
+          })
+        }
+      })
+
+      steam.on('error', err => {
+        mmr.available = false
+        console.error(err)
+        if (err.message === 'Disconnected') {
+          steam.connect()
+        }
+        else {
+          throw err
+        }
+      })
+    }
 
     if (credentials) {
       http.createServer(redirectHttps({
