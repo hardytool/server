@@ -37,7 +37,7 @@ var series = require('./lib/series')(pool)
 var openid = require('./api/openid')(config)
 
 // Page routes
-var indexPages = require('./pages/index')(templates, auth)
+var indexPages = require('./pages/index')(templates)
 var seasonPages = require('./pages/seasons')(templates, season)
 var teamPages = require('./pages/teams')(templates, season, team)
 var seriesPages = require('./pages/series')(templates, season, team, series)
@@ -102,6 +102,7 @@ app.get('/auth/steam/return',
 app.get('/logout', openid.logout)
 
 app.get(indexPages.home.route, indexPages.home.handler)
+app.get(indexPages.complaint.route, indexPages.complaint.handler)
 
 app.get(seasonPages.list.route, seasonPages.list.handler)
 app.get(seasonPages.create.route, seasonPages.create.handler)

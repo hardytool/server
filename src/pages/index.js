@@ -1,14 +1,24 @@
-function home(templates, auth, req, res) {
+function home(templates, req, res) {
   var html = templates.index({ user: req.user })
 
   res.send(html)
 }
 
-module.exports = (templates, auth) => {
+function complaint(templates, req, res) {
+  var html = templates.complaint({user: req.user})
+
+  res.send(html)
+}
+
+module.exports = templates => {
   return {
     home: {
       route: '/',
-      handler: home.bind(null, templates, auth)
+      handler: home.bind(null, templates)
+    },
+    complaint: {
+      route: '/complaint',
+      handler: complaint.bind(null, templates)
     }
   }
 }
