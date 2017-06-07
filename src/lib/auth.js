@@ -54,6 +54,8 @@ function inflateUser(db, user) {
   `
   return db.query(select).then(result => {
     user.isAdmin = result.rows[0].is_admin
+    user.avatar = getAvatar(user.profile)
+    user.displayName = user.profile.displayName
     return Promise.resolve(user)
   })
 }

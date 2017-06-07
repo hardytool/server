@@ -1,63 +1,108 @@
-doctype html
-html(lang='en')
-  head
-    title #{title} : #{verb} Series #{series ? ' - Week ' + series.serial + ' - ' + series.home.name + ' v ' + series.away.name : ''}
-  body
-    h1 #{verb} Series #{series ? ' - Week ' + series.serial + ' - ' + series.home.name + ' v ' + series.away.name : ''}
-    form(method='post' action='/series/edit')
-      if series
-        input(type='hidden' name='id' value=series.id)
-      input(type='hidden' name='season_id' value=season.id)
+extends ../components/base.pug
+
+block title
+  title #{title} : #{verb} Series #{series ? ' - Week ' + series.serial + ' - ' + series.home.name + ' v ' + series.away.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-pencil
+        span &nbsp;#{verb} Series #{series ? ' - Week ' + series.serial + ' - ' + series.home.name + ' v ' + series.away.name : ''}
       div
-        label(for='serial') Week:
-        input(id='serial' type='number' name='serial' value=(series ? series.serial : ''))
-      div
-        label(for='home_team_id') Home Team:
-        select(id='home_team_id' name='home_team_id')
-          option(value='') BYE
-          each team in teams
-            if series && team.id === series.home.id
-              option(value=team.id selected)= team.name
-            else
-              option(value=team.id)= team.name
-      div
-        label(for='home_points') Home Points:
-        input(id='home_points' type='number' name='home_points' value=(series ? series.home.points : ''))
-      div
-        label(for='away_team_id') Away Team:
-        select(id='away_team_id' name='away_team_id')
-          option(value='') BYE
-          each team in teams
-            if series && team.id === series.away.id
-              option(value=team.id selected)= team.name
-            else
-              option(value=team.id)= team.name
-      div
-        label(for='away_points') Away Points:
-        input(id='away_points' type='number' name='away_points' value=(series ? series.away.points : ''))
-      div
-        label(for='match_1_id') Match 1 ID:
-        input(id='match_1_id' type='number' name='match_1_id' value=(series ? series.match_1_id : ''))
-      div
-        label(for='match_2_id') Match 2 ID:
-        input(id='match_2_id' type='number' name='match_2_id' value=(series ? series.match_2_id : ''))
-      div
-        label(for='match_1_forfeit_home') Match 1 Forfeit?:
-        if series && series.match_1_forfeit_home
-          input(id='match_1_forfeit_home' type='checkbox' name='match_1_forfeit_home' checked)
-        else
-          input(id='match_1_forfeit_home' type='checkbox' name='match_1_forfeit_home')
-      div
-        label(for='match_2_forfeit_home') Match 2 Forfeit?:
-        if series && series.match_2_forfeit_home
-          input(id='match_2_forfeit_home' type='checkbox' name='match_2_forfeit_home' checked)
-        else
-          input(id='match_2_forfeit_home' type='checkbox' name='match_2_forfeit_home')
-      div
-        button Submit
-    if series
-      form(method='post' action='/series/delete')
-        input(type='hidden' name='season_id' value=season.id)
-        input(type='hidden' name='id' value=series.id)
-        div
-          button Delete
+        form(method='post' action='/series/edit')
+          if series
+            input(type='hidden' name='id' value=series.id)
+          input(type='hidden' name='season_id' value=season.id)
+          div.field
+            label.label(for='serial') Week:
+            p.control
+              input.input(id='serial' type='number' name='serial' placeholder='Week' min='1' value=(series ? series.serial : '') required)
+          div.field
+            label.label(for='home_team_id') Home team:
+            p.control
+              span.select
+                select(id='home_team_id' name='home_team_id')
+                  option(value='') BYE
+                  each team in teams
+                    if series && team.id === series.home.id
+                      option(value=team.id selected)= team.name
+                    else
+                      option(value=team.id)= team.name
+          div.field
+            label.label(for='home_points') Home points:
+            input.input(id='home_points' type='number' name='home_points' placeholder='Home points' min='0' max='2' value=(series ? series.home.points : '') required)
+          div.field
+            label.label(for='away_team_id') Away team:
+            p.control
+              span.select
+                select(id='away_team_id' name='away_team_id')
+                  option(value='') BYE
+                  each team in teams
+                    if series && team.id === series.away.id
+                      option(value=team.id selected)= team.name
+                    else
+                      option(value=team.id)= team.name
+          div.field
+            label.label(for='away_points') Away points:
+            input.input(id='away_points' type='number' name='away_points' placeholder='Away points' min='0' max='2' value=(series ? series.away.points : '') required)
+          div.field
+            label.label(for='match_1_id') Match 1 ID:
+            input.input(id='match_1_id' type='text' name='match_1_id' placeholder='Match 1 ID' pattern='\\d{10,}' value=(series ? series.match_1_id : ''))
+          div.field
+            label.label(for='match_2_id') Match 2 ID:
+            input.input(id='match_2_id' type='text' name='match_2_id' placeholder='Match 2 ID' pattern='\\d{10,}' value=(series ? series.match_2_id : ''))
+          div.field
+            label.label Match 1 forfeit?:
+            p.control
+              label.radio
+                if series && series.match_1_forfeit_home === true
+                  input(id='match_1_forfeit_home' value='home' type='radio' name='match_1_forfeit_home' checked)
+                  span &nbsp;Home
+                else
+                  input(id='match_1_forfeit_home' value='home' type='radio' name='match_1_forfeit_home')
+                  span &nbsp;Home
+              label.radio
+                if series && series.match_1_forfeit_home === false
+                  input(id='match_1_forfeit_home' value='away' type='radio' name='match_1_forfeit_home' checked)
+                  span &nbsp;Away
+                else
+                  input(id='match_1_forfeit_home' value='away' type='radio' name='match_1_forfeit_home')
+                  span &nbsp;Away
+              label.radio
+                if !series || series.match_1_forfeit_home === null
+                  input(id='match_1_forfeit_home' value='none' type='radio' name='match_1_forfeit_home' checked)
+                  span &nbsp;None
+                else
+                  input(id='match_1_forfeit_home' value='none' type='radio' name='match_1_forfeit_home')
+                  span &nbsp;None
+          div.field
+            label.label Match 2 forfeit?:
+            p.control
+              label.radio
+                if series && series.match_2_forfeit_home === true
+                  input(id='match_2_forfeit_home' value='home' type='radio' name='match_2_forfeit_home' checked)
+                  span &nbsp;Home
+                else
+                  input(id='match_2_forfeit_home' value='home' type='radio' name='match_2_forfeit_home')
+                  span &nbsp;Home
+              label.radio
+                if series && series.match_2_forfeit_home === false
+                  input(id='match_2_forfeit_home' value='away' type='radio' name='match_2_forfeit_home' checked)
+                  span &nbsp;Away
+                else
+                  input(id='match_2_forfeit_home' value='away' type='radio' name='match_2_forfeit_home')
+                  span &nbsp;Away
+              label.radio
+                if !series || series.match_2_forfeit_home === null
+                  input(id='match_2_forfeit_home' value='none' type='radio' name='match_2_forfeit_home' checked)
+                  span &nbsp;None
+                else
+                  input(id='match_2_forfeit_home' value='none' type='radio' name='match_2_forfeit_home')
+                  span &nbsp;None
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            p.control
+              button.button.is-danger(formaction='/series/delete') Delete

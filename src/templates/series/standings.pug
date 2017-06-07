@@ -1,25 +1,28 @@
-doctype html
-html(lang="en")
-  head
-    title #{title} : #{season.name} Standings
-  body
-    style(type='text/css').
-      .logo {
-        display: inline-block;
-        vertical-align: middle;
-        height: 1.25em;
-      }
-    h1 #{season.name} Standings
-    table
-      tr
-        th Team Name
-        th Team Logo
-        th Wins
-        th Losses
-      each standing in standings
-        tr
-          td= standing.name
-          td
-            img(class='logo' src=standing.logo)
-          td= standing.wins
-          td= standing.losses
+extends ../components/base.pug
+
+block title
+  title #{title} : #{season.name} Standings
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-list
+        span &nbsp;#{season.name} Standings
+      table.table.is-striped.is-middle-aligned
+        thead
+          tr
+            th Team Name
+            th Team Logo
+            th Wins
+            th Losses
+        tbody
+          each standing in standings
+            tr
+              td= standing.name
+              td
+                figure.image.is-32x32.hide-overflow
+                  img(class='logo' src=standing.logo)
+              td= standing.wins
+              td= standing.losses

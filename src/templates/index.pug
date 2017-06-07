@@ -1,189 +1,156 @@
-doctype html
-html(lang='en')
-  head
-    title SEAL: Sunday Evening Amateur League
-    link(rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.css')
-    link(rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
-    link(rel='icon' type='image/png' href='https://raw.githubusercontent.com/seal-dota/seal-dota.github.io/master/seal.png')
-  body.layout-default
-    section.hero.has-text-centered
-      div.hero-head.hero.is-info
-        div.container
-          nav.nav
-            div.nav-left
-              a.nav-item(href='/')
+extends components/base.pug
+
+block title
+  title SEAL: Sunday Evening Amateur League
+
+block append header
+  div.hero-body.has-text-centered
+    div.container
+      div.columns
+        div.column
+          img(src='https://raw.githubusercontent.com/seal-dota/seal-dota.github.io/master/seal.png')
+
+block contentFull
+  section.section
+    div.container
+      div.columns
+        div.column
+          div.level
+            div.level-item
+              h5.title.is-5
                 span.icon
-                  i.fa.fa-home
-              if user && user.isAdmin
-                a.nav-item(href='/seasons') Seasons
-            div.nav-right
-              if user
-                a.nav-item(href='/')= user.displayName
-                a.nav-item(href='/')
-                  img(src=user.avatar)
-                a.nav-item(href='/logout') Log out
-              else
-                a.nav-item(href='/auth/steam') Log in
-      div.hero-body
-        div.container
-          div.columns
-            div.column
-              img(src='https://raw.githubusercontent.com/seal-dota/seal-dota.github.io/master/seal.png')
-    section.section
-      div.container
-        div.columns
-          div.column
-            div.level
-              div.level-item
-                h5.title.is-5
-                  span.icon
-                    i.fa.fa-info-circle
-                  |
-                  | General
-                  |
-                  strong Info
-            div.level
-              div.level-item
-                ul
-                  li Sundays 7 PM Pacific Time
-                  li 8 week regular season
-                  li Swiss pairings
-                  li
-                    a(href='https://github.com/seal-dota/rules') League Rules
-          div.column
-            div.level
-              div.level-item
-                h5.title.is-5
-                  span.icon
-                    i.fa.fa-users
-                  |
-                  | Player
-                  |
-                  strong Culture
-            div.level
-              div.level-item
-                ul
-                  li Make new friends
-                  li Get flamed by new friends
-                  li Be a part of the memes
-                  li bE a PaRt Of tHE mEMeS
-          div.column
-            div.level
-              div.level-item
-                h5.title.is-5
-                  span.icon
-                    i.fa.fa-trophy
-                  |
-                  | SEAL
-                  |
-                  strong DOTA
-            div.level
-              div.level-item
-                ul
-                  li Zero entry fee
-                  li Zero prizes
-                  li Zero skill
-                  li Zero reasons to join!
-    section.section
-      div.container
-        h3.title.is-3
-          span.icon.is-medium
-            i.fa.fa-empire
-          |
-          | League
-          |
-          strong Admins
-        div.columns
-          div.column
-            div.box
-              article.media
-                div.media-left
-                  figure.image.is-64x64
+                  i.fa.fa-info-circle
+                |
+                | General
+                |
+                strong Info
+          div.level
+            div.level-item
+              ul
+                li Sundays 7 PM Pacific Time
+                li 8 week regular season
+                li Swiss pairings
+                li
+                  a(href='https://github.com/seal-dota/rules') League Rules
+        div.column
+          div.level
+            div.level-item
+              h5.title.is-5
+                span.icon
+                  i.fa.fa-users
+                |
+                | Player
+                |
+                strong Culture
+          div.level
+            div.level-item
+              ul
+                li Make new friends
+                li Get flamed by new friends
+                li Be a part of the memes
+                li bE a PaRt Of tHE mEMeS
+        div.column
+          div.level
+            div.level-item
+              h5.title.is-5
+                span.icon
+                  i.fa.fa-trophy
+                |
+                | SEAL
+                |
+                strong DOTA
+          div.level
+            div.level-item
+              ul
+                li Zero entry fee
+                li Zero prizes
+                li Zero skill
+                li Zero reasons to join!
+  section.section
+    div.container
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-empire
+        |
+        | League
+        |
+        strong Admins
+      div.columns
+        div.column
+          div.box
+            article.media
+              div.media-left
+                figure.image.is-64x64
+                  a(href='https://steamcommunity.com/profiles/76561198055842701' title='🌲🍞\'s Steam Profile')
+                    img(src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/8e/8e58931e6ebdcba904a645f318d892a5fc9e54d2_full.jpg')
+              div.media-content
+                div.content
+                  p
                     a(href='https://steamcommunity.com/profiles/76561198055842701' title='🌲🍞\'s Steam Profile')
-                      img(src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/8e/8e58931e6ebdcba904a645f318d892a5fc9e54d2_full.jpg')
-                div.media-content
-                  div.content
-                    p
-                      a(href='https://steamcommunity.com/profiles/76561198055842701' title='🌲🍞\'s Steam Profile')
-                        strong Treebeard
-                      small
-                        |
-                        |
-                        strike Benevolent
-                        |
-                        | Dictator
-                      br
-                      | The saltiest admin you'll ever meet, Tree is the notorious authoritarian who operated the USYee discord before staging a mutiny against RD2L.
-        div.columns
-          div.column
-            div.box
-              article.media
-                div.media-left
-                  figure.image.is-64x64
+                      strong Treebeard
+                    small
+                      |
+                      |
+                      strike Benevolent
+                      |
+                      | Dictator
+                    br
+                    | The saltiest admin you'll ever meet, Tree is the notorious authoritarian who operated the USYee discord before staging a mutiny against RD2L.
+      div.columns
+        div.column
+          div.box
+            article.media
+              div.media-left
+                figure.image.is-64x64
+                  a(href='https://steamcommunity.com/profiles/76561198024078776' title='Transosaurus X\'s Steam Profile')
+                    img(src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/23/23ed7ec6cb33ae16194565aa0b94abbfe5466f61_full.jpg')
+              div.media-content
+                div.content
+                  p
                     a(href='https://steamcommunity.com/profiles/76561198024078776' title='Transosaurus X\'s Steam Profile')
-                      img(src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/23/23ed7ec6cb33ae16194565aa0b94abbfe5466f61_full.jpg')
-                div.media-content
-                  div.content
-                    p
-                      a(href='https://steamcommunity.com/profiles/76561198024078776' title='Transosaurus X\'s Steam Profile')
-                        strong Tyrannosaurus X
-                      small
-                        |
-                        | Sentient Banhammer
-                      br
-                      | TX previously ran the RD2L PST-SUN Discord before
+                      strong Tyrannosaurus X
+                    small
                       |
-                      strike auctioning it off
-                      |
-                      | appointing a new admin and jumping ship. Believes feeding and making space are the same thing.
-        div.columns
-          div.column
-            div.box
-              article.media
-                div.media-left
-                  figure.image.is-64x64
+                      | Sentient Banhammer
+                    br
+                    | TX previously ran the RD2L PST-SUN Discord before
+                    |
+                    strike auctioning it off
+                    |
+                    | appointing a new admin and jumping ship. Believes feeding and making space are the same thing.
+      div.columns
+        div.column
+          div.box
+            article.media
+              div.media-left
+                figure.image.is-64x64
+                  a(href='https://steamcommunity.com/profiles/76561198029509030' title='h!\'s Steam Profile')
+                    img(src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/64/64008e9fada9ef878e021f6dcef99a85eabc37cc_full.jpg')
+              div.media-content
+                div.content
+                  p
                     a(href='https://steamcommunity.com/profiles/76561198029509030' title='h!\'s Steam Profile')
-                      img(src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/64/64008e9fada9ef878e021f6dcef99a85eabc37cc_full.jpg')
-                div.media-content
-                  div.content
-                    p
-                      a(href='https://steamcommunity.com/profiles/76561198029509030' title='h!\'s Steam Profile')
-                        strong h!
-                      small
-                        |
-                        | Builds Treads on Sand King
-                      br
-                      | The diversity hire of the admin team, h! got suckered into trying to herd cats and run the draft so Treebeard could stream what he calls "interviews."
-        div.columns
-          div.column
-            div.box
-              article.media
-                div.media-left
-                  figure.image.is-64x64
+                      strong h!
+                    small
+                      |
+                      | Builds Treads on Sand King
+                    br
+                    | The diversity hire of the admin team, h! got suckered into trying to herd cats and run the draft so Treebeard could stream what he calls "interviews."
+      div.columns
+        div.column
+          div.box
+            article.media
+              div.media-left
+                figure.image.is-64x64
+                  a(href='https://steamcommunity.com/profiles/76561198025174405' title='Danny\'s Steam Profile')
+                    img(src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fa/facd65e8000505d06d78e01c756193974c6bc648_full.jpg')
+              div.media-content
+                div.content
+                  p
                     a(href='https://steamcommunity.com/profiles/76561198025174405' title='Danny\'s Steam Profile')
-                      img(src='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fa/facd65e8000505d06d78e01c756193974c6bc648_full.jpg')
-                div.media-content
-                  div.content
-                    p
-                      a(href='https://steamcommunity.com/profiles/76561198025174405' title='Danny\'s Steam Profile')
-                        strong Danny
-                      small
-                        |
-                        | 2k player AMA
-                      br
-                      | Probably one of the worst players in the league, and definitely the worst admin. If the website is down, it's probably his fault.
-    footer.footer.hero.is-info
-      div.container
-        div.columns
-          div.column
-            h5.title.is-5 Contact
-            ul
-              li
-                a(href='mailto:admin@seal.gg') Email
-              li
-                a(href='https://www.twitch.tv/treebearddoto') Watch
-          div.column
-            h5.title.is-5 Resources
-            ul
-              li
-                a(href='http://steamcommunity.com/sharedfiles/filedetails/?id=917953091') Workshop Ticket
+                      strong Danny
+                    small
+                      |
+                      | 2k player AMA
+                    br
+                    | Probably one of the worst players in the league, and definitely the worst admin. If the website is down, it's probably his fault.

@@ -1,0 +1,85 @@
+doctype html
+html(lang='en')
+  block headFull
+    head
+      block head
+        block title
+          title= title
+        link(rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.css')
+        link(rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
+        link(rel='icon' type='image/png' href='https://raw.githubusercontent.com/seal-dota/seal-dota.github.io/master/seal.png')
+        style(type='text/css').
+          figure.hide-overflow {
+            overflow: hidden;
+          }
+          .table.is-middle-aligned th,
+          .table.is-middle-aligned td{
+            vertical-align: middle;
+          }
+  block bodyFull
+    body.layout-default
+      block body
+        block header
+          section.hero.has-text-centered
+            div.hero-head
+              div.container
+                nav.nav
+                  div.nav-left
+                    a.nav-item(href='/')
+                      span.icon
+                        i.fa.fa-home
+                    a.nav-item(href='/seasons') Seasons
+                    a.nav-item(href='/standings') Standings
+                    a.nav-item(href='/matchups') Matchups
+                  div.nav-right
+                    if user
+                      a.nav-item(href='/')= user.displayName
+                      a.nav-item(href='/')
+                        img(src=user.avatar)
+                      a.nav-item(href='/logout') Log out
+                    else
+                      a.nav-item(href='/auth/steam')
+                        span.icon.is-small
+                          i.fa.fa-steam
+                        span &nbsp;Log in
+        block contentFull
+          section.section
+            div.container
+              block content
+        block footer
+          footer.footer
+            div.container
+              div.columns
+                div.column
+                  h5.title.is-5 Contact
+                  ul
+                    li
+                      a(href='mailto:admin@seal.gg') Email
+                    li
+                      a(href='https://www.twitch.tv/treebearddoto') Watch
+                div.column
+                  h5.title.is-5 Resources
+                  ul
+                    li
+                      a(href='http://steamcommunity.com/sharedfiles/filedetails/?id=917953091') Workshop Ticket
+                div.column
+                  h5.title.is-5 Built using
+                  ul
+                    li
+                      a(href='http://bulma.io/') Bulma
+                    li
+                      a(href='http://expressjs.com/') Express
+                    li
+                      a(href='http://passportjs.org/') Passport
+                    li
+                      a(href='https://github.com/seishun/node-steam') Steam for Node.js
+                    li
+                      a(href='https://github.com/Arcana/node-dota2') node-dota2
+              div.columns
+                div.column.has-text-centered
+                  p
+                    small.
+                      All product and company names are trademarks™ or
+                      registered® trademarks of their respective holders. Use of
+                      them does not imply any affiliation with or endorsement by
+                      them.

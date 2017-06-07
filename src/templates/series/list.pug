@@ -1,72 +1,79 @@
-doctype html
-html(lang="en")
-  head
-    title #{title} : #{season.name} Series List
-  body
-    style(type='text/css').
-      .logo {
-        display: inline-block;
-        vertical-align: middle;
-        height: 1.25em;
-      }
-    h1 #{season.name} Series
-    table
-      tr
-        th Week
-        th Home Team Name
-        th Home Team Logo
-        th Home Team Points
-        th Away Team Points
-        th Away Team Logo
-        th Away Team Name
-        th Match 1
-        th Match 2
-        th Forfeit Match 1?
-        th Forfeit Match 2?
-        th Edit
-      each _series in series
-        tr
-          td= _series.serial
-          td= _series.home.name
-          td
-            img(class='logo' src=_series.home.logo)
-          td= _series.home.points
-          if _series.away
-            td= _series.away.points
-            td
-              img(class='logo' src=_series.away.logo)
-            td= _series.away.name
-          else
-            td 0
-            td
-            td BYE
-          if _series.match_1_id
-            td
-              a(href='https://www.dotabuff.com/matches/' + _series.match_id_1) Dotabuff
-              span /
-              a(href='https://www.opendota.com/matches/' + _series.match_id_1) OpenDota
-          else
-            td
-          if _series.match_2_id
-            td
-              a(href='https://www.dotabuff.com/matches/' + _series.match_id_2) Dotabuff
-              span /
-              a(href='https://www.opendota.com/matches/' + _series.match_id_2) OpenDota
-          else
-            td
-          if _series.match_1_forfeit_home == true
-            td Home
-          else if _series.match_1_forfeit_home == false
-              td Away
-          else
-            td
-          if _series.match_2_forfeit_home == true
-            td Home
-          else if _series.match_2_forfeit_home == false
-              td Away
-          else
-            td
-          td
-            a(href='/seasons/' + season.vanity + '/series/edit/' + _series.vanity) edit
-    a(href='/seasons/' + season.vanity + '/series/create')
-      button Add series
+extends ../components/base.pug
+
+block title
+  title #{title} : #{season.name} Series List
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-list
+        span &nbsp;#{season.name} Series
+      table.table.is-striped.is-middle-aligned
+        thead
+          tr
+            th Week
+            th Home Team Name
+            th Home Team Logo
+            th Home Team Points
+            th Away Team Points
+            th Away Team Logo
+            th Away Team Name
+            th Match 1
+            th Match 2
+            th Forfeit Match 1?
+            th Forfeit Match 2?
+            if user && user.isAdmin
+              th Edit
+        tbody
+          each _series in series
+            tr
+              td= _series.serial
+              td= _series.home.name
+              td
+                figure.image.is-32x32.hide-overflow
+                  img(class='logo' src=_series.home.logo)
+              td= _series.home.points
+              if _series.away
+                td= _series.away.points
+                td
+                  figure.image.is-32x32.hide-overflow
+                    img(class='logo' src=_series.away.logo)
+                td= _series.away.name
+              else
+                td 0
+                td BYE
+                td BYE
+              if _series.match_1_id
+                td
+                  a(href='https://www.dotabuff.com/matches/' + _series.match_id_1) Dotabuff
+                  span /
+                  a(href='https://www.opendota.com/matches/' + _series.match_id_1) OpenDota
+              else
+                td N/A
+              if _series.match_2_id
+                td
+                  a(href='https://www.dotabuff.com/matches/' + _series.match_id_2) Dotabuff
+                  span /
+                  a(href='https://www.opendota.com/matches/' + _series.match_id_2) OpenDota
+              else
+                td N/A
+              if _series.match_1_forfeit_home == true
+                td Home
+              else if _series.match_1_forfeit_home == false
+                  td Away
+              else
+                td None
+              if _series.match_2_forfeit_home == true
+                td Home
+              else if _series.match_2_forfeit_home == false
+                  td Away
+              else
+                td None
+              if user && user.isAdmin
+                td
+                  a(href='/seasons/' + season.vanity + '/series/edit/' + _series.vanity) edit
+      if user && user.isAdmin
+        a(href='/seasons/' + season.vanity + '/series/create')
+          button.button.is-primary Add series

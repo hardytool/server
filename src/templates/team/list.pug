@@ -1,28 +1,34 @@
-doctype html
-html(lang="en")
-  head
-    title #{title} : #{season ? season.name : ''} Team List
-  body
-    style(type='text/css').
-      .logo {
-        display: inline-block;
-        vertical-align: middle;
-        height: 1.25em;
-      }
-    h1 #{season ? season.name : ''} Teams
-    table
-      tr
-        th Name
-        th Logo
-        th Seed
-        th Edit
-      each team in teams
-        tr
-          td= team.name
-          td
-            img(class='logo' src=team.logo)
-          td= team.seed
-          td
-            a(href='/seasons/' + season.vanity + '/teams/edit/' + team.vanity) edit
-    a(href='/seasons/' + season.vanity + '/teams/create')
-      button Add team
+extends ../components/base.pug
+
+block title
+  title #{title} : #{season ? season.name : ''} Team List
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-list
+        span &nbsp;#{season ? season.name : ''} Teams
+      table.table.is-striped.is-middle-aligned
+        thead
+          tr
+            th Name
+            th Logo
+            th Seed
+            if user && user.isAdmin
+              th Edit
+        tbody
+          each team in teams
+            tr
+              td= team.name
+              td
+                figure.image.is-32x32.hide-overflow
+                  img(class='logo' src=team.logo)
+              td= team.seed
+              if user && user.isAdmin
+                td
+                  a(href='/seasons/' + season.vanity + '/teams/edit/' + team.vanity) edit
+      if user && user.isAdmin
+        a(href='/seasons/' + season.vanity + '/teams/create')
+          button.button.is-primary Add team

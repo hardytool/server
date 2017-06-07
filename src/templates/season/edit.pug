@@ -1,22 +1,41 @@
-doctype html
-html(lang='en')
-  head
-    title #{title} : #{verb} Season #{season ? season.number : ''}
-  body
-    h1 #{verb} Season #{season ? season.number : ''}
-    form(method='post' action='/seasons/edit')
-      if season
-        input(type='hidden' name='id' value=season.id)
+extends ../components/base.pug
+
+block title
+  title #{title} : #{verb} Season #{season ? season.number : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-pencil
+        span &nbsp;#{verb} Season #{season ? season.number : ''}
       div
-        label(for='number') Number:
-        input(id='number' type='number' name='number' value=(season ? season.number : ''))
-      div
-        label(for='name') Name:
-        input(id='name' type='text' name='name' value=(season ? season.name : ''))
-      div
-        button Submit
-    if season
-      form(method='post' action='/seasons/delete/')
-        input(type='hidden' name='id' value=season.id)
-        div
-          button Delete
+        form(method='post' action='/seasons/edit')
+          if season
+            input(type='hidden' name='id' value=season.id)
+          div.field
+            label.label(for='number') Number:
+            p.control
+              input.input(id='number' type='number' name='number' placeholder='Number'  min='1' value=(season ? season.number : '') required)
+          div.field
+            label.label(for='name') Name:
+            p.control
+              input.input(id='name' type='text' name='name' placeholder='Name' value=(season ? season.name : '') required)
+          div.field
+            label.label(for='current_serial') Current week:
+            p.control
+              input.input(id='current_serial' type='number' name='current_serial' placeholder='Current week' min='1' value=(season ? season.current_serial : '') required)
+          div.field
+            p.control
+              label.checkbox
+                if season && season.active
+                  input(id='active' type='checkbox' name='active' checked)
+                else
+                  input(id='active' type='checkbox' name='active')
+                span &nbsp;Is active season?
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            p.control
+              button.button.is-danger(formaction='/seasons/delete') Delete

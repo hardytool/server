@@ -2,11 +2,6 @@ var emojify = require('../lib/emojify')
 var shortid = require('shortid')
 
 function list(templates, season, team, req, res) {
-  if (!req.user) {
-    res.send(403)
-    return
-  }
-
   var season_id = emojify.unemojify(req.params.season_id)
 
   season.getSeason(season_id).then(season => {
@@ -18,6 +13,7 @@ function list(templates, season, team, req, res) {
         return team
       })
       var html = templates.team.list({
+        user: req.user,
         season: season,
         teams: teams
       })
@@ -40,6 +36,7 @@ function create(templates, season, req, res) {
 
   season.getSeason(season_id).then(season => {
     var html = templates.team.edit({
+      user: req.user,
       verb: 'Create',
       season: season
     })
@@ -64,6 +61,7 @@ function edit(templates, season, team, req, res) {
     return team.getTeam(id).then(team => {
       team.vanity = emojify.emojify(team.id)
       var html = templates.team.edit({
+        user: req.user,
         verb: 'Edit',
         team: team,
         season: season

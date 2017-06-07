@@ -1,12 +1,5 @@
 function home(templates, auth, req, res) {
-  var user = null
-  if (req.user) {
-    user = req.user.profile
-    user.avatar = auth.getAvatar(user)
-    user.isAdmin = req.user.isAdmin
-  }
-
-  var html = templates.index({ user: user })
+  var html = templates.index({ user: req.user })
 
   res.send(html)
 }

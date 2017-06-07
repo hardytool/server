@@ -14,13 +14,13 @@ function compile(dir, defaults) {
     } else {
       return {
         name: path.basename(file, path.extname(file)),
-        contents: fs.readFileSync(f, 'utf8')
+        path: f
       }
     }
   }).reduce((acc, val) => {
     if (typeof(val.name) === 'string'
-      && typeof(val.contents) === 'string') {
-      var template = pug.compile(val.contents)
+      && typeof(val.path) === 'string') {
+      var template = pug.compileFile(val.path)
       acc[val.name] = function(locals) {
         var all = Object.assign({}, defaults, locals)
         return template(all)
@@ -33,5 +33,6 @@ function compile(dir, defaults) {
 }
 
 module.exports = (dir, defaults) => {
+  console.dir(compile(dir, defaults))
   return compile(dir, defaults)
 }

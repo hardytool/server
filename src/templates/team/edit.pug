@@ -1,27 +1,34 @@
-doctype html
-html(lang='en')
-  head
-    title #{title} : #{verb} Team - #{season.name} #{team ? ' - ' + team.name : ''}
-  body
-    h1 #{verb} Team - #{season.name} #{team ? ' - ' + team.name : ''}
-    form(method='post' action='/teams/edit')
-      if team
-        input(type='hidden' name='id' value=team.id)
-      input(type='hidden' name='season_id' value=season.id)
+extends ../components/base.pug
+
+block title
+  title #{title} : #{verb} Team - #{season.name} #{team ? ' - ' + team.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-pencil
+        span &nbsp;#{verb} Team - #{season.name} #{team ? ' - ' + team.name : ''}
       div
-        label(for='name') Name:
-        input(id='name' type='text' name='name' value=(team ? team.name : ''))
-      div
-        label(for='logo') Logo:
-        input(id='logo' type='text' name='logo' value=(team ? team.logo : ''))
-      div
-        label(for='seed') Seed:
-        input(id='seed' type='number' name='seed' value=(team ? team.seed : ''))
-      div
-        button Submit
-    if team
-      form(method='post' action='/teams/delete')
-        input(type='hidden' name='season_id' value=season.id)
-        input(type='hidden' name='id' value=team.id)
-        div
-          button Delete
+        form(method='post' action='/teams/edit')
+          if team
+            input(type='hidden' name='id' value=team.id)
+          input(type='hidden' name='season_id' value=season.id)
+          div.field
+            label.label(for='name') Name:
+            p.control
+              input.input(id='name' type='text' name='name' placeholder='Name' value=(team ? team.name : '') required)
+          div.field
+            label.label(for='logo') Logo:
+            p.control
+              input.input(id='logo' type='url' name='logo' placeholder='Logo' value=(team ? team.logo : ''))
+          div.field
+            label.label(for='seed') Seed:
+            p.control
+              input.input(id='seed' type='number' name='seed' placeholder='Seed' min='0' value=(team ? team.seed : '') required)
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            p.control
+              button.button.is-danger(formaction='/teams/delete') Delete

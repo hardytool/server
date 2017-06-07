@@ -5,7 +5,9 @@ function getSeasons(db) {
   SELECT
     id,
     number,
-    name
+    name,
+    active,
+    current_serial
   FROM
     season
   `
@@ -19,11 +21,31 @@ function getSeason(db, id) {
   SELECT
     id,
     number,
-    name
+    name,
+    active,
+    current_serial
   FROM
     season
   WHERE
     id = ${id}
+  `
+  return db.query(select).then(result => {
+    return result.rows[0]
+  })
+}
+
+function getActiveSeason(db) {
+  var select = sql`
+  SELECT
+    id,
+    number,
+    name,
+    active,
+    current_serial
+  FROM
+    season
+  WHERE
+    active
   `
   return db.query(select).then(result => {
     return result.rows[0]
@@ -36,17 +58,27 @@ function saveSeason(db, season) {
     season (
       id,
       number,
-      name
+      name,
+      active,
+      current_serial
     ) VALUES (
       ${season.id},
       ${season.number},
-      ${season.name}
+      ${season.name},
+      ${season.active},
+      ${season.current_serial}
     ) ON CONFLICT (
-      number
+      id
     ) DO UPDATE SET (
-      name
+      number,
+      name,
+      active,
+      current_serial
     ) = (
-      ${season.name}
+      ${season.number},
+      ${season.name},
+      ${season.active},
+      ${season.current_serial}
     )
   `
   return db.query(upsert)
@@ -66,6 +98,7 @@ module.exports = db => {
   return {
     getSeasons: getSeasons.bind(null, db),
     getSeason: getSeason.bind(null, db),
+    getActiveSeason: getActiveSeason.bind(null, db),
     saveSeason: saveSeason.bind(null, db),
     deleteSeason: deleteSeason.bind(null, db)
   }

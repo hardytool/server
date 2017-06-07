@@ -53,6 +53,14 @@ function getSeries(db, criteria) {
         series.id = ${criteria.series_id}
       `])
     }
+    select = sql.join([select, sql`
+    ORDER BY
+      series.serial ASC,
+      (series.home_points + series.away_points) DESC,
+      home_team.name ASC,
+      away_team.name ASC,
+      series.home_points DESC
+    `])
   }
   return db.query(select).then(result => {
     return result.rows
@@ -125,18 +133,18 @@ function deleteSeries(db, id) {
   return db.query(query)
 }
 
-function getNextSerial(db, season_id, serial) {
+function getCurrentSerial(db, season_id, serial) {
   return Promise.resolve(serial).then(serial => {
     if (serial) {
       return Promise.resolve(serial)
     } else {
       var query = sql`
       SELECT
-        COALESCE(MAX(serial), 0) + 1 as serial
+        current_serial as serial
       FROM
-        series
+        season
       WHERE
-        season_id = ${season_id}
+        id = ${season_id}
       `
       return db.query(query).then(result => {
         return result.rows[0].serial
@@ -146,7 +154,7 @@ function getNextSerial(db, season_id, serial) {
 }
 
 function getStandings(db, season_id, serial) {
-  return getNextSerial(db, season_id, serial).then(serial => {
+  return getCurrentSerial(db, season_id, serial).then(serial => {
     var query = sql`
     SELECT
       team.id,
@@ -169,7 +177,7 @@ function getStandings(db, season_id, serial) {
         FROM
           series
         WHERE
-          serial < ${serial}
+          serial < ${serial} + 1
         UNION ALL
         SELECT
           season_id,
@@ -179,10 +187,12 @@ function getStandings(db, season_id, serial) {
         FROM
           series
         WHERE
-          serial < ${serial}
+          serial < ${serial} + 1
       ) standings
       WHERE
         season_id = ${season_id}
+      AND
+        team_id IS NOT NULL
       GROUP BY
         team_id
     ) standings
@@ -206,7 +216,7 @@ module.exports = db => {
     getSeries: getSeries.bind(null, db),
     saveSeries: saveSeries.bind(null, db),
     deleteSeries: deleteSeries.bind(null, db),
-    getNextSerial: getNextSerial.bind(null, db),
+    getCurrentSerial: getCurrentSerial.bind(null, db),
     getStandings: getStandings.bind(null, db)
   }
 }

@@ -1,20 +1,22 @@
-doctype html
-html(lang="en")
-  head
-    title #{title} : #{season.name} Week #{serial} Matchups
-  body
-    style(type='text/css').
-      .logo {
-        display: inline-block;
-        vertical-align: middle;
-        height: 1.25em;
-      }
-    h1 #{season.name} Week #{serial} Matchups
-    table
-      tr
-        th Home Team
-        th Away Team
-      each matchup in matchups
-        tr
-          td= matchup.home.name
-          td= matchup.away.name
+extends ../components/base.pug
+
+block title
+  title #{title} : #{season.name} Week #{serial} Matchups
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-list
+        span &nbsp;#{season.name} Week #{serial} Matchups
+      table.table.is-striped.is-middle-aligned
+        thead
+          tr
+            th Home Team
+            th Away Team
+        tbody
+          each matchup in matchups
+            tr
+              td= matchup.home.name
+              td= matchup.away.name
