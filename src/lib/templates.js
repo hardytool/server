@@ -33,6 +33,5 @@ function compile(dir, defaults) {
 }
 
 module.exports = (dir, defaults) => {
-  console.dir(compile(dir, defaults))
   return compile(dir, defaults)
 }
