@@ -2,7 +2,7 @@
 This is SEAL's backend and website.
 
 ## Dependencies
-### Run locally
+### Develop and run locally
 * nodejs
 * npm
 * postgres
