@@ -31,8 +31,7 @@ function config(env) {
       password: env.STEAM_BOT_PASSWORD || false
     },
     templates: {
-      title: 'SEAL DotA',
-      host: (env.HOST || 'localhost') + (env.PORT ? ':' + env.PORT : ':80')
+      title: 'SEAL DotA'
     }
   }
 }
