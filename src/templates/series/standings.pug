@@ -13,14 +13,16 @@ block content
       table.table.is-striped.is-middle-aligned
         thead
           tr
-            th Team Name
-            th Team Logo
+            th Name (Captain)
+            th Logo
             th Wins
             th Losses
         tbody
           each standing in standings
             tr
-              td= standing.name
+              td
+                a(href='/seasons/' + season.vanity + '/teams/' + standing.vanity)= standing.name
+                span= standing.captain_name ? ' (' + standing.captain_name + ')' : ''
               td
                 figure.image.is-32x32.hide-overflow
                   img(src=standing.logo)

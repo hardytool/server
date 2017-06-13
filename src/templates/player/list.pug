@@ -19,9 +19,10 @@ block content
             th Party MMR
             th Adjusted MMR
             th Dotabuff / Opendota
-            th Will Captain?
-            th Captain Approved
-            th Vouched?
+            if user && user.isAdmin
+              th Will Captain?
+              th Captain Approved
+            th Captain?
             if user && user.isAdmin
               th Edit
         tbody
@@ -41,18 +42,16 @@ block content
                   |/
                   |
                 a(href='https://www.opendota.com/players/' + player.steam_id) OpenDota
-              td
-                if player.will_captain
-                  span Yes
-                else
-                  span No
+              if user && user.isAdmin
+                td
+                  span= player.will_captain.charAt(0).toUpperCase() + player.will_captain.slice(1)
+                td
+                  if player.captain_approved
+                    span Yes
+                  else
+                    span No
               td
                 if player.captain_approved
-                  span Yes
-                else
-                  span No
-              td
-                if player.is_vouched
                   span Yes
                 else
                   span No

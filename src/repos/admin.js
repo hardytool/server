@@ -10,7 +10,7 @@ function isAdmin(db, id) {
     steam_id = ${id.toString()}
   `
   return db.query(select).then(result => {
-    return result.rows[0]
+    return result.rows[0].is_admin
   })
 }
 

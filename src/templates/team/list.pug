@@ -13,7 +13,7 @@ block content
       table.table.is-striped.is-middle-aligned
         thead
           tr
-            th Name
+            th Name (Captain)
             th Logo
             th Seed
             if user && user.isAdmin
@@ -21,7 +21,9 @@ block content
         tbody
           each team in teams
             tr
-              td= team.name
+              td
+                a(href='/seasons/' + season.vanity + '/teams/' + team.vanity)= team.name
+                span= team.captain_name ? ' (' + team.captain_name + ')' : ''
               td
                 figure.image.is-32x32.hide-overflow
                   img(src=team.logo)

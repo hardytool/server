@@ -87,7 +87,8 @@ function post(team, req, res) {
   t.id = id
 
   team.saveTeam(t).then(() => {
-    res.redirect('/seasons/' + season_vanity + '/teams')
+    var team_vanity = emojify.emojify(t.id)
+    res.redirect('/seasons/' + season_vanity + '/teams/' + team_vanity)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)

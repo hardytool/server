@@ -30,7 +30,8 @@ block content
           each _series in series
             tr
               td= _series.serial
-              td= _series.home.name
+              td
+                a(href='/seasons/' + season.vanity + '/teams/' + _series.home.vanity)= _series.home.name
               td
                 figure.image.is-32x32.hide-overflow
                   img(src=_series.home.logo)
@@ -40,7 +41,8 @@ block content
                 td
                   figure.image.is-32x32.hide-overflow
                     img(src=_series.away.logo)
-                td= _series.away.name
+                td
+                  a(href='/seasons/' + season.vanity + '/teams/' + _series.away.vanity)= _series.away.name
               else
                 td 0
                 td BYE

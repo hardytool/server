@@ -54,14 +54,6 @@ block content
                 else
                   input(id='captain_approved' type='checkbox' name='captain_approved')
                 span &nbsp;Captain approved?
-          div.field
-            p.control
-              label.checkbox(for='is_vouched')
-                if player && player.is_vouched
-                  input(id='is_vouched' type='checkbox' name='is_vouched' checked)
-                else
-                  input(id='is_vouched' type='checkbox' name='is_vouched')
-                span &nbsp;Is vouched?
           div.field.is-grouped
             p.control
               button.button.is-primary Submit

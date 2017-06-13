@@ -34,13 +34,14 @@ block content
                   a(href='https://www.dotabuff.com/players/' + captain.steam_id) Dotabuff
                   | &nbsp;/&nbsp;
                   a(href='https://www.opendota.com/players/' + captain.steam_id) OpenDota
-              nav.level.is-mobile
-                div.level-left
-                  form.level-item
-                    input(type='hidden' name='season_id' value=season.id)
-                    input(type='hidden' name='team_id' value=team.id)
-                    input(type='hidden' name='id' value=captain.id)
-                    button.button.is-danger(formaction='/roster/delete' formmethod='post') Remove
+              if user && user.isAdmin
+                nav.level.is-mobile
+                  div.level-left
+                    form.level-item
+                      input(type='hidden' name='season_id' value=season.id)
+                      input(type='hidden' name='team_id' value=team.id)
+                      input(type='hidden' name='id' value=captain.id)
+                      button.button.is-danger(formaction='/roster/delete' formmethod='post') Remove
       else
         p None
   div.columns
@@ -83,5 +84,10 @@ block content
                     input(type='hidden' name='id' value=player.id)
                     button.button.is-danger(formaction='/roster/delete' formmethod='post') Remove
       if user && user.isAdmin
-        a(href='/seasons/' + season.vanity + '/teams/' + team.vanity + '/roster/add')
-          button.button.is-primary Add player
+        div.field.is-grouped
+          p.control
+            a(href='/seasons/' + season.vanity + '/teams/' + team.vanity + '/add')
+              button.button.is-primary Add player
+          p.control
+            a(href='/seasons/' + season.vanity + '/teams/' + team.vanity + '/edit')
+              button.button.is-primary Edit team

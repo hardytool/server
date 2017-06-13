@@ -82,7 +82,7 @@ function post(team_player, req, res) {
 
   team_player.addPlayerToTeam(team_id, p.player_id, p.is_captain).then(() => {
     res.redirect(
-      '/seasons/' + season_vanity + '/teams/' + team_vanity + '/roster')
+      '/seasons/' + season_vanity + '/teams/' + team_vanity)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -103,7 +103,7 @@ function remove(team_player, req, res) {
 
   team_player.removePlayerFromTeam(team_id, player_id).then(() => {
     res.redirect(
-      '/seasons/' + season_vanity + '/teams/' + team_vanity + '/roster')
+      '/seasons/' + season_vanity + '/teams/' + team_vanity)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -113,11 +113,11 @@ function remove(team_player, req, res) {
 module.exports = (templates, season, team, team_player) => {
   return {
     list: {
-      route: '/seasons/:season_id/teams/:team_id/roster',
+      route: '/seasons/:season_id/teams/:team_id',
       handler: list.bind(null, templates, season, team, team_player)
     },
     add: {
-      route: '/seasons/:season_id/teams/:team_id/roster/add',
+      route: '/seasons/:season_id/teams/:team_id/add',
       handler: add.bind(null, templates, season, team, team_player)
     },
     post: {

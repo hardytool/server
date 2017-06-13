@@ -5,7 +5,7 @@ function list(templates, season, player, req, res) {
   var season_id = emojify.unemojify(req.params.season_id)
   season.getSeason(season_id).then(season => {
     season.vanity = emojify.emojify(season.id)
-    return player.getPlayers(season_id).then(players => {
+    return player.getPlayers({season_id: season_id}).then(players => {
       players = players.map(player => {
         player.vanity = emojify.emojify(player.id)
         player.season_vanity = emojify.emojify(player.season_id)
@@ -91,7 +91,6 @@ function post(player, req, res) {
   var p = req.body
   p.id = id
   p.captain_approved = p.captain_approved === 'on'
-  p.captain_approved = p.is_vouched === 'on'
 
   player.savePlayer(p).then(() => {
     res.redirect('/seasons/' + season_vanity + '/players')
