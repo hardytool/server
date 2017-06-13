@@ -39,7 +39,7 @@ block content
                 a(href='/seasons/' + season.vanity + '/matchups') matchups
               if user && user.isAdmin
                 td
-                  a(href='/seasons/edit/' + season.vanity) edit
+                  a(href='/seasons/' + season.vanity + '/edit') edit
       if user && user.isAdmin
         a(href='/seasons/create')
           button.button.is-primary Add season

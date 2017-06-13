@@ -335,7 +335,7 @@ module.exports = (templates, season, team, series) => {
       handler: create.bind(null, templates, season, team),
     },
     edit: {
-      route: '/seasons/:season_id/series/edit/:id',
+      route: '/seasons/:season_id/series/:id/edit',
       handler: edit.bind(null, templates, season, team, series),
     },
     post: {

@@ -90,21 +90,8 @@ function post(player, req, res) {
   var id = req.body.id ? req.body.id : shortid.generate()
   var p = req.body
   p.id = id
-  if (p.will_captain === 'on') {
-    p.will_captain = true
-  } else {
-    p.will_captain = false
-  }
-  if (p.captain_approved === 'on') {
-    p.captain_approved = true
-  } else {
-    p.captain_approved = false
-  }
-  if (p.is_vouched === 'on') {
-    p.is_vouched = true
-  } else {
-    p.is_vouched = false
-  }
+  p.captain_approved = p.captain_approved === 'on'
+  p.captain_approved = p.is_vouched === 'on'
 
   player.savePlayer(p).then(() => {
     res.redirect('/seasons/' + season_vanity + '/players')
@@ -142,7 +129,7 @@ module.exports = (templates, season, player, steam_user) => {
       handler: create.bind(null, templates, season, steam_user),
     },
     edit: {
-      route: '/seasons/:season_id/players/edit/:id',
+      route: '/seasons/:season_id/players/:id/edit',
       handler: edit.bind(null, templates, season, player, steam_user),
     },
     post: {

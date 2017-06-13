@@ -28,7 +28,7 @@ block content
               td= team.seed
               if user && user.isAdmin
                 td
-                  a(href='/seasons/' + season.vanity + '/teams/edit/' + team.vanity) edit
+                  a(href='/seasons/' + season.vanity + '/teams/' + team.vanity + '/edit') edit
       if user && user.isAdmin
         a(href='/seasons/' + season.vanity + '/teams/create')
           button.button.is-primary Add team

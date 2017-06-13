@@ -13,11 +13,7 @@ function list(templates, season, team, team_player, req, res) {
           return player.is_captain
         })[0]
         players = players.filter(player => {
-          if (captain) {
-            return player.id != captain.id
-          } else {
-            return true
-          }
+          return !captain || player.id != captain.id
         })
         var html = templates.roster.list({
           user: req.user,

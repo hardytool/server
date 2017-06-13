@@ -41,7 +41,7 @@ function getPlayers(db, criteria) {
         player.will_captain = ${criteria.will_captain}
       `])
     }
-    if (criteria.captain_approved) {
+    if (criteria.captain_approved !== undefined) {
       select = sql.join([select, sql`
       AND
         player.captain_approved = ${criteria.captain_approved}
@@ -106,23 +106,23 @@ function savePlayer(db, player) {
       season_id,
       steam_id,
       will_captain,
-      captain_approved,
+      captain_approved
     ) VALUES (
       ${player.id},
       ${player.season_id},
       ${player.steam_id},
       ${player.will_captain},
-      ${player.captain_approved},
+      ${player.captain_approved}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
       season_id,
       will_captain,
-      captain_approved,
+      captain_approved
     ) = (
       ${player.season_id},
       ${player.will_captain},
-      ${player.captain_approved},
+      ${player.captain_approved}
     )
   `
   return db.query(upsert)
