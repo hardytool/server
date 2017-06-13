@@ -13,8 +13,23 @@ html(lang='en')
             overflow: hidden;
           }
           .table.is-middle-aligned th,
-          .table.is-middle-aligned td{
+          .table.is-middle-aligned td {
             vertical-align: middle;
+          }
+          .has-image {
+            display: flex;
+            align-items: center;
+          }
+          @media screen and (max-width:768px) {
+            .has-image {
+              flex-direction: column;
+              text-align: center;
+            }
+            .has-image .image {
+              height: 192px;
+              width: 192px;
+              margin-bottom: 36px;
+            }
           }
   block bodyFull
     body.layout-default

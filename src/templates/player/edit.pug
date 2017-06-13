@@ -1,0 +1,56 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : #{verb} Player - #{season.name} #{player ? ' - ' + player.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-pencil
+        span &nbsp;#{verb} Player - #{season.name} #{player ? ' - ' + player.name : ''}
+      div
+        form(method='post' action='/players/edit')
+          if player
+            input(type='hidden' name='id' value=player.id)
+          input(type='hidden' name='season_id' value=season.id)
+          div.field
+            label.label(for='steam_id') Steam User:
+            p.control
+              span.select
+                select(id='steam_id' name='steam_id')
+                  each steamUser in steamUsers
+                    if player && player.steam_id === steamUser.steam_id
+                      option(value=steamUser.steam_id selected)= steamUser.name
+                    else
+                      option(value=steamUser.steam_id)= steamUser.name
+          div.field
+            p.control
+              label.checkbox(for='will_captain')
+                if player && player.will_captain
+                  input(id='will_captain' type='checkbox' name='will_captain' checked)
+                else
+                  input(id='will_captain' type='checkbox' name='will_captain')
+                span &nbsp;Willing to captain?
+          div.field
+            p.control
+              label.checkbox(for='captain_approved')
+                if player && player.captain_approved
+                  input(id='captain_approved' type='checkbox' name='captain_approved' checked)
+                else
+                  input(id='captain_approved' type='checkbox' name='captain_approved')
+                span &nbsp;Captain approved?
+          div.field
+            p.control
+              label.checkbox(for='is_vouched')
+                if player && player.is_vouched
+                  input(id='is_vouched' type='checkbox' name='is_vouched' checked)
+                else
+                  input(id='is_vouched' type='checkbox' name='is_vouched')
+                span &nbsp;Is vouched?
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            p.control
+              button.button.is-danger(formaction='/players/delete') Delete

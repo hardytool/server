@@ -22,25 +22,35 @@ var dota2 = new Dota2.Dota2Client(steam, true, true)
 var steamUser = new Steam.SteamUser(steam)
 var redirectHttps = require('redirect-https')
 
+// repositories
+var admin = require('./repos/admin')(pool)
+var migrations = require('./repos/migrations')(pool)
+var player = require('./repos/player')(pool)
+var season = require('./repos/season')(pool)
+var series = require('./repos/series')(pool)
+var steam_user = require('./repos/steam_user')(pool)
+var team = require('./repos/team')(pool)
+var team_player = require('./repos/team_player')(pool)
+
 // lib
+var mmr = require('./lib/mmr')(dota2)
+var auth = require('./lib/auth')(config, admin, steam_user, mmr)
 var credentials = require('./lib/credentials')(config.server)
 var templates = require('./lib/templates')(
   path.join(__dirname, 'templates'), config.templates)
-var migrations = require('./lib/migrations')(pool)
-var mmr = require('./lib/mmr')(dota2)
-var auth = require('./lib/auth')(config, pool, mmr)
-var season = require('./lib/season')(pool)
-var team = require('./lib/team')(pool)
-var series = require('./lib/series')(pool)
 
 // Auth routes
 var openid = require('./api/openid')(config)
 
 // Page routes
 var indexPages = require('./pages/index')(templates)
+var playerPages = require('./pages/players')(
+  templates, season, player, steam_user)
 var seasonPages = require('./pages/seasons')(templates, season)
-var teamPages = require('./pages/teams')(templates, season, team)
 var seriesPages = require('./pages/series')(templates, season, team, series)
+var teamPages = require('./pages/teams')(templates, season, team)
+var rosterPages = require('./pages/roster')(
+  templates, season, team, team_player)
 
 // API routes
 // none currently
@@ -129,6 +139,19 @@ app.get(seriesPages.currentStandings.route,
 
 app.post(seriesPages.post.route, seriesPages.post.handler)
 app.post(seriesPages.remove.route, seriesPages.remove.handler)
+
+app.get(playerPages.list.route, playerPages.list.handler)
+app.get(playerPages.create.route, playerPages.create.handler)
+app.get(playerPages.edit.route, playerPages.edit.handler)
+
+app.post(playerPages.post.route, playerPages.post.handler)
+app.post(playerPages.remove.route, playerPages.remove.handler)
+
+app.get(rosterPages.list.route, rosterPages.list.handler)
+app.get(rosterPages.add.route, rosterPages.add.handler)
+
+app.post(rosterPages.post.route, rosterPages.post.handler)
+app.post(rosterPages.remove.route, rosterPages.remove.handler)
 
 migrations.migrateIfNeeded(
   migrations.getMigrations(path.join(__dirname, 'migrations')))

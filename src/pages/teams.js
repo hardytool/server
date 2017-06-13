@@ -111,8 +111,6 @@ function remove(team, req, res) {
   })
 }
 
-
-
 module.exports = (templates, season, team) => {
   return {
     list: {

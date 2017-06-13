@@ -21,7 +21,7 @@ function compile(dir, defaults) {
     if (typeof(val.name) === 'string'
       && typeof(val.path) === 'string') {
       var template = pug.compileFile(val.path)
-      acc[val.name] = function(locals) {
+      acc[val.name] = locals => {
         var all = Object.assign({}, defaults, locals)
         return template(all)
       }
