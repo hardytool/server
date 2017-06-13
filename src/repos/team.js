@@ -14,23 +14,15 @@ function getTeams(db, season_id) {
     season.name AS season_name
   FROM
     team
-  JOIN
-    season
-  ON
+  JOIN season ON
     season.id = team.season_id
-  LEFT JOIN
-    team_player
-  ON
+  LEFT JOIN team_player ON
     team.id = team_player.team_id
   AND
     team_player.is_captain
-  LEFT JOIN
-    player
-  ON
+  LEFT JOIN player ON
     team_player.player_id = player.id
-  LEFT JOIN
-    steam_user
-  ON
+  LEFT JOIN steam_user ON
     player.steam_id = steam_user.steam_id
   WHERE
     team.season_id = ${season_id}
