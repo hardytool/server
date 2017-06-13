@@ -57,6 +57,7 @@ function getSeries(db, criteria) {
     ORDER BY
       series.serial ASC,
       (series.home_points + series.away_points) DESC,
+      (home_team.seed + away_team.seed) DESC,
       home_team.name ASC,
       away_team.name ASC,
       series.home_points DESC
@@ -161,6 +162,8 @@ function getStandings(db, season_id, serial) {
       team.name,
       team.logo,
       team.seed,
+      steam_user.steam_id as captain_id,
+      steam_user.name as captain_name,
       COALESCE(standings.wins, 0) as wins,
       COALESCE(standings.losses, 0) as losses
     FROM (
@@ -177,7 +180,7 @@ function getStandings(db, season_id, serial) {
         FROM
           series
         WHERE
-          serial < ${serial} + 1
+          serial < ${serial}
         UNION ALL
         SELECT
           season_id,
@@ -187,7 +190,7 @@ function getStandings(db, season_id, serial) {
         FROM
           series
         WHERE
-          serial < ${serial} + 1
+          serial < ${serial}
       ) standings
       WHERE
         season_id = ${season_id}
@@ -200,6 +203,22 @@ function getStandings(db, season_id, serial) {
       team
     ON
       team.id = standings.team_id
+    LEFT JOIN
+      team_player
+    ON
+      team.id = team_player.team_id
+    AND
+      team_player.is_captain
+    LEFT JOIN
+      player
+    ON
+      team_player.player_id = player.id
+    LEFT JOIN
+      steam_user
+    ON
+      player.steam_id = steam_user.steam_id
+    WHERE
+      team.season_id = ${season_id}
     ORDER BY
       (2 * standings.wins) DESC,
       (2 * standings.wins - standings.losses) DESC,

@@ -1,0 +1,41 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : #{season.name} - #{team.name} - #{verb} Player #{player ? ' - ' + player.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-pencil
+        span &nbsp;#{season.name} - #{team.name} - #{verb} Player #{player ? ' - ' + player.name : ''}
+      div
+        form(method='post' action='/roster/edit')
+          if player
+            input(type='hidden' name='id' value=player.id)
+          input(type='hidden' name='season_id' value=season.id)
+          input(type='hidden' name='team_id' value=team.id)
+          div.field
+            label.label(for='player_id') Player:
+            p.control
+              span.select
+                select(id='player_id' name='player_id')
+                  each _player in players
+                    if player && player.id === _player.id
+                      option(value=_player.id selected)= _player.name
+                    else
+                      option(value=_player.id)= _player.name
+          div.field
+            p.control
+              label.checkbox(for='is_captain')
+                if player && player.is_captain
+                  input(id='is_captain' type='checkbox' name='is_captain' checked)
+                else
+                  input(id='is_captain' type='checkbox' name='is_captain')
+                span &nbsp;Is captain?
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            p.control
+              button.button.is-danger(formaction='/roster/delete') Delete

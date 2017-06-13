@@ -17,6 +17,7 @@ function list(templates, season, series, req, res) {
         if (_series.home_team_id) {
           _series.home = {}
           _series.home.id = _series.home_team_id
+          _series.home.vanity = emojify.emojify(_series.home_team_id)
           _series.home.name = _series.home_team_name
           _series.home.logo = _series.home_team_logo
           _series.home.points = _series.home_points
@@ -24,6 +25,7 @@ function list(templates, season, series, req, res) {
         if (_series.away_team_id) {
           _series.away = {}
           _series.away.id = _series.away_team_id
+          _series.away.vanity = emojify.emojify(_series.away_team_id)
           _series.away.name = _series.away_team_name
           _series.away.logo = _series.away_team_logo
           _series.away.points = _series.away_points
@@ -151,7 +153,8 @@ function post(series, req, res) {
   }
 
   series.saveSeries(s).then(() => {
-    res.redirect('/seasons/' + season_vanity + '/series')
+    var series_vanity = emojify.emojify(s.id)
+    res.redirect('/seasons/' + season_vanity + '/series/' + series_vanity)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -179,7 +182,12 @@ function standings(templates, season, series, req, res) {
   var season_id = emojify.unemojify(req.params.season_id)
 
   season.getSeason(season_id).then(season => {
+    season.vanity = emojify.emojify(season.id)
     return series.getStandings(season_id).then(standings => {
+      standings = standings.map(standing => {
+        standing.vanity = emojify.emojify(standing.id)
+        return standing
+      })
       var html = templates.series.standings({
         user: req.user,
         season: season,
@@ -199,6 +207,7 @@ function matchups(templates, _season, _team, _series, req, res) {
 
   _series.getCurrentSerial(season_id, serial).then(serial => {
     return _season.getSeason(season_id).then(season => {
+      season.vanity = emojify.emojify(season.id)
       return _team.getTeams(season_id).then(teams => {
         return _series.getSeries({
           season_id: season_id,
@@ -263,6 +272,7 @@ function matchups(templates, _season, _team, _series, req, res) {
               var home = teams.filter(team => {
                 return team.id === matchup.home_team_id
               }).pop()
+              home.vanity = emojify.emojify(home.id)
               var away = teams.filter(team => {
                 return team.id === matchup.away_team_id
               }).pop()
@@ -272,6 +282,8 @@ function matchups(templates, _season, _team, _series, req, res) {
                   name: 'BYE',
                   logo: null
                 }
+              } else {
+                away.vanity = emojify.emojify(away.id)
               }
               return {
                 home: home,
@@ -335,7 +347,7 @@ module.exports = (templates, season, team, series) => {
       handler: create.bind(null, templates, season, team),
     },
     edit: {
-      route: '/seasons/:season_id/series/edit/:id',
+      route: '/seasons/:season_id/series/:id/edit',
       handler: edit.bind(null, templates, season, team, series),
     },
     post: {

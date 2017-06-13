@@ -99,7 +99,7 @@ module.exports = (templates, season) => {
       handler: create.bind(null, templates),
     },
     edit: {
-      route: '/seasons/edit/:id',
+      route: '/seasons/:id/edit',
       handler: edit.bind(null, templates, season),
     },
     post: {

@@ -8,6 +8,8 @@ function getTeams(db, season_id) {
     team.name,
     team.logo,
     team.seed,
+    steam_user.steam_id as captain_id,
+    steam_user.name as captain_name,
     season.number AS season_number,
     season.name AS season_name
   FROM
@@ -16,8 +18,25 @@ function getTeams(db, season_id) {
     season
   ON
     season.id = team.season_id
+  LEFT JOIN
+    team_player
+  ON
+    team.id = team_player.team_id
+  AND
+    team_player.is_captain
+  LEFT JOIN
+    player
+  ON
+    team_player.player_id = player.id
+  LEFT JOIN
+    steam_user
+  ON
+    player.steam_id = steam_user.steam_id
   WHERE
     team.season_id = ${season_id}
+  ORDER BY
+    team.name ASC,
+    team.seed DESC
   `
   return db.query(select).then(result => {
     return result.rows

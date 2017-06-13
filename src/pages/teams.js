@@ -87,7 +87,8 @@ function post(team, req, res) {
   t.id = id
 
   team.saveTeam(t).then(() => {
-    res.redirect('/seasons/' + season_vanity + '/teams')
+    var team_vanity = emojify.emojify(t.id)
+    res.redirect('/seasons/' + season_vanity + '/teams/' + team_vanity)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -111,8 +112,6 @@ function remove(team, req, res) {
   })
 }
 
-
-
 module.exports = (templates, season, team) => {
   return {
     list: {
@@ -124,7 +123,7 @@ module.exports = (templates, season, team) => {
       handler: create.bind(null, templates, season),
     },
     edit: {
-      route: '/seasons/:season_id/teams/edit/:id',
+      route: '/seasons/:season_id/teams/:id/edit',
       handler: edit.bind(null, templates, season, team),
     },
     post: {

@@ -30,17 +30,19 @@ block content
           each _series in series
             tr
               td= _series.serial
-              td= _series.home.name
+              td
+                a(href='/seasons/' + season.vanity + '/teams/' + _series.home.vanity)= _series.home.name
               td
                 figure.image.is-32x32.hide-overflow
-                  img(class='logo' src=_series.home.logo)
+                  img(src=_series.home.logo)
               td= _series.home.points
               if _series.away
                 td= _series.away.points
                 td
                   figure.image.is-32x32.hide-overflow
-                    img(class='logo' src=_series.away.logo)
-                td= _series.away.name
+                    img(src=_series.away.logo)
+                td
+                  a(href='/seasons/' + season.vanity + '/teams/' + _series.away.vanity)= _series.away.name
               else
                 td 0
                 td BYE
@@ -48,14 +50,20 @@ block content
               if _series.match_1_id
                 td
                   a(href='https://www.dotabuff.com/matches/' + _series.match_id_1) Dotabuff
-                  span /
+                  span
+                    |
+                    |/
+                    |
                   a(href='https://www.opendota.com/matches/' + _series.match_id_1) OpenDota
               else
                 td N/A
               if _series.match_2_id
                 td
                   a(href='https://www.dotabuff.com/matches/' + _series.match_id_2) Dotabuff
-                  span /
+                  span
+                    |
+                    |/
+                    |
                   a(href='https://www.opendota.com/matches/' + _series.match_id_2) OpenDota
               else
                 td N/A
@@ -73,7 +81,7 @@ block content
                 td None
               if user && user.isAdmin
                 td
-                  a(href='/seasons/' + season.vanity + '/series/edit/' + _series.vanity) edit
+                  a(href='/seasons/' + season.vanity + '/series/' + _series.vanity + '/edit') edit
       if user && user.isAdmin
         a(href='/seasons/' + season.vanity + '/series/create')
           button.button.is-primary Add series

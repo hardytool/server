@@ -1,40 +1,18 @@
-var sql = require('pg-sql').sql
 var BigNumber = require('bignumber.js')
 
-function createUser(db, mmr, profile, cb) {
+function createUser(steam_user, mmr, profile, cb) {
   var id = from64to32(profile.id)
   var name = profile.displayName
   var avatar = getAvatar(profile)
   mmr.getMMR(id, (err, result) => {
-    var upsert = sql`
-    INSERT INTO steam_user (
-      steam_id,
-      name,
-      avatar,
-      solo_mmr,
-      party_mmr
-    ) VALUES (
-      ${id.toString()},
-      ${name},
-      ${avatar},
-      ${result ? result.solo : 0},
-      ${result ? result.party : 0}
-    )
-    ON CONFLICT (
-      steam_id
-    ) DO UPDATE SET (
-      name,
-      avatar,
-      solo_mmr,
-      party_mmr
-    ) = (
-      ${name},
-      ${avatar},
-      ${result ? result.solo : 0},
-      ${result ? result.party : 0}
-    )
-    `
-    db.query(upsert).then(() => {
+    var user = {
+      id: id.toString(),
+      name: name,
+      avatar: avatar,
+      solo_mmr: result ? result.solo : 0,
+      party_mmr: result ? result.party : 0
+    }
+    steam_user.saveSteamUser(user).then(() => {
       cb(null, null)
     }).catch(err => {
       cb(err, null)
@@ -42,18 +20,11 @@ function createUser(db, mmr, profile, cb) {
   })
 }
 
-function inflateUser(db, user) {
-  var id = from64to32(user.profile.id)
-  var select = sql`
-  SELECT
-    COUNT(*) > 0 AS is_admin
-  FROM
-    admin
-  WHERE
-    steam_id = ${id.toString()}
-  `
-  return db.query(select).then(result => {
-    user.isAdmin = result.rows[0].is_admin
+function inflateUser(admin, user) {
+  var id = from64to32(user.profile.id).toString()
+
+  return admin.isAdmin(id).then(isAdmin => {
+    user.isAdmin = isAdmin
     user.avatar = getAvatar(user.profile)
     user.displayName = user.profile.displayName
     return Promise.resolve(user)
@@ -71,10 +42,10 @@ function getAvatar(profile) {
   return profile.photos[profile.photos.length - 1].value
 }
 
-module.exports = (config, db, mmr) => {
+module.exports = (config, admin, steam_user, mmr) => {
   return {
-    createUser: createUser.bind(null, db, mmr),
-    inflateUser: inflateUser.bind(null, db),
+    createUser: createUser.bind(null, steam_user, mmr),
+    inflateUser: inflateUser.bind(null, admin),
     getAvatar: getAvatar
   }
 }

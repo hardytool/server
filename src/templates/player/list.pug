@@ -1,0 +1,63 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : #{season ? season.name : ''} Player List
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-list
+        span &nbsp;#{season ? season.name : ''} Players
+      table.table.is-striped.is-middle-aligned
+        thead
+          tr
+            th Name
+            th Avatar
+            th Solo MMR
+            th Party MMR
+            th Adjusted MMR
+            th Dotabuff / Opendota
+            if user && user.isAdmin
+              th Will Captain?
+              th Captain Approved
+            th Captain?
+            if user && user.isAdmin
+              th Edit
+        tbody
+          each player in players
+            tr
+              td= player.name
+              td
+                figure.image.is-32x32.hide-overflow
+                  img(src=player.avatar)
+              td= player.solo_mmr
+              td= player.party_mmr
+              td= player.adjusted_mmr
+              td
+                a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
+                span
+                  |
+                  |/
+                  |
+                a(href='https://www.opendota.com/players/' + player.steam_id) OpenDota
+              if user && user.isAdmin
+                td
+                  span= player.will_captain.charAt(0).toUpperCase() + player.will_captain.slice(1)
+                td
+                  if player.captain_approved
+                    span Yes
+                  else
+                    span No
+              td
+                if player.captain_approved
+                  span Yes
+                else
+                  span No
+              if user && user.isAdmin
+                td
+                  a(href='/seasons/' + season.vanity + '/players/' + player.vanity + '/edit') edit
+      if user && user.isAdmin
+        a(href='/seasons/' + season.vanity + '/players/create')
+          button.button.is-primary Add player

@@ -1,0 +1,93 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : #{season.name} - #{team.name} Roster
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-image
+        figure.image.is-48x48.hide-overflow
+          img(src=team.logo)
+        span &nbsp;#{season.name} - #{team.name} Roster
+  div.columns
+    div.column
+      h5.title.is-5
+        span Captain
+      if captain
+        div.box
+          article.media
+            figure.media-left
+              p.image.is-64x64
+                img(src=captain.avatar)
+            div.media-content
+              div.content
+                p
+                  strong= captain.name
+                  br
+                  | Solo MMR: #{captain.solo_mmr}
+                  br
+                  | Party MMR: #{captain.party_mmr}
+                  br
+                  | Adjusted MMR: #{captain.adjusted_mmr}
+                  br
+                  a(href='https://www.dotabuff.com/players/' + captain.steam_id) Dotabuff
+                  | &nbsp;/&nbsp;
+                  a(href='https://www.opendota.com/players/' + captain.steam_id) OpenDota
+              if user && user.isAdmin
+                nav.level.is-mobile
+                  div.level-left
+                    form.level-item
+                      input(type='hidden' name='season_id' value=season.id)
+                      input(type='hidden' name='team_id' value=team.id)
+                      input(type='hidden' name='id' value=captain.id)
+                      button.button.is-danger(formaction='/roster/delete' formmethod='post') Remove
+      else
+        p None
+  div.columns
+    div.column
+      h5.title.is-5
+        span Players
+      table.table.is-striped.is-middle-aligned
+        thead
+          tr
+            th Name
+            th Avatar
+            th Solo MMR
+            th Party MMR
+            th Adjusted MMR
+            th Dotabuff / Opendota
+            if user && user.isAdmin
+              th Remove
+        tbody
+          each player in players
+            tr
+              td= player.name
+              td
+                figure.image.is-32x32.hide-overflow
+                  img(src=player.avatar)
+              td= player.solo_mmr
+              td= player.party_mmr
+              td= player.adjusted_mmr
+              td
+                a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
+                span
+                  |
+                  |/
+                  |
+                a(href='https://www.opendota.com/players/' + player.steam_id) OpenDota
+              if user && user.isAdmin
+                td
+                  form
+                    input(type='hidden' name='season_id' value=season.id)
+                    input(type='hidden' name='team_id' value=team.id)
+                    input(type='hidden' name='id' value=player.id)
+                    button.button.is-danger(formaction='/roster/delete' formmethod='post') Remove
+      if user && user.isAdmin
+        div.field.is-grouped
+          p.control
+            a(href='/seasons/' + season.vanity + '/teams/' + team.vanity + '/add')
+              button.button.is-primary Add player
+          p.control
+            a(href='/seasons/' + season.vanity + '/teams/' + team.vanity + '/edit')
+              button.button.is-primary Edit team

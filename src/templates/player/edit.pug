@@ -1,0 +1,61 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : #{verb} Player - #{season.name} #{player ? ' - ' + player.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-pencil
+        span &nbsp;#{verb} Player - #{season.name} #{player ? ' - ' + player.name : ''}
+      div
+        form(method='post' action='/players/edit')
+          if player
+            input(type='hidden' name='id' value=player.id)
+          input(type='hidden' name='season_id' value=season.id)
+          div.field
+            label.label(for='steam_id') Steam User:
+            p.control
+              span.select
+                select(id='steam_id' name='steam_id')
+                  each steamUser in steamUsers
+                    if player && player.steam_id === steamUser.steam_id
+                      option(value=steamUser.steam_id selected)= steamUser.name
+                    else
+                      option(value=steamUser.steam_id)= steamUser.name
+          div.field
+            label.label Willing to captain?:
+            p.control
+              label.radio
+                if player && player.will_captain === 'yes'
+                  input(id='will_captain' value='yes' type='radio' name='will_captain' checked)
+                else
+                  input(id='will_captain' value='yes' type='radio' name='will_captain')
+                span &nbsp;Yes
+              label.radio
+                if player && player.will_captain === 'maybe'
+                  input(id='will_captain' value='maybe' type='radio' name='will_captain' checked)
+                else
+                  input(id='will_captain' value='maybe' type='radio' name='will_captain')
+                span &nbsp;Maybe
+              label.radio
+                if !player || player.will_captain === 'no'
+                  input(id='will_captain' value='no' type='radio' name='will_captain' checked)
+                else
+                  input(id='will_captain' value='no' type='radio' name='will_captain')
+                span &nbsp;No
+          div.field
+            p.control
+              label.checkbox(for='captain_approved')
+                if player && player.captain_approved
+                  input(id='captain_approved' type='checkbox' name='captain_approved' checked)
+                else
+                  input(id='captain_approved' type='checkbox' name='captain_approved')
+                span &nbsp;Captain approved?
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            p.control
+              button.button.is-danger(formaction='/players/delete') Delete

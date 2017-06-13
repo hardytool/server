@@ -18,5 +18,12 @@ block content
         tbody
           each matchup in matchups
             tr
-              td= matchup.home.name
-              td= matchup.away.name
+              td
+                a(href='/seasons/' + season.vanity + '/teams/' + matchup.home.vanity) #{matchup.home.name}
+                span= matchup.home.captain_name ? ' (' + matchup.home.captain_name + ')' : ''
+              if matchup.away.id
+                td
+                  a(href='/seasons/' + season.vanity + '/teams/' + matchup.away.vanity) #{matchup.away.name}
+                  span= matchup.away.captain_name ? ' (' + matchup.away.captain_name + ')' : ''
+              else
+                td= matchup.away.name

@@ -13,8 +13,23 @@ html(lang='en')
             overflow: hidden;
           }
           .table.is-middle-aligned th,
-          .table.is-middle-aligned td{
+          .table.is-middle-aligned td {
             vertical-align: middle;
+          }
+          .has-image {
+            display: flex;
+            align-items: center;
+          }
+          @media screen and (max-width:768px) {
+            .has-image {
+              flex-direction: column;
+              text-align: center;
+            }
+            .has-image .image {
+              height: 192px;
+              width: 192px;
+              margin-bottom: 36px;
+            }
           }
   block bodyFull
     body.layout-default
@@ -56,11 +71,11 @@ html(lang='en')
                     li
                       a(href='mailto:admin@seal.gg') Email
                     li
-                      a(href='https://github.com/seal-dota/server/issues/new') Report a Bug
+                      a(href='https://github.com/seal-dota/server/issues/new') Report a bug
                     li
-                      a(href='/complaint') File a Complaint
+                      a(href='/complaint') File a complaint
                     li
-                      a(href='https://www.reddit.com/r/SEALDota/submit') Provide Feedback
+                      a(href='https://www.reddit.com/r/SEALDota/submit') Provide feedback
                 div.column
                   h5.title.is-5 Resources
                   ul
