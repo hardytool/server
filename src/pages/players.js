@@ -34,7 +34,7 @@ function create(templates, season, steam_user, req, res) {
   var season_id = emojify.unemojify(req.params.season_id)
 
   season.getSeason(season_id).then(season => {
-    return steam_user.getSteamUsers().then(steamUsers => {
+    return steam_user.getNonPlayerSteamUsers(season.id).then(steamUsers => {
       var html = templates.player.edit({
         user: req.user,
         verb: 'Create',
@@ -60,7 +60,7 @@ function edit(templates, season, player, steam_user, req, res) {
   var id = emojify.unemojify(req.params.id)
 
   season.getSeason(season_id).then(season => {
-    return steam_user.getSteamUsers().then(steamUsers => {
+    return steam_user.getNonPlayerSteamUsers(season.id).then(steamUsers => {
       return player.getPlayer(id).then(player => {
         player.vanity = emojify.emojify(player.id)
         var html = templates.player.edit({

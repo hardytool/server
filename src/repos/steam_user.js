@@ -16,6 +16,33 @@ function getSteamUsers(db) {
   })
 }
 
+function getNonPlayerSteamUsers(db, season_id) {
+  var select = sql`
+  SELECT
+    steam_user.steam_id,
+    steam_user.name,
+    steam_user.avatar,
+    steam_user.solo_mmr,
+    steam_user.party_mmr
+  FROM
+    steam_user
+  WHERE
+    steam_user.steam_id NOT IN (
+      SELECT
+        steam_user.steam_id
+      FROM
+        steam_user
+      JOIN player ON
+        player.steam_id = steam_user.steam_id
+      WHERE
+        player.season_id = ${season_id}
+    )
+  `
+  return db.query(select).then(result => {
+    return result.rows
+  })
+}
+
 function getSteamUser(db, steamId) {
   var select = sql`
   SELECT
@@ -79,6 +106,7 @@ function deleteSteamUser(db, id) {
 module.exports = db => {
   return {
     getSteamUsers: getSteamUsers.bind(null, db),
+    getNonPlayerSteamUsers: getNonPlayerSteamUsers.bind(null, db),
     getSteamUser: getSteamUser.bind(null, db),
     saveSteamUser: saveSteamUser.bind(null, db),
     deleteSteamUser: deleteSteamUser.bind(null, db)
