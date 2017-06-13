@@ -7,7 +7,7 @@ block content
   div.columns
     div.column
       h3.title.is-3.has-image
-        figure.image.is-48x48.hide-overflow
+        figure.image.is-team-logo-medium.hide-overflow
           img(src=team.logo)
         span &nbsp;#{season.name} - #{team.name} Roster
   div.columns
@@ -56,7 +56,7 @@ block content
             th Solo MMR
             th Party MMR
             th Adjusted MMR
-            th Dotabuff / Opendota
+            th Dotabuff&nbsp;/ Opendota
             if user && user.isAdmin
               th Remove
         tbody
@@ -72,8 +72,7 @@ block content
               td
                 a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
                 span
-                  |
-                  |/
+                  | &nbsp;/
                   |
                 a(href='https://www.opendota.com/players/' + player.steam_id) OpenDota
               if user && user.isAdmin

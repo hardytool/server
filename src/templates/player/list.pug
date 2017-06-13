@@ -18,7 +18,7 @@ block content
             th Solo MMR
             th Party MMR
             th Adjusted MMR
-            th Dotabuff / Opendota
+            th Dotabuff&nbsp;/ Opendota
             if user && user.isAdmin
               th Will Captain?
               th Captain Approved
@@ -38,8 +38,7 @@ block content
               td
                 a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
                 span
-                  |
-                  |/
+                  | &nbsp;/
                   |
                 a(href='https://www.opendota.com/players/' + player.steam_id) OpenDota
               if user && user.isAdmin

@@ -25,7 +25,7 @@ block content
                 a(href='/seasons/' + season.vanity + '/teams/' + team.vanity)= team.name
                 span= team.captain_name ? ' (' + team.captain_name + ')' : ''
               td
-                figure.image.is-32x32.hide-overflow
+                figure.image.is-team-logo.hide-overflow
                   img(src=team.logo)
               td= team.seed
               if user && user.isAdmin

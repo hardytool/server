@@ -20,14 +20,22 @@ html(lang='en')
             display: flex;
             align-items: center;
           }
+          .image.is-team-logo {
+            width: 50px;
+            height: 30px;
+          }
+          .image.is-team-logo-medium {
+            width: 100px;
+            height: 60px;
+          }
           @media screen and (max-width:768px) {
             .has-image {
               flex-direction: column;
               text-align: center;
             }
-            .has-image .image {
-              height: 192px;
-              width: 192px;
+            .has-image .image.is-team-logo-medium {
+              width: 250px;
+              height: 150px;
               margin-bottom: 36px;
             }
           }
