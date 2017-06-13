@@ -27,9 +27,13 @@ function getMMR(dota2, id, cb) {
   })
 }
 
+function setAvailable(bool) {
+  available = bool
+}
+
 module.exports = dota2 => {
   return {
-    available: available,
+    setAvailable: setAvailable,
     getMMR: getMMR.bind(null, dota2)
   }
 }

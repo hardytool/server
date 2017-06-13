@@ -173,13 +173,13 @@ migrations.migrateIfNeeded(
         if (res.eresult == Steam.EResult.OK) {
           dota2.launch()
           dota2.on('ready', () => {
-            mmr.available = true
+            mmr.setAvailable(true)
           })
         }
       })
 
       steam.on('error', err => {
-        mmr.available = false
+        mmr.setAvailable(false)
         console.error(err)
         if (err.message === 'Disconnected') {
           steam.connect()
