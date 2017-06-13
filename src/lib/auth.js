@@ -6,7 +6,7 @@ function createUser(steam_user, mmr, profile, cb) {
   var avatar = getAvatar(profile)
   mmr.getMMR(id, (err, result) => {
     var user = {
-      id: id.toString(),
+      steam_id: id.toString(),
       name: name,
       avatar: avatar,
       solo_mmr: result ? result.solo : 0,
@@ -17,6 +17,14 @@ function createUser(steam_user, mmr, profile, cb) {
     }).catch(err => {
       cb(err, null)
     })
+  })
+}
+
+function updateUserMMR(steam_user, mmr, user) {
+  mmr.getMMR(user.steam_id, (err, result) => {
+    user.solo_mmr = result ? result.solo : 0
+    user.party_mmr = result ? result.party : 0
+    steam_user.saveSteamUser(user)
   })
 }
 
@@ -45,6 +53,7 @@ function getAvatar(profile) {
 module.exports = (config, admin, steam_user, mmr) => {
   return {
     createUser: createUser.bind(null, steam_user, mmr),
+    updateUserMMR: updateUserMMR.bind(null, steam_user, mmr),
     inflateUser: inflateUser.bind(null, admin),
     getAvatar: getAvatar
   }

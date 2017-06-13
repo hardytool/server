@@ -16,14 +16,12 @@ function getMMR(dota2, id, cb) {
     var partySlot = result.slots.filter(slot => {
       return slot.stat && slot.stat.stat_id === 2
     })
-    if (soloSlot.length !== 1 || partySlot.length !== 1) {
-      cb({ error: 'MMR not display' }, null)
-    } else {
-      cb(null, {
-        solo: soloSlot[0].stat.stat_score,
-        party: partySlot[0].stat.stat_score
-      })
-    }
+    var solo = soloSlot.length === 1 ? soloSlot[0].stat.stat_score : 0
+    var party = partySlot.length === 1 ? partySlot[0].stat.stat_score : 0
+    cb(null, {
+      solo: solo,
+      party: party
+    })
   })
 }
 

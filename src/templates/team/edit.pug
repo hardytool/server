@@ -30,5 +30,6 @@ block content
           div.field.is-grouped
             p.control
               button.button.is-primary Submit
-            p.control
-              button.button.is-danger(formaction='/teams/delete') Delete
+            if team
+              p.control
+                button.button.is-danger(formaction='/teams/delete') Delete

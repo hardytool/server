@@ -174,6 +174,13 @@ migrations.migrateIfNeeded(
           dota2.launch()
           dota2.on('ready', () => {
             mmr.setAvailable(true)
+            steam_user.getSteamUsers({needsMMR: true}).then(users => {
+              users.forEach((user, index) => {
+                setTimeout(() => {
+                  auth.updateUserMMR(user)
+                }, (index + 1) * 2000)
+              })
+            })
           })
         }
       })

@@ -1,16 +1,36 @@
 var sql = require('pg-sql').sql
 
-function getSteamUsers(db) {
+function getSteamUsers(db, criteria) {
   var select = sql`
   SELECT
-    steam_id,
-    name,
-    avatar,
-    solo_mmr,
-    party_mmr
+    steam_user.steam_id,
+    steam_user.name,
+    steam_user.avatar,
+    steam_user.solo_mmr,
+    steam_user.party_mmr
   FROM
     steam_user
+  WHERE 1 = 1
   `
+  if (criteria) {
+    if (criteria.needsMMR !== undefined) {
+      if (criteria.needsMMR) {
+        select = sql.join([select, sql`
+        AND
+          steam_user.solo_mmr = 0
+        AND
+          steam_user.party_mmr = 0
+        `])
+      } else {
+        select = sql.join([select, sql`
+        WHERE
+          steam_user.solo_mmr != 0
+        AND
+          steam_user.party_mmr != 0
+        `])
+      }
+    }
+  }
   return db.query(select).then(result => {
     return result.rows
   })
@@ -70,7 +90,7 @@ function saveSteamUser(db, user) {
     solo_mmr,
     party_mmr
   ) VALUES (
-    ${user.id},
+    ${user.steam_id},
     ${user.name},
     ${user.avatar},
     ${user.solo_mmr},
