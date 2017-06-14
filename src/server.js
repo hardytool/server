@@ -21,6 +21,8 @@ var Dota2 = require('dota2')
 var dota2 = new Dota2.Dota2Client(steam, true, true)
 var steamUser = new Steam.SteamUser(steam)
 var redirectHttps = require('redirect-https')
+var templates = require('pug-tree')(
+  path.join(__dirname, 'templates'), config.templates)
 
 // repositories
 var admin = require('./repos/admin')(pool)
@@ -36,8 +38,6 @@ var team_player = require('./repos/team_player')(pool)
 var mmr = require('./lib/mmr')(dota2)
 var auth = require('./lib/auth')(config, admin, steam_user, mmr)
 var credentials = require('./lib/credentials')(config.server)
-var templates = require('./lib/templates')(
-  path.join(__dirname, 'templates'), config.templates)
 
 // Auth routes
 var openid = require('./api/openid')(config)
