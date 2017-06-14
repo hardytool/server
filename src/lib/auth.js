@@ -28,8 +28,8 @@ function createUser(steam_user, mmr, profile) {
 
 function updateUserMMR(steam_user, mmr, user) {
   return mmr.getMMR(user.steam_id).then(result => {
-    user.solo_mmr = result ? result.solo : user.solo_mmr
-    user.party_mmr = result ? result.party : user.party_mmr
+    user.solo_mmr = result && result.soll ? result.solo : user.solo_mmr
+    user.party_mmr = result && result.party ? result.party : user.party_mmr
     return steam_user.saveSteamUser(user).then(() => {
       return user
     })
