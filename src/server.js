@@ -172,7 +172,6 @@ migrations.migrateIfNeeded(
         if (res.eresult == Steam.EResult.OK) {
           dota2.launch()
           dota2.on('ready', () => {
-            mmr.setAvailable(true)
             season.getActiveSeason().then(season => {
               steam_user.getSteamUsersMissingMMR(season.id).then(users => {
                 users.forEach((user, index) => {
@@ -191,7 +190,6 @@ migrations.migrateIfNeeded(
       })
 
       steam.on('error', err => {
-        mmr.setAvailable(false)
         console.error(err)
         if (err.message === 'Disconnected') {
           steam.connect()

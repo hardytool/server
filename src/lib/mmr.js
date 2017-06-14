@@ -1,5 +1,5 @@
-var available = false
 var Promise = require('bluebird')
+var available = false
 
 function getMMR(dota2, id) {
   if (!available) {
@@ -17,8 +17,8 @@ function getMMR(dota2, id) {
       var partySlot = result.slots.filter(slot => {
         return slot.stat && slot.stat.stat_id === 2
       })
-      var solo = soloSlot.length === 1 ? soloSlot[0].stat.stat_score : 0
-      var party = partySlot.length === 1 ? partySlot[0].stat.stat_score : 0
+      var solo = soloSlot.length === 1 ? soloSlot[0].stat.stat_score : null
+      var party = partySlot.length === 1 ? partySlot[0].stat.stat_score : null
       resolve({
         solo: solo,
         party: party
@@ -32,8 +32,14 @@ function setAvailable(bool) {
 }
 
 module.exports = dota2 => {
+  dota2._client.on('error', () => {
+    setAvailable(false)
+  })
+  dota2.on('ready', () => {
+    setAvailable(true)
+  })
+
   return {
-    setAvailable: setAvailable,
     getMMR: getMMR.bind(null, dota2)
   }
 }

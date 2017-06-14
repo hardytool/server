@@ -16,8 +16,8 @@ function createUser(steam_user, mmr, profile) {
         steam_id: id.toString(),
         name: name,
         avatar: avatar,
-        solo_mmr: result ? result.solo : currentSolo,
-        party_mmr: result ? result.party : currentParty
+        solo_mmr: result && result.solo ? result.solo : currentSolo,
+        party_mmr: result && result.party ? result.party : currentParty
       }
       return steam_user.saveSteamUser(user).then(() => {
         return user
