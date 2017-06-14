@@ -10,27 +10,31 @@ function getSteamUsers(db, criteria) {
     steam_user.party_mmr
   FROM
     steam_user
-  WHERE 1 = 1
   `
-  if (criteria) {
-    if (criteria.needsMMR !== undefined) {
-      if (criteria.needsMMR) {
-        select = sql.join([select, sql`
-        AND
-          steam_user.solo_mmr = 0
-        AND
-          steam_user.party_mmr = 0
-        `])
-      } else {
-        select = sql.join([select, sql`
-        WHERE
-          steam_user.solo_mmr != 0
-        AND
-          steam_user.party_mmr != 0
-        `])
-      }
-    }
-  }
+  return db.query(select).then(result => {
+    return result.rows
+  })
+}
+
+function getSteamUsersMissingMMR(db, season_id) {
+  var select = sql`
+  SELECT
+    steam_user.steam_id,
+    steam_user.name,
+    steam_user.avatar,
+    steam_user.solo_mmr,
+    steam_user.party_mmr
+  FROM
+    steam_user
+  JOIN player ON
+    steam_user.steam_id = player.steam_id
+  WHERE
+    player.season_id = ${season_id}
+  AND
+    steam_user.solo_mmr = 0
+  AND
+    steam_user.party_mmr = 0
+  `
   return db.query(select).then(result => {
     return result.rows
   })
@@ -126,6 +130,7 @@ function deleteSteamUser(db, id) {
 module.exports = db => {
   return {
     getSteamUsers: getSteamUsers.bind(null, db),
+    getSteamUsersMissingMMR: getSteamUsersMissingMMR.bind(null, db),
     getNonPlayerSteamUsers: getNonPlayerSteamUsers.bind(null, db),
     getSteamUser: getSteamUser.bind(null, db),
     saveSteamUser: saveSteamUser.bind(null, db),
