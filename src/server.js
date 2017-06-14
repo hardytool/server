@@ -80,11 +80,10 @@ passport.use(new passportSteam.Strategy({
     realm: realm,
     apiKey: config.server.steam_api_key
   }, (identifier, profile, done) =>  {
-    auth.createUser(profile, err => {
-      if (err) {
-        done(err, null)
-      }
+    auth.createUser(profile).then(() => {
       done(null, { id: identifier, profile: profile })
+    }).catch(err => {
+      done(err, null)
     })
   }))
 
@@ -174,6 +173,19 @@ migrations.migrateIfNeeded(
           dota2.launch()
           dota2.on('ready', () => {
             mmr.setAvailable(true)
+            season.getActiveSeason().then(season => {
+              steam_user.getSteamUsersMissingMMR(season.id).then(users => {
+                users.forEach((user, index) => {
+                  setTimeout(() => {
+                    auth.updateUserMMR(user).then(user => {
+                      console.log(`User ${user.steam_id} ${user.name} updated`)
+                    }).catch(err => {
+                      console.error(err)
+                    })
+                  }, (index + 1) * 2000)
+                })
+              })
+            })
           })
         }
       })

@@ -104,5 +104,6 @@ block content
           div.field.is-grouped
             p.control
               button.button.is-primary Submit
-            p.control
-              button.button.is-danger(formaction='/series/delete') Delete
+            if series
+              p.control
+                button.button.is-danger(formaction='/series/delete') Delete

@@ -20,17 +20,11 @@ function getSeries(db, criteria) {
     away_team.logo as away_team_logo
   FROM
     series
-  FULL OUTER JOIN
-    team AS home_team
-  ON
+  FULL OUTER JOIN team AS home_team ON
     home_team.id = series.home_team_id
-  FULL OUTER JOIN
-    team AS away_team
-  ON
+  FULL OUTER JOIN team AS away_team ON
     away_team.id = series.away_team_id
-  JOIN
-    season
-  ON
+  JOIN season ON
     season.id = series.season_id
   WHERE
     1 = 1
@@ -199,23 +193,15 @@ function getStandings(db, season_id, serial) {
       GROUP BY
         team_id
     ) standings
-    FULL OUTER JOIN
-      team
-    ON
+    FULL OUTER JOIN team ON
       team.id = standings.team_id
-    LEFT JOIN
-      team_player
-    ON
+    LEFT JOIN team_player ON
       team.id = team_player.team_id
     AND
       team_player.is_captain
-    LEFT JOIN
-      player
-    ON
+    LEFT JOIN player ON
       team_player.player_id = player.id
-    LEFT JOIN
-      steam_user
-    ON
+    LEFT JOIN steam_user ON
       player.steam_id = steam_user.steam_id
     WHERE
       team.season_id = ${season_id}

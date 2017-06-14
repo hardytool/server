@@ -1,15 +1,39 @@
 var sql = require('pg-sql').sql
 
-function getSteamUsers(db) {
+function getSteamUsers(db, criteria) {
   var select = sql`
   SELECT
-    steam_id,
-    name,
-    avatar,
-    solo_mmr,
-    party_mmr
+    steam_user.steam_id,
+    steam_user.name,
+    steam_user.avatar,
+    steam_user.solo_mmr,
+    steam_user.party_mmr
   FROM
     steam_user
+  `
+  return db.query(select).then(result => {
+    return result.rows
+  })
+}
+
+function getSteamUsersMissingMMR(db, season_id) {
+  var select = sql`
+  SELECT
+    steam_user.steam_id,
+    steam_user.name,
+    steam_user.avatar,
+    steam_user.solo_mmr,
+    steam_user.party_mmr
+  FROM
+    steam_user
+  JOIN player ON
+    steam_user.steam_id = player.steam_id
+  WHERE
+    player.season_id = ${season_id}
+  AND
+    steam_user.solo_mmr = 0
+  AND
+    steam_user.party_mmr = 0
   `
   return db.query(select).then(result => {
     return result.rows
@@ -70,7 +94,7 @@ function saveSteamUser(db, user) {
     solo_mmr,
     party_mmr
   ) VALUES (
-    ${user.id},
+    ${user.steam_id},
     ${user.name},
     ${user.avatar},
     ${user.solo_mmr},
@@ -106,6 +130,7 @@ function deleteSteamUser(db, id) {
 module.exports = db => {
   return {
     getSteamUsers: getSteamUsers.bind(null, db),
+    getSteamUsersMissingMMR: getSteamUsersMissingMMR.bind(null, db),
     getNonPlayerSteamUsers: getNonPlayerSteamUsers.bind(null, db),
     getSteamUser: getSteamUser.bind(null, db),
     saveSteamUser: saveSteamUser.bind(null, db),

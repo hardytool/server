@@ -17,13 +17,9 @@ function getPlayers(db, criteria) {
     GREATEST(steam_user.solo_mmr, steam_user.party_mmr) adjusted_mmr
   FROM
     player
-  JOIN
-    steam_user
-  ON
+  JOIN steam_user ON
     steam_user.steam_id = player.steam_id
-  JOIN
-    season
-  ON
+  JOIN season ON
     season.id = player.season_id
   WHERE
     1 = 1
@@ -77,13 +73,9 @@ function getPlayer(db, id) {
     GREATEST(steam_user.solo_mmr, steam_user.party_mmr) adjusted_mmr
   FROM
     player
-  JOIN
-    steam_user
-  ON
+  JOIN steam_user ON
     steam_user.steam_id = player.steam_id
-  JOIN
-    season
-  ON
+  JOIN season ON
     season.id = player.season_id
   WHERE
     player.id = ${id}
