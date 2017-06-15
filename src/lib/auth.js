@@ -1,4 +1,5 @@
 var BigNumber = require('bignumber.js')
+var timeout = require('./timeout.js')
 
 function createUser(steam_user, mmr, profile) {
   var id = from64to32(profile.id)
@@ -9,21 +10,55 @@ function createUser(steam_user, mmr, profile) {
   }).catch(() => {
     return null
   }).then(existingUser => {
+    var currentSolo = existingUser ? existingUser.solo_mmr : 0
+    var currentParty = existingUser ? existingUser.party_mmr : 0
+    var user = {
+      steam_id: id.toString(),
+      name: name,
+      avatar: avatar,
+      solo_mmr: currentSolo,
+      party_mmr: currentParty
+    }
     return mmr.getMMR(id).then(result => {
-      var currentSolo = existingUser ? existingUser.solo_mmr : 0
-      var currentParty = existingUser ? existingUser.party_mmr : 0
-      var user = {
-        steam_id: id.toString(),
-        name: name,
-        avatar: avatar,
-        solo_mmr: result && result.solo ? result.solo : currentSolo,
-        party_mmr: result && result.party ? result.party : currentParty
-      }
-      return steam_user.saveSteamUser(user).then(() => {
-        return user
-      })
+      user.solo_mmr = result && result.solo ? result.solo : user.solo_mmr
+      user.party_mmr = result && result.party ? result.party : user.party_mmr
+      return user
+    }).catch(err => {
+      console.error(err)
+      return user
+    })
+  }).then(user => {
+    return steam_user.saveSteamUser(user).then(() => {
+      return user
     })
   })
+}
+
+var updated = false
+function fetchMissingMMRs(steam_user, mmr, season_id, force) {
+  if (!updated || force) {
+    return steam_user.getSteamUsersMissingMMR(season_id).then(users => {
+      updated = true
+      return Promise.all(users.map((user, index) => {
+        return timeout((index + 1) * 2000).then(() => {
+          return updateUserMMR(steam_user, mmr, user).then(user => {
+            console.log(`User ${user.steam_id} ${user.name} updated`)
+          }).catch(err => {
+            console.error(err)
+          })
+        })
+      })).catch(() => {
+        // Doesn't matter if we have an error
+        return null
+      }).then(() => {
+        return timeout(60 * 60 * 1000).then(() => {
+          updated = false
+        })
+      })
+    })
+  } else {
+    return Promise.resolve({ message: 'Sleeping' })
+  }
 }
 
 function updateUserMMR(steam_user, mmr, user) {
@@ -61,6 +96,7 @@ function getAvatar(profile) {
 module.exports = (config, admin, steam_user, mmr) => {
   return {
     createUser: createUser.bind(null, steam_user, mmr),
+    fetchMissingMMRs: fetchMissingMMRs.bind(null, steam_user, mmr),
     updateUserMMR: updateUserMMR.bind(null, steam_user, mmr),
     inflateUser: inflateUser.bind(null, admin),
     getAvatar: getAvatar

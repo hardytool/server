@@ -173,17 +173,7 @@ migrations.migrateIfNeeded(
           dota2.launch()
           dota2.on('ready', () => {
             season.getActiveSeason().then(season => {
-              steam_user.getSteamUsersMissingMMR(season.id).then(users => {
-                users.forEach((user, index) => {
-                  setTimeout(() => {
-                    auth.updateUserMMR(user).then(user => {
-                      console.log(`User ${user.steam_id} ${user.name} updated`)
-                    }).catch(err => {
-                      console.error(err)
-                    })
-                  }, (index + 1) * 2000)
-                })
-              })
+              return auth.fetchMissingMMRs(season.id)
             })
           })
         }
