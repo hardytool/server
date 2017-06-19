@@ -1,4 +1,7 @@
 # Server
+[![Dependency Status](https://img.shields.io/david/seal-dota/server.svg)](https://david-dm.org/seal-dota/server "Check this project's dependencies")
+[![Dependency Status](https://img.shields.io/david/dev/seal-dota/server.svg)](https://david-dm.org/dev/seal-dota/server "Check this project's dependencies")
+
 This is SEAL's backend and website.
 
 ## Dependencies
