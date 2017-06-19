@@ -17,6 +17,7 @@ block content
             th Logo
             th Wins
             th Losses
+            th Tiebreaker
         tbody
           each standing in standings
             tr
@@ -28,3 +29,4 @@ block content
                   img(src=standing.logo)
               td= standing.wins
               td= standing.losses
+              td= standing.tiebreaker

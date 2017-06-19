@@ -1,3 +1,6 @@
+// Currently this is a bit of a lie
+// We're calculating median, not modified median
+// Need to see if this impacts anything down the road
 function getModifiedMedianScores(team, series, season_id, serial) {
   return team.getTeams(season_id).then(teams => {
     return series.getSeries({
@@ -23,7 +26,7 @@ function getModifiedMedianScores(team, series, season_id, serial) {
         history.opponents.forEach(opponent => {
           acc[opponent] = acc[opponent]
             ? acc[opponent] + history.points
-            : history.points
+            : [ history.points ]
         })
         return acc
       }, {})

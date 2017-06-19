@@ -178,22 +178,29 @@ function remove(series, req, res) {
   })
 }
 
-function standings(templates, season, series, req, res) {
+function standings(templates, season, series, pairings, req, res) {
   var season_id = emojify.unemojify(req.params.season_id)
+  var serial = Number.parseInt(req.params.serial)
 
-  season.getSeason(season_id).then(season => {
-    season.vanity = emojify.emojify(season.id)
-    return series.getStandings(season_id).then(standings => {
-      standings = standings.map(standing => {
-        standing.vanity = emojify.emojify(standing.id)
-        return standing
+  series.getCurrentSerial(season_id, serial).then(serial => {
+    return season.getSeason(season_id).then(season => {
+      season.vanity = emojify.emojify(season.id)
+      return series.getStandings(season_id, serial).then(standings => {
+        return pairings.getModifiedMedianScores(season.id, serial).then(
+          scores => {
+          standings = standings.map(standing => {
+            standing.vanity = emojify.emojify(standing.id)
+            standing.tiebreaker = scores[standing.id]
+            return standing
+          })
+          var html = templates.series.standings({
+            user: req.user,
+            season: season,
+            standings: standings
+          })
+          res.send(html)
+        })
       })
-      var html = templates.series.standings({
-        user: req.user,
-        season: season,
-        standings: standings
-      })
-      res.send(html)
     })
   }).catch(err => {
     console.error(err)
@@ -231,13 +238,16 @@ function matchups(templates, season, series, pairings, req, res) {
   })
 }
 
-function currentStandings(templates, _season, series, req, res) {
+function currentStandings(templates, _season, series, pairings, req, res) {
   if (!req.params) {
     req.params = {}
   }
   _season.getActiveSeason().then(season => {
     req.params.season_id = emojify.emojify(season.id)
-    return standings(templates, _season, series, req, res)
+    return series.getCurrentSerial(season.id).then(serial => {
+      req.params.serial = serial
+      return standings(templates, _season, series, pairings, req, res)
+    })
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -284,7 +294,7 @@ module.exports = (templates, season, team, series, pairings) => {
     },
     standings: {
       route: '/seasons/:season_id/standings',
-      handler: standings.bind(null, templates, season, series)
+      handler: standings.bind(null, templates, season, series, pairings)
     },
     matchups: {
       route: '/seasons/:season_id/matchups/:serial?',
@@ -292,7 +302,7 @@ module.exports = (templates, season, team, series, pairings) => {
     },
     currentStandings: {
       route: '/standings',
-      handler: currentStandings.bind(null, templates, season, series)
+      handler: currentStandings.bind(null, templates, season, series, pairings)
     },
     currentMatchups: {
       route: '/matchups',
