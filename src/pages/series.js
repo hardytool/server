@@ -3,13 +3,13 @@ var shortid = require('shortid')
 
 function list(templates, season, series, req, res) {
   var season_id = emojify.unemojify(req.params.season_id)
-  var serial = req.query.serial
+  var round = req.query.round
 
   season.getSeason(season_id).then(season => {
     season.vanity = emojify.emojify(season.id)
     return series.getSeries({
       season_id: season_id,
-      serial: serial
+      serial: round
     }).then(series => {
       series = series.map(_series => {
         _series.vanity = emojify.emojify(_series.id)
@@ -177,39 +177,87 @@ function remove(series, req, res) {
   })
 }
 
-function standings(templates, season, series, pairings, req, res) {
+function standings(templates, season, team, series, pairings, req, res) {
   var season_id = emojify.unemojify(req.params.season_id)
-  var serial = Number.parseInt(req.params.serial)
+  var round = Number.parseInt(req.params.round)
 
-  series.getCurrentSerial(season_id, serial).then(serial => {
+  series.getCurrentSerial(season_id, round).then(round => {
     return season.getSeason(season_id).then(season => {
       season.vanity = emojify.emojify(season.id)
-      return series.getStandings(season_id, serial).then(standings => {
-        return pairings.getModifiedMedianScores(season.id, serial).then(
-          scores => {
-            standings = standings.map(standing => {
-              standing.vanity = emojify.emojify(standing.id)
-              standing.tiebreaker = scores[standing.id]
-              return standing
-            }).sort((a, b) => {
-              if (a.wins === b.wins) {
-                if (a.tiebreaker === b.tiebreaker) {
-                  return b.seed - a.seed
-                } else {
-                  return b.tiebreaker - a.tiebreaker
-                }
-              } else {
-                return b.wins - a.wins
+      return team.getTeams(season.id).then(teams => {
+        return series.getSeries({
+          season_id: season.id,
+          serial: round
+        }).then(series => {
+          var standings = pairings.getStandings(
+            round,
+            mapTeams(teams),
+            mapSeries(series)
+          )
+          standings = standings.map(standing => {
+            var team = teams.filter(team => team.id === standing.id)[0]
+            standing.vanity = emojify.emojify(standing.id)
+            standing.name = team.name
+            standing.logo = team.logo
+            return standing
+          })
+          var html = templates.series.standings({
+            user: req.user,
+            season: season,
+            standings: standings
+          })
+          res.send(html)
+        })
+      })
+    })
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
+function matchups(templates, season, team, series, pairings, req, res) {
+  var season_id = emojify.unemojify(req.params.season_id)
+  var round = Number.parseInt(req.params.round)
+
+  series.getCurrentSerial(season_id, round).then(round => {
+    return season.getSeason(season_id).then(season => {
+      season.vanity = emojify.emojify(season.id)
+      return team.getTeams(season.id).then(teams => {
+        return series.getSeries({
+          season_id: season.id,
+          serial: round
+        }).then(series => {
+          var matchups = pairings.getMatchups(
+            round,
+            mapTeams(teams),
+            mapSeries(series)
+          )
+          matchups = matchups.map(matchup => {
+            matchup.home = teams.filter(team => team.id === matchup.home)[0]
+            if (matchup.away === null) {
+              matchup.away = {
+                id: null,
+                name: 'BYE',
+                logo: null
               }
-            })
-            var html = templates.series.standings({
-              user: req.user,
-              season: season,
-              standings: standings
-            })
-            res.send(html)
-          }
-        )
+            } else {
+              matchup.away = teams.filter(team => team.id === matchup.away)[0]
+            }
+            matchup.home.vanity = emojify.emojify(matchup.home.id)
+            if (matchup.away.id) {
+              matchup.away.vanity = emojify.emojify(matchup.away.id)
+            }
+            return matchup
+          })
+          var html = templates.series.matchups({
+            user: req.user,
+            season: season,
+            serial: round,
+            matchups: matchups
+          })
+          res.send(html)
+        })
       })
     })
   }).catch(err => {
@@ -218,29 +266,22 @@ function standings(templates, season, series, pairings, req, res) {
   })
 }
 
-function matchups(templates, season, series, pairings, req, res) {
-  var season_id = emojify.unemojify(req.params.season_id)
-  var serial = Number.parseInt(req.params.serial)
-
-  series.getCurrentSerial(season_id, serial).then(serial => {
-    return season.getSeason(season_id).then(season => {
-      season.vanity = emojify.emojify(season.id)
-      return pairings.getMatchups(season.id, serial).then(matchups => {
-        matchups = matchups.map(matchup => {
-          matchup.home.vanity = emojify.emojify(matchup.home.id)
-          if (matchup.away.id) {
-            matchup.away.vanity = emojify.emojify(matchup.away.id)
-          }
-          return matchup
-        })
-        var html = templates.series.matchups({
-          user: req.user,
-          season: season,
-          serial: serial,
-          matchups: matchups
-        })
-        res.send(html)
-      })
+function currentStandings(
+  templates,
+  _season,
+  team,
+  series,
+  pairings,
+  req,
+  res) {
+  if (!req.params) {
+    req.params = {}
+  }
+  _season.getActiveSeason().then(season => {
+    req.params.season_id = emojify.emojify(season.id)
+    return series.getCurrentSerial(season.id).then(round => {
+      req.params.round = round
+      return standings(templates, _season, team, series, pairings, req, res)
     })
   }).catch(err => {
     console.error(err)
@@ -248,15 +289,15 @@ function matchups(templates, season, series, pairings, req, res) {
   })
 }
 
-function currentStandings(templates, _season, series, pairings, req, res) {
+function currentMatchups(templates, _season, team, series, pairings, req, res) {
   if (!req.params) {
     req.params = {}
   }
   _season.getActiveSeason().then(season => {
     req.params.season_id = emojify.emojify(season.id)
-    return series.getCurrentSerial(season.id).then(serial => {
-      req.params.serial = serial
-      return standings(templates, _season, series, pairings, req, res)
+    return series.getCurrentSerial(season.id).then(round => {
+      req.params.round = round
+      return matchups(templates, _season, team, series, pairings, req, res)
     })
   }).catch(err => {
     console.error(err)
@@ -264,19 +305,27 @@ function currentStandings(templates, _season, series, pairings, req, res) {
   })
 }
 
-function currentMatchups(templates, _season, series, pairings, req, res) {
-  if (!req.params) {
-    req.params = {}
-  }
-  _season.getActiveSeason().then(season => {
-    req.params.season_id = emojify.emojify(season.id)
-    return series.getCurrentSerial(season.id).then(serial => {
-      req.params.serial = serial
-      return matchups(templates, _season, series, pairings, req, res)
-    })
-  }).catch(err => {
-    console.error(err)
-    res.sendStatus(500)
+function mapTeams(teams) {
+  return teams.map(team => {
+    return {
+      id: team.id,
+      seed: team.seed
+    }
+  })
+}
+
+function mapSeries(series) {
+  return series.map(series => {
+    return {
+      home: {
+        id: series.home_team_id,
+        points: series.home_points
+      },
+      away: {
+        id: series.away_team_id,
+        points: series.away_points
+      }
+    }
   })
 }
 
@@ -303,20 +352,22 @@ module.exports = (templates, season, team, series, pairings) => {
       handler: remove.bind(null, series)
     },
     standings: {
-      route: '/seasons/:season_id/standings',
-      handler: standings.bind(null, templates, season, series, pairings)
+      route: '/seasons/:season_id/standings/:round?',
+      handler: standings.bind(null, templates, season, team, series, pairings)
     },
     matchups: {
-      route: '/seasons/:season_id/matchups/:serial?',
-      handler: matchups.bind(null, templates, season, series, pairings)
+      route: '/seasons/:season_id/matchups/:round?',
+      handler: matchups.bind(null, templates, season, team, series, pairings)
     },
     currentStandings: {
       route: '/standings',
-      handler: currentStandings.bind(null, templates, season, series, pairings)
+      handler: currentStandings.bind(
+        null, templates, season, team, series, pairings)
     },
     currentMatchups: {
       route: '/matchups',
-      handler: currentMatchups.bind(null, templates, season, series, pairings)
+      handler: currentMatchups.bind(
+        null, templates, season, team, series, pairings)
     }
   }
 }
