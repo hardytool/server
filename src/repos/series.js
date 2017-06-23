@@ -175,6 +175,8 @@ function getStandings(db, season_id, serial) {
           series
         WHERE
           serial < ${serial}
+        AND
+          season_id = ${season_id}
         UNION ALL
         SELECT
           season_id,
@@ -185,6 +187,8 @@ function getStandings(db, season_id, serial) {
           series
         WHERE
           serial < ${serial}
+        AND
+          season_id = ${season_id}
       ) standings
       WHERE
         season_id = ${season_id}
@@ -206,7 +210,7 @@ function getStandings(db, season_id, serial) {
     WHERE
       team.season_id = ${season_id}
     ORDER BY
-      (2 * standings.wins) DESC,
+      standings.wins DESC,
       (2 * standings.wins - standings.losses) DESC,
       team.seed DESC
     `

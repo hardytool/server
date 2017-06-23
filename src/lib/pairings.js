@@ -1,13 +1,15 @@
-// Currently this is a bit of a lie
-// We're calculating median, not modified median
-// Need to see if this impacts anything down the road
-function getModifiedMedianScores(team, series, season_id, serial) {
+// Doesn't account for forfeits yet, still not sure how to implement that
+function getModifiedMedianScores(
+  team, series, maxPerRound, season_id, round) {
+  if (!maxPerRound) {
+    maxPerRound = 2
+  }
   return team.getTeams(season_id).then(teams => {
     return series.getSeries({
       season_id: season_id,
-      serial: serial
+      serial: round
     }).then(series => {
-      return teams.reduce((acc, team) => {
+      var mappings = teams.reduce((acc, team) => {
         acc.push(series.filter(series => {
           return series.home_team_id === team.id ||
             series.away_team_id === team.id
@@ -20,28 +22,50 @@ function getModifiedMedianScores(team, series, season_id, serial) {
             acc.opponents.push(series.home_team_id)
           }
           return acc
-        }, { points: 0, opponents: [] }))
+        }, { id: team.id, points: 0, opponents: [] }))
         return acc
-      }, []).reduce((acc, history) => {
+      }, [])
+      var points = mappings.reduce((acc, val) => {
+        acc[val.id] = val.points
+        return acc
+      }, {})
+      var scores = mappings.reduce((acc, history) => {
         history.opponents.forEach(opponent => {
-          acc[opponent] = acc[opponent]
-            ? acc[opponent] + history.points
-            : [ history.points ]
+          acc[opponent].scores.push(history.points)
+          acc[opponent].points += history.points
         })
+        return acc
+      }, Object.entries(points).reduce((acc, [key]) => {
+        acc[key] = {
+          scores: [],
+          points: 0
+        }
+        return acc
+      }, {}))
+      var fifty = ((round - 1) * maxPerRound) / 2
+      return Object.entries(scores).reduce((acc, [key, value]) => {
+        value.scores.sort()
+        if (points[key] > fifty) {
+          value.scores.shift()
+        } else if (points[key] < fifty) {
+          value.scores.pop()
+        }
+        acc[key] = value.scores.reduce((acc, val) => acc + val, 0)
         return acc
       }, {})
     })
   })
 }
 
-function getMatchups(team, series, season_id, serial) {
+function getMatchups(team, series, maxPerRound, season_id, round) {
   return team.getTeams(season_id).then(teams => {
-    return series.getStandings(season_id, serial).then(standings => {
+    return series.getStandings(season_id, round).then(standings => {
       return getModifiedMedianScores(
         team,
         series,
+        maxPerRound,
         season_id,
-        serial
+        round
       ).then(scores => {
         return standings.sort((a, b) => {
           if (a.wins === b.wins) {
@@ -57,7 +81,7 @@ function getMatchups(team, series, season_id, serial) {
       }).then(standings => {
         return series.getSeries({
           season_id: season_id,
-          serial: serial
+          serial: round
         }).then(series => {
           var exclusions = teams.reduce((acc, val) => {
             if (!acc.hasOwnProperty(val.id)) {
@@ -139,9 +163,17 @@ function getMatchups(team, series, season_id, serial) {
   })
 }
 
-module.exports = (team, series) => {
+module.exports = (team, series, options) => {
+  if (!options) {
+    options = {}
+  }
+  if (!options.maxPerRound) {
+    options.maxPerRound = 2
+  }
   return {
-    getModifiedMedianScores: getModifiedMedianScores.bind(null, team, series),
-    getMatchups: getMatchups.bind(null, team, series)
+    getModifiedMedianScores: getModifiedMedianScores.bind(
+      null, team, series, options.maxPerRound),
+    getMatchups: getMatchups.bind(
+      null, team, series, options.maxPerRound)
   }
 }

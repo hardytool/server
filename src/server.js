@@ -38,7 +38,9 @@ var team_player = require('./repos/team_player')(pool)
 var mmr = require('./lib/mmr')(dota2)
 var auth = require('./lib/auth')(config, admin, steam_user, mmr)
 var credentials = require('./lib/credentials')(config.server)
-var pairings = require('./lib/pairings')(team, series)
+var pairings = require('./lib/pairings')(team, series, {
+  maxPerRound: 2
+})
 
 // Auth routes
 var openid = require('./api/openid')(config)
@@ -99,7 +101,8 @@ app.use(session({
   }),
   secret: config.server.secret,
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  maxAge: 1000 * 60 * 60 * 24 * 365
 }))
 app.use(passport.initialize())
 app.use(passport.session())

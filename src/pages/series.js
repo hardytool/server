@@ -153,8 +153,7 @@ function post(series, req, res) {
   }
 
   series.saveSeries(s).then(() => {
-    var series_vanity = emojify.emojify(s.id)
-    res.redirect('/seasons/' + season_vanity + '/series/' + series_vanity)
+    res.redirect('/seasons/' + season_vanity + '/series')
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -188,18 +187,29 @@ function standings(templates, season, series, pairings, req, res) {
       return series.getStandings(season_id, serial).then(standings => {
         return pairings.getModifiedMedianScores(season.id, serial).then(
           scores => {
-          standings = standings.map(standing => {
-            standing.vanity = emojify.emojify(standing.id)
-            standing.tiebreaker = scores[standing.id]
-            return standing
-          })
-          var html = templates.series.standings({
-            user: req.user,
-            season: season,
-            standings: standings
-          })
-          res.send(html)
-        })
+            standings = standings.map(standing => {
+              standing.vanity = emojify.emojify(standing.id)
+              standing.tiebreaker = scores[standing.id]
+              return standing
+            }).sort((a, b) => {
+              if (a.wins === b.wins) {
+                if (a.tiebreaker === b.tiebreaker) {
+                  return b.seed - a.seed
+                } else {
+                  return b.tiebreaker - a.tiebreaker
+                }
+              } else {
+                return b.wins - a.wins
+              }
+            })
+            var html = templates.series.standings({
+              user: req.user,
+              season: season,
+              standings: standings
+            })
+            res.send(html)
+          }
+        )
       })
     })
   }).catch(err => {

@@ -10,6 +10,8 @@ function getSeasons(db) {
     current_serial
   FROM
     season
+  ORDER BY
+    number ASC
   `
   return db.query(select).then(result => {
     return result.rows
