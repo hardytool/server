@@ -31,7 +31,8 @@
     "pug-tree": "^1.0.1",
     "redirect-https": "^1.1.4",
     "shortid": "^2.2.8",
-    "steam": "^1.4.0"
+    "steam": "^1.4.0",
+    "swiss-pairing": "^1.0.3"
   },
   "devDependencies": {
     "eslint": "^4.0.0",

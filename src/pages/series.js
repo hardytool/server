@@ -317,6 +317,7 @@ function mapTeams(teams) {
 function mapSeries(series) {
   return series.map(series => {
     return {
+      round: series.serial,
       home: {
         id: series.home_team_id,
         points: series.home_points
