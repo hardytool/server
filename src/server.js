@@ -97,10 +97,12 @@ app.use(session({
     host: config.redis.host,
     port: config.redis.port
   }),
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 365
+  },
   secret: config.server.secret,
   resave: true,
-  saveUninitialized: true,
-  maxAge: 1000 * 60 * 60 * 24 * 365
+  saveUninitialized: true
 }))
 app.use(passport.initialize())
 app.use(passport.session())
