@@ -90,3 +90,78 @@ block content
           p.control
             a(href='/seasons/' + season.vanity + '/teams/' + team.vanity + '/edit')
               button.button.is-primary Edit team
+  div.columns
+    div.column
+      h5.title.is-5
+        span Series
+      table.table.is-striped.is-middle-aligned
+        thead
+          tr
+            th Week
+            th Home Team Name
+            th Home Team Logo
+            th Home Team Points
+            th Away Team Points
+            th Away Team Logo
+            th Away Team Name
+            th Match 1
+            th Match 2
+            th Forfeit Match 1?
+            th Forfeit Match 2?
+            if user && user.isAdmin
+              th Edit
+        tbody
+          each _series in series
+            tr
+              td= _series.round
+              td
+                a(href='/seasons/' + season.vanity + '/teams/' + _series.home.vanity)= _series.home.name
+              td
+                figure.image.is-team-logo.hide-overflow
+                  img(src=_series.home.logo)
+              td= _series.home.points
+              if _series.away
+                td= _series.away.points
+                td
+                  figure.image.is-team-logo.hide-overflow
+                    img(src=_series.away.logo)
+                td
+                  a(href='/seasons/' + season.vanity + '/teams/' + _series.away.vanity)= _series.away.name
+              else
+                td 0
+                td BYE
+                td BYE
+              if _series.match_1_id
+                td
+                  a(href='https://www.dotabuff.com/matches/' + _series.match_id_1) Dotabuff
+                  span
+                    | &nbsp;/
+                    |
+                  a(href='https://www.opendota.com/matches/' + _series.match_id_1) OpenDota
+              else
+                td N/A
+              if _series.match_2_id
+                td
+                  a(href='https://www.dotabuff.com/matches/' + _series.match_id_2) Dotabuff
+                  span
+                    |
+                    |/
+                    |
+                  a(href='https://www.opendota.com/matches/' + _series.match_id_2) OpenDota
+              else
+                td N/A
+              if _series.match_1_forfeit_home == true
+                td Home
+              else if _series.match_1_forfeit_home == false
+                  td Away
+              else
+                td None
+              if _series.match_2_forfeit_home == true
+                td Home
+              else if _series.match_2_forfeit_home == false
+                  td Away
+              else
+                td None
+              if user && user.isAdmin
+                td
+                  a(href='/seasons/' + season.vanity + '/series/' + _series.vanity + '/edit') edit

@@ -41,22 +41,32 @@ function getSeries(db, criteria) {
           series.round < ${criteria.round}
         `])
       }
-    } else if (criteria.series_id) {
+    }
+    if (criteria.series_id) {
       select = sql.join([select, sql`
       AND
         series.id = ${criteria.series_id}
       `])
     }
-    select = sql.join([select, sql`
-    ORDER BY
-      series.round ASC,
-      (series.home_points + series.away_points) DESC,
-      (home_team.seed + away_team.seed) DESC,
-      home_team.name ASC,
-      away_team.name ASC,
-      series.home_points DESC
-    `])
+    if (criteria.team_id) {
+      select = sql.join([select, sql`
+      AND (
+        series.home_team_id = ${criteria.team_id}
+        OR
+        series.away_team_id = ${criteria.team_id}
+      )
+      `])
+    }
   }
+  select = sql.join([select, sql`
+  ORDER BY
+    series.round ASC,
+    (series.home_points + series.away_points) DESC,
+    (home_team.seed + away_team.seed) DESC,
+    home_team.name ASC,
+    away_team.name ASC,
+    series.home_points DESC
+  `])
   return db.query(select).then(result => {
     return result.rows
   })

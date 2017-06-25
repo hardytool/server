@@ -52,7 +52,7 @@ var seriesPages = require('./pages/series')(
   templates, season, team, series, pairings)
 var teamPages = require('./pages/teams')(templates, season, team)
 var rosterPages = require('./pages/roster')(
-  templates, season, team, team_player)
+  templates, season, team, team_player, series)
 
 // API routes
 // none currently

@@ -1,6 +1,6 @@
 var emojify = require('../lib/emojify')
 
-function list(templates, season, team, team_player, req, res) {
+function list(templates, season, team, team_player, series, req, res) {
   var season_id = emojify.unemojify(req.params.season_id)
   var team_id = emojify.unemojify(req.params.team_id)
 
@@ -9,21 +9,45 @@ function list(templates, season, team, team_player, req, res) {
     return team.getTeam(team_id).then(team => {
       team.vanity = emojify.emojify(team.id)
       return team_player.getRoster(team.id).then(players => {
-        var captain = players.filter(player => {
-          return player.is_captain
-        })[0]
-        players = players.filter(player => {
-          return !captain || player.id != captain.id
-        })
-        var html = templates.roster.list({
-          user: req.user,
-          season: season,
-          team: team,
-          captain: captain,
-          players: players
-        })
+        return series.getSeries({ team_id: team.id }).then(series => {
+          var captain = players.filter(player => {
+            return player.is_captain
+          })[0]
+          players = players.filter(player => {
+            return !captain || player.id != captain.id
+          })
+          series = series.map(_series => {
+            _series.vanity = emojify.emojify(_series.id)
+            _series.season_vanity = emojify.emojify(_series.season_id)
+            if (_series.home_team_id) {
+              _series.home = {}
+              _series.home.id = _series.home_team_id
+              _series.home.vanity = emojify.emojify(_series.home_team_id)
+              _series.home.name = _series.home_team_name
+              _series.home.logo = _series.home_team_logo
+              _series.home.points = _series.home_points
+            }
+            if (_series.away_team_id) {
+              _series.away = {}
+              _series.away.id = _series.away_team_id
+              _series.away.vanity = emojify.emojify(_series.away_team_id)
+              _series.away.name = _series.away_team_name
+              _series.away.logo = _series.away_team_logo
+              _series.away.points = _series.away_points
+            }
+            return _series
+          })
+          var html = templates.roster.list({
+            user: req.user,
+            season: season,
+            team: team,
+            captain: captain,
+            players: players,
+            series: series
+          })
 
-        res.send(html)
+          res.send(html)
+        })
       })
     })
   }).catch(err => {
@@ -110,11 +134,11 @@ function remove(team_player, req, res) {
   })
 }
 
-module.exports = (templates, season, team, team_player) => {
+module.exports = (templates, season, team, team_player, series) => {
   return {
     list: {
       route: '/seasons/:season_id/teams/:team_id',
-      handler: list.bind(null, templates, season, team, team_player)
+      handler: list.bind(null, templates, season, team, team_player, series)
     },
     add: {
       route: '/seasons/:season_id/teams/:team_id/add',
