@@ -112,6 +112,19 @@ function remove(team, req, res) {
   })
 }
 
+function currentTeams(templates, _season, team, req, res) {
+  if (!req.params) {
+    req.params = {}
+  }
+  _season.getActiveSeason().then(season => {
+    req.params.season_id = emojify.emojify(season.id)
+    return list(templates, _season, team, req, res)
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
 module.exports = (templates, season, team) => {
   return {
     list: {
@@ -120,11 +133,11 @@ module.exports = (templates, season, team) => {
     },
     create: {
       route: '/seasons/:season_id/teams/create',
-      handler: create.bind(null, templates, season),
+      handler: create.bind(null, templates, season)
     },
     edit: {
       route: '/seasons/:season_id/teams/:id/edit',
-      handler: edit.bind(null, templates, season, team),
+      handler: edit.bind(null, templates, season, team)
     },
     post: {
       route: '/teams/edit',
@@ -133,6 +146,10 @@ module.exports = (templates, season, team) => {
     remove: {
       route: '/teams/delete',
       handler: remove.bind(null, team)
+    },
+    currentTeams: {
+      route: '/teams',
+      handler: currentTeams.bind(null, templates, season, team)
     }
   }
 }

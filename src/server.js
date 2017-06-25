@@ -128,6 +128,7 @@ app.post(seasonPages.remove.route, seasonPages.remove.handler)
 app.get(teamPages.list.route, teamPages.list.handler)
 app.get(teamPages.create.route, teamPages.create.handler)
 app.get(teamPages.edit.route, teamPages.edit.handler)
+app.get(teamPages.currentTeams.route, teamPages.currentTeams.handler)
 
 app.post(teamPages.post.route, teamPages.post.handler)
 app.post(teamPages.remove.route, teamPages.remove.handler)
