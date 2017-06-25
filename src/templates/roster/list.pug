@@ -133,21 +133,21 @@ block content
                 td BYE
               if _series.match_1_id
                 td
-                  a(href='https://www.dotabuff.com/matches/' + _series.match_id_1) Dotabuff
+                  a(href='https://www.dotabuff.com/matches/' + _series.match_1_id) Dotabuff
                   span
                     | &nbsp;/
                     |
-                  a(href='https://www.opendota.com/matches/' + _series.match_id_1) OpenDota
+                  a(href='https://www.opendota.com/matches/' + _series.match_1_id) OpenDota
               else
                 td N/A
               if _series.match_2_id
                 td
-                  a(href='https://www.dotabuff.com/matches/' + _series.match_id_2) Dotabuff
+                  a(href='https://www.dotabuff.com/matches/' + _series.match_2_id) Dotabuff
                   span
                     |
                     |/
                     |
-                  a(href='https://www.opendota.com/matches/' + _series.match_id_2) OpenDota
+                  a(href='https://www.opendota.com/matches/' + _series.match_2_id) OpenDota
               else
                 td N/A
               if _series.match_1_forfeit_home == true
