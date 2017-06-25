@@ -4,7 +4,7 @@ function getSeries(db, criteria) {
   var select = sql`
   SELECT
     series.id,
-    series.serial,
+    series.round,
     series.season_id,
     series.home_team_id,
     series.away_team_id,
@@ -35,10 +35,10 @@ function getSeries(db, criteria) {
       AND
         series.season_id = ${criteria.season_id}
       `])
-      if (criteria.serial) {
+      if (criteria.round) {
         select = sql.join([select, sql`
         AND
-          series.serial < ${criteria.serial}
+          series.round < ${criteria.round}
         `])
       }
     } else if (criteria.series_id) {
@@ -49,7 +49,7 @@ function getSeries(db, criteria) {
     }
     select = sql.join([select, sql`
     ORDER BY
-      series.serial ASC,
+      series.round ASC,
       (series.home_points + series.away_points) DESC,
       (home_team.seed + away_team.seed) DESC,
       home_team.name ASC,
@@ -67,7 +67,7 @@ function saveSeries(db, series) {
   INSERT INTO
     series (
       id,
-      serial,
+      round,
       season_id,
       home_team_id,
       away_team_id,
@@ -79,7 +79,7 @@ function saveSeries(db, series) {
       match_2_forfeit_home
     ) VALUES (
       ${series.id},
-      ${series.serial},
+      ${series.round},
       ${series.season_id},
       ${series.home_team_id},
       ${series.away_team_id},
@@ -92,7 +92,7 @@ function saveSeries(db, series) {
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
-      serial,
+      round,
       season_id,
       home_team_id,
       away_team_id,
@@ -103,7 +103,7 @@ function saveSeries(db, series) {
       match_1_forfeit_home,
       match_2_forfeit_home
     ) = (
-      ${series.serial},
+      ${series.round},
       ${series.season_id},
       ${series.home_team_id},
       ${series.away_team_id},
@@ -128,28 +128,28 @@ function deleteSeries(db, id) {
   return db.query(query)
 }
 
-function getCurrentSerial(db, season_id, serial) {
-  return Promise.resolve(serial).then(serial => {
-    if (serial) {
-      return Promise.resolve(serial)
+function getCurrentRound(db, season_id, round) {
+  return Promise.resolve(round).then(round => {
+    if (round) {
+      return Promise.resolve(round)
     } else {
       var query = sql`
       SELECT
-        current_serial as serial
+        current_round as round
       FROM
         season
       WHERE
         id = ${season_id}
       `
       return db.query(query).then(result => {
-        return result.rows[0].serial
+        return result.rows[0].round
       })
     }
   })
 }
 
-function getStandings(db, season_id, serial) {
-  return getCurrentSerial(db, season_id, serial).then(serial => {
+function getStandings(db, season_id, round) {
+  return getCurrentRound(db, season_id, round).then(round => {
     var query = sql`
     SELECT
       team.id,
@@ -174,7 +174,7 @@ function getStandings(db, season_id, serial) {
         FROM
           series
         WHERE
-          serial < ${serial}
+          round < ${round}
         AND
           season_id = ${season_id}
         UNION ALL
@@ -186,7 +186,7 @@ function getStandings(db, season_id, serial) {
         FROM
           series
         WHERE
-          serial < ${serial}
+          round < ${round}
         AND
           season_id = ${season_id}
       ) standings
@@ -225,7 +225,7 @@ module.exports = db => {
     getSeries: getSeries.bind(null, db),
     saveSeries: saveSeries.bind(null, db),
     deleteSeries: deleteSeries.bind(null, db),
-    getCurrentSerial: getCurrentSerial.bind(null, db),
+    getCurrentRound: getCurrentRound.bind(null, db),
     getStandings: getStandings.bind(null, db)
   }
 }

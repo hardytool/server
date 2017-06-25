@@ -7,7 +7,7 @@ function getSeasons(db) {
     number,
     name,
     active,
-    current_serial
+    current_round
   FROM
     season
   ORDER BY
@@ -25,7 +25,7 @@ function getSeason(db, id) {
     number,
     name,
     active,
-    current_serial
+    current_round
   FROM
     season
   WHERE
@@ -43,7 +43,7 @@ function getActiveSeason(db) {
     number,
     name,
     active,
-    current_serial
+    current_round
   FROM
     season
   WHERE
@@ -62,25 +62,25 @@ function saveSeason(db, season) {
       number,
       name,
       active,
-      current_serial
+      current_round
     ) VALUES (
       ${season.id},
       ${season.number},
       ${season.name},
       ${season.active},
-      ${season.current_serial}
+      ${season.current_round}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
       number,
       name,
       active,
-      current_serial
+      current_round
     ) = (
       ${season.number},
       ${season.name},
       ${season.active},
-      ${season.current_serial}
+      ${season.current_round}
     )
   `
   return db.query(upsert)

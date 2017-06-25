@@ -1,7 +1,7 @@
 extends ../components/base.pug
 
 block title
-  title #{title} : #{verb} Series #{series ? ' - Week ' + series.serial + ' - ' + series.home.name + ' v ' + series.away.name : ''}
+  title #{title} : #{verb} Series #{series ? ' - Week ' + series.round + ' - ' + series.home.name + ' v ' + series.away.name : ''}
 
 block content
   div.columns
@@ -9,16 +9,16 @@ block content
       h3.title.is-3
         span.icon.is-medium
           i.fa.fa-pencil
-        span &nbsp;#{verb} Series #{series ? ' - Week ' + series.serial + ' - ' + series.home.name + ' v ' + series.away.name : ''}
+        span &nbsp;#{verb} Series #{series ? ' - Week ' + series.round + ' - ' + series.home.name + ' v ' + series.away.name : ''}
       div
         form(method='post' action='/series/edit')
           if series
             input(type='hidden' name='id' value=series.id)
           input(type='hidden' name='season_id' value=season.id)
           div.field
-            label.label(for='serial') Week:
+            label.label(for='round') Week:
             p.control
-              input.input(id='serial' type='number' name='serial' placeholder='Week' min='1' value=(series ? series.serial : '') required)
+              input.input(id='round' type='number' name='round' placeholder='Week' min='1' value=(series ? series.round : '') required)
           div.field
             label.label(for='home_team_id') Home team:
             p.control

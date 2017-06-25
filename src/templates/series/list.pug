@@ -29,7 +29,7 @@ block content
         tbody
           each _series in series
             tr
-              td= _series.serial
+              td= _series.round
               td
                 a(href='/seasons/' + season.vanity + '/teams/' + _series.home.vanity)= _series.home.name
               td

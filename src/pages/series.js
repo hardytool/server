@@ -9,7 +9,7 @@ function list(templates, season, series, req, res) {
     season.vanity = emojify.emojify(season.id)
     return series.getSeries({
       season_id: season_id,
-      serial: round
+      round: round
     }).then(series => {
       series = series.map(_series => {
         _series.vanity = emojify.emojify(_series.id)
@@ -181,13 +181,13 @@ function standings(templates, season, team, series, pairings, req, res) {
   var season_id = emojify.unemojify(req.params.season_id)
   var round = Number.parseInt(req.params.round)
 
-  series.getCurrentSerial(season_id, round).then(round => {
+  series.getCurrentRound(season_id, round).then(round => {
     return season.getSeason(season_id).then(season => {
       season.vanity = emojify.emojify(season.id)
       return team.getTeams(season.id).then(teams => {
         return series.getSeries({
           season_id: season.id,
-          serial: round
+          round: round
         }).then(series => {
           var standings = pairings.getStandings(
             round,
@@ -204,6 +204,7 @@ function standings(templates, season, team, series, pairings, req, res) {
           var html = templates.series.standings({
             user: req.user,
             season: season,
+            round: round,
             standings: standings
           })
           res.send(html)
@@ -220,13 +221,13 @@ function matchups(templates, season, team, series, pairings, req, res) {
   var season_id = emojify.unemojify(req.params.season_id)
   var round = Number.parseInt(req.params.round)
 
-  series.getCurrentSerial(season_id, round).then(round => {
+  series.getCurrentRound(season_id, round).then(round => {
     return season.getSeason(season_id).then(season => {
       season.vanity = emojify.emojify(season.id)
       return team.getTeams(season.id).then(teams => {
         return series.getSeries({
           season_id: season.id,
-          serial: round
+          round: round
         }).then(series => {
           var matchups = pairings.getMatchups(
             round,
@@ -253,7 +254,7 @@ function matchups(templates, season, team, series, pairings, req, res) {
           var html = templates.series.matchups({
             user: req.user,
             season: season,
-            serial: round,
+            round: round,
             matchups: matchups
           })
           res.send(html)
@@ -279,7 +280,7 @@ function currentStandings(
   }
   _season.getActiveSeason().then(season => {
     req.params.season_id = emojify.emojify(season.id)
-    return series.getCurrentSerial(season.id).then(round => {
+    return series.getCurrentRound(season.id).then(round => {
       req.params.round = round
       return standings(templates, _season, team, series, pairings, req, res)
     })
@@ -295,7 +296,7 @@ function currentMatchups(templates, _season, team, series, pairings, req, res) {
   }
   _season.getActiveSeason().then(season => {
     req.params.season_id = emojify.emojify(season.id)
-    return series.getCurrentSerial(season.id).then(round => {
+    return series.getCurrentRound(season.id).then(round => {
       req.params.round = round
       return matchups(templates, _season, team, series, pairings, req, res)
     })
@@ -317,7 +318,7 @@ function mapTeams(teams) {
 function mapSeries(series) {
   return series.map(series => {
     return {
-      round: series.serial,
+      round: series.round,
       home: {
         id: series.home_team_id,
         points: series.home_points
