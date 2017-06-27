@@ -1,5 +1,6 @@
 var emojify = require('../lib/emojify')
 var shortid = require('shortid')
+var pairingMaps = require('../lib/pairing-maps')
 
 function list(templates, season, series, req, res) {
   var season_id = emojify.unemojify(req.params.season_id)
@@ -191,8 +192,8 @@ function standings(templates, season, team, series, pairings, req, res) {
         }).then(series => {
           var standings = pairings.getStandings(
             round,
-            mapTeams(teams),
-            mapSeries(series)
+            teams,
+            pairingMaps.mapSeries(series)
           )
           standings = standings.map(standing => {
             var team = teams.filter(team => team.id === standing.id)[0]
@@ -225,15 +226,7 @@ function matchups(templates, season, team, series, pairings, req, res) {
     return season.getSeason(season_id).then(season => {
       season.vanity = emojify.emojify(season.id)
       return team.getTeams(season.id).then(teams => {
-        return series.getSeries({
-          season_id: season.id,
-          round: round
-        }).then(series => {
-          var matchups = pairings.getMatchups(
-            round,
-            mapTeams(teams),
-            mapSeries(series)
-          )
+        return pairings.getMatchups(season.id, round).then(matchups => {
           matchups = matchups.map(matchup => {
             matchup.home = teams.filter(team => team.id === matchup.home)[0]
             if (matchup.away === null) {
@@ -303,31 +296,6 @@ function currentMatchups(templates, _season, team, series, pairings, req, res) {
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
-  })
-}
-
-function mapTeams(teams) {
-  return teams.map(team => {
-    return {
-      id: team.id,
-      seed: team.seed
-    }
-  })
-}
-
-function mapSeries(series) {
-  return series.map(series => {
-    return {
-      round: series.round,
-      home: {
-        id: series.home_team_id,
-        points: series.home_points
-      },
-      away: {
-        id: series.away_team_id,
-        points: series.away_points
-      }
-    }
   })
 }
 
