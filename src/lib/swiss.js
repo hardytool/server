@@ -1,29 +1,3 @@
-var Promise = require('bluebird')
-
-var pairs = {}
-var matchups = {}
-var _participants = null
-var _matches = null
-
-function prefetch(options, id, round, participants, matches) {
-  _participants = participants
-  _matches = matches
-
-  if (!pairs[id]) {
-    pairs[id] = new Promise(resolve => {
-        resolve([...getAllPairs(participants.map(p => p.id))])
-    })
-    matchups[id] = {}
-    var i = round + 1
-    matchups[id][i] = prepareMatchups(
-        options,
-        id,
-        i,
-        participants,
-        matches)
-  }
-}
-
 // Doesn't account for forfeits yet, still debating on that implementation
 // for multi-point scenarios
 function getModifiedMedianScores(options, round, participants, matches) {
@@ -124,25 +98,7 @@ function getStandings(options, round, participants, matches) {
   })
 }
 
-function getMatchups(options, id, round) {
-  if (matchups[id]) {
-    if (!matchups[id][round]) {
-      matchups[id][round] = new Promise(resolve => {
-        resolve(prepareMatchups(
-          options,
-          id,
-          round,
-          _participants,
-          _matches))
-      })
-    }
-  }
-  return matchups[id][round].then(matchups => {
-    return JSON.parse(JSON.stringify(matchups))
-  })
-}
-
-function prepareMatchups(options, id, round, participants, matches) {
+function getMatchups(options, id, round, participants, matches) {
   matches = matches.filter(match => match.round < round)
   var standings = getStandings(options, round, participants, matches)
   standings.sort((a, b) => {
@@ -156,6 +112,29 @@ function prepareMatchups(options, id, round, participants, matches) {
       return b.wins - a.wins
     }
   })
+  var exclusions = participants.reduce((exclusions, participant) => {
+    if (!exclusions.hasOwnProperty(participant.id)) {
+      exclusions[participant.id] = [participant.id.toString()]
+    }
+    return exclusions
+  }, {})
+
+  exclusions = matches.reduce((exclusions, match) => {
+    if (exclusions[match.home.id] &&
+      !exclusions[match.home.id]
+      .includes(match.away.id)) {
+      if (match.away.id !== null) {
+        exclusions[match.home.id].push(match.away.id.toString())
+      }
+    }
+    if (exclusions[match.away.id] &&
+      !exclusions[match.away.id]
+      .includes(match.home.id)) {
+      exclusions[match.away.id].push(match.home.id.toString())
+    }
+    return exclusions
+  }, exclusions)
+
 
   var orderedParticipants = standings.map(s => {
     return {
@@ -168,37 +147,69 @@ function prepareMatchups(options, id, round, participants, matches) {
     orderedParticipants.push({ id: null, seed: 0 })
   }
   var penalties = generatePenalties(options, orderedParticipants, matches)
-  var best = null
-  return pairs[id].then(pairs => {
-    for (var [, list] of pairs.entries()) {
-      var option = list.map(([home, away]) => {
-        var penalty = penalties[home][away] + penalties[away][home]
-        return {
-          penalty: penalty,
-          home: home,
-          away: away
-        }
-      }).reduce((option, pair) => {
-        if (option.penalty === undefined) {
-          option.penalty = 0
-        }
-        if (option.matchups === undefined) {
-          option.matchups = []
-        }
-        option.penalty += pair.penalty
-        option.matchups.push(pair)
-        return option
-      }, {})
-      if (!best || option.penalty < best.penalty) {
-        best = option
-      }
+  var matchups = standings.reduce((matchups, standing, i) => {
+    var index = Math.floor(i/2)
+    if (matchups[index]) {
+      matchups[index].away = standing.id
+    } else {
+      matchups.push({
+        home: standing.id
+      })
     }
-    best.matchups.sort((a, b) => {
-      return standings.findIndex(el => el.id === a.home) -
-        standings.findIndex(el => el.id === b.home)
-    })
-    return best.matchups
-  })
+    return matchups
+  }, [])
+  matchups = minimizeMatchupPenalties(penalties, matchups)
+  console.dir(matchups)
+  return matchups
+}
+
+function minimizeMatchupPenalties(penalties, [head, next, ...tail]) {
+  var ordered = findLowestPenalty(penalties, head, next)
+  if (!tail.length) {
+    return ordered
+  } else {
+    var remainder = minimizeMatchupPenalties(penalties, tail)
+    return ordered.concat(remainder)
+  }
+}
+
+function findLowestPenalty(penalties, m1, m2) {
+  var options = [
+    [
+      {
+        penalty: penalties[m1.home][m1.away] + penalties[m1.away][m1.home],
+        home: m1.home,
+        away: m1.away
+      }, {
+        penalty: penalties[m2.home][m2.away] + penalties[m2.away][m2.home],
+        home: m2.home,
+        away: m2.away
+      }
+    ], [
+      {
+        penalty: penalties[m1.home][m2.home] + penalties[m2.home][m1.home],
+        home: m1.home,
+        away: m2.home
+      }, {
+        penalty: penalties[m1.away][m2.away] + penalties[m1.away][m2.away],
+        home: m1.away,
+        away: m2.away
+      }
+    ], [
+      {
+        penalty: penalties[m1.home][m2.away] + penalties[m2.away][m1.home],
+        home: m1.home,
+        away: m2.away
+      }, {
+        penalty: penalties[m1.away][m2.home] + penalties[m1.away][m2.home],
+        home: m1.away,
+        away: m2.home
+      }
+    ]
+  ]
+  return options.sort(([a, b], [c, d]) => {
+    return (a.penalty + b.penalty) - (c.penalty + d.penalty)
+  })[0]
 }
 
 function generatePenalties(options, orderedParticipants, matches) {
@@ -237,27 +248,6 @@ function generatePenalties(options, orderedParticipants, matches) {
   }, {})
 }
 
-function* getAllPairs(participants) {
-  if (participants.length < 2) {
-    yield [participants]
-    return
-  }
-
-  var a = participants[0]
-  participants = participants.slice(1)
-  for (var [i, val] of participants.entries()) {
-    var pair = [a, val]
-    var others = participants.slice(0, i).concat(participants.slice(i+1))
-    if (others.length === 0) {
-      yield [pair]
-    } else {
-      for (var rest of getAllPairs(others)) {
-        yield [pair].concat(rest)
-      }
-    }
-  }
-}
-
 module.exports = (options) => {
   if (!options) {
     options = {}
@@ -272,9 +262,7 @@ module.exports = (options) => {
     options.standingWeight = 10000
   }
   return {
-    prefetch: prefetch.bind(null, options),
-    getModifiedMedianScores: getModifiedMedianScores.bind(
-      null, options),
+    getModifiedMedianScores: getModifiedMedianScores.bind(null, options),
     getStandings: getStandings.bind(null, options),
     getMatchups: getMatchups.bind(null, options)
   }

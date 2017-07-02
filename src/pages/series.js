@@ -226,7 +226,17 @@ function matchups(templates, season, team, series, pairings, req, res) {
     return season.getSeason(season_id).then(season => {
       season.vanity = emojify.emojify(season.id)
       return team.getTeams(season.id).then(teams => {
-        return pairings.getMatchups(season.id, round).then(matchups => {
+        return series.getSeries({
+          season_id: season.id,
+          round: round
+        }).then(series => {
+          var matchups = pairings.getMatchups(
+            season.id,
+            round,
+            teams,
+            pairingMaps.mapSeries(series)
+          )
+        //return pairings.getMatchups(season.id, round).then(matchups => {
           matchups = matchups.map(matchup => {
             matchup.home = teams.filter(team => team.id === matchup.home)[0]
             if (matchup.away === null) {
