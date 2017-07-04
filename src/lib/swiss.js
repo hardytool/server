@@ -1,23 +1,10 @@
+var blossom = require('edmonds-blossom')
+
 // Doesn't account for forfeits yet, still debating on that implementation
 // for multi-point scenarios
 function getModifiedMedianScores(options, round, participants, matches) {
   matches = matches.filter(match => match.round < round)
-  var mappings = participants.reduce((acc, participant) => {
-    acc.push(matches.filter(match => {
-      return match.home.id === participant.id ||
-        match.away.id === participant.id
-    }).reduce((acc, match) => {
-      if (match.home.id === participant.id) {
-        acc.points += match.home.points
-        acc.opponents.push(match.away.id)
-      } else if (match.away.id === participant.id) {
-        acc.points += match.away.points
-        acc.opponents.push(match.home.id)
-      }
-      return acc
-    }, { id: participant.id, points: 0, opponents: [] }))
-    return acc
-  }, [])
+  var mappings = getMappings(participants, matches)
   var points = mappings.reduce((acc, val) => {
     acc[val.id] = val.points
     return acc
@@ -49,6 +36,25 @@ function getModifiedMedianScores(options, round, participants, matches) {
     acc[key] = value.scores.reduce((acc, val) => acc + val, 0)
     return acc
   }, {})
+}
+
+function getMappings(participants, matches) {
+  return participants.reduce((acc, participant) => {
+    acc.push(matches.filter(match => {
+      return match.home.id === participant.id ||
+        match.away.id === participant.id
+    }).reduce((acc, match) => {
+      if (match.home.id === participant.id) {
+        acc.points += match.home.points
+        acc.opponents.push(match.away.id)
+      } else if (match.away.id === participant.id) {
+        acc.points += match.away.points
+        acc.opponents.push(match.home.id)
+      }
+      return acc
+    }, { id: participant.id, points: 0, opponents: [] }))
+    return acc
+  }, [])
 }
 
 function getStandings(options, round, participants, matches) {
@@ -98,7 +104,7 @@ function getStandings(options, round, participants, matches) {
   })
 }
 
-function getMatchups(options, id, round, participants, matches) {
+function getMatchups(options, round, participants, matches) {
   matches = matches.filter(match => match.round < round)
   var standings = getStandings(options, round, participants, matches)
   standings.sort((a, b) => {
@@ -112,56 +118,27 @@ function getMatchups(options, id, round, participants, matches) {
       return b.wins - a.wins
     }
   })
-
-  var orderedParticipants = standings.map(s => {
-    return {
-      id: s.id,
-      seed: participants.filter(participant => participant.id === s.id)[0].seed
-    }
-  })
-  // Add BYE to the end of the list
-  if (orderedParticipants.length % 2 === 1) {
-    orderedParticipants.push({ id: null, seed: 0 })
-  }
-  var penalties = generatePenalties(options, orderedParticipants, matches)
-
-  // Split orderParticipants into reasonable chunks
-  var groups = []
-  var divisor = Math.ceil(orderedParticipants.length / 10)
-  var groupSize = orderedParticipants.length / divisor
-  groupSize = groupSize % 2 === 0 ? groupSize : groupSize + 1
-  for (var i = 0; i < orderedParticipants.length; i+= groupSize) {
-    groups.push(orderedParticipants.slice(i, i + groupSize))
-  }
-
-  var matchups = groups.reduce((matchups, group) => {
-    var best = null
-    for (var list of getAllPairs(group.map(p => p.id))) {
-      var option = list.map(([home, away]) => {
-        var penalty = penalties[home][away] + penalties[away][home]
-        return {
-          penalty: penalty,
-          home: home,
-          away: away
-        }
-      }).reduce((option, pair) => {
-        if (option.penalty === undefined) {
-          option.penalty = 0
-        }
-        if (option.matchups === undefined) {
-          option.matchups = []
-        }
-        option.penalty += pair.penalty
-        option.matchups.push(pair)
-        return option
-      }, {})
-      if (!best || option.penalty < best.penalty) {
-        best = option
+  var mappings = getMappings(participants, matches)
+  var arr = []
+  mappings.map(team => {
+    mappings.map(opp => {
+      if(team.id !== opp.id) {
+        arr.push([
+          team.id-1,
+          opp.id-1,
+          -1 * (Math.pow(team.points - opp.points, options.standingPower) +
+          options.rematchWeight*team.opponents.reduce((n, o) => {
+            return n + (o === opp.id)
+          }, 0))]
+        )
+      } else {
+        arr.push([team.id-1, opp.id-1, -10000])
       }
-    }
+    })
+  })
 
-    return matchups.concat(best.matchups)
-  }, [])
+  var matchups = blossom(arr, true)
+
   matchups.sort((a, b) => {
     return standings.findIndex(el => el.id === a.home) -
       standings.findIndex(el => el.id === b.home)
@@ -169,76 +146,11 @@ function getMatchups(options, id, round, participants, matches) {
   return matchups
 }
 
-function generatePenalties(options, orderedParticipants, matches) {
-  var penalties = orderedParticipants.map((participant, index) => {
-    var opponents = orderedParticipants.slice()
-    opponents.splice(index, 1)
-    var penalties = opponents.map((opponent, idx) => {
-      var penalty = matches.filter(match => {
-        return (
-          match.home.id === participant.id &&
-          match.away.id === opponent.id
-        ) || (
-          match.home.id === opponent.id &&
-          match.away.id === participant.id
-        )
-      }).length * options.rematchWeight
-      penalty += ((index - idx) > 0 ? index - idx - 1 : idx - index) *
-        options.standingWeight
-      penalty += Math.abs(participant.seed - opponent.seed)
-      return {
-        id: opponent.id,
-        penalty: penalty
-      }
-    })
-    return {
-      id: participant.id,
-      penalties: penalties
-    }
-  })
-  return penalties.reduce((acc, penaltyList) => {
-    acc[penaltyList.id] = penaltyList.penalties.reduce((acc, penalty) => {
-      acc[penalty.id] = penalty.penalty
-      return acc
-    }, {})
-    return acc
-  }, {})
-}
-
-function* getAllPairs(participants) {
-  if (participants.length < 2) {
-    yield [participants]
-    return
-  }
-
-  var a = participants[0]
-  participants = participants.slice(1)
-  for (var [i, val] of participants.entries()) {
-    var pair = [a, val]
-    var others = participants.slice(0, i).concat(participants.slice(i+1))
-    if (others.length === 0) {
-      yield [pair]
-    } else {
-      for (var rest of getAllPairs(others)) {
-        yield [pair].concat(rest)
-      }
-    }
-  }
-}
-
 module.exports = (options) => {
-  if (!options) {
-    options = {}
-  }
-  if (!options.maxPerRound) {
-    options.maxPerRound = 1
-  }
-  if (!options.rematchWeight) {
-    options.rematchWeight = 1000000
-  }
-  if (!options.standingWeight) {
-    options.standingWeight = 10000
-  }
+  options = options || {}
+  options.maxPerRound = options.maxPerRound || 1
+  options.rematchWeight = options.rematchWeight || 10
+  options.standingPower = options.standingPower || 2
   return {
     getModifiedMedianScores: getModifiedMedianScores.bind(null, options),
     getStandings: getStandings.bind(null, options),
