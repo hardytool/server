@@ -1,5 +1,11 @@
 {
     "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "ecmaFeatures": {
+        "impliedStrict": true
+      }
+    },
     "env": {
       "node": true,
       "es6": true

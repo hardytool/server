@@ -25,7 +25,7 @@
     "express-session": "^1.15.2",
     "passport": "^0.3.2",
     "passport-steam": "^1.0.8",
-    "pg": "^6.2.4",
+    "pg": "^6.4.0",
     "pg-sql": "^1.1.0",
     "pug": "^2.0.0-rc.2",
     "pug-tree": "^1.0.1",
@@ -35,11 +35,10 @@
     "swiss-pairing": "^1.0.4"
   },
   "devDependencies": {
-    "eslint": "^4.0.0",
-    "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-import": "^2.3.0",
+    "eslint": "^4.1.1",
     "eslint-plugin-node": "^5.0.0",
     "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "eslint-plugin-standard": "^3.0.1",
+    "eslint-plugin-node": "^5.1.0"
   }
 }

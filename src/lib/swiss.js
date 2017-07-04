@@ -112,29 +112,6 @@ function getMatchups(options, id, round, participants, matches) {
       return b.wins - a.wins
     }
   })
-  var exclusions = participants.reduce((exclusions, participant) => {
-    if (!exclusions.hasOwnProperty(participant.id)) {
-      exclusions[participant.id] = [participant.id.toString()]
-    }
-    return exclusions
-  }, {})
-
-  exclusions = matches.reduce((exclusions, match) => {
-    if (exclusions[match.home.id] &&
-      !exclusions[match.home.id]
-      .includes(match.away.id)) {
-      if (match.away.id !== null) {
-        exclusions[match.home.id].push(match.away.id.toString())
-      }
-    }
-    if (exclusions[match.away.id] &&
-      !exclusions[match.away.id]
-      .includes(match.home.id)) {
-      exclusions[match.away.id].push(match.home.id.toString())
-    }
-    return exclusions
-  }, exclusions)
-
 
   var orderedParticipants = standings.map(s => {
     return {
@@ -147,69 +124,49 @@ function getMatchups(options, id, round, participants, matches) {
     orderedParticipants.push({ id: null, seed: 0 })
   }
   var penalties = generatePenalties(options, orderedParticipants, matches)
-  var matchups = standings.reduce((matchups, standing, i) => {
-    var index = Math.floor(i/2)
-    if (matchups[index]) {
-      matchups[index].away = standing.id
-    } else {
-      matchups.push({
-        home: standing.id
-      })
-    }
-    return matchups
-  }, [])
-  matchups = minimizeMatchupPenalties(penalties, matchups)
-  console.dir(matchups)
-  return matchups
-}
 
-function minimizeMatchupPenalties(penalties, [head, next, ...tail]) {
-  var ordered = findLowestPenalty(penalties, head, next)
-  if (!tail.length) {
-    return ordered
-  } else {
-    var remainder = minimizeMatchupPenalties(penalties, tail)
-    return ordered.concat(remainder)
+  // Split orderParticipants into reasonable chunks
+  var groups = []
+  var divisor = Math.ceil(orderedParticipants.length / 10)
+  var groupSize = orderedParticipants.length / divisor
+  groupSize = groupSize % 2 === 0 ? groupSize : groupSize + 1
+  for (var i = 0; i < orderedParticipants.length; i+= groupSize) {
+    groups.push(orderedParticipants.slice(i, i + groupSize))
   }
-}
 
-function findLowestPenalty(penalties, m1, m2) {
-  var options = [
-    [
-      {
-        penalty: penalties[m1.home][m1.away] + penalties[m1.away][m1.home],
-        home: m1.home,
-        away: m1.away
-      }, {
-        penalty: penalties[m2.home][m2.away] + penalties[m2.away][m2.home],
-        home: m2.home,
-        away: m2.away
+  var matchups = groups.reduce((matchups, group) => {
+    var best = null
+    for (var list of getAllPairs(group.map(p => p.id))) {
+      var option = list.map(([home, away]) => {
+        var penalty = penalties[home][away] + penalties[away][home]
+        return {
+          penalty: penalty,
+          home: home,
+          away: away
+        }
+      }).reduce((option, pair) => {
+        if (option.penalty === undefined) {
+          option.penalty = 0
+        }
+        if (option.matchups === undefined) {
+          option.matchups = []
+        }
+        option.penalty += pair.penalty
+        option.matchups.push(pair)
+        return option
+      }, {})
+      if (!best || option.penalty < best.penalty) {
+        best = option
       }
-    ], [
-      {
-        penalty: penalties[m1.home][m2.home] + penalties[m2.home][m1.home],
-        home: m1.home,
-        away: m2.home
-      }, {
-        penalty: penalties[m1.away][m2.away] + penalties[m1.away][m2.away],
-        home: m1.away,
-        away: m2.away
-      }
-    ], [
-      {
-        penalty: penalties[m1.home][m2.away] + penalties[m2.away][m1.home],
-        home: m1.home,
-        away: m2.away
-      }, {
-        penalty: penalties[m1.away][m2.home] + penalties[m1.away][m2.home],
-        home: m1.away,
-        away: m2.home
-      }
-    ]
-  ]
-  return options.sort(([a, b], [c, d]) => {
-    return (a.penalty + b.penalty) - (c.penalty + d.penalty)
-  })[0]
+    }
+
+    return matchups.concat(best.matchups)
+  }, [])
+  matchups.sort((a, b) => {
+    return standings.findIndex(el => el.id === a.home) -
+      standings.findIndex(el => el.id === b.home)
+  })
+  return matchups
 }
 
 function generatePenalties(options, orderedParticipants, matches) {
@@ -246,6 +203,27 @@ function generatePenalties(options, orderedParticipants, matches) {
     }, {})
     return acc
   }, {})
+}
+
+function* getAllPairs(participants) {
+  if (participants.length < 2) {
+    yield [participants]
+    return
+  }
+
+  var a = participants[0]
+  participants = participants.slice(1)
+  for (var [i, val] of participants.entries()) {
+    var pair = [a, val]
+    var others = participants.slice(0, i).concat(participants.slice(i+1))
+    if (others.length === 0) {
+      yield [pair]
+    } else {
+      for (var rest of getAllPairs(others)) {
+        yield [pair].concat(rest)
+      }
+    }
+  }
 }
 
 module.exports = (options) => {

@@ -276,6 +276,7 @@ module.exports = (options) => {
     getModifiedMedianScores: getModifiedMedianScores.bind(
       null, options),
     getStandings: getStandings.bind(null, options),
-    getMatchups: getMatchups.bind(null, options)
+    getMatchups: getMatchups.bind(null, options),
+    getAllPairs: getAllPairs
   }
 }
