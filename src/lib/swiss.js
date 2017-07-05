@@ -107,7 +107,6 @@ function getStandings(options, round, participants, matches) {
 function getMatchups(options, id, round, participants, matches) {
   matches = matches.filter(match => match.round < round)
   var mappings = getMappings(participants, matches)
-  console.log(mappings)
   if(mappings.length % 2 === 1) {
     // we simulate the bye having played against every team with a bye
     // that way those teams will not get a bye again unless the matches are
