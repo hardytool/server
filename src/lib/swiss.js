@@ -52,7 +52,12 @@ function getMappings(participants, matches) {
         acc.opponents.push(match.home.id)
       }
       return acc
-    }, { id: participant.id, points: 0, opponents: [] }))
+    }, {
+      id: participant.id,
+      seed: participant.seed,
+      points: 0,
+      opponents: []
+    }))
     return acc
   }, [])
 }
@@ -107,51 +112,75 @@ function getStandings(options, round, participants, matches) {
 function getMatchups(options, id, round, participants, matches) {
   matches = matches.filter(match => match.round < round)
   var mappings = getMappings(participants, matches)
+
+  // because ids are strings but the blossom algorithm needs integers
+  // we create maps from int-to-id then set the ids to integers
+  var mapIds = new Map()
+  var index = 0
+  for (var m of mappings) {
+    mapIds.set(index, m.id)
+    m.id = index
+    ++index
+  }
+
   if(mappings.length % 2 === 1) {
     // we simulate the bye having played against every team with a bye
     // that way those teams will not get a bye again unless the matches are
     // ridiculously better if they have another
     // we also want it to bias toward giving byes to teams at the bottom
     // of the standings
-    mappings.push({id:1337,
+    mappings.push({id: index,
       points:0,
+      seed: 0,
+      tiebreaker: 0,
       opponents:mappings.filter(m => {
         return m.opponents.length < round - 1
       }).map( m => {return m.id})
     })
+    mapIds.set(index, null)
   }
 
-  // because ids are strings but the blossom algorithm needs integers
-  // we create maps from int-to-id then set the ids to integers
-  var map_ids = {}
-  var index = 0
-  for (var m of mappings) {
-    map_ids[index] = m.id
-    m.id = index
-    ++index
-  }
-
-  var arr = []
-  mappings.map(team => {
-    mappings.map(opp => {
-      if(team.id !== opp.id) {
-        arr.push([
+  var arr = mappings.reduce((arr, team, i, orig) => {
+    var opps = orig.slice(0, i).concat(orig.slice(i + 1))
+    for (var opp of opps) {
+      arr.push([
           team.id,
           opp.id,
           -1 * (Math.pow(team.points - opp.points, options.standingPower) +
-          options.rematchWeight * team.opponents.reduce((n, o) => {
-            return n + (o === map_ids[opp.id])
-          }, 0))]
-        )
-      }
-    })
-  })
+            options.rematchWeight * team.opponents.reduce((n, o) => {
+              return n + (o === mapIds.get(opp.id))
+            }, 0) +
+            (Math.abs(team.seed - opp.seed) / 10000))
+      ])
+    }
+    return arr
+  }, [])
 
   var results = blossom(arr, true)
   var matchups = []
-  for(var i = 0; i < results.length; ++i) {
-    if(results[i] !== -1 && !results.reduce((n, r) => n + (+r.away === i), 0)) {
-      matchups.push({'home': map_ids[i], 'away': map_ids[results[i]]})
+  // Here we sort matchups by standings so that matchups and standings follow
+  // roughly the same order - this doesn't impact funcitonality at all
+  // Ordering this in the view layer should be possible, so let's move it there
+  // pending review
+  var standings = getStandings(options, round, participants, matches)
+  var sortedKeys = [...mapIds.keys()].sort((a, b) => {
+    // Float BYEs to the end
+    if (mapIds.get(a) === null) {
+      return 1
+    } else if (mapIds.get(b) === null) {
+      return -1
+    }
+    return standings.findIndex(s => s.id === mapIds.get(a)) -
+      standings.findIndex(s => s.id === mapIds.get(b))
+  })
+  for(var i of sortedKeys) {
+    if(results[i] !== -1 && !matchups.reduce(
+      (n, r) => n || r.home === mapIds.get(results[i]),
+      false)) {
+      matchups.push({
+        home: mapIds.get(i),
+        away: mapIds.get(results[i])
+      })
     }
   }
   return matchups
