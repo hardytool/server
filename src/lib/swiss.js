@@ -104,45 +104,47 @@ function getStandings(options, round, participants, matches) {
   })
 }
 
-function getMatchups(options, round, participants, matches) {
+function getMatchups(options, id, round, participants, matches) {
   matches = matches.filter(match => match.round < round)
-  var standings = getStandings(options, round, participants, matches)
-  standings.sort((a, b) => {
-    if (a.wins === b.wins) {
-      if (a.tiebreaker === b.tiebreaker) {
-        return b.seed - a.seed
-      } else {
-        return b.tiebreaker - a.tiebreaker
-      }
-    } else {
-      return b.wins - a.wins
-    }
-  })
   var mappings = getMappings(participants, matches)
+  if(mappings.length % 2 === 1) {
+    // we simulate the bye having played against every team with a bye
+    // that way those teams will not get a bye again unless the matches are
+    // ridiculously better if they have another
+    // we also want it to bias toward giving byes to teams at the bottom
+    // of the standings
+    mappings.push({id:1337,
+      points:0,
+      opponents:mappings.filter(m => {
+        return m.opponents.length < round - 1
+      }).map( m => {return m.id})
+    })
+  }
   var arr = []
   mappings.map(team => {
     mappings.map(opp => {
       if(team.id !== opp.id) {
         arr.push([
-          team.id-1,
-          opp.id-1,
+          team.id,
+          opp.id,
           -1 * (Math.pow(team.points - opp.points, options.standingPower) +
           options.rematchWeight*team.opponents.reduce((n, o) => {
             return n + (o === opp.id)
           }, 0))]
         )
       } else {
-        arr.push([team.id-1, opp.id-1, -10000])
+        arr.push([team.id, opp.id, -10000])
       }
     })
   })
 
-  var matchups = blossom(arr, true)
-
-  matchups.sort((a, b) => {
-    return standings.findIndex(el => el.id === a.home) -
-      standings.findIndex(el => el.id === b.home)
-  })
+  var results = blossom(arr, true)
+  var matchups = []
+  for(var i = 0; i < results.length; ++i) {
+    if(results[i] !== -1 && !results.reduce((n, r) => { return n + (+r.away === i)}, 0)) {
+      matchups.push({'penalty': NaN, 'home': i, 'away': results[i]})
+    }
+  }
   return matchups
 }
 
@@ -154,6 +156,7 @@ module.exports = (options) => {
   return {
     getModifiedMedianScores: getModifiedMedianScores.bind(null, options),
     getStandings: getStandings.bind(null, options),
-    getMatchups: getMatchups.bind(null, options)
+    getMatchups: getMatchups.bind(null, options),
+    getMappings: getMappings,
   }
 }
