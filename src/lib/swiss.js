@@ -107,6 +107,7 @@ function getStandings(options, round, participants, matches) {
 function getMatchups(options, id, round, participants, matches) {
   matches = matches.filter(match => match.round < round)
   var mappings = getMappings(participants, matches)
+  console.log(mappings)
   if(mappings.length % 2 === 1) {
     // we simulate the bye having played against every team with a bye
     // that way those teams will not get a bye again unless the matches are
@@ -120,6 +121,17 @@ function getMatchups(options, id, round, participants, matches) {
       }).map( m => {return m.id})
     })
   }
+
+  // because ids are strings but the blossom algorithm needs integers
+  // we create maps from int-to-id then set the ids to integers
+  var map_ids = {}
+  var index = 0
+  for (var m of mappings) {
+    map_ids[index] = m.id
+    m.id = index
+    ++index
+  }
+
   var arr = []
   mappings.map(team => {
     mappings.map(opp => {
@@ -128,12 +140,10 @@ function getMatchups(options, id, round, participants, matches) {
           team.id,
           opp.id,
           -1 * (Math.pow(team.points - opp.points, options.standingPower) +
-          options.rematchWeight*team.opponents.reduce((n, o) => {
-            return n + (o === opp.id)
+          options.rematchWeight * team.opponents.reduce((n, o) => {
+            return n + (o === map_ids[opp.id])
           }, 0))]
         )
-      } else {
-        arr.push([team.id, opp.id, -10000])
       }
     })
   })
@@ -141,8 +151,8 @@ function getMatchups(options, id, round, participants, matches) {
   var results = blossom(arr, true)
   var matchups = []
   for(var i = 0; i < results.length; ++i) {
-    if(results[i] !== -1 && !results.reduce((n, r) => { return n + (+r.away === i)}, 0)) {
-      matchups.push({'penalty': NaN, 'home': i, 'away': results[i]})
+    if(results[i] !== -1 && !results.reduce((n, r) => n + (+r.away === i), 0)) {
+      matchups.push({'home': map_ids[i], 'away': map_ids[results[i]]})
     }
   }
   return matchups
@@ -151,7 +161,7 @@ function getMatchups(options, id, round, participants, matches) {
 module.exports = (options) => {
   options = options || {}
   options.maxPerRound = options.maxPerRound || 1
-  options.rematchWeight = options.rematchWeight || 10
+  options.rematchWeight = options.rematchWeight || 100
   options.standingPower = options.standingPower || 2
   return {
     getModifiedMedianScores: getModifiedMedianScores.bind(null, options),
