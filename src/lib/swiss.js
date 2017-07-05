@@ -1,23 +1,10 @@
+var blossom = require('edmonds-blossom')
+
 // Doesn't account for forfeits yet, still debating on that implementation
 // for multi-point scenarios
 function getModifiedMedianScores(options, round, participants, matches) {
   matches = matches.filter(match => match.round < round)
-  var mappings = participants.reduce((acc, participant) => {
-    acc.push(matches.filter(match => {
-      return match.home.id === participant.id ||
-        match.away.id === participant.id
-    }).reduce((acc, match) => {
-      if (match.home.id === participant.id) {
-        acc.points += match.home.points
-        acc.opponents.push(match.away.id)
-      } else if (match.away.id === participant.id) {
-        acc.points += match.away.points
-        acc.opponents.push(match.home.id)
-      }
-      return acc
-    }, { id: participant.id, points: 0, opponents: [] }))
-    return acc
-  }, [])
+  var mappings = getMappings(participants, matches)
   var points = mappings.reduce((acc, val) => {
     acc[val.id] = val.points
     return acc
@@ -49,6 +36,30 @@ function getModifiedMedianScores(options, round, participants, matches) {
     acc[key] = value.scores.reduce((acc, val) => acc + val, 0)
     return acc
   }, {})
+}
+
+function getMappings(participants, matches) {
+  return participants.reduce((acc, participant) => {
+    acc.push(matches.filter(match => {
+      return match.home.id === participant.id ||
+        match.away.id === participant.id
+    }).reduce((acc, match) => {
+      if (match.home.id === participant.id) {
+        acc.points += match.home.points
+        acc.opponents.push(match.away.id)
+      } else if (match.away.id === participant.id) {
+        acc.points += match.away.points
+        acc.opponents.push(match.home.id)
+      }
+      return acc
+    }, {
+      id: participant.id,
+      seed: participant.seed,
+      points: 0,
+      opponents: []
+    }))
+    return acc
+  }, [])
 }
 
 function getStandings(options, round, participants, matches) {
@@ -100,148 +111,90 @@ function getStandings(options, round, participants, matches) {
 
 function getMatchups(options, id, round, participants, matches) {
   matches = matches.filter(match => match.round < round)
-  var standings = getStandings(options, round, participants, matches)
-  standings.sort((a, b) => {
-    if (a.wins === b.wins) {
-      if (a.tiebreaker === b.tiebreaker) {
-        return b.seed - a.seed
-      } else {
-        return b.tiebreaker - a.tiebreaker
-      }
-    } else {
-      return b.wins - a.wins
-    }
-  })
+  var mappings = getMappings(participants, matches)
 
-  var orderedParticipants = standings.map(s => {
-    return {
-      id: s.id,
-      seed: participants.filter(participant => participant.id === s.id)[0].seed
-    }
-  })
-  // Add BYE to the end of the list
-  if (orderedParticipants.length % 2 === 1) {
-    orderedParticipants.push({ id: null, seed: 0 })
-  }
-  var penalties = generatePenalties(options, orderedParticipants, matches)
-
-  // Split orderParticipants into reasonable chunks
-  var groups = []
-  var divisor = Math.ceil(orderedParticipants.length / 10)
-  var groupSize = orderedParticipants.length / divisor
-  groupSize = groupSize % 2 === 0 ? groupSize : groupSize + 1
-  for (var i = 0; i < orderedParticipants.length; i+= groupSize) {
-    groups.push(orderedParticipants.slice(i, i + groupSize))
+  // because ids are strings but the blossom algorithm needs integers
+  // we create maps from int-to-id then set the ids to integers
+  var mapIds = new Map()
+  var index = 0
+  for (var m of mappings) {
+    mapIds.set(index, m.id)
+    m.id = index
+    ++index
   }
 
-  var matchups = groups.reduce((matchups, group) => {
-    var best = null
-    for (var list of getAllPairs(group.map(p => p.id))) {
-      var option = list.map(([home, away]) => {
-        var penalty = penalties[home][away] + penalties[away][home]
-        return {
-          penalty: penalty,
-          home: home,
-          away: away
-        }
-      }).reduce((option, pair) => {
-        if (option.penalty === undefined) {
-          option.penalty = 0
-        }
-        if (option.matchups === undefined) {
-          option.matchups = []
-        }
-        option.penalty += pair.penalty
-        option.matchups.push(pair)
-        return option
-      }, {})
-      if (!best || option.penalty < best.penalty) {
-        best = option
-      }
-    }
+  if(mappings.length % 2 === 1) {
+    // we simulate the bye having played against every team with a bye
+    // that way those teams will not get a bye again unless the matches are
+    // ridiculously better if they have another
+    // we also want it to bias toward giving byes to teams at the bottom
+    // of the standings
+    mappings.push({id: index,
+      points:0,
+      seed: 0,
+      tiebreaker: 0,
+      opponents:mappings.filter(m => {
+        return m.opponents.length < round - 1
+      }).map( m => {return m.id})
+    })
+    mapIds.set(index, null)
+  }
 
-    return matchups.concat(best.matchups)
+  var arr = mappings.reduce((arr, team, i, orig) => {
+    var opps = orig.slice(0, i).concat(orig.slice(i + 1))
+    for (var opp of opps) {
+      arr.push([
+          team.id,
+          opp.id,
+          -1 * (Math.pow(team.points - opp.points, options.standingPower) +
+            options.rematchWeight * team.opponents.reduce((n, o) => {
+              return n + (o === mapIds.get(opp.id))
+            }, 0) +
+            (Math.abs(team.seed - opp.seed) / 10000))
+      ])
+    }
+    return arr
   }, [])
-  matchups.sort((a, b) => {
-    return standings.findIndex(el => el.id === a.home) -
-      standings.findIndex(el => el.id === b.home)
+
+  var results = blossom(arr, true)
+  var matchups = []
+  // Here we sort matchups by standings so that matchups and standings follow
+  // roughly the same order - this doesn't impact funcitonality at all
+  // Ordering this in the view layer should be possible, so let's move it there
+  // pending review
+  var standings = getStandings(options, round, participants, matches)
+  var sortedKeys = [...mapIds.keys()].sort((a, b) => {
+    // Float BYEs to the end
+    if (mapIds.get(a) === null) {
+      return 1
+    } else if (mapIds.get(b) === null) {
+      return -1
+    }
+    return standings.findIndex(s => s.id === mapIds.get(a)) -
+      standings.findIndex(s => s.id === mapIds.get(b))
   })
+  for(var i of sortedKeys) {
+    if(results[i] !== -1 && !matchups.reduce(
+      (n, r) => n || r.home === mapIds.get(results[i]),
+      false)) {
+      matchups.push({
+        home: mapIds.get(i),
+        away: mapIds.get(results[i])
+      })
+    }
+  }
   return matchups
 }
 
-function generatePenalties(options, orderedParticipants, matches) {
-  var penalties = orderedParticipants.map((participant, index) => {
-    var opponents = orderedParticipants.slice()
-    opponents.splice(index, 1)
-    var penalties = opponents.map((opponent, idx) => {
-      var penalty = matches.filter(match => {
-        return (
-          match.home.id === participant.id &&
-          match.away.id === opponent.id
-        ) || (
-          match.home.id === opponent.id &&
-          match.away.id === participant.id
-        )
-      }).length * options.rematchWeight
-      penalty += ((index - idx) > 0 ? index - idx - 1 : idx - index) *
-        options.standingWeight
-      penalty += Math.abs(participant.seed - opponent.seed)
-      return {
-        id: opponent.id,
-        penalty: penalty
-      }
-    })
-    return {
-      id: participant.id,
-      penalties: penalties
-    }
-  })
-  return penalties.reduce((acc, penaltyList) => {
-    acc[penaltyList.id] = penaltyList.penalties.reduce((acc, penalty) => {
-      acc[penalty.id] = penalty.penalty
-      return acc
-    }, {})
-    return acc
-  }, {})
-}
-
-function* getAllPairs(participants) {
-  if (participants.length < 2) {
-    yield [participants]
-    return
-  }
-
-  var a = participants[0]
-  participants = participants.slice(1)
-  for (var [i, val] of participants.entries()) {
-    var pair = [a, val]
-    var others = participants.slice(0, i).concat(participants.slice(i+1))
-    if (others.length === 0) {
-      yield [pair]
-    } else {
-      for (var rest of getAllPairs(others)) {
-        yield [pair].concat(rest)
-      }
-    }
-  }
-}
-
 module.exports = (options) => {
-  if (!options) {
-    options = {}
-  }
-  if (!options.maxPerRound) {
-    options.maxPerRound = 1
-  }
-  if (!options.rematchWeight) {
-    options.rematchWeight = 1000000
-  }
-  if (!options.standingWeight) {
-    options.standingWeight = 10000
-  }
+  options = options || {}
+  options.maxPerRound = options.maxPerRound || 1
+  options.rematchWeight = options.rematchWeight || 100
+  options.standingPower = options.standingPower || 2
   return {
     getModifiedMedianScores: getModifiedMedianScores.bind(null, options),
     getStandings: getStandings.bind(null, options),
-    getMatchups: getMatchups.bind(null, options)
+    getMatchups: getMatchups.bind(null, options),
+    getMappings: getMappings,
   }
 }
