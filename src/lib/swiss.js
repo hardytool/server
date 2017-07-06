@@ -119,8 +119,7 @@ function getMatchups(options, id, round, participants, matches) {
   var index = 0
   for (var m of mappings) {
     mapIds.set(index, m.id)
-    m.id = index
-    ++index
+    m.id = index++
   }
 
   if(mappings.length % 2 === 1) {
@@ -139,7 +138,10 @@ function getMatchups(options, id, round, participants, matches) {
     })
     mapIds.set(index, null)
   }
-
+  // to avoid repeatedly matching the same team up or down repeatedly
+  // we shuffle the inputs to the blossom algorithm to counteract
+  // any ordering biases it may have
+  mappings = shuffle(mappings, round)
   var arr = mappings.reduce((arr, team, i, orig) => {
     var opps = orig.slice(0, i).concat(orig.slice(i + 1))
     for (var opp of opps) {
@@ -149,8 +151,7 @@ function getMatchups(options, id, round, participants, matches) {
           -1 * (Math.pow(team.points - opp.points, options.standingPower) +
             options.rematchWeight * team.opponents.reduce((n, o) => {
               return n + (o === mapIds.get(opp.id))
-            }, 0) +
-            (Math.abs(team.seed - opp.seed) / 10000))
+            }, 0))
       ])
     }
     return arr
@@ -184,6 +185,26 @@ function getMatchups(options, id, round, participants, matches) {
     }
   }
   return matchups
+}
+
+// Knuth shuffle from stack overflow
+function shuffle(array, seed) {
+  var currentIndex = array.length
+
+  // fast, seeded PRNG from stackoverflow
+  var s = seed
+   const random = () => {
+    var x = Math.sin(s++) * 10000;
+    return x - Math.floor(x);
+  }
+
+  while (0 !== currentIndex) {
+    var randomIndex = Math.floor(random() * currentIndex--);
+    var temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+  return array
 }
 
 module.exports = (options) => {
