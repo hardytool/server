@@ -23,6 +23,7 @@ var steamUser = new Steam.SteamUser(steam)
 var redirectHttps = require('redirect-https')
 var templates = require('pug-tree')(
   path.join(__dirname, 'templates'), config.templates)
+var pairings = require('swiss-pairing')({ maxPerRound: 2 })
 
 // repositories
 var admin = require('./repos/admin')(pool)
@@ -38,9 +39,6 @@ var team_player = require('./repos/team_player')(pool)
 var mmr = require('./lib/mmr')(dota2)
 var auth = require('./lib/auth')(config, admin, steam_user, mmr)
 var credentials = require('./lib/credentials')(config.server)
-//var pairings = require('./lib/pairings')({ maxPerRound: 2 })
-//var cache = require('./lib/cache')(season, team, series, pairings)
-var pairings = require('./lib/swiss')({ maxPerRound: 2 })
 
 // Auth routes
 var openid = require('./api/openid')(config)
@@ -219,7 +217,6 @@ migrations.migrateIfNeeded(
       })
     }
 
-    //cache.initialize()
 }).catch(err => {
   console.error(err)
 })

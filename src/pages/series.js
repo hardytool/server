@@ -231,7 +231,6 @@ function matchups(templates, season, team, series, pairings, req, res) {
           round: round
         }).then(series => {
           var matchups = pairings.getMatchups(
-            season.id,
             round,
             teams,
             pairingMaps.mapSeries(series)

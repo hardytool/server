@@ -33,7 +33,7 @@
     "redirect-https": "^1.1.4",
     "shortid": "^2.2.8",
     "steam": "^1.4.0",
-    "swiss-pairing": "^1.0.4"
+    "swiss-pairing": "^1.1.3"
   },
   "devDependencies": {
     "eslint": "^4.1.1",
