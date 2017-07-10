@@ -27,9 +27,13 @@ block content
                   option(value='') BYE
                   each team in teams
                     if series && team.id === series.home.id
-                      option(value=team.id selected)= team.name
+                      option(value=team.id selected)
+                        span= team.name
+                        span= team.captain_name ? ' (' + team.captain_name + ')' : ''
                     else
-                      option(value=team.id)= team.name
+                      option(value=team.id)
+                        span= team.name
+                        span= team.captain_name ? ' (' + team.captain_name + ')' : ''
           div.field
             label.label(for='home_points') Home points:
             input.input(id='home_points' type='number' name='home_points' placeholder='Home points' min='0' max='2' value=(series ? series.home.points : '') required)
@@ -41,9 +45,13 @@ block content
                   option(value='') BYE
                   each team in teams
                     if series && team.id === series.away.id
-                      option(value=team.id selected)= team.name
+                      option(value=team.id selected)
+                        span= team.name
+                        span= team.captain_name ? ' (' + team.captain_name + ')' : ''
                     else
-                      option(value=team.id)= team.name
+                      option(value=team.id)
+                        span= team.name
+                        span= team.captain_name ? ' (' + team.captain_name + ')' : ''
           div.field
             label.label(for='away_points') Away points:
             input.input(id='away_points' type='number' name='away_points' placeholder='Away points' min='0' max='2' value=(series ? series.away.points : '') required)
