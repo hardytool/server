@@ -8,6 +8,7 @@ function getTeams(db, season_id) {
     team.name,
     team.logo,
     team.seed,
+    team.disbanded,
     steam_user.steam_id as captain_id,
     steam_user.name as captain_name,
     season.number AS season_number,
@@ -42,7 +43,8 @@ function getTeam(db, id) {
     season_id,
     name,
     logo,
-    seed
+    seed,
+    disbanded
   FROM
     team
   WHERE
@@ -61,25 +63,29 @@ function saveTeam(db, team) {
       season_id,
       name,
       logo,
-      seed
+      seed,
+      disbanded
     ) VALUES (
       ${team.id},
       ${team.season_id},
       ${team.name},
       ${team.logo},
-      ${team.seed}
+      ${team.seed},
+      ${team.disbanded}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
       season_id,
       name,
       logo,
-      seed
+      seed,
+      disbanded
     ) = (
       ${team.season_id},
       ${team.name},
       ${team.logo},
-      ${team.seed}
+      ${team.seed},
+      ${team.disbanded}
     )
   `
   return db.query(upsert)

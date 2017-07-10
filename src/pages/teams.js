@@ -85,6 +85,7 @@ function post(team, req, res) {
   var id = req.body.id ? req.body.id : shortid.generate()
   var t = req.body
   t.id = id
+  t.disbanded = t.disbanded == 'on' ? true : false
 
   team.saveTeam(t).then(() => {
     var team_vanity = emojify.emojify(t.id)
