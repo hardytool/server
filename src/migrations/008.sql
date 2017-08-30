@@ -5,3 +5,12 @@ CREATE TABLE profile (
   name_locked boolean NOT NULL DEFAULT false,
   UNIQUE(steam_id)
 );
+
+ALTER TABLE player
+  ADD COLUMN statement varchar(500) NOT NULL DEFAULT '';
+
+ALTER TABLE season
+  ADD COLUMN registration_open boolean NOT NULL DEFAULT false;
+
+CREATE UNIQUE INDEX ON season (registration_open)
+  WHERE registration_open = true;

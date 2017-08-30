@@ -65,6 +65,7 @@ function post(season, req, res) {
   var id = s.id ? s.id : shortid.generate()
   s.id = id
   s.active = s.active == 'on' ? true : false
+  s.registration_open = s.registration_open == 'on' ? true : false
 
   season.saveSeason(s).then(() => {
     res.redirect('/seasons')

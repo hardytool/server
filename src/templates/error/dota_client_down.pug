@@ -1,0 +1,19 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : Dota 2 client down
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-image
+        span.icon.is-medium
+          i.fa.fa-exclamation-triangle
+        span &nbsp;Dota 2 client down
+  div.columns
+    div.column
+      if error
+        span= error
+      else
+        div The bot that attempted to fetch your MMR is down.
+        div Ping Danny.

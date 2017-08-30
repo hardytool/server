@@ -1,0 +1,38 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : Edit #{steamUser.name}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-pencil
+        span &nbsp;Edit #{steamUser.name}
+      div
+        if !profile || (profile && !profile.name_locked) || user.isAdmin
+          form(method='post' action='/profile/edit')
+            input(type='hidden' name='steam_id' value=steamUser.steam_id)
+            div.field
+              label.label(for='name') Name:
+              p.control
+                input.input(id='name' type='text' name='name' placeholder='Name' value=(profile ? profile.name : '') required)
+            if user.isAdmin
+              div.field
+                label.label(for='adjusted_mmr') Adjusted MMR:
+                p.control
+                  input.input(id='adjusted_mmr' type='number' name='adjusted_mmr' placeholder='Adjusted MMR' value=(profile ? profile.adjusted_mmr : 0) required)
+              div.field
+                p.control
+                  label.checkbox(for='name_locked')
+                    if profile && profile.name_locked
+                      input(id='name_locked' type='checkbox' name='name_locked' checked)
+                    else
+                      input(id='name_locked' type='checkbox' name='name_locked')
+                    span &nbsp;Lock name?
+            div.field.is-grouped
+              p.control
+                button.button.is-primary Submit
+        else
+          span You're not allowed to edit anything. Probably because you triggered Treebeard. Nerd.

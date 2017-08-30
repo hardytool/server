@@ -1,0 +1,66 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : #{season.name} Registration
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-image
+        span.icon.is-medium
+          i.fa.fa-check-square-o
+        span &nbsp;#{season.name} Registration
+      div
+        form(method='post' action='/register')
+          input(type='hidden' name='season_id' value=season.id)
+          if player
+            input(type='hidden' name='id' value=player.id)
+          div.field
+            label.label(for='name') Name:
+            p.control
+              input.input#name(type='text' value=player.name disabled)
+          div.field
+            label.label(for='solo') Solo MMR:
+            p.control
+              input.input#solo(type='text' value=steamUser.solo_mmr disabled)
+          div.field
+            label.label(for='party') Party MMR:
+            p.control
+              input.input#party(type='text' value=steamUser.party_mmr disabled)
+          div.field
+            label.label(for='adjusted') Adjusted MMR:
+            p.control
+              input.input#adjusted(type='text' value=player.adjusted_mmr disabled)
+          div.field
+            label.label(for='statement') Statement:
+            p.control
+              textarea.textarea#statement(name='statement' placeholder='Enter your player statement here - limited to 500 characters' maxlength='500')= player ? player.statement : ''
+          div.field
+            label.label Willing to captain?:
+            p.control
+              label.radio
+                if player && player.will_captain === 'yes'
+                  input#will_captain(value='yes' type='radio' name='will_captain' checked)
+                else
+                  input#will_captain(value='yes' type='radio' name='will_captain')
+                span &nbsp;Yes
+              label.radio
+                if player && player.will_captain === 'maybe'
+                  input#will_captain(value='maybe' type='radio' name='will_captain' checked)
+                else
+                  input#will_captain(value='maybe' type='radio' name='will_captain')
+                span &nbsp;Maybe
+              label.radio
+                if !player || player.will_captain === 'no'
+                  input#will_captain(value='no' type='radio' name='will_captain' checked)
+                else if player.will_captain === undefined
+                  input#will_captain(value='no' type='radio' name='will_captain' checked)
+                else
+                  input#will_captain(value='no' type='radio' name='will_captain')
+                span &nbsp;No
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            if season
+              p.control
+                button.button.is-danger(formaction='/register/delete') Delete
