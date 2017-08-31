@@ -41,7 +41,7 @@ function view(templates, season, steam_user, player, mmr, profile, req, res) {
 
           steamUser.solo_mmr = solo
           steamUser.party_mmr = party
-          return steam_user.updateMMR(steamUser.id, solo, party).then(() => {
+          return steam_user.saveSteamUser(steamUser).then(() => {
             return profile.getProfile(steamUser.steam_id).then(profile => {
               profile = profile || {}
               profile.name = profile.name || steamUser.name
