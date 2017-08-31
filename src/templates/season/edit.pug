@@ -34,6 +34,14 @@ block content
                 else
                   input(id='active' type='checkbox' name='active')
                 span &nbsp;Is active season?
+          div.field
+            p.control
+              label.checkbox
+                if season && season.registration_open
+                  input(id='registration_open' type='checkbox' name='registration_open' checked)
+                else
+                  input(id='registration_open' type='checkbox' name='registration_open')
+                span &nbsp;Is registration open?
           div.field.is-grouped
             p.control
               button.button.is-primary Submit

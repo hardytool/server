@@ -1,0 +1,18 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : Registration closed
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-image
+        span.icon.is-medium
+          i.fa.fa-exclamation-triangle
+        span &nbsp;Registration closed
+  div.columns
+    div.column
+      if error
+        span= error
+      else
+        div Registration for this season is closed.

@@ -10,7 +10,7 @@ block content
         span.icon.is-medium
           i.fa.fa-list
         span &nbsp;#{season ? season.name : ''} Players
-      table.table.is-striped.is-middle-aligned
+      table.table.is-striped.is-middle-aligned.is-fullwidth
         thead
           tr
             th Name
@@ -22,7 +22,7 @@ block content
             if user && user.isAdmin
               th Will Captain?
               th Captain Approved
-            th Captain?
+            th Statement
             if user && user.isAdmin
               th Edit
         tbody
@@ -49,11 +49,7 @@ block content
                     span Yes
                   else
                     span No
-              td
-                if player.captain_approved
-                  span Yes
-                else
-                  span No
+              td.tiny-text= player.statement
               if user && user.isAdmin
                 td
                   a(href='/seasons/' + season.vanity + '/players/' + player.vanity + '/edit') edit

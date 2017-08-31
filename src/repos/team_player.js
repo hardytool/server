@@ -129,12 +129,40 @@ function getRoster(db, team_id) {
   })
 }
 
+function isCaptainAutoApproved(db, steam_id) {
+  var select = sql`
+  SELECT
+    NOT disbanded AND captained AS allowed
+  FROM (
+    SELECT
+      COUNT(CASE WHEN team.disbanded = true THEN 1 END) > 0 AS disbanded,
+      COUNT(1) > 0 AS captained
+    FROM
+      player
+    JOIN team_player ON
+      player.id = team_player.player_id
+    JOIN team ON
+      team_player.team_id = team.id
+    JOIN season ON
+      team.season_id = season.id
+    WHERE
+      player.steam_id = ${steam_id}
+    AND
+      team_player.is_captain = true
+  ) can_captain
+  `
+  return db.query(select).then(result => {
+    return result.rows[0]
+  })
+}
+
 module.exports = db => {
   return {
     getUnassignedPlayers: getUnassignedPlayers.bind(null, db),
     addPlayerToTeam: addPlayerToTeam.bind(null, db),
     removePlayerFromTeam: removePlayerFromTeam.bind(null, db),
     getPlayerTeams: getPlayerTeams.bind(null, db),
-    getRoster: getRoster.bind(null, db)
+    getRoster: getRoster.bind(null, db),
+    isCaptainAutoApproved: isCaptainAutoApproved.bind(null, db)
   }
 }

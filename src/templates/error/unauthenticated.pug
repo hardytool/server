@@ -1,0 +1,18 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : Authentication required
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-image
+        span.icon.is-medium
+          i.fa.fa-exclamation-triangle
+        span &nbsp;Authentication required
+  div.columns
+    div.column
+      if error
+        span= error
+      else
+        Please log in to continue.

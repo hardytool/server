@@ -1,0 +1,48 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : #{profile.name}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-image
+        figure.image.is-32x32.hide-overflow
+          img(src=steamUser.avatar)
+        span &nbsp;#{profile.name}
+  div.tile.is-ancestor
+    div.tile.is-parent
+      article.tile.is-child.notification
+        div.content
+          p.title Steam Name
+          p.subtitle= steamUser.name
+        div.content
+          p.title SEAL Name
+          p.subtitle= profile.name
+    div.tile.is-parent
+      article.tile.is-child.notification
+        div.content
+          p.title Solo MMR
+          p.subtitle= steamUser.solo_mmr
+        div.content
+          p.title Party MMR
+          p.subtitle= steamUser.party_mmr
+        div.content
+          p.title Adjusted MMR
+          p.subtitle= profile.adjusted_mmr
+    div.tile.is-parent
+      article.tile.is-child.notification
+        div.content
+          p.title Resources
+          ul
+            li
+              a(href='https://www.dotabuff.com/players/' + steamUser.steam_id)
+                span Dotabuff
+            li
+              a(href='https://www.opendota.com/players/' + steamUser.steam_id)
+                span OpenDota
+  div.columns
+    div.column
+      if user && (user.isAdmin || user.steamId === steamUser.steam_id)
+        a(href='/profile/' + steamUser.steam_id + '/edit')
+          button.button.is-primary Edit profile

@@ -117,6 +117,17 @@ function saveSteamUser(db, user) {
   return db.query(upsert)
 }
 
+function updateMMR(db, steam_id, solo, party) {
+  var update = sql`
+  UPDATE steam_user SET
+    solo_mmr = ${solo},
+    party_mmr = ${party}
+  WHERE
+    steam_id = ${steam_id}
+  `
+  return db.query(update)
+}
+
 function deleteSteamUser(db, id) {
   var query = sql`
   DELETE FROM
@@ -134,6 +145,7 @@ module.exports = db => {
     getNonPlayerSteamUsers: getNonPlayerSteamUsers.bind(null, db),
     getSteamUser: getSteamUser.bind(null, db),
     saveSteamUser: saveSteamUser.bind(null, db),
+    updateMMR: updateMMR.bind(null, db),
     deleteSteamUser: deleteSteamUser.bind(null, db)
   }
 }

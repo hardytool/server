@@ -39,13 +39,11 @@ function fetchMissingMMRs(steam_user, mmr, season_id, force) {
   if (!updated || force) {
     return steam_user.getSteamUsersMissingMMR(season_id).then(users => {
       updated = true
-      return Promise.all(users.map((user, index) => {
-        return timeout((index + 1) * 2000).then(() => {
-          return updateUserMMR(steam_user, mmr, user).then(user => {
-            console.log(`User ${user.steam_id} ${user.name} updated`)
-          }).catch(err => {
-            console.error(err)
-          })
+      return Promise.all(users.map((user) => {
+        return updateUserMMR(steam_user, mmr, user).then(user => {
+          console.log(`User ${user.steam_id} ${user.name} updated`)
+        }).catch(err => {
+          console.error(err)
         })
       })).catch(() => {
         // Doesn't matter if we have an error
@@ -78,6 +76,7 @@ function inflateUser(admin, user) {
     user.isAdmin = isAdmin
     user.avatar = getAvatar(user.profile)
     user.displayName = user.profile.displayName
+    user.steamId = id
     return Promise.resolve(user)
   })
 }

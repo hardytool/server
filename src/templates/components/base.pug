@@ -5,7 +5,7 @@ html(lang='en')
       block head
         block title
           title= title
-        link(rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.css')
+        link(rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.css')
         link(rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
         link(rel='icon' type='image/png' href='https://raw.githubusercontent.com/seal-dota/seal-dota.github.io/master/seal.png')
         style(type='text/css').
@@ -28,6 +28,10 @@ html(lang='en')
             width: 100px;
             height: 60px;
           }
+          .tiny-text {
+            font-size: 10px;
+            line-height: 12px;
+          }
           @media screen and (max-width:768px) {
             .has-image {
               flex-direction: column;
@@ -45,7 +49,7 @@ html(lang='en')
         block header
           section.hero.has-text-centered
             div.hero-head
-              div.container
+              div.container.is-fullhd
                 nav.nav
                   div.nav-left
                     a.nav-item(href='/')
@@ -55,10 +59,11 @@ html(lang='en')
                     a.nav-item(href='/matchups') Matchups
                     a.nav-item(href='/standings') Standings
                     a.nav-item(href='/teams') Teams
+                    a.nav-item(href='/register') Register
                   div.nav-right
                     if user
-                      a.nav-item(href='/')= user.displayName
-                      a.nav-item(href='/')
+                      a.nav-item(href='/profile/' + user.steamId)= user.displayName
+                      a.nav-item(href='/profile/' + user.steamId)
                         img(src=user.avatar)
                       a.nav-item(href='/logout') Log out
                     else
@@ -68,45 +73,57 @@ html(lang='en')
                         span &nbsp;Log in
         block contentFull
           section.section
-            div.container
+            div.container.is-fullhd
               block content
         block footer
           footer.footer
-            div.container
+            div.container.is-fullhd
               div.columns
                 div.column
-                  h5.title.is-5 Contact
-                  ul
-                    li
-                      a(href='mailto:admin@seal.gg') Email
-                    li
-                      a(href='https://github.com/seal-dota/server/issues/new') Report a bug
-                    li
-                      a(href='/complaint') File a complaint
-                    li
-                      a(href='https://www.reddit.com/r/SEALDota/submit') Provide feedback
+                  div.level
+                    div.level-item
+                      h5.title.is-5 Contact
+                  div.level
+                    div.level-item
+                      ul
+                        li
+                          a(href='mailto:admin@seal.gg') Email
+                        li
+                          a(href='https://github.com/seal-dota/server/issues/new') Report a bug
+                        li
+                          a(href='/complaint') File a complaint
+                        li
+                          a(href='https://www.reddit.com/r/SEALDota/submit') Provide feedback
                 div.column
-                  h5.title.is-5 Resources
-                  ul
-                    li
-                      a(href='https://github.com/seal-dota/rules') League Rules
-                    li
-                      a(href='https://sites.google.com/view/playerdex/playerdex') SEAL PlayerDex
-                    li
-                      a(href='http://steamcommunity.com/sharedfiles/filedetails/?id=917953091') Workshop Ticket
+                  div.level
+                    div.level-item
+                      h5.title.is-5 Resources
+                  div.level
+                    div.level-item
+                      ul
+                        li
+                          a(href='https://github.com/seal-dota/rules') League Rules
+                        li
+                          a(href='https://sites.google.com/view/playerdex/playerdex') SEAL PlayerDex
+                        li
+                          a(href='http://steamcommunity.com/sharedfiles/filedetails/?id=917953091') Workshop Ticket
                 div.column
-                  h5.title.is-5 Built using
-                  ul
-                    li
-                      a(href='http://bulma.io/') Bulma
-                    li
-                      a(href='http://expressjs.com/') Express
-                    li
-                      a(href='http://passportjs.org/') Passport
-                    li
-                      a(href='https://github.com/seishun/node-steam') Steam for Node.js
-                    li
-                      a(href='https://github.com/Arcana/node-dota2') node-dota2
+                  div.level
+                    div.level-item
+                      h5.title.is-5 Built using
+                  div.level
+                    div.level-item
+                      ul
+                        li
+                          a(href='http://bulma.io/') Bulma
+                        li
+                          a(href='http://expressjs.com/') Express
+                        li
+                          a(href='http://passportjs.org/') Passport
+                        li
+                          a(href='https://github.com/seishun/node-steam') Steam for Node.js
+                        li
+                          a(href='https://github.com/Arcana/node-dota2') node-dota2
               div.columns
                 div.column.has-text-centered
                   span

@@ -1,0 +1,20 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : Must display MMR
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-image
+        span.icon.is-medium
+          i.fa.fa-exclamation-triangle
+        span &nbsp;Must display MMR
+  div.columns
+    div.column
+      if error
+        span= error
+      else
+        div You must display your MMR to be able to register.
+        div If you've just recently displayed your MMR, please try again later.
+        div Please contact an admin if you believe this isn't working properly.
