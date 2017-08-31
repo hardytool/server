@@ -99,6 +99,7 @@ function post(season, steam_user, team_player, player, req, res) {
   p.id = id
   p.steam_id = req.user.steamId
   p.captain_approved = false
+  p.statement = p.statement.slice(0, 500)
 
   season.getSeason(season_id).then(season => {
     return steam_user.getSteamUser(req.user.steamId).then(steamUser => {
