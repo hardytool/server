@@ -11,7 +11,7 @@ function getPlayers(db, criteria) {
     player.statement,
     season.number season_number,
     season.name season_name,
-    profile.name,
+    COALESCE(profile.name, steam_user.name) AS name,
     steam_user.avatar,
     steam_user.solo_mmr,
     steam_user.party_mmr,
@@ -77,9 +77,10 @@ function getPlayer(db, id) {
     player.steam_id,
     player.will_captain,
     player.captain_approved,
+    player.statement,
     season.number season_number,
     season.name season_name,
-    steam_user.name,
+    COALESCE(profile.name, steam_user.name) AS name,
     steam_user.avatar,
     steam_user.solo_mmr,
     steam_user.party_mmr,
@@ -90,6 +91,8 @@ function getPlayer(db, id) {
     steam_user.steam_id = player.steam_id
   JOIN season ON
     season.id = player.season_id
+  LEFT JOIN profile ON
+    steam_user.steam_id = profile.steam_id
   WHERE
     player.id = ${id}
   `

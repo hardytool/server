@@ -15,16 +15,21 @@ block content
           if player
             input(type='hidden' name='id' value=player.id)
           input(type='hidden' name='season_id' value=season.id)
+          if !player
+            div.field
+              label.label(for='steam_id') Steam User:
+              p.control
+                span.select
+                  select(id='steam_id' name='steam_id')
+                    each steamUser in steamUsers
+                      if player && player.steam_id === steamUser.steam_id
+                        option(value=steamUser.steam_id selected)= steamUser.name
+                      else
+                        option(value=steamUser.steam_id)= steamUser.name
           div.field
-            label.label(for='steam_id') Steam User:
+            label.label(for='statement') Statement:
             p.control
-              span.select
-                select(id='steam_id' name='steam_id')
-                  each steamUser in steamUsers
-                    if player && player.steam_id === steamUser.steam_id
-                      option(value=steamUser.steam_id selected)= steamUser.name
-                    else
-                      option(value=steamUser.steam_id)= steamUser.name
+              textarea.textarea#statement(name='statement' placeholder='Enter your player statement here - limited to 500 characters' maxlength='500')= player ? player.statement : ''
           div.field
             label.label Willing to captain?:
             p.control

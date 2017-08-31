@@ -106,7 +106,7 @@ function post(season, steam_user, team_player, player, req, res) {
       .then(({ allowed }) => {
         p.captain_approved = allowed
         return player.savePlayer(p).then(() => {
-          res.redirect('/seasons/' + season.id + '/register')
+          res.redirect('/seasons/' + season.id + '/players')
         })
       })
     })
@@ -127,7 +127,7 @@ function unregister(season, steam_user, player, req, res) {
   season.getSeason(seasonId).then(season => {
     return steam_user.getSteamUser(steamId).then(steamUser => {
       return player.unregisterPlayer(season.id, steamUser.steam_id).then(() => {
-          res.redirect('/seasons/' + season.id + '/register')
+          res.redirect('/seasons/' + season.id + '/players')
       })
     })
   }).catch(err => {

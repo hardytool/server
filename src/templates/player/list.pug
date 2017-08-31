@@ -52,7 +52,7 @@ block content
               td.tiny-text= player.statement
               if user && user.isAdmin
                 td
-                  a(href='/seasons/' + season.vanity + '/players/' + player.vanity + '/edit') edit
+                  a(href='/seasons/' + season.id + '/players/' + player.id + '/edit') edit
       if user && user.isAdmin
-        a(href='/seasons/' + season.vanity + '/players/create')
+        a(href='/seasons/' + season.id + '/players/create')
           button.button.is-primary Add player
