@@ -28,7 +28,8 @@ block content
         tbody
           each player in players
             tr
-              td= player.name
+              td
+                a(href='/profile/' + player.steam_id)= player.name
               td
                 figure.image.is-32x32.hide-overflow
                   img(src=player.avatar)
