@@ -189,12 +189,78 @@ function unregisterPlayer(db, seasonId, steamId) {
   return db.query(query)
 }
 
+function getDraftSheet(db, season_id) {
+  var select = sql`
+  SELECT
+    COALESCE(profile.name, steam_user.name) AS name,
+    steam_user.solo_mmr,
+    steam_user.party_mmr,
+    COALESCE(profile.adjusted_mmr, 0) AS adjusted_mmr,
+    CASE
+      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
+      THEN profile.adjusted_mmr
+      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
+    END AS draft_mmr,
+    player.statement,
+    has_played.has_played,
+    is_vouched.is_vouched,
+    has_played.has_played OR is_vouched.is_vouched AS eligible,
+    CONCAT('https://www.dotabuff.com/players/', steam_user.steam_id)
+      AS dotabuff,
+    CONCAT('https://www.opendota.com/players/', steam_user.steam_id)
+      AS opendota,
+    player.will_captain
+  FROM
+    player
+  JOIN steam_user ON
+    steam_user.steam_id = player.steam_id
+  JOIN season ON
+    season.id = player.season_id
+  LEFT JOIN profile ON
+    steam_user.steam_id = profile.steam_id
+  JOIN (
+    SELECT
+      player.steam_id,
+      SUM(CASE WHEN team_player.player_id IS NULL THEN 0 ELSE 1 END) > 0
+        AS has_played
+    FROM
+      player
+    LEFT JOIN team_player ON
+      player.id = team_player.player_id
+    GROUP BY
+      player.steam_id
+  ) has_played ON
+    player.steam_id = has_played.steam_id
+  LEFT JOIN (
+    SELECT
+      player.steam_id,
+      SUM(CASE WHEN vouch.vouched_id IS NULL THEN 0 ELSE 1 END) > 0
+        AS is_vouched
+    FROM
+      player
+    LEFT JOIN vouch ON
+      player.steam_id = vouch.vouched_id
+    GROUP BY
+      player.steam_id
+  ) is_vouched ON
+    player.steam_id = is_vouched.steam_id
+  WHERE
+    1 = 1
+  AND
+    player.season_id = ${season_id}
+  `
+  return db.query(select).then(result => {
+    return result.rows
+  })
+}
+
 module.exports = db => {
   return {
     getPlayers: getPlayers.bind(null, db),
     getPlayer: getPlayer.bind(null, db),
     savePlayer: savePlayer.bind(null, db),
     deletePlayer: deletePlayer.bind(null, db),
-    unregisterPlayer: unregisterPlayer.bind(null, db)
+    unregisterPlayer: unregisterPlayer.bind(null, db),
+    getDraftSheet: getDraftSheet.bind(null, db)
   }
 }

@@ -1,6 +1,5 @@
 var emojify = require('../lib/emojify')
 var shortid = require('shortid')
-var pairingMaps = require('../lib/pairing-maps')
 
 function list(templates, season, series, req, res) {
   var season_id = emojify.unemojify(req.params.season_id)
@@ -193,7 +192,7 @@ function standings(templates, season, team, series, pairings, req, res) {
           var standings = pairings.getStandings(
             round,
             teams,
-            pairingMaps.mapSeries(series)
+            mapSeries(series)
           )
           standings = standings.map(standing => {
             var team = teams.filter(team => team.id === standing.id)[0]
@@ -237,7 +236,7 @@ function matchups(templates, season, team, series, pairings, req, res) {
           var matchups = pairings.getMatchups(
             round,
             teams,
-            pairingMaps.mapSeries(series)
+            mapSeries(series)
           )
           matchups = matchups.map(matchup => {
             matchup.home = teams.filter(team => team.id === matchup.home)[0]
@@ -308,6 +307,22 @@ function currentMatchups(templates, _season, team, series, pairings, req, res) {
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
+  })
+}
+
+function mapSeries(series) {
+  return series.map(series => {
+    return {
+      round: series.round,
+      home: {
+        id: series.home_team_id,
+        points: series.home_points
+      },
+      away: {
+        id: series.away_team_id,
+        points: series.away_points
+      }
+    }
   })
 }
 

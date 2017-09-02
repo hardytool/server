@@ -1,4 +1,5 @@
 var shortid = require('shortid')
+var csv = require('../lib/csv')
 
 function list(templates, season, player, req, res) {
   var season_id = req.params.season_id
@@ -105,6 +106,23 @@ function remove(player, req, res) {
   })
 }
 
+function getCSV(player, req, res) {
+  if (!req.user || !req.user.isAdmin) {
+    res.sendStatus(403)
+    return
+  }
+
+  player.getDraftSheet(req.params.season_id).then(players => {
+    return csv.toCSV(players).then(csv => {
+      res.setHeader('Content-Type', 'text/csv')
+      res.end(csv)
+    })
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
 module.exports = (templates, season, player, steam_user) => {
   return {
     list: {
@@ -126,6 +144,10 @@ module.exports = (templates, season, player, steam_user) => {
     remove: {
       route: '/players/delete',
       handler: remove.bind(null, player)
+    },
+    csv: {
+      route: '/seasons/:season_id/players/draftsheet',
+      handler: getCSV.bind(null, player)
     }
   }
 }
