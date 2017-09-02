@@ -48,18 +48,18 @@ block content
                   span= player.will_captain.charAt(0).toUpperCase() + player.will_captain.slice(1)
                 td
                   if player.captain_approved
-                    span.icon
+                    span.icon.has-text-success
                       i.fa.fa-check-circle-o
                   else
-                    span.icon
+                    span.icon.has-text-danger
                       i.fa.fa-times-circle-o
               td.tiny-text= player.statement
               td
-                if player.vouched || player.has_played
-                  span.icon
+                if player.is_vouched || player.has_played
+                  span.icon.has-text-success
                     i.fa.fa-check-circle-o
                 else
-                  span.icon
+                  span.icon.has-text-danger
                     i.fa.fa-times-circle-o
               if user && user.isAdmin
                 td

@@ -51,7 +51,7 @@ function getPlayers(db, criteria) {
     FROM
       player
     LEFT JOIN vouch ON
-      player.id = vouch.vouched_id
+      player.steam_id = vouch.vouched_id
     GROUP BY
       player.steam_id
   ) is_vouched ON

@@ -4,6 +4,7 @@ function list(templates, season, player, req, res) {
   var season_id = req.params.season_id
   season.getSeason(season_id).then(season => {
     return player.getPlayers({season_id: season_id}).then(players => {
+      console.dir(players[2])
       var html = templates.player.list({
         user: req.user,
         season: season,
