@@ -98,7 +98,7 @@ function vouch(templates, steam_user, profile, team_player, req, res) {
   profile.getProfile(req.user.steamId).then(voucher => {
     return profile.getProfile(req.params.steam_id).then(vouchee => {
       return team_player.hasPlayed(voucher.steam_id).then(({ has_played }) => {
-        if (has_played) {
+        if (has_played || req.user.isAdmin) {
           var html = templates.profile.vouch_confirm({
             user: req.user,
             voucher: voucher,
@@ -125,7 +125,7 @@ function confirm(steam_user, profile, vouch, team_player, req, res) {
   profile.getProfile(req.user.steamId).then(voucher => {
     return profile.getProfile(req.params.steam_id).then(vouchee => {
       return team_player.hasPlayed(voucher.steam_id).then(({ has_played }) => {
-        if (has_played) {
+        if (has_played || req.user.isAdmin) {
           return vouch.vouch(voucher.steam_id, vouchee.steam_id).then(() => {
             res.redirect(`/profile/${vouchee.steam_id}`)
           })
