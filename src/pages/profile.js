@@ -1,22 +1,25 @@
 function view(templates, steam_user, profile, vouch, team_player, req, res) {
-
-  steam_user.getSteamUser(req.user.steamId).then(viewer => {
+  var viewerHasPlayed = Promise.resolve(null)
+  if (req.user) {
+    viewerHasPlayed = steam_user.getSteamUser(req.user.steamId).then(viewer => {
+      return team_player.hasPlayed(viewer.steam_id)
+    })
+  }
+  viewerHasPlayed.then(viewerHasPlayed => {
     return profile.getProfile(req.params.steam_id).then(profile => {
       return team_player.hasPlayed(profile.steam_id)
         .then(({ has_played }) => {
-          return team_player.hasPlayed(viewer.steam_id)
-            .then(viewerHasPlayed => {
-              return vouch.isVouched(profile.steam_id)
-                .then(({ is_vouched }) => {
-                  var html = templates.profile.view({
-                    user: req.user,
-                    profile: profile,
-                    vouched: has_played || is_vouched,
-                    has_played: has_played,
-                    can_vouch: req.user.isAdmin || viewerHasPlayed.has_played
-                  })
-                  res.send(html)
-                })
+          return vouch.isVouched(profile.steam_id)
+            .then(({ is_vouched }) => {
+              var html = templates.profile.view({
+                user: req.user,
+                profile: profile,
+                vouched: has_played || is_vouched,
+                has_played: has_played,
+                can_vouch: (req.user && req.user.isAdmin)
+                  || (viewerHasPlayed && viewerHasPlayed.has_played)
+              })
+              res.send(html)
             })
         })
     })
