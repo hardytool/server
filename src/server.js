@@ -199,11 +199,6 @@ migrations.migrateIfNeeded(
       steam.on('logOnResponse', res => {
         if (res.eresult == Steam.EResult.OK) {
           dota2.launch()
-          dota2.on('ready', () => {
-            season.getActiveSeason().then(season => {
-              return auth.fetchMissingMMRs(season.id)
-            })
-          })
         }
       })
 
