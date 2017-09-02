@@ -7,15 +7,27 @@ block content
   div.columns
     div.column
       h3.title.is-3.has-image
-        figure.image.is-32x32.hide-overflow
-          img(src=steamUser.avatar)
-        span &nbsp;#{profile.name}
+        figure.image.is-64x64.hide-overflow
+          img(src=profile.avatar)
+        div
+          div #{profile.name}
+          div.subtitle.has-icon
+            if vouched
+              span.has-text-success
+                span.icon
+                  i.fa.fa-check-circle-o
+                span vouched
+            else
+              span.has-text-danger
+                span.icon
+                  i.fa.fa-times-circle-o
+                span not vouched
   div.tile.is-ancestor
     div.tile.is-parent
       article.tile.is-child.notification
         div.content
           p.title Steam Name
-          p.subtitle= steamUser.name
+          p.subtitle= profile.name
         div.content
           p.title SEAL Name
           p.subtitle= profile.name
@@ -23,10 +35,10 @@ block content
       article.tile.is-child.notification
         div.content
           p.title Solo MMR
-          p.subtitle= steamUser.solo_mmr
+          p.subtitle= profile.solo_mmr
         div.content
           p.title Party MMR
-          p.subtitle= steamUser.party_mmr
+          p.subtitle= profile.party_mmr
         div.content
           p.title Adjusted MMR
           p.subtitle= profile.adjusted_mmr
@@ -36,13 +48,24 @@ block content
           p.title Resources
           ul
             li
-              a(href='https://www.dotabuff.com/players/' + steamUser.steam_id)
+              a(href='https://www.dotabuff.com/players/' + profile.steam_id)
                 span Dotabuff
             li
-              a(href='https://www.opendota.com/players/' + steamUser.steam_id)
+              a(href='https://www.opendota.com/players/' + profile.steam_id)
                 span OpenDota
-  div.columns
-    div.column
-      if user && (user.isAdmin || user.steamId === steamUser.steam_id)
-        a(href='/profile/' + steamUser.steam_id + '/edit')
-          button.button.is-primary Edit profile
+  if user
+    div.columns
+      div.column
+        div.field.is-grouped
+          if user && (user.isAdmin || user.steamId === profile.steam_id)
+            div.control
+              a(href='/profile/' + profile.steam_id + '/edit')
+                button.button.is-primary Edit profile
+          if !vouched && can_vouch
+            div.control
+              a(href='/profile/' + profile.steam_id + '/vouch')
+                button.button.is-warning Vouch player
+          if user.isAdmin && vouched && !has_played
+            div.control
+              a(href='/profile/' + profile.steam_id + '/unvouch')
+                button.button.is-danger Unvouch player

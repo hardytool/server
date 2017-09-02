@@ -19,7 +19,9 @@ function getPlayers(db, criteria) {
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
-    END AS adjusted_mmr
+    END AS adjusted_mmr,
+    has_played.has_played,
+    is_vouched.is_vouched
   FROM
     player
   JOIN steam_user ON
@@ -28,6 +30,32 @@ function getPlayers(db, criteria) {
     season.id = player.season_id
   LEFT JOIN profile ON
     steam_user.steam_id = profile.steam_id
+  JOIN (
+    SELECT
+      player.steam_id,
+      SUM(CASE WHEN team_player.player_id IS NULL THEN 0 ELSE 1 END) > 0
+        AS has_played
+    FROM
+      player
+    LEFT JOIN team_player ON
+      player.id = team_player.player_id
+    GROUP BY
+      player.steam_id
+  ) has_played ON
+    player.steam_id = has_played.steam_id
+  LEFT JOIN (
+    SELECT
+      player.steam_id,
+      SUM(CASE WHEN vouch.vouched_id IS NULL THEN 0 ELSE 1 END) > 0
+        AS is_vouched
+    FROM
+      player
+    LEFT JOIN vouch ON
+      player.id = vouch.vouched_id
+    GROUP BY
+      player.steam_id
+  ) is_vouched ON
+    player.steam_id = is_vouched.steam_id
   WHERE
     1 = 1
   `
@@ -84,7 +112,11 @@ function getPlayer(db, id) {
     steam_user.avatar,
     steam_user.solo_mmr,
     steam_user.party_mmr,
-    GREATEST(steam_user.solo_mmr, steam_user.party_mmr) adjusted_mmr
+    CASE
+      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
+      THEN profile.adjusted_mmr
+      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
+    END AS adjusted_mmr
   FROM
     player
   JOIN steam_user ON

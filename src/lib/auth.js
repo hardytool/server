@@ -69,15 +69,17 @@ function updateUserMMR(steam_user, mmr, user) {
   })
 }
 
-function inflateUser(admin, user) {
+function inflateUser(admin, profile, user) {
   var id = from64to32(user.profile.id).toString()
 
   return admin.isAdmin(id).then(isAdmin => {
-    user.isAdmin = isAdmin
-    user.avatar = getAvatar(user.profile)
-    user.displayName = user.profile.displayName
-    user.steamId = id
-    return Promise.resolve(user)
+    return profile.getProfile(id).then(profile => {
+      user.isAdmin = isAdmin
+      user.avatar = getAvatar(user.profile)
+      user.displayName = profile.name
+      user.steamId = id
+      return user
+    })
   })
 }
 
@@ -92,12 +94,12 @@ function getAvatar(profile) {
   return profile.photos[profile.photos.length - 1].value
 }
 
-module.exports = (config, admin, steam_user, mmr) => {
+module.exports = (config, admin, steam_user, profile, mmr) => {
   return {
     createUser: createUser.bind(null, steam_user, mmr),
     fetchMissingMMRs: fetchMissingMMRs.bind(null, steam_user, mmr),
     updateUserMMR: updateUserMMR.bind(null, steam_user, mmr),
-    inflateUser: inflateUser.bind(null, admin),
+    inflateUser: inflateUser.bind(null, admin, profile),
     getAvatar: getAvatar
   }
 }

@@ -23,6 +23,7 @@ block content
               th Will Captain?
               th Captain Approved
             th Statement
+            th Vouched?
             if user && user.isAdmin
               th Edit
         tbody
@@ -47,10 +48,19 @@ block content
                   span= player.will_captain.charAt(0).toUpperCase() + player.will_captain.slice(1)
                 td
                   if player.captain_approved
-                    span Yes
+                    span.icon
+                      i.fa.fa-check-circle-o
                   else
-                    span No
+                    span.icon
+                      i.fa.fa-times-circle-o
               td.tiny-text= player.statement
+              td
+                if player.vouched || player.has_played
+                  span.icon
+                    i.fa.fa-check-circle-o
+                else
+                  span.icon
+                    i.fa.fa-times-circle-o
               if user && user.isAdmin
                 td
                   a(href='/seasons/' + season.id + '/players/' + player.id + '/edit') edit

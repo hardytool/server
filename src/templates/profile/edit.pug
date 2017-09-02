@@ -6,10 +6,10 @@ block title
 block content
   div.columns
     div.column
-      h3.title.is-3
+      h3.title.is-3.has-icon
         span.icon.is-medium
           i.fa.fa-pencil
-        span &nbsp;Edit #{steamUser.name}
+        span Edit #{steamUser.name}
       div
         if !profile || (profile && !profile.name_locked) || user.isAdmin
           form(method='post' action='/profile/edit')

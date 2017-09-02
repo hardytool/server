@@ -1,0 +1,21 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : Confirm vouching #{vouchee.name}?
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span Are you sure you want to vouch #{vouchee.name}?
+      div
+        span You will be recorded as having vouched #{vouchee.name} and will held responsible for their behavior.
+  div.columns
+    div.column
+      div.field.is-grouped
+        div.control
+          a(href='/profile/' + vouchee.steam_id)
+            button.button.is-primary No
+        div.control
+          a(href='/profile/' + vouchee.steam_id + '/confirm')
+            button.button.is-danger Yes

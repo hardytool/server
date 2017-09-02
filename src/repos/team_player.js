@@ -156,6 +156,22 @@ function isCaptainAutoApproved(db, steam_id) {
   })
 }
 
+function hasPlayed(db, steam_id) {
+  var select = sql`
+  SELECT
+    COUNT(1) > 0 AS has_played
+  FROM
+    team_player
+  JOIN player ON
+    team_player.player_id = player.id
+  WHERE
+    player.steam_id = ${steam_id}
+  `
+  return db.query(select).then(result => {
+    return result.rows[0]
+  })
+}
+
 module.exports = db => {
   return {
     getUnassignedPlayers: getUnassignedPlayers.bind(null, db),
@@ -163,6 +179,7 @@ module.exports = db => {
     removePlayerFromTeam: removePlayerFromTeam.bind(null, db),
     getPlayerTeams: getPlayerTeams.bind(null, db),
     getRoster: getRoster.bind(null, db),
-    isCaptainAutoApproved: isCaptainAutoApproved.bind(null, db)
+    isCaptainAutoApproved: isCaptainAutoApproved.bind(null, db),
+    hasPlayed: hasPlayed.bind(null, db)
   }
 }

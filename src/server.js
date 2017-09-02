@@ -35,10 +35,11 @@ var series = require('./repos/series')(pool)
 var steam_user = require('./repos/steam_user')(pool)
 var team = require('./repos/team')(pool)
 var team_player = require('./repos/team_player')(pool)
+var vouch = require('./repos/vouch')(pool)
 
 // lib
 var mmr = require('./lib/mmr')(dota2)
-var auth = require('./lib/auth')(config, admin, steam_user, mmr)
+var auth = require('./lib/auth')(config, admin, steam_user, profile, mmr)
 var credentials = require('./lib/credentials')(config.server)
 
 // Auth routes
@@ -48,7 +49,8 @@ var openid = require('./api/openid')(config)
 var indexPages = require('./pages/index')(templates)
 var playerPages = require('./pages/players')(
   templates, season, player, steam_user)
-var profilePages = require('./pages/profile')(templates, steam_user, profile)
+var profilePages = require('./pages/profile')(
+  templates, steam_user, profile, team_player, vouch)
 var seasonPages = require('./pages/seasons')(templates, season)
 var seriesPages = require('./pages/series')(
   templates, season, team, series, pairings)
@@ -165,6 +167,9 @@ app.post(rosterPages.remove.route, rosterPages.remove.handler)
 
 app.get(profilePages.view.route, profilePages.view.handler)
 app.get(profilePages.edit.route, profilePages.edit.handler)
+app.get(profilePages.vouch.route, profilePages.vouch.handler)
+app.get(profilePages.confirm.route, profilePages.confirm.handler)
+app.get(profilePages.unvouch.route, profilePages.unvouch.handler)
 
 app.post(profilePages.post.route, profilePages.post.handler)
 
