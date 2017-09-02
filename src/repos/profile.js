@@ -6,6 +6,7 @@ function getProfile(db, steamId) {
     steam_user.steam_id,
     steam_user.avatar,
     COALESCE(profile.name, steam_user.name) AS name,
+    steam_user.name AS steam_name,
     steam_user.solo_mmr,
     steam_user.party_mmr,
     COALESCE(profile.adjusted_mmr, 0) as adjusted_mmr,

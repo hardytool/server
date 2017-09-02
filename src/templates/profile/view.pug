@@ -27,7 +27,7 @@ block content
       article.tile.is-child.notification
         div.content
           p.title Steam Name
-          p.subtitle= profile.name
+          p.subtitle= profile.steam_name
         div.content
           p.title SEAL Name
           p.subtitle= profile.name
@@ -42,6 +42,9 @@ block content
         div.content
           p.title Adjusted MMR
           p.subtitle= profile.adjusted_mmr
+        div.content
+          p.title Draft MMR
+          p.subtitle= profile.draft_mmr
     div.tile.is-parent
       article.tile.is-child.notification
         div.content
