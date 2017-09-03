@@ -17,6 +17,20 @@ block content
                 span.icon
                   i.fa.fa-check-circle-o
                 span vouched
+                if voucher
+                  span  by
+                  span
+                    a.has-text-success(href='/profile/' + voucher.steam_id)= ' ' + voucher.name
+            else if profile.is_admin
+              span.has-text-success
+                span.icon
+                  i.fa.fa-lock
+                span admin
+            else if has_played
+              span.has-text-success
+                span.icon
+                  i.fa.fa-clock-o
+                span season 1 gamer
             else
               span.has-text-danger
                 span.icon

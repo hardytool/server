@@ -1,4 +1,4 @@
-function view(templates, steam_user, profile, vouch, team_player, req, res) {
+function view(templates, steam_user, _profile, vouch, team_player, req, res) {
   var viewerHasPlayed = Promise.resolve(null)
   if (req.user) {
     viewerHasPlayed = steam_user.getSteamUser(req.user.steamId).then(viewer => {
@@ -6,15 +6,21 @@ function view(templates, steam_user, profile, vouch, team_player, req, res) {
     })
   }
   viewerHasPlayed.then(viewerHasPlayed => {
-    return profile.getProfile(req.params.steam_id).then(profile => {
+    return _profile.getProfile(req.params.steam_id).then(profile => {
       return team_player.hasPlayed(profile.steam_id)
         .then(({ has_played }) => {
           return vouch.isVouched(profile.steam_id)
-            .then(({ is_vouched }) => {
+            .then(result => {
+              return _profile.getProfile(result.voucher_id).then(voucher => {
+                result.voucher = voucher
+                return result
+              })
+            }).then(({ is_vouched, voucher }) => {
               var html = templates.profile.view({
                 user: req.user,
                 profile: profile,
-                vouched: has_played || is_vouched,
+                vouched: is_vouched,
+                voucher: voucher,
                 has_played: has_played,
                 can_vouch: (req.user && req.user.isAdmin)
                   || (viewerHasPlayed && viewerHasPlayed.has_played)

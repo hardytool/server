@@ -15,11 +15,18 @@ function getProfile(db, steamId) {
       THEN profile.adjusted_mmr
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
     END AS draft_mmr,
-    profile.name_locked
+    profile.name_locked,
+    CASE
+      WHEN admin.steam_id IS NOT NULL
+      THEN true
+      ELSE false
+    END AS is_admin
   FROM
-    profile
-  RIGHT JOIN steam_user ON
-    profile.steam_id = steam_user.steam_id
+    steam_user
+  LEFT JOIN profile ON
+     steam_user.steam_id = profile.steam_id
+  LEFT JOIN admin ON
+    admin.steam_id = profile.steam_id
   WHERE
     steam_user.steam_id = ${steamId}
   `

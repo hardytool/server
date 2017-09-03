@@ -3,11 +3,17 @@ var sql = require('pg-sql').sql
 function isVouched(db, steam_id) {
   var select = sql`
   SELECT
-    COUNT(1) > 0 as is_vouched
+    CASE
+      WHEN vouch.vouched_id IS NOT NULL THEN true
+      ELSE false
+    END AS is_vouched,
+    vouch.voucher_id
   FROM
-    vouch
+    steam_user
+  LEFT JOIN vouch ON
+    steam_user.steam_id = vouch.vouched_id
   WHERE
-    vouched_id = ${steam_id}
+    steam_user.steam_id = ${steam_id}
   `
   return db.query(select).then(result => {
     return result.rows[0]
