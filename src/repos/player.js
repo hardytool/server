@@ -202,9 +202,7 @@ function getDraftSheet(db, season_id) {
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
     END AS draft_mmr,
     player.statement,
-    has_played.has_played,
-    is_vouched.is_vouched,
-    has_played.has_played OR is_vouched.is_vouched AS eligible,
+    has_played.has_played OR is_vouched.is_vouched AS is_vouched,
     CONCAT('https://www.dotabuff.com/players/', steam_user.steam_id)
       AS dotabuff,
     CONCAT('https://www.opendota.com/players/', steam_user.steam_id)
@@ -245,9 +243,9 @@ function getDraftSheet(db, season_id) {
   ) is_vouched ON
     player.steam_id = is_vouched.steam_id
   WHERE
-    1 = 1
-  AND
     player.season_id = ${season_id}
+  ORDER BY
+    created_at ASC
   `
   return db.query(select).then(result => {
     return result.rows
