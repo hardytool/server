@@ -15,7 +15,7 @@ function getProfile(db, steamId) {
       THEN profile.adjusted_mmr
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
     END AS draft_mmr,
-    profile.name_locked,
+    COALESCE(profile.name_locked, false),
     CASE
       WHEN admin.steam_id IS NOT NULL
       THEN true
