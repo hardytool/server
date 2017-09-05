@@ -93,11 +93,8 @@ function getPlayers(db, criteria) {
         select = sql.join([select, sql`
         AND (
           player.captain_approved = true
-          AND (
-            player.will_captain = 'yes'
-            OR
-            player.will_captain = 'maybe'
-          )
+          AND
+          player.will_captain = 'yes'
           AND (
             is_vouched.is_vouched = true
             OR
@@ -110,8 +107,11 @@ function getPlayers(db, criteria) {
           select = sql.join([select, sql`
           AND (
             player.captain_approved = false
-            OR
-            player.will_captain = 'no'
+            OR (
+              player.will_captain = 'no'
+              OR
+              player.will_captain = 'maybe'
+            )
             OR (
               is_vouched.is_vouched = false
               AND
@@ -300,11 +300,8 @@ function getDraftSheet(db, criteria) {
         select = sql.join([select, sql`
         AND (
           player.captain_approved = true
-          AND (
-            player.will_captain = 'yes'
-            OR
-            player.will_captain = 'maybe'
-          )
+          AND
+          player.will_captain = 'yes'
           AND (
             is_vouched.is_vouched = true
             OR
@@ -317,8 +314,11 @@ function getDraftSheet(db, criteria) {
           select = sql.join([select, sql`
           AND (
             player.captain_approved = false
-            OR
-            player.will_captain = 'no'
+            OR (
+              player.will_captain = 'no'
+              OR
+              player.will_captain = 'maybe'
+            )
             OR (
               is_vouched.is_vouched = false
               AND
