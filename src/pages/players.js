@@ -10,7 +10,8 @@ function list(templates, season, player, req, res) {
   season.getSeason(season_id).then(season => {
     return player.getPlayers({
       season_id: season_id,
-      is_captain: includeCaptains
+      is_captain: false,
+      hide_captains: !includeCaptains
     }).then(players => {
       var html = templates.player.list({
         user: req.user,
@@ -34,7 +35,7 @@ function captains(templates, season, player, req, res) {
       season_id: season_id,
       is_captain: true
     }).then(players => {
-      var html = templates.player.list({
+      var html = templates.player.captains({
         user: req.user,
         season: season,
         players: players,
@@ -142,7 +143,10 @@ function getCSV(player, req, res) {
     return
   }
 
-  player.getDraftSheet(req.params.season_id).then(players => {
+  player.getDraftSheet({
+    season_id: req.params.season_id,
+    is_captain: false
+  }).then(players => {
     return csv.toCSV(players).then(csv => {
       res.setHeader('Content-Type', 'text/csv')
       res.end(csv)

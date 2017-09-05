@@ -106,18 +106,20 @@ function getPlayers(db, criteria) {
         )
         `])
       } else {
-        select = sql.join([select, sql`
-        AND (
-          player.captain_approved = false
-          OR
-          player.will_captain = 'no'
-          OR (
-            is_vouched.is_vouched = false
-            AND
-            has_played.has_played = false
+        if (criteria.hide_captains) {
+          select = sql.join([select, sql`
+          AND (
+            player.captain_approved = false
+            OR
+            player.will_captain = 'no'
+            OR (
+              is_vouched.is_vouched = false
+              AND
+              has_played.has_played = false
+            )
           )
-        )
-        `])
+          `])
+        }
       }
     }
     if (criteria.steam_id) {
@@ -231,7 +233,7 @@ function unregisterPlayer(db, seasonId, steamId) {
   return db.query(query)
 }
 
-function getDraftSheet(db, season_id) {
+function getDraftSheet(db, criteria) {
   var select = sql`
   SELECT
     COALESCE(profile.name, steam_user.name) AS name,
@@ -248,8 +250,7 @@ function getDraftSheet(db, season_id) {
     CONCAT('https://www.dotabuff.com/players/', steam_user.steam_id)
       AS dotabuff,
     CONCAT('https://www.opendota.com/players/', steam_user.steam_id)
-      AS opendota,
-    player.will_captain
+      AS opendota
   FROM
     player
   JOIN steam_user ON
@@ -285,10 +286,54 @@ function getDraftSheet(db, season_id) {
   ) is_vouched ON
     player.steam_id = is_vouched.steam_id
   WHERE
-    player.season_id = ${season_id}
+    1 = 1
+  `
+  if (criteria) {
+    if (criteria.season_id) {
+      select = sql.join([select, sql`
+      AND
+        player.season_id = ${criteria.season_id}
+      `])
+    }
+    if (criteria.is_captain !== undefined) {
+      if (criteria.is_captain) {
+        select = sql.join([select, sql`
+        AND (
+          player.captain_approved = true
+          AND (
+            player.will_captain = 'yes'
+            OR
+            player.will_captain = 'maybe'
+          )
+          AND (
+            is_vouched.is_vouched = true
+            OR
+            has_played.has_played = true
+          )
+        )
+        `])
+      } else {
+        if (criteria.hide_captains) {
+          select = sql.join([select, sql`
+          AND (
+            player.captain_approved = false
+            OR
+            player.will_captain = 'no'
+            OR (
+              is_vouched.is_vouched = false
+              AND
+              has_played.has_played = false
+            )
+          )
+          `])
+        }
+      }
+    }
+  }
+  select = sql.join([select, sql`
   ORDER BY
     created_at ASC
-  `
+  `])
   return db.query(select).then(result => {
     return result.rows
   })
