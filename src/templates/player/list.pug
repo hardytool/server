@@ -13,7 +13,7 @@ mixin buttons
               button.button Get draft sheet
 
 block title
-  title #{title} : #{season ? season.name : ''} Player List
+  title #{title} : #{season ? season.name : ''} #{noun}
 
 block content
   div.columns
@@ -21,7 +21,7 @@ block content
       h3.title.is-3
         span.icon.is-medium
           i.fa.fa-list
-        span &nbsp;#{season ? season.name : ''} Players
+        span &nbsp;#{season ? season.name : ''} #{noun}
   +buttons
   div.columns
     div.column

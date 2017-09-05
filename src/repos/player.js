@@ -66,17 +66,59 @@ function getPlayers(db, criteria) {
         player.season_id = ${criteria.season_id}
       `])
     }
-    if (criteria.will_captain) {
-      select = sql.join([select, sql`
-      AND
-        player.will_captain = ${criteria.will_captain}
-      `])
+    if (criteria.will_captain !== undefined) {
+      if (criteria.will_captain) {
+        select = sql.join([select, sql`
+        AND (
+          player.will_captain = 'yes'
+          OR
+          player.will_captain = 'maybe'
+        )
+        `])
+      } else {
+        select = sql.join([select, sql`
+        AND
+          player.will_captain = 'no'
+        `])
+      }
     }
     if (criteria.captain_approved !== undefined) {
       select = sql.join([select, sql`
       AND
         player.captain_approved = ${criteria.captain_approved}
       `])
+    }
+    if (criteria.is_captain !== undefined) {
+      if (criteria.is_captain) {
+        select = sql.join([select, sql`
+        AND (
+          player.captain_approved = true
+          AND (
+            player.will_captain = 'yes'
+            OR
+            player.will_captain = 'maybe'
+          )
+          AND (
+            is_vouched.is_vouched = true
+            OR
+            has_played.has_played = true
+          )
+        )
+        `])
+      } else {
+        select = sql.join([select, sql`
+        AND (
+          player.captain_approved = false
+          OR
+          player.will_captain = 'no'
+          OR (
+            is_vouched.is_vouched = false
+            AND
+            has_played.has_played = false
+          )
+        )
+        `])
+      }
     }
     if (criteria.steam_id) {
       select = sql.join([select, sql`

@@ -1,4 +1,4 @@
-function view(templates, steam_user, _profile, vouch, team_player, req, res) {
+function view(templates, steam_user, profile, vouch, team_player, req, res) {
   var viewerHasPlayed = Promise.resolve(null)
   if (req.user) {
     viewerHasPlayed = steam_user.getSteamUser(req.user.steamId).then(viewer => {
@@ -6,19 +6,19 @@ function view(templates, steam_user, _profile, vouch, team_player, req, res) {
     })
   }
   viewerHasPlayed.then(viewerHasPlayed => {
-    return _profile.getProfile(req.params.steam_id).then(profile => {
-      return team_player.hasPlayed(profile.steam_id)
+    return profile.getProfile(req.params.steam_id).then(_profile => {
+      return team_player.hasPlayed(_profile.steam_id)
         .then(({ has_played }) => {
-          return vouch.isVouched(profile.steam_id)
+          return vouch.isVouched(_profile.steam_id)
             .then(result => {
-              return _profile.getProfile(result.voucher_id).then(voucher => {
+              return profile.getProfile(result.voucher_id).then(voucher => {
                 result.voucher = voucher
                 return result
               })
             }).then(({ is_vouched, voucher }) => {
               var html = templates.profile.view({
                 user: req.user,
-                profile: profile,
+                profile: _profile,
                 vouched: is_vouched,
                 voucher: voucher,
                 has_played: has_played,
@@ -81,6 +81,7 @@ function post(steam_user, profile, req, res) {
     }
 
     return profile.getProfile(steamUser.steam_id).then(_profile => {
+      console.dir(_profile)
       if (!req.user.isAdmin) {
         p.adjusted_mmr = _profile ? _profile.adjusted_mmr : null
         p.name_locked = _profile ? _profile.name_locked : false

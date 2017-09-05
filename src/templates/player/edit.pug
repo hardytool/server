@@ -14,6 +14,7 @@ block content
         form(method='post' action='/players/edit')
           if player
             input(type='hidden' name='id' value=player.id)
+            input(type='hidden' name='steam_id' value=player.steam_id)
           input(type='hidden' name='season_id' value=season.id)
           if !player
             div.field

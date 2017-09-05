@@ -12,16 +12,7 @@ block content
         div
           div #{profile.name}
           div.subtitle.has-icon
-            if vouched
-              span.has-text-success
-                span.icon
-                  i.fa.fa-check-circle-o
-                span vouched
-                if voucher
-                  span  by
-                  span
-                    a.has-text-success(href='/profile/' + voucher.steam_id)= ' ' + voucher.name
-            else if profile.is_admin
+            if profile.is_admin
               span.has-text-success
                 span.icon
                   i.fa.fa-lock
@@ -31,6 +22,15 @@ block content
                 span.icon
                   i.fa.fa-flask
                 span test subject
+            else if vouched
+              span.has-text-success
+                span.icon
+                  i.fa.fa-check-circle-o
+                span vouched
+                if voucher
+                  span  by
+                  span
+                    a.has-text-success(href='/profile/' + voucher.steam_id)= ' ' + voucher.name
             else
               span.has-text-danger
                 span.icon
@@ -78,7 +78,7 @@ block content
             div.control
               a(href='/profile/' + profile.steam_id + '/edit')
                 button.button.is-primary Edit profile
-          if !vouched && can_vouch
+          if !vouched && !has_played && can_vouch
             div.control
               a(href='/profile/' + profile.steam_id + '/vouch')
                 button.button.is-warning Vouch player

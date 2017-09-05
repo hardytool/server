@@ -2,13 +2,43 @@ var shortid = require('shortid')
 var csv = require('../lib/csv')
 
 function list(templates, season, player, req, res) {
+  var includeCaptains = req.query.includeCaptains === '1'
+    || req.query.includeCaptains === 'true'
+    ? true
+    : false
   var season_id = req.params.season_id
   season.getSeason(season_id).then(season => {
-    return player.getPlayers({season_id: season_id}).then(players => {
+    return player.getPlayers({
+      season_id: season_id,
+      is_captain: includeCaptains
+    }).then(players => {
       var html = templates.player.list({
         user: req.user,
         season: season,
-        players: players
+        players: players,
+        noun: 'Players'
+      })
+
+      res.send(html)
+    })
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
+function captains(templates, season, player, req, res) {
+  var season_id = req.params.season_id
+  season.getSeason(season_id).then(season => {
+    return player.getPlayers({
+      season_id: season_id,
+      is_captain: true
+    }).then(players => {
+      var html = templates.player.list({
+        user: req.user,
+        season: season,
+        players: players,
+        noun: 'Captains'
       })
 
       res.send(html)
@@ -123,11 +153,28 @@ function getCSV(player, req, res) {
   })
 }
 
+function currentPlayers(func, templates, season, player, req, res) {
+  if (!req.params) {
+    req.params = {}
+  }
+  season.getActiveSeason().then(_season => {
+    req.params.season_id = _season.id
+    return func(templates, season, player, req, res)
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
 module.exports = (templates, season, player, steam_user) => {
   return {
     list: {
       route: '/seasons/:season_id/players',
       handler: list.bind(null, templates, season, player)
+    },
+    captains: {
+      route: '/seasons/:season_id/captains',
+      handler: captains.bind(null, templates, season, player)
     },
     create: {
       route: '/seasons/:season_id/players/create',
@@ -148,6 +195,14 @@ module.exports = (templates, season, player, steam_user) => {
     csv: {
       route: '/seasons/:season_id/players/draftsheet',
       handler: getCSV.bind(null, player)
+    },
+    currentPlayers: {
+      route: '/players',
+      handler: currentPlayers.bind(null, list, templates, season, player)
+    },
+    currentCaptains: {
+      route: '/captains',
+      handler: currentPlayers.bind(null, captains, templates, season, player)
     }
   }
 }

@@ -7,7 +7,7 @@ html(lang='en')
           title= title
         link(rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.css')
         link(rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
-        link(rel='icon' type='image/png' href='https://raw.githubusercontent.com/seal-dota/seal-dota.github.io/master/seal.png')
+        link(rel='icon' type='image/png' href='/assets/seal-icon.png')
         style(type='text/css').
           figure.hide-overflow {
             overflow: hidden;
@@ -41,6 +41,10 @@ html(lang='en')
             font-size: 10px;
             line-height: 12px;
           }
+          .is-home-image {
+            width: 400px;
+            height: 400px;
+          }
           @media screen and (max-width:768px) {
             .has-image {
               flex-direction: column;
@@ -68,6 +72,8 @@ html(lang='en')
                     a.nav-item(href='/matchups') Matchups
                     a.nav-item(href='/standings') Standings
                     a.nav-item(href='/teams') Teams
+                    a.nav-item(href='/captains') Captains
+                    a.nav-item(href='/players') Players
                     a.nav-item(href='/register') Register
                   div.nav-right
                     if user
