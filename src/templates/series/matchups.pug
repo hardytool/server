@@ -19,11 +19,11 @@ block content
           each matchup in matchups
             tr
               td
-                a(href='/seasons/' + season.vanity + '/teams/' + matchup.home.vanity) #{matchup.home.name}
+                a(href='/seasons/' + season.id + '/teams/' + matchup.home.id) #{matchup.home.name}
                 span= matchup.home.captain_name ? ' (' + matchup.home.captain_name + ')' : ''
               if matchup.away.id
                 td
-                  a(href='/seasons/' + season.vanity + '/teams/' + matchup.away.vanity) #{matchup.away.name}
+                  a(href='/seasons/' + season.id + '/teams/' + matchup.away.id) #{matchup.away.name}
                   span= matchup.away.captain_name ? ' (' + matchup.away.captain_name + ')' : ''
               else
                 td= matchup.away.name

@@ -22,7 +22,7 @@ block content
           each standing in standings
             tr
               td
-                a(href='/seasons/' + season.vanity + '/teams/' + standing.vanity)= standing.name
+                a(href='/seasons/' + season.id + '/teams/' + standing.id)= standing.name
                 span= standing.captain_name ? ' (' + standing.captain_name + ')' : ''
               td
                 figure.image.is-team-logo.hide-overflow

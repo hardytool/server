@@ -1,23 +1,18 @@
-var emojify = require('../lib/emojify')
 var shortid = require('shortid')
 
 function list(templates, season, series, req, res) {
-  var season_id = emojify.unemojify(req.params.season_id)
+  var season_id = req.params.season_id
   var round = req.query.round
 
   season.getSeason(season_id).then(season => {
-    season.vanity = emojify.emojify(season.id)
     return series.getSeries({
       season_id: season_id,
       round: round
     }).then(series => {
       series = series.map(_series => {
-        _series.vanity = emojify.emojify(_series.id)
-        _series.season_vanity = emojify.emojify(_series.season_id)
         if (_series.home_team_id) {
           _series.home = {}
           _series.home.id = _series.home_team_id
-          _series.home.vanity = emojify.emojify(_series.home_team_id)
           _series.home.name = _series.home_team_name
           _series.home.logo = _series.home_team_logo
           _series.home.points = _series.home_points
@@ -25,7 +20,6 @@ function list(templates, season, series, req, res) {
         if (_series.away_team_id) {
           _series.away = {}
           _series.away.id = _series.away_team_id
-          _series.away.vanity = emojify.emojify(_series.away_team_id)
           _series.away.name = _series.away_team_name
           _series.away.logo = _series.away_team_logo
           _series.away.points = _series.away_points
@@ -52,7 +46,7 @@ function create(templates, season, team, req, res) {
     return
   }
 
-  var season_id = emojify.unemojify(req.params.season_id)
+  var season_id = req.params.season_id
 
   season.getSeason(season_id).then(season => {
     return team.getTeams(season_id).then(teams => {
@@ -77,8 +71,8 @@ function edit(templates, season, team, series, req, res) {
     return
   }
 
-  var season_id = emojify.unemojify(req.params.season_id)
-  var id = emojify.unemojify(req.params.id)
+  var season_id = req.params.season_id
+  var id = req.params.id
 
   season.getSeason(season_id).then(season => {
     return team.getTeams(season_id).then(teams => {
@@ -117,7 +111,7 @@ function post(series, req, res) {
     return
   }
 
-  var season_vanity = emojify.emojify(req.body.season_id)
+  var season_id = req.body.season_id
   var id = req.body.id ? req.body.id : shortid.generate()
   var s = req.body
   s.id = id
@@ -153,7 +147,7 @@ function post(series, req, res) {
   }
 
   series.saveSeries(s).then(() => {
-    res.redirect('/seasons/' + season_vanity + '/series')
+    res.redirect('/seasons/' + season_id + '/series')
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -166,11 +160,11 @@ function remove(series, req, res) {
     return
   }
 
-  var season_vanity = emojify.emojify(req.body.season_id)
+  var season_id = req.body.season_id
   var id = req.body.id
 
   series.deleteSeries(id).then(() => {
-    res.redirect('/seasons/' + season_vanity + '/series')
+    res.redirect('/seasons/' + season_id + '/series')
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -178,12 +172,11 @@ function remove(series, req, res) {
 }
 
 function standings(templates, season, team, series, pairings, req, res) {
-  var season_id = emojify.unemojify(req.params.season_id)
+  var season_id = req.params.season_id
   var round = Number.parseInt(req.params.round)
 
   series.getCurrentRound(season_id, round).then(round => {
     return season.getSeason(season_id).then(season => {
-      season.vanity = emojify.emojify(season.id)
       return team.getTeams(season.id).then(teams => {
         return series.getSeries({
           season_id: season.id,
@@ -196,7 +189,6 @@ function standings(templates, season, team, series, pairings, req, res) {
           )
           standings = standings.map(standing => {
             var team = teams.filter(team => team.id === standing.id)[0]
-            standing.vanity = emojify.emojify(standing.id)
             standing.name = team.name
             standing.logo = team.logo
             return standing
@@ -218,12 +210,11 @@ function standings(templates, season, team, series, pairings, req, res) {
 }
 
 function matchups(templates, season, team, series, pairings, req, res) {
-  var season_id = emojify.unemojify(req.params.season_id)
+  var season_id = req.params.season_id
   var round = Number.parseInt(req.params.round)
 
   series.getCurrentRound(season_id, round).then(round => {
     return season.getSeason(season_id).then(season => {
-      season.vanity = emojify.emojify(season.id)
       return team.getTeams(season.id).then(teams => {
         teams = teams.map(t => {
           t.droppedOut = t.disbanded
@@ -248,10 +239,6 @@ function matchups(templates, season, team, series, pairings, req, res) {
               }
             } else {
               matchup.away = teams.filter(team => team.id === matchup.away)[0]
-            }
-            matchup.home.vanity = emojify.emojify(matchup.home.id)
-            if (matchup.away.id) {
-              matchup.away.vanity = emojify.emojify(matchup.away.id)
             }
             return matchup
           })
@@ -283,7 +270,7 @@ function currentStandings(
     req.params = {}
   }
   _season.getActiveSeason().then(season => {
-    req.params.season_id = emojify.emojify(season.id)
+    req.params.season_id = season.id
     return series.getCurrentRound(season.id).then(round => {
       req.params.round = round
       return standings(templates, _season, team, series, pairings, req, res)
@@ -299,7 +286,7 @@ function currentMatchups(templates, _season, team, series, pairings, req, res) {
     req.params = {}
   }
   _season.getActiveSeason().then(season => {
-    req.params.season_id = emojify.emojify(season.id)
+    req.params.season_id = season.id
     return series.getCurrentRound(season.id).then(round => {
       req.params.round = round
       return matchups(templates, _season, team, series, pairings, req, res)

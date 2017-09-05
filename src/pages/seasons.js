@@ -1,12 +1,7 @@
-var emojify = require('../lib/emojify')
 var shortid = require('shortid')
 
 function list(templates, season, req, res) {
   season.getSeasons().then(seasons => {
-    seasons = seasons.map(season => {
-      season.vanity = emojify.emojify(season.id)
-      return season
-    })
     var html = templates.season.list({
       user: req.user,
       seasons: seasons
@@ -39,7 +34,7 @@ function edit(templates, season, req, res) {
     return
   }
 
-  var id = emojify.unemojify(req.params.id)
+  var id = req.params.id
 
   season.getSeason(id).then(season => {
     var html = templates.season.edit({

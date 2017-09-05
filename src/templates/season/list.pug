@@ -16,6 +16,7 @@ block content
             th Number
             th Name
             th Players
+            th Captains
             th Teams
             th Series
             th Standings
@@ -31,18 +32,20 @@ block content
               td
                 a(href='/seasons/' + season.id + '/players') players
               td
-                a(href='/seasons/' + season.vanity + '/teams') teams
+                a(href='/seasons/' + season.id + '/captains') captains
               td
-                a(href='/seasons/' + season.vanity + '/series') series
+                a(href='/seasons/' + season.id + '/teams') teams
               td
-                a(href='/seasons/' + season.vanity + '/standings') standings
+                a(href='/seasons/' + season.id + '/series') series
               td
-                a(href='/seasons/' + season.vanity + '/matchups') matchups
+                a(href='/seasons/' + season.id + '/standings') standings
+              td
+                a(href='/seasons/' + season.id + '/matchups') matchups
               td
                 a(href='/seasons/' + season.id + '/register') register
               if user && user.isAdmin
                 td
-                  a(href='/seasons/' + season.vanity + '/edit') edit
+                  a(href='/seasons/' + season.id + '/edit') edit
       if user && user.isAdmin
         a(href='/seasons/create')
           button.button.is-primary Add season

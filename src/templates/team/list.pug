@@ -22,7 +22,7 @@ block content
           each team in teams
             tr
               td
-                a(href='/seasons/' + season.vanity + '/teams/' + team.vanity)= team.name
+                a(href='/seasons/' + season.id + '/teams/' + team.id)= team.name
                 span= team.captain_name ? ' (' + team.captain_name + ')' : ''
               td
                 figure.image.is-team-logo.hide-overflow
@@ -30,7 +30,7 @@ block content
               td= team.seed
               if user && user.isAdmin
                 td
-                  a(href='/seasons/' + season.vanity + '/teams/' + team.vanity + '/edit') edit
+                  a(href='/seasons/' + season.id + '/teams/' + team.id + '/edit') edit
       if user && user.isAdmin
-        a(href='/seasons/' + season.vanity + '/teams/create')
+        a(href='/seasons/' + season.id + '/teams/create')
           button.button.is-primary Add team

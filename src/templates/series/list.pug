@@ -31,7 +31,7 @@ block content
             tr
               td= _series.round
               td
-                a(href='/seasons/' + season.vanity + '/teams/' + _series.home.vanity)= _series.home.name
+                a(href='/seasons/' + season.id + '/teams/' + _series.home.id)= _series.home.name
               td
                 figure.image.is-team-logo.hide-overflow
                   img(src=_series.home.logo)
@@ -42,7 +42,7 @@ block content
                   figure.image.is-team-logo.hide-overflow
                     img(src=_series.away.logo)
                 td
-                  a(href='/seasons/' + season.vanity + '/teams/' + _series.away.vanity)= _series.away.name
+                  a(href='/seasons/' + season.id + '/teams/' + _series.away.id)= _series.away.name
               else
                 td 0
                 td BYE
@@ -80,7 +80,7 @@ block content
                 td None
               if user && user.isAdmin
                 td
-                  a(href='/seasons/' + season.vanity + '/series/' + _series.vanity + '/edit') edit
+                  a(href='/seasons/' + season.id + '/series/' + _series.id + '/edit') edit
       if user && user.isAdmin
-        a(href='/seasons/' + season.vanity + '/series/create')
+        a(href='/seasons/' + season.id + '/series/create')
           button.button.is-primary Add series

@@ -1,17 +1,10 @@
-var emojify = require('../lib/emojify')
 var shortid = require('shortid')
 
 function list(templates, season, team, req, res) {
-  var season_id = emojify.unemojify(req.params.season_id)
+  var season_id = req.params.season_id
 
   season.getSeason(season_id).then(season => {
-    season.vanity = emojify.emojify(season.id)
     return team.getTeams(season_id).then(teams => {
-      teams = teams.map(team => {
-        team.vanity = emojify.emojify(team.id)
-        team.season_vanity = emojify.emojify(team.season_id)
-        return team
-      })
       var html = templates.team.list({
         user: req.user,
         season: season,
@@ -32,7 +25,7 @@ function create(templates, season, req, res) {
     return
   }
 
-  var season_id = emojify.unemojify(req.params.season_id)
+  var season_id = req.params.season_id
 
   season.getSeason(season_id).then(season => {
     var html = templates.team.edit({
@@ -54,12 +47,11 @@ function edit(templates, season, team, req, res) {
     return
   }
 
-  var season_id = emojify.unemojify(req.params.season_id)
-  var id = emojify.unemojify(req.params.id)
+  var season_id = req.params.season_id
+  var id = req.params.id
 
   season.getSeason(season_id).then(season => {
     return team.getTeam(id).then(team => {
-      team.vanity = emojify.emojify(team.id)
       var html = templates.team.edit({
         user: req.user,
         verb: 'Edit',
@@ -81,15 +73,13 @@ function post(team, req, res) {
   }
 
   var season_id = req.body.season_id
-  var season_vanity = emojify.emojify(season_id)
   var id = req.body.id ? req.body.id : shortid.generate()
   var t = req.body
   t.id = id
   t.disbanded = t.disbanded == 'on' ? true : false
 
   team.saveTeam(t).then(() => {
-    var team_vanity = emojify.emojify(t.id)
-    res.redirect('/seasons/' + season_vanity + '/teams/' + team_vanity)
+    res.redirect('/seasons/' + season_id + '/teams/' + t.id)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -102,24 +92,24 @@ function remove(team, req, res) {
     return
   }
 
-  var season_vanity = emojify.emojify(req.body.season_id)
+  var season_id = req.body.season_id
   var id = req.body.id
 
   team.deleteTeam(id).then(() => {
-    res.redirect('/seasons/' + season_vanity + '/teams')
+    res.redirect('/seasons/' + season_id + '/teams')
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
   })
 }
 
-function currentTeams(templates, _season, team, req, res) {
+function currentTeams(templates, season, team, req, res) {
   if (!req.params) {
     req.params = {}
   }
-  _season.getActiveSeason().then(season => {
-    req.params.season_id = emojify.emojify(season.id)
-    return list(templates, _season, team, req, res)
+  season.getActiveSeason().then(_season => {
+    req.params.season_id = _season.id
+    return list(templates, season, team, req, res)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
