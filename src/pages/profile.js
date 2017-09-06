@@ -81,7 +81,6 @@ function post(steam_user, profile, req, res) {
     }
 
     return profile.getProfile(steamUser.steam_id).then(_profile => {
-      console.dir(_profile)
       if (!req.user.isAdmin) {
         p.adjusted_mmr = _profile ? _profile.adjusted_mmr : null
         p.name_locked = _profile ? _profile.name_locked : false
