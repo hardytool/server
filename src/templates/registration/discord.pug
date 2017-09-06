@@ -1,0 +1,19 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : Season List
+
+block content
+  div.hero-body.has-text-centered
+    div.container
+      div.columns
+        div.column
+          div.field
+            a.is-info(href='https://discord.gg/yz4Tb84' alt='Join the SEAL Discord' target='_blank')
+              figure.image.is-hero.is-inline-block
+                img(src='/assets/discord.png')
+              div
+                button.button.is-primary Join the SEAL Discord
+          div.field
+            a(href='/players')
+              button.button Continue to the player list

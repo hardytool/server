@@ -37,13 +37,15 @@ html(lang='en')
             width: 100px;
             height: 60px;
           }
+          .image.is-hero {
+            width: 400px;
+          }
           .tiny-text {
             font-size: 10px;
             line-height: 12px;
           }
-          .is-home-image {
-            width: 400px;
-            height: 400px;
+          img.circle {
+            border-radius: 50%;
           }
           @media screen and (max-width:768px) {
             .has-image {
@@ -79,7 +81,7 @@ html(lang='en')
                     if user
                       a.nav-item(href='/profile/' + user.steamId)= user.displayName
                       a.nav-item(href='/profile/' + user.steamId)
-                        img(src=user.avatar)
+                        img.circle(src=user.avatar)
                       a.nav-item(href='/logout') Log out
                     else
                       a.nav-item(href='/auth/steam')

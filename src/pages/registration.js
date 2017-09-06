@@ -87,7 +87,7 @@ function shortcut(
   })
 }
 
-function post(season, steam_user, team_player, player, req, res) {
+function post(templates, season, steam_user, team_player, player, req, res) {
   if (!req.user) {
     res.sendStatus(403)
     return
@@ -107,7 +107,12 @@ function post(season, steam_user, team_player, player, req, res) {
       .then(({ allowed }) => {
         p.captain_approved = allowed
         return player.savePlayer(p).then(() => {
-          res.redirect('/seasons/' + season.id + '/players')
+          //res.redirect('/seasons/' + season.id + '/players')
+          var html = templates.registration.discord({
+            user: req.user,
+            season: season
+          })
+          res.send(html)
         })
       })
     })
@@ -152,7 +157,8 @@ module.exports =
       },
       post: {
         route: '/register',
-        handler: post.bind(null, season, steam_user, team_player, player)
+        handler: post.bind(
+          null, templates, season, steam_user, team_player, player)
       },
       unregister: {
         route: '/register/delete',
