@@ -34,6 +34,8 @@ function captains(templates, season, player, req, res) {
     return player.getPlayers({
       season_id: season_id,
       is_captain: true
+    }, {
+      by_mmr: true
     }).then(players => {
       var html = templates.player.captains({
         user: req.user,
