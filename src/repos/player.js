@@ -1,6 +1,6 @@
 var sql = require('pg-sql').sql
 
-function getPlayers(db, criteria) {
+function getPlayers(db, criteria, sort) {
   var select = sql`
   SELECT
     player.id,
@@ -129,13 +129,20 @@ function getPlayers(db, criteria) {
       `])
     }
   }
-  select = sql.join([select, sql`
-  ORDER BY
-    adjusted_mmr DESC,
-    solo_mmr DESC,
-    party_mmr DESC,
-    name ASC
-  `])
+  if (sort && sort.by_mmr) {
+    select = sql.join([select, sql`
+    ORDER BY
+      adjusted_mmr DESC,
+      solo_mmr DESC,
+      party_mmr DESC,
+      name ASC
+    `])
+  } else {
+    select = sql.join([select, sql`
+    ORDER BY
+      created_at ASC
+    `])
+  }
   return db.query(select).then(result => {
     return result.rows
   })
