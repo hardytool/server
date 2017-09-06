@@ -23,6 +23,9 @@ function getUnassignedPlayers(db, season_id) {
     )
   AND
     player.season_id = ${season_id}
+  ORDER BY
+    steam_user.name ASC,
+    steam_user.steam_id ASC
   `
   return db.query(select).then(result => {
     return result.rows
