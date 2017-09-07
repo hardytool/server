@@ -47,7 +47,7 @@ var credentials = require('./lib/credentials')(config.server)
 var openid = require('./api/openid')(config)
 
 // Page routes
-var indexPages = require('./pages/index')(templates, admin, steamId)
+var indexPages = require('./pages/index')(templates, admin)
 var playerPages = require('./pages/players')(
   templates, season, player, steam_user)
 var profilePages = require('./pages/profile')(
@@ -125,6 +125,7 @@ app.get('/auth/steam/return',
 app.get('/logout', openid.logout)
 
 app.get(indexPages.home.route, indexPages.home.handler)
+app.get(indexPages.admins.route, indexPages.admins.handler)
 app.get(indexPages.complaint.route, indexPages.complaint.handler)
 
 app.get(seasonPages.list.route, seasonPages.list.handler)

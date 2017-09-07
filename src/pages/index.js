@@ -1,6 +1,14 @@
-function home(templates, admin, req, res) {
-  admin.getAdmins().then(admins => {
+function home(templates, req, res) {
     var html = templates.index({
+      user: req.user
+    })
+
+    res.send(html)
+}
+
+function admins(templates, admin, req, res) {
+  admin.getAdmins().then(admins => {
+    var html = templates.admins({
       user: req.user,
       admins: admins
     })
@@ -22,7 +30,11 @@ module.exports = (templates, admin) => {
   return {
     home: {
       route: '/',
-      handler: home.bind(null, templates, admin)
+      handler: home.bind(null, templates)
+    },
+    admins: {
+      route: '/admins',
+      handler: admins.bind(null, templates, admin)
     },
     complaint: {
       route: '/complaint',

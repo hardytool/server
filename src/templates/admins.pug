@@ -1,0 +1,31 @@
+extends components/base.pug
+
+block title
+  title #{title} : #{season ? season.name : ''} Team List
+
+block contentFull
+  section.section
+    div.container
+      div.columns
+        div.column
+          h3.title.is-3
+            span.icon.is-medium
+              i.fa.fa-empire
+            |
+            | League
+            |
+            strong Admins
+          each admin in admins
+            div.card.box
+              div.media
+                div.media-left
+                  figure.image.is-48x48
+                    a(href='/profile/' + admin.steam_id title=admin.name)
+                      img(src=admin.avatar)
+                div.media-content
+                  p.title.is-4
+                    span= admin.name
+                  p.subtitle.is-6
+                    span!= admin.title
+              div.content
+                span!= admin.description

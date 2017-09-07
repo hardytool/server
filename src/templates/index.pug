@@ -67,30 +67,3 @@ block contentFull
                 li Zero prizes
                 li Zero skill
                 li Zero reasons to join!
-  section.section
-    div.container
-      h3.title.is-3
-        span.icon.is-medium
-          i.fa.fa-empire
-        |
-        | League
-        |
-        strong Admins
-      each admin in admins
-        div.columns
-          div.column
-            div.box
-              article.media
-                div.media-left
-                  figure.image.is-64x64
-                    a(href='/profile/' + admin.steam_id title=admin.name)
-                      img(src=admin.avatar)
-                div.media-content
-                  div.content
-                    p
-                      a(href='/profile/' + admin.steam_id title=admin.name)
-                        strong= admin.name + ' '
-                      small
-                        span!= admin.title
-                      br
-                      span!= admin.description
