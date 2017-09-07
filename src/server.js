@@ -51,7 +51,7 @@ var indexPages = require('./pages/index')(templates, admin, steamId)
 var playerPages = require('./pages/players')(
   templates, season, player, steam_user)
 var profilePages = require('./pages/profile')(
-  templates, steam_user, profile, team_player, vouch)
+  templates, steam_user, profile, team_player, vouch, steamId)
 var seasonPages = require('./pages/seasons')(templates, season)
 var seriesPages = require('./pages/series')(
   templates, season, team, series, pairings)

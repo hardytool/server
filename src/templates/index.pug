@@ -83,12 +83,12 @@ block contentFull
               article.media
                 div.media-left
                   figure.image.is-64x64
-                    a(href='http://steamcommunity.com/profiles/' + admin.id64 title=admin.name + '\'s Steam Profile')
+                    a(href='/profile/' + admin.steam_id title=admin.name)
                       img(src=admin.avatar)
                 div.media-content
                   div.content
                     p
-                      a(href='http://steamcommunity.com/profiles/' + admin.id64 title=admin.name + '\'s Steam Profile')
+                      a(href='/profile/' + admin.steam_id title=admin.name)
                         strong= admin.name + ' '
                       small
                         span!= admin.title

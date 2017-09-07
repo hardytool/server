@@ -1,9 +1,5 @@
-function home(templates, admin, steamId, req, res) {
+function home(templates, admin, req, res) {
   admin.getAdmins().then(admins => {
-    admins.map(admin => {
-      admin.id64 = steamId.from32to64(admin.steam_id)
-      return admin
-    })
     var html = templates.index({
       user: req.user,
       admins: admins
@@ -22,11 +18,11 @@ function complaint(templates, req, res) {
   res.send(html)
 }
 
-module.exports = (templates, admin, steamId) => {
+module.exports = (templates, admin) => {
   return {
     home: {
       route: '/',
-      handler: home.bind(null, templates, admin, steamId)
+      handler: home.bind(null, templates, admin)
     },
     complaint: {
       route: '/complaint',

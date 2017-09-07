@@ -1,38 +1,41 @@
-function view(templates, steam_user, profile, vouch, team_player, req, res) {
-  var viewerHasPlayed = Promise.resolve(null)
-  if (req.user) {
-    viewerHasPlayed = steam_user.getSteamUser(req.user.steamId).then(viewer => {
-      return team_player.hasPlayed(viewer.steam_id)
-    })
-  }
-  viewerHasPlayed.then(viewerHasPlayed => {
-    return profile.getProfile(req.params.steam_id).then(_profile => {
-      return team_player.hasPlayed(_profile.steam_id)
-        .then(({ has_played }) => {
-          return vouch.isVouched(_profile.steam_id)
-            .then(result => {
-              return profile.getProfile(result.voucher_id).then(voucher => {
-                result.voucher = voucher
-                return result
-              })
-            }).then(({ is_vouched, voucher }) => {
-              var html = templates.profile.view({
-                user: req.user,
-                profile: _profile,
-                vouched: is_vouched,
-                voucher: voucher,
-                has_played: has_played,
-                can_vouch: (req.user && req.user.isAdmin)
-                  || (viewerHasPlayed && viewerHasPlayed.has_played)
-              })
-              res.send(html)
-            })
+function view(
+  templates, steam_user, profile, vouch, team_player, steamId, req, res) {
+    var viewerHasPlayed = Promise.resolve(null)
+    if (req.user) {
+      viewerHasPlayed = steam_user.getSteamUser(req.user.steamId)
+        .then(viewer => {
+          return team_player.hasPlayed(viewer.steam_id)
         })
+    }
+    viewerHasPlayed.then(viewerHasPlayed => {
+      return profile.getProfile(req.params.steam_id).then(_profile => {
+        _profile.id64 = steamId.from32to64(_profile.steam_id)
+        return team_player.hasPlayed(_profile.steam_id)
+          .then(({ has_played }) => {
+            return vouch.isVouched(_profile.steam_id)
+              .then(result => {
+                return profile.getProfile(result.voucher_id).then(voucher => {
+                  result.voucher = voucher
+                  return result
+                })
+              }).then(({ is_vouched, voucher }) => {
+                var html = templates.profile.view({
+                  user: req.user,
+                  profile: _profile,
+                  vouched: is_vouched,
+                  voucher: voucher,
+                  has_played: has_played,
+                  can_vouch: (req.user && req.user.isAdmin)
+                    || (viewerHasPlayed && viewerHasPlayed.has_played)
+                })
+                res.send(html)
+              })
+          })
+      })
+    }).catch(err => {
+      console.error(err)
+      res.sendStatus(500)
     })
-  }).catch(err => {
-    console.error(err)
-    res.sendStatus(500)
-  })
 }
 
 function edit(templates, steam_user, profile, req, res) {
@@ -165,32 +168,33 @@ function unvouch(profile, vouch, req, res) {
   })
 }
 
-module.exports = (templates, steam_user, profile, team_player, _vouch) => {
-  return {
-    view: {
-      route: '/profile/:steam_id',
-      handler: view.bind(
-        null, templates, steam_user, profile, _vouch, team_player)
-    },
-    edit: {
-      route: '/profile/:steam_id/edit',
-      handler: edit.bind(null, templates, steam_user, profile)
-    },
-    post: {
-      route: '/profile/edit',
-      handler: post.bind(null, steam_user, profile)
-    },
-    vouch: {
-      route: '/profile/:steam_id/vouch',
-      handler: vouch.bind(null, templates, steam_user, profile, team_player)
-    },
-    confirm: {
-      route: '/profile/:steam_id/confirm',
-      handler: confirm.bind(null, steam_user, profile, _vouch, team_player)
-    },
-    unvouch: {
-      route: '/profile/:steam_id/unvouch',
-      handler: unvouch.bind(null, profile, _vouch)
+module.exports =
+  (templates, steam_user, profile, team_player, _vouch, steamId) => {
+    return {
+      view: {
+        route: '/profile/:steam_id',
+        handler: view.bind(
+          null, templates, steam_user, profile, _vouch, team_player, steamId)
+      },
+      edit: {
+        route: '/profile/:steam_id/edit',
+        handler: edit.bind(null, templates, steam_user, profile)
+      },
+      post: {
+        route: '/profile/edit',
+        handler: post.bind(null, steam_user, profile)
+      },
+      vouch: {
+        route: '/profile/:steam_id/vouch',
+        handler: vouch.bind(null, templates, steam_user, profile, team_player)
+      },
+      confirm: {
+        route: '/profile/:steam_id/confirm',
+        handler: confirm.bind(null, steam_user, profile, _vouch, team_player)
+      },
+      unvouch: {
+        route: '/profile/:steam_id/unvouch',
+        handler: unvouch.bind(null, profile, _vouch)
+      }
     }
-  }
 }

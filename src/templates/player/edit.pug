@@ -63,7 +63,7 @@ block content
           div.field
             p.control
               label.checkbox(for='is_draftable')
-                if player && player.is_draftable
+                if !player || player.is_draftable
                   input(id='is_draftable' type='checkbox' name='is_draftable' checked)
                 else
                   input(id='is_draftable' type='checkbox' name='is_draftable')
