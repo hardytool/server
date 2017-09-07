@@ -35,7 +35,7 @@ function captains(templates, season, player, req, res) {
       season_id: season_id,
       is_captain: true
     }, {
-      by_mmr: true
+      by_name: true
     }).then(players => {
       var html = templates.player.captains({
         user: req.user,
@@ -113,6 +113,8 @@ function post(player, req, res) {
   var p = req.body
   p.id = id
   p.captain_approved = p.captain_approved === 'on'
+  p.statement = p.statement.slice(0, 500)
+  p.is_draftable = p.is_draftable === 'on'
 
   player.savePlayer(p).then(() => {
     res.redirect('/seasons/' + season_id + '/players')
@@ -147,7 +149,8 @@ function getCSV(player, req, res) {
 
   player.getDraftSheet({
     season_id: req.params.season_id,
-    is_captain: false
+    is_captain: false,
+    hide_captains: true
   }).then(players => {
     return csv.toCSV(players).then(csv => {
       res.setHeader('Content-Type', 'text/csv')

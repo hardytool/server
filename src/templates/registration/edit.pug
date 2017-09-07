@@ -58,6 +58,14 @@ block content
                 else
                   input#will_captain(value='no' type='radio' name='will_captain')
                 span &nbsp;No
+          div.field
+            p.control
+              label.checkbox(for='standin_only')
+                if player && !player.is_draftable
+                  input(id='standin_only' type='checkbox' name='standin_only' checked)
+                else
+                  input(id='standin_only' type='checkbox' name='standin_only')
+                span &nbsp;Stand-in only?
           div.field.is-grouped
             p.control
               button.button.is-primary Submit

@@ -40,6 +40,7 @@ block content
               th Captain Approved
             th Statement
             th Vouched?
+            th Draftable?
             if user && user.isAdmin
               th Edit
         tbody
@@ -75,6 +76,13 @@ block content
               td.tiny-text= player.statement
               td
                 if player.is_vouched || player.has_played
+                  span.icon.has-text-success
+                    i.fa.fa-check-circle-o
+                else
+                  span.icon.has-text-danger
+                    i.fa.fa-times-circle-o
+              td
+                if player.is_draftable
                   span.icon.has-text-success
                     i.fa.fa-check-circle-o
                 else

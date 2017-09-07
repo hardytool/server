@@ -100,6 +100,8 @@ function post(templates, season, steam_user, team_player, player, req, res) {
   p.steam_id = req.user.steamId
   p.captain_approved = false
   p.statement = p.statement.slice(0, 500)
+  p.is_draftable = !(p.standin_only === 'on')
+  delete p.standin_only
 
   season.getSeason(season_id).then(season => {
     return steam_user.getSteamUser(req.user.steamId).then(steamUser => {

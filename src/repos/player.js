@@ -9,6 +9,7 @@ function getPlayers(db, criteria, sort) {
     player.will_captain,
     player.captain_approved,
     player.statement,
+    player.is_draftable,
     season.number season_number,
     season.name season_name,
     COALESCE(profile.name, steam_user.name) AS name,
@@ -94,12 +95,14 @@ function getPlayers(db, criteria, sort) {
         AND (
           player.captain_approved = true
           AND
-          player.will_captain = 'yes'
+            player.will_captain = 'yes'
           AND (
             is_vouched.is_vouched = true
             OR
             has_played.has_played = true
           )
+          AND
+            player.is_draftable
         )
         `])
       } else {
@@ -110,13 +113,15 @@ function getPlayers(db, criteria, sort) {
             OR (
               player.will_captain = 'no'
               OR
-              player.will_captain = 'maybe'
+                player.will_captain = 'maybe'
             )
             OR (
               is_vouched.is_vouched = false
               AND
-              has_played.has_played = false
+                has_played.has_played = false
             )
+            OR
+              NOT player.is_draftable
           )
           `])
         }
@@ -129,14 +134,22 @@ function getPlayers(db, criteria, sort) {
       `])
     }
   }
-  if (sort && sort.by_mmr) {
-    select = sql.join([select, sql`
-    ORDER BY
-      adjusted_mmr DESC,
-      solo_mmr DESC,
-      party_mmr DESC,
-      name ASC
-    `])
+  if (sort) {
+    if (sort.by_mmr) {
+      select = sql.join([select, sql`
+      ORDER BY
+        adjusted_mmr DESC,
+        solo_mmr DESC,
+        party_mmr DESC,
+        name ASC
+      `])
+    } else if (sort.by_name) {
+      select = sql.join([select, sql`
+      ORDER BY
+        name ASC,
+        steam_id ASC
+      `])
+    }
   } else {
     select = sql.join([select, sql`
     ORDER BY
@@ -157,6 +170,7 @@ function getPlayer(db, id) {
     player.will_captain,
     player.captain_approved,
     player.statement,
+    player.is_draftable,
     season.number season_number,
     season.name season_name,
     COALESCE(profile.name, steam_user.name) AS name,
@@ -193,26 +207,30 @@ function savePlayer(db, player) {
       steam_id,
       will_captain,
       captain_approved,
-      statement
+      statement,
+      is_draftable
     ) VALUES (
       ${player.id},
       ${player.season_id},
       ${player.steam_id},
       ${player.will_captain},
       ${player.captain_approved},
-      ${player.statement}
+      ${player.statement},
+      ${player.is_draftable}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
       season_id,
       will_captain,
       captain_approved,
-      statement
+      statement,
+      is_draftable
     ) = (
       ${player.season_id},
       ${player.will_captain},
       ${player.captain_approved},
-      ${player.statement}
+      ${player.statement},
+      ${player.is_draftable}
     )
   `
   return db.query(upsert)
@@ -293,7 +311,7 @@ function getDraftSheet(db, criteria) {
   ) is_vouched ON
     player.steam_id = is_vouched.steam_id
   WHERE
-    1 = 1
+    player.is_draftable
   `
   if (criteria) {
     if (criteria.season_id) {
@@ -308,11 +326,11 @@ function getDraftSheet(db, criteria) {
         AND (
           player.captain_approved = true
           AND
-          player.will_captain = 'yes'
+            player.will_captain = 'yes'
           AND (
             is_vouched.is_vouched = true
             OR
-            has_played.has_played = true
+              has_played.has_played = true
           )
         )
         `])
@@ -324,12 +342,12 @@ function getDraftSheet(db, criteria) {
             OR (
               player.will_captain = 'no'
               OR
-              player.will_captain = 'maybe'
+                player.will_captain = 'maybe'
             )
             OR (
               is_vouched.is_vouched = false
               AND
-              has_played.has_played = false
+                has_played.has_played = false
             )
           )
           `])
