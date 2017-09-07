@@ -1,6 +1,6 @@
 var timeout = require('./timeout.js')
 
-function createUser(steam_user, mmr, profile, steamId) {
+function createUser(steam_user, mmr, steamId, profile) {
   var id = steamId.from64to32(profile.id)
   var name = profile.displayName
   var avatar = getAvatar(profile)
