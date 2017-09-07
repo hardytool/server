@@ -1,8 +1,7 @@
-var BigNumber = require('bignumber.js')
 var timeout = require('./timeout.js')
 
-function createUser(steam_user, mmr, profile) {
-  var id = from64to32(profile.id)
+function createUser(steam_user, mmr, profile, steamId) {
+  var id = steamId.from64to32(profile.id)
   var name = profile.displayName
   var avatar = getAvatar(profile)
   return steam_user.getSteamUser(id.toString()).then(user => {
@@ -69,8 +68,8 @@ function updateUserMMR(steam_user, mmr, user) {
   })
 }
 
-function inflateUser(admin, profile, user) {
-  var id = from64to32(user.profile.id).toString()
+function inflateUser(admin, profile, steamId, user) {
+  var id = steamId.from64to32(user.profile.id).toString()
 
   return admin.isAdmin(id).then(isAdmin => {
     return profile.getProfile(id).then(profile => {
@@ -83,23 +82,16 @@ function inflateUser(admin, profile, user) {
   })
 }
 
-function from64to32(id) {
-  var id64 = new BigNumber(id)
-  var diff = new BigNumber('76561197960265728')
-  var id32 = id64.minus(diff)
-  return id32
-}
-
 function getAvatar(profile) {
   return profile.photos[profile.photos.length - 1].value
 }
 
-module.exports = (config, admin, steam_user, profile, mmr) => {
+module.exports = (admin, steam_user, profile, mmr, steamId) => {
   return {
-    createUser: createUser.bind(null, steam_user, mmr),
+    createUser: createUser.bind(null, steam_user, mmr, steamId),
     fetchMissingMMRs: fetchMissingMMRs.bind(null, steam_user, mmr),
     updateUserMMR: updateUserMMR.bind(null, steam_user, mmr),
-    inflateUser: inflateUser.bind(null, admin, profile),
+    inflateUser: inflateUser.bind(null, admin, profile, steamId),
     getAvatar: getAvatar
   }
 }

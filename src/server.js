@@ -39,14 +39,15 @@ var vouch = require('./repos/vouch')(pool)
 
 // lib
 var mmr = require('./lib/mmr')(dota2)
-var auth = require('./lib/auth')(config, admin, steam_user, profile, mmr)
+var steamId = require('./lib/steamId')
+var auth = require('./lib/auth')(admin, steam_user, profile, mmr, steamId)
 var credentials = require('./lib/credentials')(config.server)
 
 // Auth routes
 var openid = require('./api/openid')(config)
 
 // Page routes
-var indexPages = require('./pages/index')(templates)
+var indexPages = require('./pages/index')(templates, admin, steamId)
 var playerPages = require('./pages/players')(
   templates, season, player, steam_user)
 var profilePages = require('./pages/profile')(
