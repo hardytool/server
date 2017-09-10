@@ -89,42 +89,59 @@ function getPlayers(db, criteria, sort) {
         player.captain_approved = ${criteria.captain_approved}
       `])
     }
-    if (criteria.is_captain !== undefined) {
-      if (criteria.is_captain) {
+    if (criteria.is_captain === true) {
+      select = sql.join([select, sql`
+      AND (
+        player.captain_approved = true
+        AND
+          player.will_captain = 'yes'
+        AND (
+          is_vouched.is_vouched = true
+          OR
+          has_played.has_played = true
+        )
+        AND
+          player.is_draftable
+      )
+      `])
+    } else {
+      if (criteria.hide_captains) {
         select = sql.join([select, sql`
         AND (
-          player.captain_approved = true
-          AND
-            player.will_captain = 'yes'
-          AND (
-            is_vouched.is_vouched = true
+          player.captain_approved = false
+          OR (
+            player.will_captain = 'no'
             OR
-            has_played.has_played = true
+              player.will_captain = 'maybe'
           )
-          AND
-            player.is_draftable
+          OR (
+            is_vouched.is_vouched = false
+            AND
+              has_played.has_played = false
+          )
+          OR
+            NOT player.is_draftable
         )
         `])
-      } else {
-        if (criteria.hide_captains) {
-          select = sql.join([select, sql`
-          AND (
-            player.captain_approved = false
-            OR (
-              player.will_captain = 'no'
-              OR
-                player.will_captain = 'maybe'
-            )
-            OR (
-              is_vouched.is_vouched = false
-              AND
-                has_played.has_played = false
-            )
-            OR
-              NOT player.is_draftable
-          )
-          `])
-        }
+      }
+    }
+    if (criteria.is_standin === true) {
+      select = sql.join([select, sql`
+      AND (
+        player.is_draftable = false
+        AND (
+          is_vouched.is_vouched = true
+          OR
+          has_played.has_played = true
+        )
+      )
+      `])
+    } else {
+      if (criteria.hide_standins) {
+        select = sql.join([select, sql`
+        AND
+          player.is_draftable = true
+        `])
       }
     }
     if (criteria.steam_id) {

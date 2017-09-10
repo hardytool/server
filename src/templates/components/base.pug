@@ -47,6 +47,20 @@ html(lang='en')
           img.circle {
             border-radius: 50%;
           }
+          .text-icon span {
+            vertical-align: middle;
+            display: inline-block;
+            padding-right: 32px;
+          }
+          .text-icon img {
+            vertical-align: middle;
+            display: inline-block;
+          }
+          @media screen and (max-width: 1007px) {
+            .text-icon span {
+              padding-right: 16px;
+            }
+          }
           @media screen and (max-width:768px) {
             .has-image {
               flex-direction: column;
@@ -62,9 +76,42 @@ html(lang='en')
     body.layout-default
       block body
         block header
-          section.hero.has-text-centered
+          section.hero
             div.hero-head
-              div.container.is-fullhd
+              nav.navbar
+                div.navbar-brand
+                  a.navbar-item(href='/')
+                    span.icon
+                      i.fa.fa-home
+                  if user
+                    a.is-hidden-desktop.navbar-item(href='/profile/' + user.steamId).text-icon
+                      img.circle(src=user.avatar)
+                  div.navbar-burger.burger(data-target='seal-menu')
+                    span
+                    span
+                    span
+                div.navbar-menu#seal-menu
+                  div.navbar-start
+                    a.navbar-item(href='/seasons') Seasons
+                    a.navbar-item(href='/matchups') Matchups
+                    a.navbar-item(href='/standings') Standings
+                    a.navbar-item(href='/teams') Teams
+                    a.navbar-item(href='/captains') Captains
+                    a.navbar-item(href='/players') Players
+                    a.navbar-item(href='/stand-ins') Stand-ins
+                    a.navbar-item(href='/register') Register
+                  div.navbar-end
+                    if user
+                      a.navbar-item.is-hidden-touch(href='/profile/' + user.steamId).text-icon
+                        span= user.displayName
+                        img.circle(src=user.avatar)
+                      a.navbar-item(href='/logout') Log out
+                    else
+                      a.navbar-item(href='/auth/steam')
+                        span.icon.is-small
+                          i.fa.fa-steam
+                        span &nbsp;Log in
+              //
                 nav.nav
                   div.nav-left
                     a.nav-item(href='/')
@@ -76,6 +123,7 @@ html(lang='en')
                     a.nav-item(href='/teams') Teams
                     a.nav-item(href='/captains') Captains
                     a.nav-item(href='/players') Players
+                    a.nav-item(href='/stand-ins') Stand-ins
                     a.nav-item(href='/register') Register
                   div.nav-right
                     if user
@@ -121,13 +169,13 @@ html(lang='en')
                     div.level-item
                       ul
                         li
-                          a(href='https://github.com/seal-dota/rules') League Rules
+                          a(href='https://github.com/seal-dota/rules') League rules
                         li
                           a(href='/admins') League admins
                         li
                           a(href='https://sites.google.com/view/playerdex/playerdex') SEAL PlayerDex
                         li
-                          a(href='http://steamcommunity.com/sharedfiles/filedetails/?id=917953091') Workshop Ticket
+                          a(href='http://steamcommunity.com/sharedfiles/filedetails/?id=917953091') Workshop ticket
                 div.column
                   div.level
                     div.level-item
@@ -165,3 +213,18 @@ html(lang='en')
                       registered® trademarks of their respective holders. Use of
                       them does not imply any affiliation with or endorsement by
                       them.
+  script(type='text/javascript').
+    (function() {
+      var burgers = Array.prototype.slice.call(document.querySelectorAll('.burger'), 0);
+      console.dir(burgers);
+
+      if (burgers.length > 0) {
+        burgers.forEach(function (el) {
+          el.addEventListener('click', function () {
+            var target = document.getElementById(el.dataset.target);
+            el.classList.toggle('is-active');
+            target.classList.toggle('is-active');
+          });
+        });
+      }
+    })();

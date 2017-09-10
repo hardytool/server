@@ -158,11 +158,13 @@ app.post(seriesPages.remove.route, seriesPages.remove.handler)
 
 app.get(playerPages.list.route, playerPages.list.handler)
 app.get(playerPages.captains.route, playerPages.captains.handler)
+app.get(playerPages.standins.route, playerPages.standins.handler)
 app.get(playerPages.create.route, playerPages.create.handler)
 app.get(playerPages.edit.route, playerPages.edit.handler)
 app.get(playerPages.csv.route, playerPages.csv.handler)
 app.get(playerPages.currentPlayers.route, playerPages.currentPlayers.handler)
 app.get(playerPages.currentCaptains.route, playerPages.currentCaptains.handler)
+app.get(playerPages.currentStandins.route, playerPages.currentStandins.handler)
 
 app.post(playerPages.post.route, playerPages.post.handler)
 app.post(playerPages.remove.route, playerPages.remove.handler)

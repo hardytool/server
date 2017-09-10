@@ -6,12 +6,18 @@ function list(templates, season, player, req, res) {
     || req.query.includeCaptains === 'true'
     ? true
     : false
+  var includeStandins = req.query.includeStandins === '1'
+    || req.query.includeStandins === 'true'
+    ? true
+    : false
   var season_id = req.params.season_id
   season.getSeason(season_id).then(season => {
     return player.getPlayers({
       season_id: season_id,
       is_captain: false,
-      hide_captains: !includeCaptains
+      is_standin: false,
+      hide_captains: !includeCaptains,
+      hide_standins: !includeStandins
     }).then(players => {
       var html = templates.player.list({
         user: req.user,
@@ -40,8 +46,30 @@ function captains(templates, season, player, req, res) {
       var html = templates.player.captains({
         user: req.user,
         season: season,
-        players: players,
-        noun: 'Captains'
+        players: players
+      })
+
+      res.send(html)
+    })
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
+function standins(templates, season, player, req, res) {
+  var season_id = req.params.season_id
+  season.getSeason(season_id).then(season => {
+    return player.getPlayers({
+      season_id: season_id,
+      is_standin: true
+    }, {
+      by_mmr: true
+    }).then(players => {
+      var html = templates.player.standins({
+        user: req.user,
+        season: season,
+        players: players
       })
 
       res.send(html)
@@ -185,6 +213,10 @@ module.exports = (templates, season, player, steam_user) => {
       route: '/seasons/:season_id/captains',
       handler: captains.bind(null, templates, season, player)
     },
+    standins: {
+      route: '/seasons/:season_id/stand-ins',
+      handler: standins.bind(null, templates, season, player)
+    },
     create: {
       route: '/seasons/:season_id/players/create',
       handler: create.bind(null, templates, season, steam_user),
@@ -212,6 +244,10 @@ module.exports = (templates, season, player, steam_user) => {
     currentCaptains: {
       route: '/captains',
       handler: currentPlayers.bind(null, captains, templates, season, player)
+    },
+    currentStandins: {
+      route: '/stand-ins',
+      handler: currentPlayers.bind(null, standins, templates, season, player)
     }
   }
 }

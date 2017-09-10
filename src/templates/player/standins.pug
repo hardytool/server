@@ -1,0 +1,78 @@
+extends ../components/base.pug
+
+mixin buttons
+  if user && user.isAdmin
+    div.columns
+      div.column
+        div.field.is-grouped
+          div.control
+            a(href='/seasons/' + season.id + '/players/create')
+              button.button.is-primary Add player
+
+block title
+  title #{title} : #{season ? season.name : ''} Stand-ins
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3
+        span.icon.is-medium
+          i.fa.fa-list
+        span &nbsp;#{season ? season.name : ''} Stand-ins
+  +buttons
+  div.columns
+    div.column
+      table.table.is-striped.is-middle-aligned.is-fullwidth
+        thead
+          tr
+            th #
+            th Name
+            th Avatar
+            th Solo MMR
+            th Party MMR
+            th Draft MMR
+            th Dotabuff&nbsp;/ Opendota
+            th Statement
+            th Vouched?
+            th Draftable?
+            if user && user.isAdmin
+              th Edit
+        tbody
+          - var count = 0
+          each player in players
+            - count++
+            tr
+              td= count
+              td
+                a(href='/profile/' + player.steam_id)= player.name
+              td
+                figure.image.is-32x32.hide-overflow
+                  img(src=player.avatar)
+              td= player.solo_mmr
+              td= player.party_mmr
+              td= player.adjusted_mmr
+              td
+                a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
+                span
+                  | &nbsp;/
+                  |
+                a(href='https://www.opendota.com/players/' + player.steam_id) OpenDota
+              td.tiny-text= player.statement
+              td
+                if player.is_vouched || player.has_played
+                  span.icon.has-text-success
+                    i.fa.fa-check-circle-o
+                else
+                  span.icon.has-text-danger
+                    i.fa.fa-times-circle-o
+              td
+                if player.is_draftable
+                  span.icon.has-text-success
+                    i.fa.fa-check-circle-o
+                else
+                  span.icon.has-text-danger
+                    i.fa.fa-times-circle-o
+              if user && user.isAdmin
+                td
+                  a(href='/seasons/' + season.id + '/players/' + player.id + '/edit') edit
+  +buttons
