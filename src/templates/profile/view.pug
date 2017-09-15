@@ -45,6 +45,10 @@ block content
         div.content
           p.title SEAL Name
           p.subtitle= profile.name
+        if profile.faceit_name
+          div.content
+            p.title SEAL Club Name
+            p.subtitle= profile.faceit_name
     div.tile.is-parent
       article.tile.is-child.notification
         div.content
@@ -73,6 +77,13 @@ block content
             li
               a(href='https://www.opendota.com/players/' + profile.steam_id)
                 span OpenDota
+            if profile.faceit_name
+              li
+                a(href='https://www.faceit.com/en/players/' + profile.faceit_name)
+                  span SEAL Club Profile
+            li
+              a(href='https://sites.google.com/view/playerdex/' + profile.steam_id)
+                span SEAL PlayerDex
   if user
     div.columns
       div.column

@@ -74,6 +74,7 @@ function post(steam_user, profile, req, res) {
   var p = {}
   p.steam_id = req.body.steam_id
   p.name = req.body.name
+  p.faceit_name = req.body.faceit_name
   p.adjusted_mmr = Number.parseInt(req.body.adjusted_mmr)
   p.name_locked = req.body.name_locked === 'on'
 
