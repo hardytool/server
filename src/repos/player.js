@@ -151,28 +151,28 @@ function getPlayers(db, criteria, sort) {
       `])
     }
   }
+  var orderBy = sql`
+  ORDER BY
+    created_at ASC
+  `
   if (sort) {
     if (sort.by_mmr) {
-      select = sql.join([select, sql`
+      orderBy = sql`
       ORDER BY
         adjusted_mmr DESC,
         solo_mmr DESC,
         party_mmr DESC,
         name ASC
-      `])
+      `
     } else if (sort.by_name) {
-      select = sql.join([select, sql`
+      orderBy = sql`
       ORDER BY
         name ASC,
         steam_id ASC
-      `])
+      `
     }
-  } else {
-    select = sql.join([select, sql`
-    ORDER BY
-      created_at ASC
-    `])
   }
+  select = sql.join([select, orderBy])
   return db.query(select).then(result => {
     return result.rows
   })
@@ -275,7 +275,7 @@ function unregisterPlayer(db, seasonId, steamId) {
   return db.query(query)
 }
 
-function getDraftSheet(db, criteria) {
+function getDraftSheet(db, criteria, sort) {
   var select = sql`
   SELECT
     COALESCE(profile.name, steam_user.name) AS name,
@@ -372,10 +372,22 @@ function getDraftSheet(db, criteria) {
       }
     }
   }
-  select = sql.join([select, sql`
+  var orderBy = sql`
   ORDER BY
     created_at ASC
-  `])
+  `
+  if (sort) {
+    if (sort.by_mmr) {
+      orderBy = sql`
+      ORDER BY
+        draft_mmr ASC,
+        solo_mmr ASC,
+        party_mmr ASC,
+        name ASC
+      `
+    }
+  }
+  select = sql.join([select, orderBy])
   return db.query(select).then(result => {
     return result.rows
   })

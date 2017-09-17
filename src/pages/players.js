@@ -175,10 +175,16 @@ function getCSV(player, req, res) {
     return
   }
 
+  var isCaptains = req.query.captains === '1' ? true : false
+  var hideCaptains = req.query.show_captains === '1' ? false : true
+  var byMMR = req.query.by_mmr === '1' ? true : false
+
   player.getDraftSheet({
     season_id: req.params.season_id,
-    is_captain: false,
-    hide_captains: true
+    is_captain: isCaptains,
+    hide_captains: hideCaptains && !isCaptains
+  }, {
+    by_mmr: isCaptains || byMMR
   }).then(players => {
     return csv.toCSV(players).then(csv => {
       res.setHeader('Content-Type', 'text/csv')
@@ -234,7 +240,7 @@ module.exports = (templates, season, player, steam_user) => {
       handler: remove.bind(null, player)
     },
     csv: {
-      route: '/seasons/:season_id/players/draftsheet',
+      route: '/seasons/:season_id/draftsheet',
       handler: getCSV.bind(null, player)
     },
     currentPlayers: {

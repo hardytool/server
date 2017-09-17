@@ -8,6 +8,9 @@ mixin buttons
           div.control
             a(href='/seasons/' + season.id + '/players/create')
               button.button.is-primary Add player
+          div.control
+            a(href='/seasons/' + season.id + '/draftsheet?captains=1')
+              button.button Get draft sheet
 
 block title
   title #{title} : #{season ? season.name : ''} Captains
