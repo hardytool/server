@@ -220,6 +220,13 @@ function matchups(templates, season, team, series, pairings, req, res) {
           t.droppedOut = t.disbanded
           return t
         })
+        teams = teams.sort((a, b) => {
+          if (a.seed === b.seed) {
+            return a.name.localeCompare(b.name)
+          } else {
+            return a.seed - b.seed
+          }
+        })
         return series.getSeries({
           season_id: season.id,
           round: round

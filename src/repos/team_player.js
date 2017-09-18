@@ -6,14 +6,20 @@ function getUnassignedPlayers(db, season_id) {
     player.id,
     steam_user.steam_id,
     steam_user.avatar,
-    steam_user.name,
+    COALESCE(profile.name, steam_user.name) AS name,
     steam_user.solo_mmr,
     steam_user.party_mmr,
-    GREATEST(steam_user.solo_mmr, steam_user.party_mmr) adjusted_mmr
+    CASE
+      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
+      THEN profile.adjusted_mmr
+      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
+    END AS adjusted_mmr
   FROM
     player
   JOIN steam_user ON
     player.steam_id = steam_user.steam_id
+  JOIN profile ON
+    steam_user.steam_id = profile.steam_id
   WHERE
     player.id NOT IN (
       SELECT
