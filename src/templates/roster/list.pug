@@ -23,17 +23,14 @@ block content
             div.media-content
               div.content
                 p
-                  strong= captain.name
+                  a(href='/profile/' + captain.steam_id)
+                    strong= captain.name
                   br
                   | Solo MMR: #{captain.solo_mmr}
                   br
                   | Party MMR: #{captain.party_mmr}
                   br
                   | Adjusted MMR: #{captain.adjusted_mmr}
-                  br
-                  a(href='https://www.dotabuff.com/players/' + captain.steam_id) Dotabuff
-                  | &nbsp;/&nbsp;
-                  a(href='https://www.opendota.com/players/' + captain.steam_id) OpenDota
               if user && user.isAdmin
                 nav.level.is-mobile
                   div.level-left
