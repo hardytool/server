@@ -18,6 +18,10 @@ block content
               label.label(for='name') Name:
               p.control
                 input.input(id='name' type='text' name='name' placeholder='Name' value=(profile ? profile.name : '') required)
+            div.field
+              label.label(for='faceit_name') FACEIT Name:
+              p.control
+                input.input(id='faceit_name' type='text' name='faceit_name' placeholder='FACEIT Name' value=(profile ? profile.faceit_name : ''))
             if user.isAdmin
               div.field
                 label.label(for='adjusted_mmr') Adjusted MMR:

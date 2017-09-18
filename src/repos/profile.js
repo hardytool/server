@@ -7,6 +7,7 @@ function getProfile(db, steamId) {
     steam_user.avatar,
     COALESCE(profile.name, steam_user.name) AS name,
     steam_user.name AS steam_name,
+    profile.faceit_name as faceit_name,
     steam_user.solo_mmr,
     steam_user.party_mmr,
     COALESCE(profile.adjusted_mmr, 0) as adjusted_mmr,
@@ -40,11 +41,13 @@ function saveProfile(db, profile) {
   INSERT INTO profile (
     steam_id,
     name,
+    faceit_name,
     adjusted_mmr,
     name_locked
   ) VALUES (
     ${profile.steam_id},
     ${profile.name},
+    ${profile.faceit_name},
     ${profile.adjusted_mmr},
     ${profile.name_locked}
   )
@@ -52,10 +55,12 @@ function saveProfile(db, profile) {
     steam_id
   ) DO UPDATE SET (
     name,
+    faceit_name,
     adjusted_mmr,
     name_locked
   ) = (
     ${profile.name},
+    ${profile.faceit_name},
     ${profile.adjusted_mmr},
     ${profile.name_locked}
   )
