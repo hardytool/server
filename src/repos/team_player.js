@@ -18,7 +18,7 @@ function getUnassignedPlayers(db, season_id) {
     player
   JOIN steam_user ON
     player.steam_id = steam_user.steam_id
-  JOIN profile ON
+  LEFT JOIN profile ON
     steam_user.steam_id = profile.steam_id
   WHERE
     player.id NOT IN (
@@ -111,11 +111,15 @@ function getRoster(db, team_id) {
   SELECT
     player.id,
     steam_user.steam_id,
-    steam_user.name,
+    COALESCE(profile.name, steam_user.name) AS name,
     steam_user.avatar,
     steam_user.solo_mmr,
     steam_user.party_mmr,
-    GREATEST(steam_user.solo_mmr, steam_user.party_mmr) adjusted_mmr,
+    CASE
+      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
+      THEN profile.adjusted_mmr
+      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
+    END AS adjusted_mmr,
     team_player.is_captain
   FROM
     team
@@ -125,6 +129,8 @@ function getRoster(db, team_id) {
     team_player.player_id = player.id
   JOIN steam_user ON
     player.steam_id = steam_user.steam_id
+  LEFT JOIN profile ON
+    steam_user.steam_id = profile.steam_id
   WHERE
     team.id = ${team_id}
   ORDER BY

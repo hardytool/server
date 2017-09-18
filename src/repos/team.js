@@ -10,7 +10,7 @@ function getTeams(db, season_id) {
     team.seed,
     team.disbanded,
     steam_user.steam_id as captain_id,
-    steam_user.name as captain_name,
+    COALESCE(profile.name, steam_user.name) AS captain_name,
     season.number AS season_number,
     season.name AS season_name
   FROM
@@ -25,6 +25,8 @@ function getTeams(db, season_id) {
     team_player.player_id = player.id
   LEFT JOIN steam_user ON
     player.steam_id = steam_user.steam_id
+  LEFT JOIN profile ON
+    steam_user.steam_id = profile.steam_id
   WHERE
     team.season_id = ${season_id}
   ORDER BY
