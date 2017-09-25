@@ -191,6 +191,7 @@ function standings(templates, season, team, series, pairings, req, res) {
             var team = teams.filter(team => team.id === standing.id)[0]
             standing.name = team.name
             standing.logo = team.logo
+            standing.captain_name = team.captain_name
             return standing
           })
           var html = templates.series.standings({
