@@ -81,7 +81,8 @@ function getPlayerTeams(db, steam_id, season_id) {
     team.name,
     team.logo,
     team.seed,
-    team_player.is_captain
+    team_player.is_captain,
+    season.name AS season_name
   FROM
     steam_user
   JOIN player ON
@@ -90,6 +91,8 @@ function getPlayerTeams(db, steam_id, season_id) {
     player.id = team_player.player_id
   JOIN team ON
     team_player.team_id = team.id
+  JOIN season ON
+    season.id = team.season_id
   WHERE
     steam_user.steam_id = ${steam_id}
   `

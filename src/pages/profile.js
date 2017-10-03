@@ -14,21 +14,26 @@ function view(
           .then(({ has_played }) => {
             return vouch.isVouched(_profile.steam_id)
               .then(result => {
-                return profile.getProfile(result.voucher_id).then(voucher => {
-                  result.voucher = voucher
-                  return result
-                })
-              }).then(({ is_vouched, voucher }) => {
-                var html = templates.profile.view({
-                  user: req.user,
-                  profile: _profile,
-                  vouched: is_vouched,
-                  voucher: voucher,
-                  has_played: has_played,
-                  can_vouch: (req.user && req.user.isAdmin)
-                    || (viewerHasPlayed && viewerHasPlayed.has_played)
-                })
-                res.send(html)
+                return team_player.getPlayerTeams(_profile.steam_id)
+                  .then(teamsPlayed => {
+                    return profile.getProfile(result.voucher_id).then(voucher => {
+                      result.voucher = voucher
+                      result.teamsPlayed = teamsPlayed
+                      return result
+                    })
+                  }).then(({ is_vouched, voucher, teamsPlayed }) => {
+                    var html = templates.profile.view({
+                      user: req.user,
+                      profile: _profile,
+                      vouched: is_vouched,
+                      voucher: voucher,
+                      has_played: has_played,
+                      teamsPlayed: teamsPlayed,
+                      can_vouch: (req.user && req.user.isAdmin)
+                        || (viewerHasPlayed && viewerHasPlayed.has_played)
+                    })
+                    res.send(html)
+                  })
               })
           })
       })
