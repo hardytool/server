@@ -81,6 +81,25 @@ block content
               li
                 a(href='https://www.faceit.com/en/players/' + profile.faceit_name)
                   span FACEIT Profile
+  div.columns
+      div.column
+        h3.title.is-3
+          span &nbsp;Teams Played On
+        table.table.is-striped.is-middle-aligned.is-fullwidth
+          thead
+            tr
+              th Season
+              th Name
+              th Logo
+          tbody
+            each team in teamsPlayed
+              tr
+                td= team.season_name
+                td
+                  a(href='/seasons/' + team.season_id + '/teams/' + team.id)= team.name
+                td
+                  figure.image.is-team-logo.hide-overflow
+                    img(src=team.logo)
   if user
     div.columns
       div.column
