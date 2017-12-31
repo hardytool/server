@@ -19,9 +19,11 @@ function getMMR(dota2, id) {
       })
       var solo = soloSlot.length === 1 ? soloSlot[0].stat.stat_score : null
       var party = partySlot.length === 1 ? partySlot[0].stat.stat_score : null
+      var rank = result.rank_tier
       resolve({
         solo: solo,
-        party: party
+        party: party,
+        rank: rank
       })
     })
   })

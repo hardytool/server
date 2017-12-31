@@ -11,16 +11,19 @@ function createUser(steam_user, mmr, steamId, profile) {
   }).then(existingUser => {
     var currentSolo = existingUser ? existingUser.solo_mmr : 0
     var currentParty = existingUser ? existingUser.party_mmr : 0
+    var currentRank = existingUser ? existingUser.rank : 0
     var user = {
       steam_id: id.toString(),
       name: name,
       avatar: avatar,
       solo_mmr: currentSolo,
-      party_mmr: currentParty
+      party_mmr: currentParty,
+      rank: currentRank
     }
     return mmr.getMMR(id).then(result => {
       user.solo_mmr = result && result.solo ? result.solo : user.solo_mmr
       user.party_mmr = result && result.party ? result.party : user.party_mmr
+      user.rank = result && result.rank ? result.rank : user.rank
       return user
     }).catch(err => {
       console.error(err)
