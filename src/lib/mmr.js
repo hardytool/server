@@ -11,6 +11,8 @@ function getMMR(dota2, id) {
         reject(err)
       }
 
+      console.dir(result)
+
       var soloSlot = result.slots.filter(slot => {
         return slot.stat && slot.stat.stat_id === 1
       })
