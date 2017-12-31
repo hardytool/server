@@ -21,6 +21,12 @@ function getPlayers(db, criteria, sort) {
       THEN profile.adjusted_mmr
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
     END AS adjusted_mmr,
+    steam_user.rank,
+    CASE
+      WHEN profile.adjusted_rank IS NOT NULL AND profile.adjusted_rank > 0
+      THEN profile.adjusted_rank
+      ELSE steam_user.rank
+    END AS adjusted_rank,
     has_played.has_played,
     is_vouched.is_vouched
   FROM
@@ -159,6 +165,8 @@ function getPlayers(db, criteria, sort) {
     if (sort.by_mmr) {
       orderBy = sql`
       ORDER BY
+        adjusted_rank DESC,
+        rank DESC,
         adjusted_mmr DESC,
         solo_mmr DESC,
         party_mmr DESC,
@@ -198,7 +206,13 @@ function getPlayer(db, id) {
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
-    END AS adjusted_mmr
+    END AS adjusted_mmr,
+    steam_user.rank,
+    CASE
+      WHEN profile.adjusted_rank IS NOT NULL AND profile.adjusted_rank > 0
+      THEN profile.adjusted_rank
+      ELSE steam_user.rank
+    END AS adjusted_rank
   FROM
     player
   JOIN steam_user ON
@@ -287,6 +301,13 @@ function getDraftSheet(db, criteria, sort) {
       THEN profile.adjusted_mmr
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
     END AS draft_mmr,
+    steam_user.rank,
+    COALESCE(profile.adjusted_rank, 0) AS adjusted_rank,
+    CASE
+      WHEN profile.adjusted_rank IS NOT NULL AND profile.adjusted_rank > 0
+      THEN profile.adjusted_rank
+      ELSE steam_user.rank
+    END AS draft_rank,
     player.statement,
     has_played.has_played OR is_vouched.is_vouched AS is_vouched,
     CONCAT('https://www.dotabuff.com/players/', steam_user.steam_id)
@@ -380,6 +401,8 @@ function getDraftSheet(db, criteria, sort) {
     if (sort.by_mmr) {
       orderBy = sql`
       ORDER BY
+        draft_rank ASC,
+        rank ASC,
         draft_mmr ASC,
         solo_mmr ASC,
         party_mmr ASC,

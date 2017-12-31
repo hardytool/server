@@ -32,8 +32,8 @@ function view(templates, season, steam_user, player, mmr, profile, req, res) {
           })
         }
 
-        return mmr.getMMR(steamUser.steam_id).then(({ solo, party }) => {
-          if (!solo || !party) {
+        return mmr.getMMR(steamUser.steam_id).then(({ solo, party, rank }) => {
+          if (!rank) {
             return templates.error.no_mmr({
               user: req.user,
             })
@@ -41,6 +41,7 @@ function view(templates, season, steam_user, player, mmr, profile, req, res) {
 
           steamUser.solo_mmr = solo
           steamUser.party_mmr = party
+          steamUser.rank = rank
           return steam_user.saveSteamUser(steamUser).then(() => {
             return profile.getProfile(steamUser.steam_id).then(profile => {
               profile = profile || {}
@@ -49,6 +50,8 @@ function view(templates, season, steam_user, player, mmr, profile, req, res) {
                 || (steamUser.solo_mmr > steamUser.party_mmr
                   ? steamUser.solo_mmr
                   : steamUser.party_mmr)
+              profile.adjusted_rank = profile.adjusted_rank
+                || steamUser.rank
 
               return templates.registration.edit({
                 user: req.user,
