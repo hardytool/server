@@ -32,15 +32,13 @@ function view(templates, season, steam_user, player, mmr, profile, req, res) {
           })
         }
 
-        return mmr.getMMR(steamUser.steam_id).then(({ solo, party, rank }) => {
+        return mmr.getMMR(steamUser.steam_id).then(({ rank }) => {
           if (!rank) {
             return templates.error.no_mmr({
               user: req.user,
             })
           }
 
-          steamUser.solo_mmr = solo
-          steamUser.party_mmr = party
           steamUser.rank = rank
           return steam_user.saveSteamUser(steamUser).then(() => {
             return profile.getProfile(steamUser.steam_id).then(profile => {
@@ -65,7 +63,6 @@ function view(templates, season, steam_user, player, mmr, profile, req, res) {
             })
           })
         }).catch(err => {
-          console.dir(err)
           return templates.error.dota_client_down({
             user: req.user
           })
