@@ -56,8 +56,6 @@ function view(templates, season, steam_user, player, mmr, profile, req, res) {
                 ? true
                 : profile.is_draftable
 
-              console.dir(player)
-
               return templates.registration.edit({
                 user: req.user,
                 season: season,
