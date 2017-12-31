@@ -52,6 +52,11 @@ function view(templates, season, steam_user, player, mmr, profile, req, res) {
                   : steamUser.party_mmr)
               profile.adjusted_rank = profile.adjusted_rank
                 || steamUser.rank
+              profile.is_draftable = profile.is_draftable === undefined
+                ? true
+                : profile.is_draftable
+
+              console.dir(player)
 
               return templates.registration.edit({
                 user: req.user,
