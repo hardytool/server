@@ -62,7 +62,7 @@ function view(templates, season, steam_user, player, mmr, profile, req, res) {
               })
             })
           })
-        }).catch(err => {
+        }).catch(() => {
           return templates.error.dota_client_down({
             user: req.user
           })
