@@ -32,6 +32,7 @@ block content
             th Name
             th Avatar
             th Rank
+            th Adjusted Rank
             th Dotabuff&nbsp;/ Opendota
             if user && user.isAdmin
               th Will Captain?
@@ -53,6 +54,7 @@ block content
                 figure.image.is-32x32.hide-overflow
                   img(src=player.avatar)
               td= player.rank
+              td= player.adjusted_rank
               td
                 a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
                 span
