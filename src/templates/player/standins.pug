@@ -28,9 +28,8 @@ block content
             th #
             th Name
             th Avatar
-            th Solo MMR
-            th Party MMR
-            th Draft MMR
+            th Rank
+            th Adjusted Rank
             th Dotabuff&nbsp;/ Opendota
             th Statement
             th Vouched?
@@ -48,9 +47,8 @@ block content
               td
                 figure.image.is-32x32.hide-overflow
                   img(src=player.avatar)
-              td= player.solo_mmr
-              td= player.party_mmr
-              td= player.adjusted_mmr
+              td= player.rank
+              td= player.adjusted_rank
               td
                 a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
                 span
