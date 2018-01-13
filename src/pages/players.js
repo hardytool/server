@@ -170,7 +170,7 @@ function remove(player, req, res) {
 }
 
 function getCSV(player, req, res) {
-  if (!req.user || !req.user.isAdmin) {
+  if (!req.user) {
     res.sendStatus(403)
     return
   }
