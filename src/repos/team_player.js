@@ -118,6 +118,12 @@ function getRoster(db, team_id) {
     steam_user.avatar,
     steam_user.solo_mmr,
     steam_user.party_mmr,
+    steam_user.rank,
+    CASE
+      WHEN profile.adjusted_rank IS NOT NULL AND profile.adjusted_rank > 0
+      THEN profile.adjusted_rank
+      ELSE steam_user.rank
+    END AS adjusted_rank,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr

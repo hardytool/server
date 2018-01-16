@@ -26,11 +26,9 @@ block content
                   a(href='/profile/' + captain.steam_id)
                     strong= captain.name
                   br
-                  | Solo MMR: #{captain.solo_mmr}
+                  | Rank: #{captain.rank}
                   br
-                  | Party MMR: #{captain.party_mmr}
-                  br
-                  | Adjusted MMR: #{captain.adjusted_mmr}
+                  | Adjusted Rank: #{captain.adjusted_rank}
               if user && user.isAdmin
                 nav.level.is-mobile
                   div.level-left
@@ -50,9 +48,8 @@ block content
           tr
             th Name
             th Avatar
-            th Solo MMR
-            th Party MMR
-            th Adjusted MMR
+            th Rank
+            th Adjusted Rank
             if user && user.isAdmin
               th Remove
         tbody
@@ -63,9 +60,8 @@ block content
               td
                 figure.image.is-32x32.hide-overflow
                   img(src=player.avatar)
-              td= player.solo_mmr
-              td= player.party_mmr
-              td= player.adjusted_mmr
+              td= player.rank
+              td= player.adjusted_rank
               if user && user.isAdmin
                 td
                   form
