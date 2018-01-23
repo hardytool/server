@@ -7,6 +7,7 @@ function getTeams(db, season_id) {
     team.season_id,
     team.name,
     team.logo,
+    team.team_number,
     team.seed,
     team.disbanded,
     steam_user.steam_id as captain_id,
@@ -45,6 +46,7 @@ function getTeam(db, id) {
     season_id,
     name,
     logo,
+    team_number,
     seed,
     disbanded
   FROM
@@ -65,6 +67,7 @@ function saveTeam(db, team) {
       season_id,
       name,
       logo,
+      team_number,
       seed,
       disbanded
     ) VALUES (
@@ -72,6 +75,7 @@ function saveTeam(db, team) {
       ${team.season_id},
       ${team.name},
       ${team.logo},
+      ${team.team_number},
       ${team.seed},
       ${team.disbanded}
     ) ON CONFLICT (
@@ -80,12 +84,14 @@ function saveTeam(db, team) {
       season_id,
       name,
       logo,
+      team_number,
       seed,
       disbanded
     ) = (
       ${team.season_id},
       ${team.name},
       ${team.logo},
+      ${team.team_number},
       ${team.seed},
       ${team.disbanded}
     )
