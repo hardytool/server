@@ -10,6 +10,11 @@ block content
         figure.image.is-team-logo-medium.hide-overflow
           img(src=team.logo)
         span &nbsp;#{season.name} - #{team.name} Roster
+  if team.team_number
+    div.columns
+      div.column
+        a(href='https://www.dotabuff.com/esports/teams/' + team.team_number)
+          span Team Dotabuff
   div.columns
     div.column
       h5.title.is-5

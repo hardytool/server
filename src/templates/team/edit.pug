@@ -24,6 +24,10 @@ block content
             p.control
               input.input(id='logo' type='url' name='logo' placeholder='Logo' value=(team ? team.logo : ''))
           div.field
+            label.label(for='team_number') Team Number:
+            p.control
+              input.input(id='team_number' type='number' name='team_number' placeholder='Team Number (Dotabuff)' min='0' value=(team ? team.team_number : '') required)
+          div.field
             label.label(for='seed') Seed:
             p.control
               input.input(id='seed' type='number' name='seed' placeholder='Seed' min='0' value=(team ? team.seed : '') required)
