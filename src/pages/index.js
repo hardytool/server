@@ -26,6 +26,12 @@ function complaint(templates, req, res) {
   res.send(html)
 }
 
+function rules(templates, req, res) {
+  var html = templates.rules({user: req.user})
+
+  res.send(html);
+}
+
 module.exports = (templates, admin) => {
   return {
     home: {
@@ -39,6 +45,10 @@ module.exports = (templates, admin) => {
     complaint: {
       route: '/complaint',
       handler: complaint.bind(null, templates)
+    },
+    rules: {
+      route: '/rules',
+      handler: rules.bind(null, templates)
     }
   }
 }

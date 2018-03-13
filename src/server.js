@@ -127,6 +127,7 @@ app.get('/logout', openid.logout)
 app.get(indexPages.home.route, indexPages.home.handler)
 app.get(indexPages.admins.route, indexPages.admins.handler)
 app.get(indexPages.complaint.route, indexPages.complaint.handler)
+app.get(indexPages.rules.route, indexPages.rules.handler)
 
 app.get(seasonPages.list.route, seasonPages.list.handler)
 app.get(seasonPages.create.route, seasonPages.create.handler)

@@ -25,6 +25,7 @@
     "express": "^4.16.2",
     "express-session": "^1.15.6",
     "json2csv": "^3.11.5",
+    "jstransformer-markdown-it": "^2.0.0",
     "passport": "^0.4.0",
     "passport-steam": "^1.0.8",
     "pg": "^7.4.0",
