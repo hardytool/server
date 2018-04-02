@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "This is SEAL's backend.",
+  "description": "This is RD2L's backend.",
   "main": "src/server.js",
   "scripts": {
     "test": "node test/test.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "github.com/seal-dota/server"
+    "url": "github.com/redditdota2league/server"
   },
   "author": "@dambrisco",
   "license": "ISC",

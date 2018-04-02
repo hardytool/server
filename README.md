@@ -1,8 +1,8 @@
 # Server
-[![Dependency Status](https://img.shields.io/david/seal-dota/server.svg)](https://david-dm.org/seal-dota/server "Check this project's dependencies")
-[![Dependency Status](https://img.shields.io/david/dev/seal-dota/server.svg)](https://david-dm.org/seal-dota/server?type=dev "Check this project's dependencies")
+[![Dependency Status](https://img.shields.io/david/redditdota2league/server.svg)](https://david-dm.org/redditdota2league/server "Check this project's dependencies")
+[![Dependency Status](https://img.shields.io/david/dev/redditdota2league/server.svg)](https://david-dm.org/redditdota2league/server?type=dev "Check this project's dependencies")
 
-This is SEAL's backend and website.
+This is RD2L's backend and website.
 
 ## Dependencies
 ### Develop and run locally

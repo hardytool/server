@@ -31,7 +31,7 @@ function config(env) {
       password: env.STEAM_BOT_PASSWORD || false
     },
     templates: {
-      title: 'SEAL DotA'
+      title: 'RD2L'
     }
   }
 }
