@@ -84,7 +84,7 @@ html(lang='en')
                 div.navbar-brand
                   a.navbar-item(href='/')
                     span.icon
-                      i.fa.fa-home
+                      i.fa.fa-lg.fa-home
                   if user
                     a.is-hidden-desktop.navbar-item(href='/profile/' + user.steamId).text-icon
                       img.circle(src=user.avatar)
@@ -104,9 +104,9 @@ html(lang='en')
                         img.circle(src=user.avatar)
                       a.navbar-item(href='/logout') Log out
                     else
-                      a.navbar-item(href='/auth/steam')
+                      a.navbar-item(href='/auth/steam').has-icon
                         span.icon.is-small
-                          i.fa.fa-steam
+                          i.fab.fa-steam
                         span &nbsp;Log in
         block contentFull
           section.section
