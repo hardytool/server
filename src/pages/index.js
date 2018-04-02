@@ -6,20 +6,6 @@ function home(templates, req, res) {
     res.send(html)
 }
 
-function admins(templates, admin, req, res) {
-  admin.getAdmins().then(admins => {
-    var html = templates.admins({
-      user: req.user,
-      admins: admins
-    })
-
-    res.send(html)
-  }).catch(err => {
-    console.error(err)
-    res.sendStatus(500)
-  })
-}
-
 function complaint(templates, req, res) {
   var html = templates.complaint({user: req.user})
 
@@ -29,18 +15,14 @@ function complaint(templates, req, res) {
 function rules(templates, req, res) {
   var html = templates.rules({user: req.user})
 
-  res.send(html);
+  res.send(html)
 }
 
-module.exports = (templates, admin) => {
+module.exports = (templates) => {
   return {
     home: {
       route: '/',
       handler: home.bind(null, templates)
-    },
-    admins: {
-      route: '/admins',
-      handler: admins.bind(null, templates, admin)
     },
     complaint: {
       route: '/complaint',
