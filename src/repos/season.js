@@ -66,7 +66,7 @@ function saveSeason(db, season) {
       name,
       active,
       current_round,
-    registration_open
+      registration_open
     ) VALUES (
       ${season.id},
       ${season.number},

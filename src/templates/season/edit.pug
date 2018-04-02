@@ -6,10 +6,10 @@ block title
 block content
   div.columns
     div.column
-      h3.title.is-3
+      h3.title.is-3.has-icon
         span.icon.is-medium
-          i.fa.fa-pencil
-        span &nbsp;#{verb} Season #{season ? season.number : ''}
+          i.fas.fa-edit
+        span #{verb} Season #{season ? season.number : ''}
       div
         form(method='post' action='/seasons/edit')
           if season

@@ -6,6 +6,7 @@ function getSeries(db, criteria) {
     series.id,
     series.round,
     series.season_id,
+    series.division_id,
     series.home_team_id,
     series.away_team_id,
     series.home_points,
@@ -26,6 +27,8 @@ function getSeries(db, criteria) {
     away_team.id = series.away_team_id
   JOIN season ON
     season.id = series.season_id
+  JOIN division ON
+    division.id = series.division_id
   WHERE
     1 = 1
   `
@@ -41,6 +44,12 @@ function getSeries(db, criteria) {
           series.round < ${criteria.round}
         `])
       }
+    }
+    if (criteria.division_id) {
+      select = sql.join([select, sql`
+      AND
+        series.division_id = ${criteria.division_id}
+      `])
     }
     if (criteria.series_id) {
       select = sql.join([select, sql`
@@ -79,6 +88,7 @@ function saveSeries(db, series) {
       id,
       round,
       season_id,
+      division_id,
       home_team_id,
       away_team_id,
       home_points,
@@ -91,6 +101,7 @@ function saveSeries(db, series) {
       ${series.id},
       ${series.round},
       ${series.season_id},
+      ${series.division_id},
       ${series.home_team_id},
       ${series.away_team_id},
       ${series.home_points},
@@ -104,6 +115,7 @@ function saveSeries(db, series) {
     ) DO UPDATE SET (
       round,
       season_id,
+      division_id,
       home_team_id,
       away_team_id,
       home_points,
@@ -115,6 +127,7 @@ function saveSeries(db, series) {
     ) = (
       ${series.round},
       ${series.season_id},
+      ${series.division_id},
       ${series.home_team_id},
       ${series.away_team_id},
       ${series.home_points},
@@ -158,7 +171,7 @@ function getCurrentRound(db, season_id, round) {
   })
 }
 
-function getStandings(db, season_id, round) {
+function getStandings(db, season_id, division_id, round) {
   return getCurrentRound(db, season_id, round).then(round => {
     var query = sql`
     SELECT
@@ -178,6 +191,7 @@ function getStandings(db, season_id, round) {
       FROM (
         SELECT
           season_id,
+          division_id,
           home_team_id team_id,
           home_points win,
           away_points loss
@@ -187,9 +201,12 @@ function getStandings(db, season_id, round) {
           round < ${round}
         AND
           season_id = ${season_id}
+        AND
+          division_id = ${division_id}
         UNION ALL
         SELECT
           season_id,
+          division_id,
           away_team_id team_id,
           away_points win,
           home_points loss
@@ -199,9 +216,13 @@ function getStandings(db, season_id, round) {
           round < ${round}
         AND
           season_id = ${season_id}
+        AND
+          division_id = ${division_id}
       ) standings
       WHERE
         season_id = ${season_id}
+      AND
+        division_id = ${division_id}
       AND
         team_id IS NOT NULL
       GROUP BY
@@ -219,6 +240,8 @@ function getStandings(db, season_id, round) {
       player.steam_id = steam_user.steam_id
     WHERE
       team.season_id = ${season_id}
+    AND
+      team.division_id = ${division_id}
     ORDER BY
       standings.wins DESC,
       (2 * standings.wins - standings.losses) DESC,

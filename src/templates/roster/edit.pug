@@ -6,10 +6,10 @@ block title
 block content
   div.columns
     div.column
-      h3.title.is-3
+      h3.title.is-3.has-icon
         span.icon.is-medium
-          i.fa.fa-pencil
-        span &nbsp;#{season.name} - #{team.name} - #{verb} Player #{player ? ' - ' + player.name : ''}
+          i.fas.fa-edit
+        span #{season.name} - #{team.name} - #{verb} Player #{player ? ' - ' + player.name : ''}
       div
         form(method='post' action='/roster/edit')
           if player

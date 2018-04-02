@@ -324,15 +324,15 @@ function mapSeries(series) {
 module.exports = (templates, season, team, series, pairings) => {
   return {
     list: {
-      route: '/seasons/:season_id/series',
+      route: '/seasons/:season_id/division/:division_id/series',
       handler: list.bind(null, templates, season, series)
     },
     create: {
-      route: '/seasons/:season_id/series/create',
+      route: '/seasons/:season_id/division/:division_id/series/create',
       handler: create.bind(null, templates, season, team),
     },
     edit: {
-      route: '/seasons/:season_id/series/:id/edit',
+      route: '/seasons/:season_id/division/:division_id/series/:id/edit',
       handler: edit.bind(null, templates, season, team, series),
     },
     post: {
@@ -344,22 +344,12 @@ module.exports = (templates, season, team, series, pairings) => {
       handler: remove.bind(null, series)
     },
     standings: {
-      route: '/seasons/:season_id/standings/:round?',
+      route: '/seasons/:season_id/division/:division_id/standings/:round?',
       handler: standings.bind(null, templates, season, team, series, pairings)
     },
     matchups: {
-      route: '/seasons/:season_id/matchups/:round?',
+      route: '/seasons/:season_id/division/:division_id/matchups/:round?',
       handler: matchups.bind(null, templates, season, team, series, pairings)
-    },
-    currentStandings: {
-      route: '/standings',
-      handler: currentStandings.bind(
-        null, templates, season, team, series, pairings)
-    },
-    currentMatchups: {
-      route: '/matchups',
-      handler: currentMatchups.bind(
-        null, templates, season, team, series, pairings)
     }
   }
 }

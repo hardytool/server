@@ -6,13 +6,22 @@ block title
 block content
   div.columns
     div.column
-      h3.title.is-3.has-image
+      h3.title.is-3.has-icon
         span.icon.is-medium
-          i.fa.fa-check-square-o
-        span &nbsp;#{season.name} Registration
+          i.far.fa-check-square
+        span #{season.name} Registration
       div
         form(method='post' action='/register')
           input(type='hidden' name='season_id' value=season.id)
+          div.field
+            p.control
+              span.select
+                select(id='division_id' name='division_id')
+                  each division in divisions
+                    if player && player.division_id === division.id
+                      option(value=division.id selected)= division.name
+                    else
+                      option(value=division.id)= division.name
           if player
             input(type='hidden' name='id' value=player.id)
           div.field

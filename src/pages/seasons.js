@@ -4,7 +4,7 @@ function list(templates, season, req, res) {
   season.getSeasons().then(seasons => {
     var html = templates.season.list({
       user: req.user,
-      seasons: seasons
+      seasons: seasons,
     })
 
     res.send(html)

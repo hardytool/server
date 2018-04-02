@@ -6,16 +6,17 @@ block title
 block content
   div.columns
     div.column
-      h3.title.is-3
+      h3.title.is-3.has-icon
         span.icon.is-medium
-          i.fa.fa-pencil
-        span &nbsp;#{verb} Player - #{season.name} #{player ? ' - ' + player.name : ''}
+          i.fas.fa-edit
+        span #{verb} Player - #{season.name} #{player ? ' - ' + player.name : ''}
       div
         form(method='post' action='/players/edit')
           if player
             input(type='hidden' name='id' value=player.id)
             input(type='hidden' name='steam_id' value=player.steam_id)
           input(type='hidden' name='season_id' value=season.id)
+          input(type='hidden' name='division_id' value=division.id)
           if !player
             div.field
               label.label(for='steam_id') Steam User:

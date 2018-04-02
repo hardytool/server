@@ -123,11 +123,11 @@ function remove(team_player, req, res) {
 module.exports = (templates, season, team, team_player, series) => {
   return {
     list: {
-      route: '/seasons/:season_id/teams/:team_id',
+      route: '/seasons/:season_id/division/:division_id/teams/:team_id',
       handler: list.bind(null, templates, season, team, team_player, series)
     },
     add: {
-      route: '/seasons/:season_id/teams/:team_id/add',
+      route: '/seasons/:season_id/division/:division_id/teams/:team_id/add',
       handler: add.bind(null, templates, season, team, team_player)
     },
     post: {

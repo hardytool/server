@@ -27,7 +27,8 @@ var pairings = require('swiss-pairing')({ maxPerRound: 2 })
 
 // repositories
 var admin = require('./repos/admin')(pool)
-var migrations = require('./repos/migrations')(pool)
+var division = require('./repos/division')(pool)
+var migration = require('./repos/migration')(pool)
 var player = require('./repos/player')(pool)
 var profile = require('./repos/profile')(pool)
 var season = require('./repos/season')(pool)
@@ -48,18 +49,15 @@ var openid = require('./api/openid')(config)
 
 // Page routes
 var indexPages = require('./pages/index')(templates, admin)
-var playerPages = require('./pages/players')(
-  templates, season, player, steam_user)
-var profilePages = require('./pages/profile')(
-  templates, steam_user, profile, team_player, vouch, steamId)
+var playerPages = require('./pages/players')(templates, season, division, player, steam_user)
+var profilePages = require('./pages/profile')(templates, steam_user, profile, team_player, vouch, steamId)
 var seasonPages = require('./pages/seasons')(templates, season)
-var seriesPages = require('./pages/series')(
-  templates, season, team, series, pairings)
+var divisionPages = require('./pages/divisions')(templates, season, division)
+var seriesPages = require('./pages/series')(templates, season, team, series, pairings)
 var teamPages = require('./pages/teams')(templates, season, team)
 var registrationPages = require('./pages/registration')(
-  templates, season, steam_user, team_player, player, mmr, profile)
-var rosterPages = require('./pages/roster')(
-  templates, season, team, team_player, series)
+  templates, season, division, steam_user, team_player, player, mmr, profile)
+var rosterPages = require('./pages/roster')(templates, season, team, team_player, series)
 
 // API routes
 // none currently
@@ -136,10 +134,17 @@ app.get(seasonPages.edit.route, seasonPages.edit.handler)
 app.post(seasonPages.post.route, seasonPages.post.handler)
 app.post(seasonPages.remove.route, seasonPages.remove.handler)
 
+app.get(divisionPages.list.route, divisionPages.list.handler)
+app.get(divisionPages.create.route, divisionPages.create.handler)
+app.get(divisionPages.edit.route, divisionPages.edit.handler)
+app.get(divisionPages.nav.route, divisionPages.nav.handler)
+
+app.post(divisionPages.post.route, divisionPages.post.handler)
+app.post(divisionPages.remove.route, divisionPages.remove.handler)
+
 app.get(teamPages.list.route, teamPages.list.handler)
 app.get(teamPages.create.route, teamPages.create.handler)
 app.get(teamPages.edit.route, teamPages.edit.handler)
-app.get(teamPages.currentTeams.route, teamPages.currentTeams.handler)
 
 app.post(teamPages.post.route, teamPages.post.handler)
 app.post(teamPages.remove.route, teamPages.remove.handler)
@@ -149,10 +154,6 @@ app.get(seriesPages.create.route, seriesPages.create.handler)
 app.get(seriesPages.edit.route, seriesPages.edit.handler)
 app.get(seriesPages.standings.route, seriesPages.standings.handler)
 app.get(seriesPages.matchups.route, seriesPages.matchups.handler)
-app.get(seriesPages.currentMatchups.route,
-  seriesPages.currentMatchups.handler)
-app.get(seriesPages.currentStandings.route,
-  seriesPages.currentStandings.handler)
 
 app.post(seriesPages.post.route, seriesPages.post.handler)
 app.post(seriesPages.remove.route, seriesPages.remove.handler)
@@ -163,9 +164,6 @@ app.get(playerPages.standins.route, playerPages.standins.handler)
 app.get(playerPages.create.route, playerPages.create.handler)
 app.get(playerPages.edit.route, playerPages.edit.handler)
 app.get(playerPages.csv.route, playerPages.csv.handler)
-app.get(playerPages.currentPlayers.route, playerPages.currentPlayers.handler)
-app.get(playerPages.currentCaptains.route, playerPages.currentCaptains.handler)
-app.get(playerPages.currentStandins.route, playerPages.currentStandins.handler)
 
 app.post(playerPages.post.route, playerPages.post.handler)
 app.post(playerPages.remove.route, playerPages.remove.handler)
@@ -188,11 +186,10 @@ app.get(registrationPages.view.route, registrationPages.view.handler)
 app.get(registrationPages.shortcut.route, registrationPages.shortcut.handler)
 
 app.post(registrationPages.post.route, registrationPages.post.handler)
-app.post(registrationPages.unregister.route,
-  registrationPages.unregister.handler)
+app.post(registrationPages.unregister.route, registrationPages.unregister.handler)
 
-migrations.migrateIfNeeded(
-  migrations.getMigrations(path.join(__dirname, 'migrations')))
+migration.migrateIfNeeded(
+  migration.getMigrations(path.join(__dirname, 'migrations')))
   .then(versions => {
     console.log(
       `RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)

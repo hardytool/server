@@ -5,6 +5,7 @@ function getPlayers(db, criteria, sort) {
   SELECT
     player.id,
     player.season_id,
+    player.division_id,
     player.steam_id,
     player.will_captain,
     player.captain_approved,
@@ -12,6 +13,7 @@ function getPlayers(db, criteria, sort) {
     player.is_draftable,
     season.number season_number,
     season.name season_name,
+    division.name division_name,
     COALESCE(profile.name, steam_user.name) AS name,
     steam_user.avatar,
     steam_user.solo_mmr,
@@ -35,6 +37,8 @@ function getPlayers(db, criteria, sort) {
     steam_user.steam_id = player.steam_id
   JOIN season ON
     season.id = player.season_id
+  JOIN division ON
+    division.id = player.division_id
   LEFT JOIN profile ON
     steam_user.steam_id = profile.steam_id
   JOIN (
@@ -71,6 +75,12 @@ function getPlayers(db, criteria, sort) {
       select = sql.join([select, sql`
       AND
         player.season_id = ${criteria.season_id}
+      `])
+    }
+    if (criteria.division_id) {
+      select = sql.join([select, sql`
+      AND
+        player.division_id = ${criteria.division_id}
       `])
     }
     if (criteria.will_captain !== undefined) {
@@ -135,11 +145,6 @@ function getPlayers(db, criteria, sort) {
       select = sql.join([select, sql`
       AND (
         player.is_draftable = false
-        AND (
-          is_vouched.is_vouched = true
-          OR
-          has_played.has_played = true
-        )
       )
       `])
     } else {
@@ -191,6 +196,7 @@ function getPlayer(db, id) {
   SELECT
     player.id,
     player.season_id,
+    player.division_id,
     player.steam_id,
     player.will_captain,
     player.captain_approved,
@@ -198,6 +204,7 @@ function getPlayer(db, id) {
     player.is_draftable,
     season.number season_number,
     season.name season_name,
+    division.name division_name,
     COALESCE(profile.name, steam_user.name) AS name,
     steam_user.avatar,
     steam_user.solo_mmr,
@@ -219,6 +226,8 @@ function getPlayer(db, id) {
     steam_user.steam_id = player.steam_id
   JOIN season ON
     season.id = player.season_id
+  JOIN division ON
+    division.id = player.division_id
   LEFT JOIN profile ON
     steam_user.steam_id = profile.steam_id
   WHERE
@@ -235,6 +244,7 @@ function savePlayer(db, player) {
     player (
       id,
       season_id,
+      division_id,
       steam_id,
       will_captain,
       captain_approved,
@@ -243,6 +253,7 @@ function savePlayer(db, player) {
     ) VALUES (
       ${player.id},
       ${player.season_id},
+      ${player.division_id},
       ${player.steam_id},
       ${player.will_captain},
       ${player.captain_approved},
@@ -252,12 +263,14 @@ function savePlayer(db, player) {
       id
     ) DO UPDATE SET (
       season_id,
+      division_id,
       will_captain,
       captain_approved,
       statement,
       is_draftable
     ) = (
       ${player.season_id},
+      ${player.division_id},
       ${player.will_captain},
       ${player.captain_approved},
       ${player.statement},
@@ -320,6 +333,8 @@ function getDraftSheet(db, criteria, sort) {
     steam_user.steam_id = player.steam_id
   JOIN season ON
     season.id = player.season_id
+  JOIN division ON
+    division.id = player.division_id
   LEFT JOIN profile ON
     steam_user.steam_id = profile.steam_id
   JOIN (
@@ -356,6 +371,12 @@ function getDraftSheet(db, criteria, sort) {
       select = sql.join([select, sql`
       AND
         player.season_id = ${criteria.season_id}
+      `])
+    }
+    if (criteria.division_id) {
+      select = sql.join([select, sql`
+      AND
+        player.division_id = ${criteria.division_id}
       `])
     }
     if (criteria.is_captain !== undefined) {

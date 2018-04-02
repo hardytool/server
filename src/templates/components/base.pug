@@ -5,9 +5,9 @@ html(lang='en')
       block head
         block title
           title= title
-        link(rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.css')
-        link(rel='stylesheet' type='text/css' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
+        link(rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css')
         link(rel='icon' type='image/png' href='/assets/seal-icon.png')
+        script(defer src='https://use.fontawesome.com/releases/v5.0.9/js/all.js' integrity='sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl' crossorigin='anonymous')
         style(type='text/css').
           figure.hide-overflow {
             overflow: hidden;
@@ -25,6 +25,9 @@ html(lang='en')
           }
           .has-icon .icon {
             margin-right: 0.1em;
+          }
+          .title.has-icon .icon {
+            margin-right: 0.3em;
           }
           .no-margin {
             margin-right: 0 !important;
@@ -92,12 +95,7 @@ html(lang='en')
                 div.navbar-menu#seal-menu
                   div.navbar-start
                     a.navbar-item(href='/seasons') Seasons
-                    a.navbar-item(href='/matchups') Matchups
-                    a.navbar-item(href='/standings') Standings
-                    a.navbar-item(href='/teams') Teams
-                    a.navbar-item(href='/captains') Captains
-                    a.navbar-item(href='/players') Players
-                    a.navbar-item(href='/stand-ins') Stand-ins
+                    a.navbar-item(href='/divisions') Divisions
                     a.navbar-item(href='/register') Register
                   div.navbar-end
                     if user
@@ -107,31 +105,6 @@ html(lang='en')
                       a.navbar-item(href='/logout') Log out
                     else
                       a.navbar-item(href='/auth/steam')
-                        span.icon.is-small
-                          i.fa.fa-steam
-                        span &nbsp;Log in
-              //
-                nav.nav
-                  div.nav-left
-                    a.nav-item(href='/')
-                      span.icon
-                        i.fa.fa-home
-                    a.nav-item(href='/seasons') Seasons
-                    a.nav-item(href='/matchups') Matchups
-                    a.nav-item(href='/standings') Standings
-                    a.nav-item(href='/teams') Teams
-                    a.nav-item(href='/captains') Captains
-                    a.nav-item(href='/players') Players
-                    a.nav-item(href='/stand-ins') Stand-ins
-                    a.nav-item(href='/register') Register
-                  div.nav-right
-                    if user
-                      a.nav-item(href='/profile/' + user.steamId)= user.displayName
-                      a.nav-item(href='/profile/' + user.steamId)
-                        img.circle(src=user.avatar)
-                      a.nav-item(href='/logout') Log out
-                    else
-                      a.nav-item(href='/auth/steam')
                         span.icon.is-small
                           i.fa.fa-steam
                         span &nbsp;Log in
@@ -151,15 +124,15 @@ html(lang='en')
                     div.level-item
                       ul
                         li
-                          a(href='https://discord.gg/yz4Tb84' alt='Join the SEAL Discord' target='_blank') Join Discord
+                          a(href='https://discord.gg/UrWDQRR' alt='Join the RD2L Discord' target='_blank') Join Discord
                         li
-                          a(href='mailto:admin@seal.gg') Email
+                          a(href='mailto:admins@rd2l.gg') Email
                         li
-                          a(href='https://github.com/seal-dota/server/issues/new') Report a bug
+                          a(href='https://github.com/redditdota2league/server/issues/new') Report a bug
                         li
                           a(href='/complaint') File a complaint
                         li
-                          a(href='https://www.reddit.com/r/SEALDota/submit') Provide feedback
+                          a(href='https://www.reddit.com/r/redditdota2league/submit') Provide feedback
                 div.column
                   div.level
                     div.level-item
@@ -170,13 +143,9 @@ html(lang='en')
                         li
                           a(href='/rules') League rules
                         li
-                          a(href='https://github.com/seal-dota/inhouse-rules') Inhouse rules
-                        li
                           a(href='/admins') League admins
                         li
                           a(href='http://seal-playerdex.wikia.com/wiki/SEAL_playerdex_Wiki') SEAL PlayerDex
-                        li
-                          a(href='http://steamcommunity.com/sharedfiles/filedetails/?id=917953091') Workshop ticket
                 div.column
                   div.level
                     div.level-item
@@ -197,15 +166,18 @@ html(lang='en')
               div.columns
                 div.column.has-text-centered
                   span
-                    a(href='https://www.twitch.tv/treebearddoto')
+                    a(href='https://www.twitch.tv/redditdota2league')
                       span.icon
-                        i.fa.fa-twitch
-                    a(href='https://github.com/seal-dota/server')
+                        i.fab.fa-lg.fa-twitch
+                    a(href='https://github.com/redditdota2league/server')
                       span.icon
-                        i.fa.fa-github
-                    a(href='https://www.reddit.com/r/SEALDota')
+                        i.fab.fa-lg.fa-github
+                    a(href='https://www.reddit.com/r/redditdota2league')
                       span.icon
-                        i.fa.fa-reddit-alien
+                        i.fab.fa-lg.fa-reddit-alien
+                    a(href='https://discord.gg/UrWDQRR')
+                      span.icon
+                        i.fab.fa-lg.fa-discord
               div.columns
                 div.column.has-text-centered
                   p

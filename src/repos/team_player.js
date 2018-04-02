@@ -1,6 +1,6 @@
 var sql = require('pg-sql').sql
 
-function getUnassignedPlayers(db, season_id) {
+function getUnassignedPlayers(db, season_id, division_id) {
   var select = sql`
   SELECT
     player.id,
@@ -29,6 +29,8 @@ function getUnassignedPlayers(db, season_id) {
     )
   AND
     player.season_id = ${season_id}
+  AND
+    player.division_id = ${division_id}
   ORDER BY
     steam_user.name ASC,
     steam_user.steam_id ASC
@@ -73,16 +75,18 @@ function removePlayerFromTeam(db, team_id, player_id) {
   return db.query(query)
 }
 
-function getPlayerTeams(db, steam_id, season_id) {
+function getPlayerTeams(db, steam_id, season_id, division_id) {
   var select = sql`
   SELECT
     team.id,
     team.season_id,
+    team.division_id,
     team.name,
     team.logo,
     team.seed,
     team_player.is_captain,
-    season.name AS season_name
+    season.name AS season_name,
+    division.name AS division_name
   FROM
     steam_user
   JOIN player ON
@@ -93,6 +97,8 @@ function getPlayerTeams(db, steam_id, season_id) {
     team_player.team_id = team.id
   JOIN season ON
     season.id = team.season_id
+  JOIN division ON
+    division.id = team.division_id
   WHERE
     steam_user.steam_id = ${steam_id}
   `
@@ -102,6 +108,14 @@ function getPlayerTeams(db, steam_id, season_id) {
       team.season_id = ${season_id}
     AND
       player.season_id = ${season_id}
+    `])
+  }
+  if (division_id) {
+    select = sql.join([select, sql`
+    AND
+      team.division_id = ${division_id}
+    AND
+      player.division_id = ${division_id}
     `])
   }
   return db.query(select).then(result => {

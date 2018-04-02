@@ -119,15 +119,15 @@ function currentTeams(templates, season, team, req, res) {
 module.exports = (templates, season, team) => {
   return {
     list: {
-      route: '/seasons/:season_id/teams',
+      route: '/seasons/:season_id/division/:division_id/teams',
       handler: list.bind(null, templates, season, team)
     },
     create: {
-      route: '/seasons/:season_id/teams/create',
+      route: '/seasons/:season_id/division/:division_id/teams/create',
       handler: create.bind(null, templates, season)
     },
     edit: {
-      route: '/seasons/:season_id/teams/:id/edit',
+      route: '/seasons/:season_id/division/:division_id/teams/:id/edit',
       handler: edit.bind(null, templates, season, team)
     },
     post: {
@@ -137,10 +137,6 @@ module.exports = (templates, season, team) => {
     remove: {
       route: '/teams/delete',
       handler: remove.bind(null, team)
-    },
-    currentTeams: {
-      route: '/teams',
-      handler: currentTeams.bind(null, templates, season, team)
     }
   }
 }

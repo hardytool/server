@@ -1,10 +1,11 @@
 var sql = require('pg-sql').sql
 
-function getTeams(db, season_id) {
+function getTeams(db, season_id, division_id) {
   var select = sql`
   SELECT
     team.id,
     team.season_id,
+    team.division_id,
     team.name,
     team.logo,
     team.team_number,
@@ -13,11 +14,14 @@ function getTeams(db, season_id) {
     steam_user.steam_id as captain_id,
     COALESCE(profile.name, steam_user.name) AS captain_name,
     season.number AS season_number,
-    season.name AS season_name
+    season.name AS season_name,
+    division.name AS division_name
   FROM
     team
   JOIN season ON
     season.id = team.season_id
+  JOIN division ON
+    division.id = team.division_id
   LEFT JOIN team_player ON
     team.id = team_player.team_id
   AND
@@ -30,6 +34,8 @@ function getTeams(db, season_id) {
     steam_user.steam_id = profile.steam_id
   WHERE
     team.season_id = ${season_id}
+  AND
+    team.division_id = ${division_id}
   ORDER BY
     team.name ASC,
     team.seed DESC
@@ -44,6 +50,7 @@ function getTeam(db, id) {
   SELECT
     id,
     season_id,
+    division_id,
     name,
     logo,
     team_number,
@@ -65,6 +72,7 @@ function saveTeam(db, team) {
     team (
       id,
       season_id,
+      division_id,
       name,
       logo,
       team_number,
@@ -73,6 +81,7 @@ function saveTeam(db, team) {
     ) VALUES (
       ${team.id},
       ${team.season_id},
+      ${team.division_id},
       ${team.name},
       ${team.logo},
       ${team.team_number},
@@ -82,6 +91,7 @@ function saveTeam(db, team) {
       id
     ) DO UPDATE SET (
       season_id,
+      division_id,
       name,
       logo,
       team_number,
@@ -89,6 +99,7 @@ function saveTeam(db, team) {
       disbanded
     ) = (
       ${team.season_id},
+      ${team.division_id},
       ${team.name},
       ${team.logo},
       ${team.team_number},
