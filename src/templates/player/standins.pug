@@ -15,7 +15,7 @@ mixin buttons
             a.button(disabled) View stand-ins
 
 block title
-  title #{title} : #{season ? season.name : ''} Stand-ins
+  title #{title} : #{season ? season.name : ''} #{division ? division.name : '' } Stand-ins
 
 block content
   div.columns
@@ -23,7 +23,7 @@ block content
       h3.title.is-3.has-icon
         span.icon.is-medium
           i.fa.fa-list
-        span #{season ? season.name : ''} Stand-ins
+        span #{season ? season.name : ''} #{division ? division.name : '' } Stand-ins
   +buttons
   div.columns
     div.column

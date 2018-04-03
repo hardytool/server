@@ -18,6 +18,14 @@ block content
             label.label(for='name') Name:
             p.control
               input.input(id='name' type='text' name='name' placeholder='Name' value=(division ? division.name : '') required)
+          div.field
+            p.control
+              label.checkbox
+                if division && division.active
+                  input(id='active' type='checkbox' name='active' checked)
+                else
+                  input(id='active' type='checkbox' name='active')
+                span &nbsp;Is division active?
           div.field.is-grouped
             p.control
               button.button.is-primary Submit

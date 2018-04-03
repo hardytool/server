@@ -183,6 +183,8 @@ app.post(profilePages.post.route, profilePages.post.handler)
 
 app.get(registrationPages.view.route, registrationPages.view.handler)
 app.get(registrationPages.shortcut.route, registrationPages.shortcut.handler)
+app.get(registrationPages.directory.route, registrationPages.directory.handler)
+app.get(registrationPages.directoryShortcut.route, registrationPages.directoryShortcut.handler)
 
 app.post(registrationPages.post.route, registrationPages.post.handler)
 app.post(registrationPages.unregister.route, registrationPages.unregister.handler)

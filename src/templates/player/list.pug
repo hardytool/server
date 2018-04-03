@@ -17,7 +17,7 @@ mixin buttons
             a.button(href='/seasons/' + season.id + '/divisions/' + division.id + '/stand-ins') View stand-ins
 
 block title
-  title #{title} : #{season ? season.name : ''} Players
+  title #{title} : #{season ? season.name : ''} #{division ? division.name : '' } Players
 
 block content
   div.columns
@@ -25,7 +25,7 @@ block content
       h3.title.is-3.has-icon
         span.icon.is-medium
           i.fas.fa-list
-        span #{season ? season.name : ''} Players
+        span #{season ? season.name : ''} #{division ? division.name : '' } Players
   +buttons
   div.columns
     div.column

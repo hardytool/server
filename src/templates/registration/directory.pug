@@ -1,0 +1,31 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : Active divisions
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fas.fa-list
+        span Active divisions
+      table.table.is-striped.is-middle-aligned.is-fullwidth
+        thead
+          tr
+            th Name
+            th Register
+            th Registered?
+        tbody
+          each division in divisions
+            tr
+              td= division.name
+              td
+                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/register') register
+              td
+                if division.registered
+                  span.icon.has-text-success.has-icon
+                    i.far.fa-lg.fa-check-circle
+                else
+                  span.icon.has-text-danger.has-icon
+                    i.far.fa-lg.fa-times-circle

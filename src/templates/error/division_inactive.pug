@@ -1,7 +1,7 @@
 extends ../components/base.pug
 
 block title
-  title #{title} : Registration closed
+  title #{title} : Division inactive
 
 block content
   div.columns
@@ -9,10 +9,10 @@ block content
       h3.title.is-3.has-icon
         span.icon.is-medium
           i.fa.fa-exclamation-triangle
-        span Registration closed
+        span Division inactive
   div.columns
     div.column
       if error
         span= error
       else
-        div Registration for this season is closed.
+        div Registration unavailable for this division.

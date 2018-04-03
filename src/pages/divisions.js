@@ -77,6 +77,7 @@ function post(division, req, res) {
   var d = req.body
   var id = d.id ? d.id : shortid.generate()
   d.id = id
+  d.active = d.active == 'on' ? true : false
 
   division.saveDivision(d).then(() => {
     res.redirect('/divisions')

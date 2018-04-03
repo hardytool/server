@@ -2,6 +2,7 @@ var shortid = require('shortid')
 
 function view(templates, season, division, steam_user, player, mmr, profile, req, res) {
   var season_id = req.params.season_id
+  var division_id = req.params.division_id
 
   season.getSeason(season_id).then(season => {
     if (!season.registration_open) {
@@ -18,17 +19,24 @@ function view(templates, season, division, steam_user, player, mmr, profile, req
       })
     }
 
-    return division.getDivisions().then(divisions => {
+    return division.getDivision(division_id).then(division => {
+      if (!division.active) {
+        return templates.error.division_inactive({
+          user: req.user,
+          error: `${division.name} is inactive, registration is unavailable.`
+        })
+      }
       return steam_user.getSteamUser(req.user.steamId).then(steamUser => {
         return player.getPlayers({
           season_id: season.id,
+          division_id: division.id,
           steam_id: steamUser.steam_id
         }).then(([player]) => {
           if (player) {
             return templates.registration.edit({
               user: req.user,
               steamUser: steamUser,
-              divisions: divisions,
+              division: division,
               season: season,
               player: player
             })
@@ -37,7 +45,7 @@ function view(templates, season, division, steam_user, player, mmr, profile, req
           return mmr.getMMR(steamUser.steam_id).then(({ rank }) => {
             if (!rank) {
               return templates.error.no_mmr({
-                user: req.user,
+                user: req.user
               })
             }
 
@@ -59,7 +67,7 @@ function view(templates, season, division, steam_user, player, mmr, profile, req
                 return templates.registration.edit({
                   user: req.user,
                   season: season,
-                  divisions: divisions,
+                  division: division,
                   steamUser: steamUser,
                   player: profile
                 })
@@ -81,14 +89,72 @@ function view(templates, season, division, steam_user, player, mmr, profile, req
   })
 }
 
-function shortcut(
-  templates, season, division, steam_user, player, mmr, profile, req, res) {
-  if (!req.params) {
-    req.params = {}
-  }
+function shortcut(templates, season, division, steam_user, player, mmr, profile, req, res) {
   season.getActiveSeason().then(_season => {
     req.params.season_id = _season.id
     return view(templates, season, division, steam_user, player, mmr, profile, req, res)
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
+function directory(templates, season, division, steam_user, player, req, res) {
+  var season_id = req.params.season_id
+
+  season.getSeason(season_id).then(season => {
+    if (!season.registration_open) {
+      return templates.error.registration_closed({
+        user: req.user,
+        error: `Registration for ${season.name} is closed.`
+      })
+    }
+
+    if (!req.user) {
+      return templates.error.unauthenticated({
+        user: req.user,
+        error: `Please log in to be able to register for ${season.name}`
+      })
+    }
+
+    return division.getDivisions({ active: true }).then(divisions => {
+      if (divisions.length === 0) {
+        return templates.error.no_divisions({
+          user: req.user,
+          error: 'There don\'t appear to be any active divisions. Ping an admin.'
+        })
+      }
+
+      return steam_user.getSteamUser(req.user.steamId).then(steamUser => {
+        return player.getPlayers({
+          season_id: season.id,
+          steam_id: steamUser.steam_id
+        }).then(players => {
+          divisions = divisions
+            .map(d => {
+              d.registered = players.map(p => p.division_id).includes(d.id)
+              return d
+            })
+          return templates.registration.directory({
+            user: req.user,
+            season: season,
+            divisions: divisions
+          })
+        })
+      })
+    })
+  }).then(html => {
+    res.send(html)
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
+function directoryShortcut(templates, season, division, steam_user, player, req, res) {
+  season.getActiveSeason().then(_season => {
+    req.params.season_id = _season.id
+    return directory(templates, season, division, steam_user, player, req, res)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -136,19 +202,22 @@ function post(templates, season, division, steam_user, team_player, player, req,
   })
 }
 
-function unregister(season, steam_user, player, req, res) {
+function unregister(season, division, steam_user, player, req, res) {
   if (!req.user) {
     res.sendStatus(403)
     return
   }
 
   var seasonId = req.body.season_id
+  var divisionId = req.body.division_id
   var steamId = req.user.steamId
 
   season.getSeason(seasonId).then(season => {
-    return steam_user.getSteamUser(steamId).then(steamUser => {
-      return player.unregisterPlayer(season.id, steamUser.steam_id).then(() => {
-          res.redirect('/seasons/' + season.id + '/players')
+    return division.getDivision(divisionId).then(division => {
+      return steam_user.getSteamUser(steamId).then(steamUser => {
+        return player.unregisterPlayer(season.id, division.id, steamUser.steam_id).then(() => {
+            res.redirect('/seasons/' + season.id + '/divisions/' + division.id + '/players')
+        })
       })
     })
   }).catch(err => {
@@ -160,12 +229,20 @@ function unregister(season, steam_user, player, req, res) {
 module.exports = (templates, season, division, steam_user, team_player, player, mmr, profile) => {
     return {
       view: {
-        route: '/seasons/:season_id/register',
+        route: '/seasons/:season_id/divisions/:division_id/register',
         handler: view.bind(null, templates, season, division, steam_user, player, mmr, profile)
       },
       shortcut: {
-        route: '/register',
+        route: '/divisions/:division_id/register',
         handler: shortcut.bind(null, templates, season, division, steam_user, player, mmr, profile)
+      },
+      directory: {
+        route: '/seasons/:season_id/register',
+        handler: directory.bind(null, templates, season, division, steam_user, player)
+      },
+      directoryShortcut: {
+        route: '/register',
+        handler: directoryShortcut.bind(null, templates, season, division, steam_user, player)
       },
       post: {
         route: '/register',
@@ -173,7 +250,7 @@ module.exports = (templates, season, division, steam_user, team_player, player, 
       },
       unregister: {
         route: '/register/delete',
-        handler: unregister.bind(null, season, steam_user, player)
+        handler: unregister.bind(null, season, division, steam_user, player)
       }
     }
   }

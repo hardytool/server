@@ -9,19 +9,11 @@ block content
       h3.title.is-3.has-icon
         span.icon.is-medium
           i.far.fa-check-square
-        span #{season.name} Registration
+        span #{season.name} #{division.name} Registration
       div
         form(method='post' action='/register')
           input(type='hidden' name='season_id' value=season.id)
-          div.field
-            p.control
-              span.select
-                select(id='division_id' name='division_id')
-                  each division in divisions
-                    if player && player.division_id === division.id
-                      option(value=division.id selected)= division.name
-                    else
-                      option(value=division.id)= division.name
+          input(type='hidden' name='division_id' value=division.id)
           if player
             input(type='hidden' name='id' value=player.id)
           div.field
@@ -49,9 +41,10 @@ block content
             p.control
               input.input#adjusted_rank(type='text' value=player.adjusted_rank disabled)
           div.field
-            label.label(for='statement') Statement:
+            label.label(for='statement') Statement/Availability:
             p.control
               textarea.textarea#statement(name='statement' placeholder='Enter your player statement here - limited to 500 characters' maxlength='500')= player ? player.statement : ''
+            p.help Please be sure to mention other leagues/divisions you'll be participating in.
           div.field
             label.label Willing to captain?:
             p.control
