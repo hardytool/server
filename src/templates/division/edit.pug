@@ -19,6 +19,14 @@ block content
             p.control
               input.input(id='name' type='text' name='name' placeholder='Name' value=(division ? division.name : '') required)
           div.field
+            label.label(for='discord_url') Discord URL:
+            p.control
+              input.input(id='discord_url' type='text' name='discord_url' placeholder='https://discord.gg/??????' value=(division ? division.discord_url : ''))
+          div.field
+            label.label(for='start_time') Default Start Time:
+            p.control
+              input.input(id='start_time' type='text' name='start_time' placeholder='Sunday 9PM PST' value=(division ? division.start_time : '') required)
+          div.field
             p.control
               label.checkbox
                 if division && division.active
