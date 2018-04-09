@@ -85,12 +85,14 @@ block content
         table.table.is-striped.is-middle-aligned.is-fullwidth
           thead
             tr
+              th Division
               th Season
               th Name
               th Logo
           tbody
             each team in teamsPlayed
               tr
+                td= team.division_name
                 td= team.season_name
                 td
                   a(href='/seasons/' + team.season_id + '/teams/' + team.id)= team.name
