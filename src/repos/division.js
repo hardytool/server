@@ -33,7 +33,9 @@ function getDivision(db, id) {
   SELECT
     division.id,
     division.name,
-    division.active
+    division.active,
+    division.start_time,
+    division.discord_url
   FROM
     division
   WHERE

@@ -10,10 +10,23 @@ block content
         span.icon.is-medium
           i.fas.fa-list
         span &nbsp;#{division.name}
+      h4.title
+        span Useful Information
+      if division.start_time
+        strong Start Time
+        p
+          span &nbsp;#{division.start_time}
+        br
+      if division.discord_url
+        strong Discord Link
+        p
+          a(href=division.discord_url) Discord URL
+        br
+      h4.title
+        span Active Season
       table.table.is-striped.is-middle-aligned.is-fullwidth
         thead
           tr
-            th Number
             th Name
             th Players
             th Captains
@@ -23,24 +36,26 @@ block content
             th Standings
             th Matchups
         tbody
-          each season in seasons
-            tr
-              td= season.number
-              td= season.name
-              td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/players') players
-              td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/captains') captains
-              td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/stand-ins') stand-ins
-              td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams') teams
-              td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series') series
-              td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/standings') standings
-              td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups') matchups
+          tr
+            td= seasons.name
+            td
+              a(href='/seasons/' + seasons.id + '/divisions/' + division.id + '/players') players
+            td
+              a(href='/seasons/' + seasons.id + '/divisions/' + division.id + '/captains') captains
+            td
+              a(href='/seasons/' + seasons.id + '/divisions/' + division.id + '/stand-ins') stand-ins
+            td
+              a(href='/seasons/' + seasons.id + '/divisions/' + division.id + '/teams') teams
+            td
+              a(href='/seasons/' + seasons.id + '/divisions/' + division.id + '/series') series
+            td
+              a(href='/seasons/' + seasons.id + '/divisions/' + division.id + '/standings') standings
+            td
+              a(href='/seasons/' + seasons.id + '/divisions/' + division.id + '/matchups') matchups
+      a(href='/divisions/' + division.id + '/all_seasons')
+        button.button.is-primary View All Seasons
+      br
+      br
       if user && user.isAdmin
         a(href='/divisions/' + division.id + '/edit')
           button.button.is-primary Edit division
