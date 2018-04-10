@@ -42,6 +42,7 @@ block content
               th Will Captain?
               th Captain Approved
             th Statement
+            th Role Preference
             th Vouched?
             th Draftable?
             if user && user.isAdmin
@@ -76,6 +77,7 @@ block content
                     span.icon.has-text-danger.has-icon
                       i.far.fa-lg.fa-times-circle
               td.tiny-text= player.statement
+              td= player.role_preference
               td
                 if player.is_vouched || player.has_played
                   span.icon.has-text-success.has-icon

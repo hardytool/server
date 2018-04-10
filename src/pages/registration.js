@@ -33,6 +33,13 @@ function view(templates, season, division, steam_user, player, mmr, profile, req
           steam_id: steamUser.steam_id
         }).then(([player]) => {
           if (player) {
+
+            //Grab the information from role_preference so players can see what they put before
+            var preferenceArray = JSON.parse("[" + player.role_preference + "]");
+            player.role_preference1 = preferenceArray[0];
+            player.role_preference2 = preferenceArray[1];
+            player.role_preference3 = preferenceArray[2];
+
             return templates.registration.edit({
               user: req.user,
               steamUser: steamUser,
@@ -63,6 +70,10 @@ function view(templates, season, division, steam_user, player, mmr, profile, req
                 profile.is_draftable = profile.is_draftable === undefined
                   ? true
                   : profile.is_draftable
+                var preferenceArray = JSON.parse("[" + profile.role_preference + "]");
+                profile.role_preference1 = preferenceArray[0];
+                profile.role_preference2 = preferenceArray[1];
+                profile.role_preference3 = preferenceArray[2];
 
                 return templates.registration.edit({
                   user: req.user,
@@ -171,10 +182,22 @@ function post(templates, season, division, steam_user, team_player, player, req,
   var division_id = req.body.division_id
   var id = req.body.id ? req.body.id : shortid.generate()
   var p = req.body
+
+  // Account for Role Preference, do not accept duplicates, remove unanswered
+  var roles = new Set();
+
+  roles.add(p.role_preference1);
+  roles.add(p.role_preference2);
+  roles.add(p.role_preference3);
+  roles.delete('0');
+
+  var preferredRoles = Array.from(roles).join(', ');
+
   p.id = id
   p.steam_id = req.user.steamId
   p.captain_approved = false
   p.statement = p.statement.slice(0, 500)
+  p.role_preference = preferredRoles
   p.is_draftable = !(p.standin_only === 'on')
   delete p.standin_only
 
