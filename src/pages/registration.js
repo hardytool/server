@@ -172,7 +172,7 @@ function directoryShortcut(templates, season, division, steam_user, player, req,
   })
 }
 
-function post(templates, season, division, steam_user, team_player, player, req, res) {
+function post(templates, season, division, player_roles, steam_user, team_player, player, req, res) {
   if (!req.user) {
     res.sendStatus(403)
     return
@@ -183,21 +183,10 @@ function post(templates, season, division, steam_user, team_player, player, req,
   var id = req.body.id ? req.body.id : shortid.generate()
   var p = req.body
 
-  // Account for Role Preference, do not accept duplicates, remove unanswered
-  var roles = new Set();
-
-  roles.add(p.role_preference1);
-  roles.add(p.role_preference2);
-  roles.add(p.role_preference3);
-  roles.delete('0');
-
-  var preferredRoles = Array.from(roles).join(', ');
-
   p.id = id
   p.steam_id = req.user.steamId
   p.captain_approved = false
   p.statement = p.statement.slice(0, 500)
-  p.role_preference = preferredRoles
   p.is_draftable = !(p.standin_only === 'on')
   delete p.standin_only
 
@@ -208,13 +197,15 @@ function post(templates, season, division, steam_user, team_player, player, req,
         .then(({ allowed }) => {
           p.captain_approved = allowed
           return player.savePlayer(p).then(() => {
-            var html = templates.registration.discord({
-              user: req.user,
-              season: season,
-              division: division
-            })
+            return player_roles.savePlayerRoles(p).then(() => {
+              var html = templates.registration.discord({
+                user: req.user,
+                season: season,
+                division: division
+              })
 
-            res.send(html)
+              res.send(html)
+            })
           })
         })
       })
@@ -249,7 +240,7 @@ function unregister(season, division, steam_user, player, req, res) {
   })
 }
 
-module.exports = (templates, season, division, steam_user, team_player, player, mmr, profile) => {
+module.exports = (templates, season, division, player_roles, steam_user, team_player, player, mmr, profile) => {
     return {
       view: {
         route: '/seasons/:season_id/divisions/:division_id/register',
@@ -269,7 +260,7 @@ module.exports = (templates, season, division, steam_user, team_player, player, 
       },
       post: {
         route: '/register',
-        handler: post.bind(null, templates, season, division, steam_user, team_player, player)
+        handler: post.bind(null, templates, season, division, player_roles, steam_user, team_player, player)
       },
       unregister: {
         route: '/register/delete',

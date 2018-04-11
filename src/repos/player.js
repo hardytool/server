@@ -10,7 +10,6 @@ function getPlayers(db, criteria, sort) {
     player.will_captain,
     player.captain_approved,
     player.statement,
-    player.role_preference,
     player.is_draftable,
     season.number season_number,
     season.name season_name,
@@ -202,7 +201,6 @@ function getPlayer(db, id) {
     player.will_captain,
     player.captain_approved,
     player.statement,
-    player.role_preference,
     player.is_draftable,
     season.number season_number,
     season.name season_name,
@@ -251,7 +249,6 @@ function savePlayer(db, player) {
       will_captain,
       captain_approved,
       statement,
-      role_preference,
       is_draftable
     ) VALUES (
       ${player.id},
@@ -261,7 +258,6 @@ function savePlayer(db, player) {
       ${player.will_captain},
       ${player.captain_approved},
       ${player.statement},
-      ${player.role_preference},
       ${player.is_draftable}
     ) ON CONFLICT (
       id
@@ -271,7 +267,6 @@ function savePlayer(db, player) {
       will_captain,
       captain_approved,
       statement,
-      role_preference,
       is_draftable
     ) = (
       ${player.season_id},
@@ -279,7 +274,6 @@ function savePlayer(db, player) {
       ${player.will_captain},
       ${player.captain_approved},
       ${player.statement},
-      ${player.role_preference},
       ${player.is_draftable}
     )
   `
