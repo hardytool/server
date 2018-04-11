@@ -35,7 +35,7 @@ function view(templates, season, division, steam_user, player, mmr, profile, req
           if (player) {
 
             //Grab the information from role_preference so players can see what they put before
-            var preferenceArray = JSON.parse("[" + player.role_preference + "]");
+            var preferenceArray = [player.role_preference];
             player.role_preference1 = preferenceArray[0];
             player.role_preference2 = preferenceArray[1];
             player.role_preference3 = preferenceArray[2];
@@ -70,7 +70,7 @@ function view(templates, season, division, steam_user, player, mmr, profile, req
                 profile.is_draftable = profile.is_draftable === undefined
                   ? true
                   : profile.is_draftable
-                var preferenceArray = JSON.parse("[" + profile.role_preference + "]");
+                var preferenceArray = [profile.role_preference];
                 profile.role_preference1 = preferenceArray[0];
                 profile.role_preference2 = preferenceArray[1];
                 profile.role_preference3 = preferenceArray[2];
