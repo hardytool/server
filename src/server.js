@@ -30,6 +30,7 @@ var admin = require('./repos/admin')(pool)
 var division = require('./repos/division')(pool)
 var migration = require('./repos/migration')(pool)
 var player = require('./repos/player')(pool)
+var player_roles = require('./repos/player_roles')(pool)
 var profile = require('./repos/profile')(pool)
 var season = require('./repos/season')(pool)
 var series = require('./repos/series')(pool)
@@ -56,7 +57,7 @@ var divisionPages = require('./pages/divisions')(templates, season, division)
 var seriesPages = require('./pages/series')(templates, season, team, series, pairings)
 var teamPages = require('./pages/teams')(templates, season, team)
 var registrationPages = require('./pages/registration')(
-  templates, season, division, steam_user, team_player, player, mmr, profile)
+  templates, season, division, player_roles, steam_user, team_player, player, mmr, profile)
 var rosterPages = require('./pages/roster')(templates, season, team, team_player, series)
 
 // API routes
