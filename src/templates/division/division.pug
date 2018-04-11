@@ -16,12 +16,12 @@ block content
         strong Start Time
         p
           span &nbsp;#{division.start_time}
-        br
       if division.discord_url
-        strong Discord Link
+        strong Discord URL
         p
-          a(href=division.discord_url) Discord URL
-        br
+          a(href='https://discord.gg/' + division.discord_url) Invite Link
+      p
+        span &nbsp;
       h4.title
         span Active Season
       table.table.is-striped.is-middle-aligned.is-fullwidth
@@ -54,8 +54,8 @@ block content
               a(href='/seasons/' + seasons.id + '/divisions/' + division.id + '/matchups') matchups
       a(href='/divisions/' + division.id + '/all_seasons')
         button.button.is-primary View All Seasons
-      br
-      br
+      |
+      |
       if user && user.isAdmin
         a(href='/divisions/' + division.id + '/edit')
           button.button.is-primary Edit division
