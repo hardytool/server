@@ -137,6 +137,7 @@ app.get(divisionPages.list.route, divisionPages.list.handler)
 app.get(divisionPages.create.route, divisionPages.create.handler)
 app.get(divisionPages.edit.route, divisionPages.edit.handler)
 app.get(divisionPages.nav.route, divisionPages.nav.handler)
+app.get(divisionPages.all_seasons.route, divisionPages.all_seasons.handler)
 
 app.post(divisionPages.post.route, divisionPages.post.handler)
 app.post(divisionPages.remove.route, divisionPages.remove.handler)
