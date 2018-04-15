@@ -33,6 +33,13 @@ function view(templates, season, division, steam_user, player, mmr, profile, req
           steam_id: steamUser.steam_id
         }).then(([player]) => {
           if (player) {
+
+            //Grab the information from role_preference so players can see what they put before
+            var preferenceArray = [player.role_preference];
+            player.role_preference1 = preferenceArray[0];
+            player.role_preference2 = preferenceArray[1];
+            player.role_preference3 = preferenceArray[2];
+
             return templates.registration.edit({
               user: req.user,
               steamUser: steamUser,
@@ -63,6 +70,10 @@ function view(templates, season, division, steam_user, player, mmr, profile, req
                 profile.is_draftable = profile.is_draftable === undefined
                   ? true
                   : profile.is_draftable
+                var preferenceArray = [profile.role_preference];
+                profile.role_preference1 = preferenceArray[0];
+                profile.role_preference2 = preferenceArray[1];
+                profile.role_preference3 = preferenceArray[2];
 
                 return templates.registration.edit({
                   user: req.user,
@@ -161,7 +172,7 @@ function directoryShortcut(templates, season, division, steam_user, player, req,
   })
 }
 
-function post(templates, season, division, steam_user, team_player, player, req, res) {
+function post(templates, season, division, player_roles, steam_user, team_player, player, req, res) {
   if (!req.user) {
     res.sendStatus(403)
     return
@@ -171,6 +182,7 @@ function post(templates, season, division, steam_user, team_player, player, req,
   var division_id = req.body.division_id
   var id = req.body.id ? req.body.id : shortid.generate()
   var p = req.body
+
   p.id = id
   p.steam_id = req.user.steamId
   p.captain_approved = false
@@ -185,13 +197,15 @@ function post(templates, season, division, steam_user, team_player, player, req,
         .then(({ allowed }) => {
           p.captain_approved = allowed
           return player.savePlayer(p).then(() => {
-            var html = templates.registration.discord({
-              user: req.user,
-              season: season,
-              division: division
-            })
+            return player_roles.savePlayerRoles(p).then(() => {
+              var html = templates.registration.discord({
+                user: req.user,
+                season: season,
+                division: division
+              })
 
-            res.send(html)
+              res.send(html)
+            })
           })
         })
       })
@@ -226,7 +240,7 @@ function unregister(season, division, steam_user, player, req, res) {
   })
 }
 
-module.exports = (templates, season, division, steam_user, team_player, player, mmr, profile) => {
+module.exports = (templates, season, division, player_roles, steam_user, team_player, player, mmr, profile) => {
     return {
       view: {
         route: '/seasons/:season_id/divisions/:division_id/register',
@@ -246,7 +260,7 @@ module.exports = (templates, season, division, steam_user, team_player, player, 
       },
       post: {
         route: '/register',
-        handler: post.bind(null, templates, season, division, steam_user, team_player, player)
+        handler: post.bind(null, templates, season, division, player_roles, steam_user, team_player, player)
       },
       unregister: {
         route: '/register/delete',
