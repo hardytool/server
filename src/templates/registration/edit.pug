@@ -41,41 +41,23 @@ block content
             p.control
               input.input#adjusted_rank(type='text' value=player.adjusted_rank disabled)
           div.field
-            label.label(for='role_preference') Role Preference #1:
-            p.control
-              select.form-control.input-lg(name='role_preference1')
-                option(value='0', selected= true) -- Select --
-                option(value='1', selected= player.role_preference1 == 1) 1
-                option(value='2', selected= player.role_preference1 == 2) 2
-                option(value='3', selected= player.role_preference1 == 3) 3
-                option(value='4', selected= player.role_preference1 == 4) 4
-                option(value='5', selected= player.role_preference1 == 5) 5
-          div.field
-            label.label(for='role_preference') Role Preference #2:
-            p.control
-              select.form-control.input-lg(name='role_preference2')
-                option(value='0', selected= true) -- Select --
-                option(value='1', selected= player.role_preference2 == 1) 1
-                option(value='2', selected= player.role_preference2 == 2) 2
-                option(value='3', selected= player.role_preference2 == 3) 3
-                option(value='4', selected= player.role_preference2 == 4) 4
-                option(value='5', selected= player.role_preference2 == 5) 5
-          div.field
-            label.label(for='role_preference') Role Preference #3:
-            p.control
-              select.form-control.input-lg(name='role_preference3')
-                option(value='0', selected= true) -- Select --
-                option(value='1', selected= player.role_preference3 == 1) 1
-                option(value='2', selected= player.role_preference3 == 2) 2
-                option(value='3', selected= player.role_preference3 == 3) 3
-                option(value='4', selected= player.role_preference3 == 4) 4
-                option(value='5', selected= player.role_preference3 == 5) 5
-            p.help Role Preference does not guarantee what role you will play, but helps captains know what you are comfortable playing
-          div.field
             label.label(for='statement') Statement/Availability:
             p.control
               textarea.textarea#statement(name='statement' placeholder='Enter your player statement here - limited to 500 characters' maxlength='500')= player ? player.statement : ''
             p.help Please be sure to mention other leagues/divisions you'll be participating in.
+          div.box
+            h3.title.is-5 Comfort/preference
+            div.field
+              each role in roles
+                label.label= role.name
+                p.control
+                  each i in [1,2,3,4,5]
+                    label.radio
+                      if ranks[role.id] === i
+                        input(value=i type='radio' name=role.id id=role.id checked)
+                      else
+                        input(value=i type='radio' name=role.id id=role.id)
+                      span &nbsp;#{i}
           div.field
             label.label Willing to captain?:
             p.control

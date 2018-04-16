@@ -30,8 +30,9 @@ var admin = require('./repos/admin')(pool)
 var division = require('./repos/division')(pool)
 var migration = require('./repos/migration')(pool)
 var player = require('./repos/player')(pool)
-var player_roles = require('./repos/player_roles')(pool)
+var player_role = require('./repos/player_role')(pool)
 var profile = require('./repos/profile')(pool)
+var role = require('./repos/role')(pool)
 var season = require('./repos/season')(pool)
 var series = require('./repos/series')(pool)
 var steam_user = require('./repos/steam_user')(pool)
@@ -57,8 +58,9 @@ var divisionPages = require('./pages/divisions')(templates, season, division)
 var seriesPages = require('./pages/series')(templates, season, team, series, pairings)
 var teamPages = require('./pages/teams')(templates, season, team)
 var registrationPages = require('./pages/registration')(
-  templates, season, division, player_roles, steam_user, team_player, player, mmr, profile)
+  templates, season, division, steam_user, team_player, player, role, player_role, mmr, profile)
 var rosterPages = require('./pages/roster')(templates, season, team, team_player, series)
+var rolePages = require('./pages/roles')(templates, role)
 
 // API routes
 // none currently
@@ -190,6 +192,13 @@ app.get(registrationPages.directoryShortcut.route, registrationPages.directorySh
 
 app.post(registrationPages.post.route, registrationPages.post.handler)
 app.post(registrationPages.unregister.route, registrationPages.unregister.handler)
+
+app.get(rolePages.list.route, rolePages.list.handler)
+app.get(rolePages.create.route, rolePages.create.handler)
+app.get(rolePages.edit.route, rolePages.edit.handler)
+
+app.post(rolePages.post.route, rolePages.post.handler)
+app.post(rolePages.remove.route, rolePages.remove.handler)
 
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))

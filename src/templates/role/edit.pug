@@ -1,0 +1,26 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : #{verb} Role #{role ? role.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fas.fa-edit
+        span #{verb} Role #{role ? role.name : ''}
+      div
+        form(method='post' action='/roles/edit')
+          if role
+            input(type='hidden' name='id' value=role.id)
+          div.field
+            label.label(for='name') Name:
+            p.control
+              input.input(id='name' type='text' name='name' placeholder='Name' value=(role ? role.name : '') required)
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            if role
+              p.control
+                button.button.is-danger(formaction='/roles/delete') Delete

@@ -1,6 +1,6 @@
 var shortid = require('shortid')
 
-function view(templates, season, division, steam_user, player, mmr, profile, req, res) {
+function view(templates, season, division, steam_user, player, role, player_role, mmr, profile, req, res) {
   var season_id = req.params.season_id
   var division_id = req.params.division_id
 
@@ -32,61 +32,68 @@ function view(templates, season, division, steam_user, player, mmr, profile, req
           division_id: division.id,
           steam_id: steamUser.steam_id
         }).then(([player]) => {
-          if (player) {
-
-            //Grab the information from role_preference so players can see what they put before
-            var preferenceArray = [player.role_preference];
-            player.role_preference1 = preferenceArray[0];
-            player.role_preference2 = preferenceArray[1];
-            player.role_preference3 = preferenceArray[2];
-
-            return templates.registration.edit({
-              user: req.user,
-              steamUser: steamUser,
-              division: division,
-              season: season,
-              player: player
-            })
-          }
-
-          return mmr.getMMR(steamUser.steam_id).then(({ rank }) => {
-            if (!rank) {
-              return templates.error.no_mmr({
-                user: req.user
+          return role.getRoles().then(roles => {
+            if (player) {
+              return player_role.getRoleRanks({
+                player_id: player.id
+              }).then(ranks => {
+                var prefs = roles.reduce((acc, role) => {
+                  var rank = ranks.filter(r => r.role_id === role.id)
+                  if (rank.length) {
+                    acc[role.id] = rank[0].rank
+                  }
+                  return acc
+                }, {})
+                console.dir(prefs)
+                return templates.registration.edit({
+                  user: req.user,
+                  steamUser: steamUser,
+                  division: division,
+                  season: season,
+                  player: player,
+                  roles: roles,
+                  ranks: prefs
+                })
               })
             }
 
-            steamUser.rank = rank
-            return steam_user.saveSteamUser(steamUser).then(() => {
-              return profile.getProfile(steamUser.steam_id).then(profile => {
-                profile = profile || {}
-                profile.name = profile.name || steamUser.name
-                profile.adjusted_mmr = profile.adjusted_mmr
-                  || (steamUser.solo_mmr > steamUser.party_mmr
-                    ? steamUser.solo_mmr
-                    : steamUser.party_mmr)
-                profile.adjusted_rank = profile.adjusted_rank
-                  || steamUser.rank
-                profile.is_draftable = profile.is_draftable === undefined
-                  ? true
-                  : profile.is_draftable
-                var preferenceArray = [profile.role_preference];
-                profile.role_preference1 = preferenceArray[0];
-                profile.role_preference2 = preferenceArray[1];
-                profile.role_preference3 = preferenceArray[2];
+            return mmr.getMMR(steamUser.steam_id).then(({ rank }) => {
+              if (!rank) {
+                return templates.error.no_mmr({
+                  user: req.user
+                })
+              }
 
-                return templates.registration.edit({
-                  user: req.user,
-                  season: season,
-                  division: division,
-                  steamUser: steamUser,
-                  player: profile
+              steamUser.rank = rank
+              return steam_user.saveSteamUser(steamUser).then(() => {
+                return profile.getProfile(steamUser.steam_id).then(profile => {
+                  profile = profile || {}
+                  profile.name = profile.name || steamUser.name
+                  profile.adjusted_mmr = profile.adjusted_mmr
+                    || (steamUser.solo_mmr > steamUser.party_mmr
+                      ? steamUser.solo_mmr
+                      : steamUser.party_mmr)
+                  profile.adjusted_rank = profile.adjusted_rank
+                    || steamUser.rank
+                  profile.is_draftable = profile.is_draftable === undefined
+                    ? true
+                    : profile.is_draftable
+
+                  return templates.registration.edit({
+                    user: req.user,
+                    season: season,
+                    division: division,
+                    steamUser: steamUser,
+                    player: profile,
+                    roles: roles,
+                    ranks: []
+                  })
                 })
               })
-            })
-          }).catch(() => {
-            return templates.error.dota_client_down({
-              user: req.user
+            }).catch(() => {
+              return templates.error.dota_client_down({
+                user: req.user
+              })
             })
           })
         })
@@ -172,7 +179,7 @@ function directoryShortcut(templates, season, division, steam_user, player, req,
   })
 }
 
-function post(templates, season, division, player_roles, steam_user, team_player, player, req, res) {
+function post(templates, season, division, steam_user, team_player, player, role, player_role, req, res) {
   if (!req.user) {
     res.sendStatus(403)
     return
@@ -197,14 +204,22 @@ function post(templates, season, division, player_roles, steam_user, team_player
         .then(({ allowed }) => {
           p.captain_approved = allowed
           return player.savePlayer(p).then(() => {
-            return player_roles.savePlayerRoles(p).then(() => {
-              var html = templates.registration.discord({
-                user: req.user,
-                season: season,
-                division: division
-              })
+            return role.getRoles().then(roles => {
+              var promises = roles.reduce((promises, role) => {
+                if (p[role.id] !== undefined) {
+                  promises.push(player_role.saveRoleRank(p.id, role.id, p[role.id]))
+                }
+                return promises
+              }, [])
+              return Promise.all(promises).then(() => {
+                var html = templates.registration.discord({
+                  user: req.user,
+                  season: season,
+                  division: division
+                })
 
-              res.send(html)
+                res.send(html)
+              })
             })
           })
         })
@@ -240,11 +255,11 @@ function unregister(season, division, steam_user, player, req, res) {
   })
 }
 
-module.exports = (templates, season, division, player_roles, steam_user, team_player, player, mmr, profile) => {
+module.exports = (templates, season, division, steam_user, team_player, player, role, player_role, mmr, profile) => {
     return {
       view: {
         route: '/seasons/:season_id/divisions/:division_id/register',
-        handler: view.bind(null, templates, season, division, steam_user, player, mmr, profile)
+        handler: view.bind(null, templates, season, division, steam_user, player, role, player_role, mmr, profile)
       },
       shortcut: {
         route: '/divisions/:division_id/register',
@@ -260,7 +275,7 @@ module.exports = (templates, season, division, player_roles, steam_user, team_pl
       },
       post: {
         route: '/register',
-        handler: post.bind(null, templates, season, division, player_roles, steam_user, team_player, player)
+        handler: post.bind(null, templates, season, division, steam_user, team_player, player, role, player_role)
       },
       unregister: {
         route: '/register/delete',
