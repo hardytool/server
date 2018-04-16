@@ -263,7 +263,7 @@ module.exports = (templates, season, division, steam_user, team_player, player, 
       },
       shortcut: {
         route: '/divisions/:division_id/register',
-        handler: shortcut.bind(null, templates, season, division, steam_user, player, mmr, profile)
+        handler: shortcut.bind(null, templates, season, division, steam_user, player, role, player_role, mmr, profile)
       },
       directory: {
         route: '/seasons/:season_id/register',
