@@ -22,7 +22,8 @@ function getAdmins(db) {
     COALESCE(profile.name, steam_user.name) AS name,
     admin.group_id,
     admin.division_id,
-    division.name AS division_name
+    division.name AS division_name,
+    admin_group.name AS admin_group_name
   FROM
     admin
   JOIN steam_user ON
@@ -31,6 +32,8 @@ function getAdmins(db) {
     steam_user.steam_id = profile.steam_id
   JOIN division ON
     admin.division_id =  division.id
+  JOIN admin_group ON
+    admin.group_id = admin_group.id
   ORDER BY
     admin.created_at
   `
