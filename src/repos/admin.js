@@ -20,16 +20,41 @@ function getAdmins(db) {
     steam_user.steam_id,
     steam_user.avatar,
     COALESCE(profile.name, steam_user.name) AS name,
-    admin.title,
-    admin.description
+    admin.group_id,
+    admin.division_id,
+    division.name AS division_name
   FROM
     admin
   JOIN steam_user ON
     admin.steam_id = steam_user.steam_id
   LEFT JOIN profile ON
     steam_user.steam_id = profile.steam_id
+  JOIN division ON
+    admin.division_id =  division.id
   ORDER BY
     admin.created_at
+  `
+
+  return db.query(select).then(result => {
+    return result.rows
+  })
+}
+
+function getDivisionAdmins(db, id) {
+  var select = sql`
+  SELECT
+    steam_user.steam_id,
+    steam_user.avatar,
+    COALESCE(profile.name, steam_user.name) AS name,
+    admin.group_id,
+    admin.division_id
+  FROM
+    admin
+  JOIN steam_user ON
+    admin.steam_id = steam_user.steam_id
+  LEFT JOIN profile ON
+    steam_user.steam_id = profile.steam_id
+  WHERE admin.division_id = ${id}
   `
 
   return db.query(select).then(result => {
@@ -40,6 +65,7 @@ function getAdmins(db) {
 module.exports = db => {
   return {
     isAdmin: isAdmin.bind(null, db),
-    getAdmins: getAdmins.bind(null, db)
+    getAdmins: getAdmins.bind(null, db),
+    getDivisionAdmins: getDivisionAdmins.bind(null, db)
   }
 }

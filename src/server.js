@@ -54,13 +54,14 @@ var indexPages = require('./pages/index')(templates, path.join(__dirname, 'asset
 var playerPages = require('./pages/players')(templates, season, division, player, steam_user)
 var profilePages = require('./pages/profile')(templates, steam_user, profile, team_player, vouch, steamId)
 var seasonPages = require('./pages/seasons')(templates, season)
-var divisionPages = require('./pages/divisions')(templates, season, division)
+var divisionPages = require('./pages/divisions')(templates, season, division, admin)
 var seriesPages = require('./pages/series')(templates, season, team, series, pairings)
 var teamPages = require('./pages/teams')(templates, season, team)
 var registrationPages = require('./pages/registration')(
   templates, season, division, steam_user, team_player, player, role, player_role, mmr, profile)
 var rosterPages = require('./pages/roster')(templates, season, team, team_player, series)
 var rolePages = require('./pages/roles')(templates, role)
+var adminPages = require('./pages/admins')(templates, admin)
 
 // API routes
 // none currently
@@ -199,6 +200,8 @@ app.get(rolePages.edit.route, rolePages.edit.handler)
 
 app.post(rolePages.post.route, rolePages.post.handler)
 app.post(rolePages.remove.route, rolePages.remove.handler)
+
+app.get(adminPages.list.route, adminPages.list.handler)
 
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))
