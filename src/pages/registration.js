@@ -44,7 +44,6 @@ function view(templates, season, division, steam_user, player, role, player_role
                   }
                   return acc
                 }, {})
-                console.dir(prefs)
                 return templates.registration.edit({
                   user: req.user,
                   steamUser: steamUser,
