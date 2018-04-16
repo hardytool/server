@@ -1,7 +1,7 @@
 extends ../components/base.pug
 
 block title
-  title #{title} : Must display MMR
+  title #{title} : Must have a calibrated medal
 
 block content
   div.columns
@@ -9,12 +9,12 @@ block content
       h3.title.is-3.has-icon
         span.icon.is-medium
           i.fa.fa-exclamation-triangle
-        span Must display MMR
+        span Must have a calibrated medal
   div.columns
     div.column
       if error
         span= error
       else
-        div You must display your MMR to be able to register.
-        div If you've just recently displayed your MMR, please try again later.
-        div Please contact an admin if you believe this isn't working properly.
+        div You must have a medal to be eligible for self-registration.
+        div If you've just recently calibrated your medal, please try again later.
+        div If you do not have a medal, please contact a division admin for assistance with registration.

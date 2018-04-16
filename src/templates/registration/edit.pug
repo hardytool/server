@@ -45,6 +45,19 @@ block content
             p.control
               textarea.textarea#statement(name='statement' placeholder='Enter your player statement here - limited to 500 characters' maxlength='500')= player ? player.statement : ''
             p.help Please be sure to mention other leagues/divisions you'll be participating in.
+          div.box
+            h3.title.is-5 Comfort/preference
+            div.field
+              each role in roles
+                label.label= role.name
+                p.control
+                  each i in [1,2,3,4,5]
+                    label.radio
+                      if ranks[role.id] === i
+                        input(value=i type='radio' name=role.id id=role.id checked)
+                      else
+                        input(value=i type='radio' name=role.id id=role.id)
+                      span &nbsp;#{i}
           div.field
             label.label Willing to captain?:
             p.control

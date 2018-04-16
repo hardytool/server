@@ -14,6 +14,7 @@ block content
         thead
           tr
             th Name
+            th Start Time
             th View
             th Register
             if user && user.isAdmin
@@ -22,6 +23,7 @@ block content
           each division in divisions
             tr
               td= division.name
+              td= division.start_time
               td
                 a(href='/divisions/' + division.id) view
               td

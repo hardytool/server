@@ -14,12 +14,14 @@ block content
         thead
           tr
             th Name
+            th Start Time
             th Register
             th Registered?
         tbody
           each division in divisions
             tr
               td= division.name
+              td= division.start_time
               td
                 a(href='/seasons/' + season.id + '/divisions/' + division.id + '/register') register
               td

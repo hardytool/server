@@ -5,7 +5,9 @@ function getDivisions(db, criteria) {
   SELECT
     division.id,
     division.name,
-    division.active
+    division.active,
+    division.discord_url,
+    division.start_time
   FROM
     division
   WHERE
@@ -33,7 +35,9 @@ function getDivision(db, id) {
   SELECT
     division.id,
     division.name,
-    division.active
+    division.active,
+    division.discord_url,
+    division.start_time
   FROM
     division
   WHERE
@@ -50,19 +54,27 @@ function saveDivision(db, division) {
     division(
       id,
       name,
-      active
+      active,
+      discord_url,
+      start_time
     ) VALUES (
       ${division.id},
       ${division.name},
-      ${division.active}
+      ${division.active},
+      ${division.discord_url},
+      ${division.start_time}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
       name,
-      active
+      active,
+      discord_url,
+      start_time
     ) = (
       ${division.name},
-      ${division.active}
+      ${division.active},
+      ${division.discord_url},
+      ${division.start_time}
     )
   `
   return db.query(upsert)

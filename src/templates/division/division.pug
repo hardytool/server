@@ -9,7 +9,7 @@ block content
       h3.title.is-3.has-icon
         span.icon.is-medium
           i.fas.fa-list
-        span &nbsp;#{division.name}
+        span #{division.name}
       if division.start_time || division.discord_url
         h4.title
           span Useful Information
@@ -21,6 +21,8 @@ block content
           strong Discord URL
           p
             a(href='https://discord.gg/' + division.discord_url) Invite Link
+  div.columns
+    div.column
       h4.title
         span Active Season
       table.table.is-striped.is-middle-aligned.is-fullwidth
