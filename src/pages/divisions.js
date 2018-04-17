@@ -14,17 +14,20 @@ function list(templates, division, req, res) {
   })
 }
 
-function nav(templates, season, division, req, res) {
+function nav(templates, season, division, admin, req, res) {
   var division_id = req.params.division_id
   division.getDivision(division_id).then(division => {
-    return season.getActiveSeason().then(seasons => {
-      var html = templates.division.division({
-        user: req.user,
-        division: division,
-        seasons: seasons
-      })
+    return admin.getDivisionAdmins(division_id).then(divisionAdmins => {
+      return season.getActiveSeason().then(seasons => {
+        var html = templates.division.division({
+          user: req.user,
+          division: division,
+          seasons: seasons,
+          divisionAdmins: divisionAdmins
+        })
 
-      res.send(html)
+        res.send(html)
+      })
     })
   }).catch(err => {
     console.error(err)
@@ -119,7 +122,7 @@ function remove(division, req, res) {
   })
 }
 
-module.exports = (templates, season, division) => {
+module.exports = (templates, season, division, admin) => {
   return {
     list: {
       route: '/divisions',
@@ -127,7 +130,7 @@ module.exports = (templates, season, division) => {
     },
     nav: {
       route: '/divisions/:division_id',
-      handler: nav.bind(null, templates, season, division)
+      handler: nav.bind(null, templates, season, division, admin)
     },
     all_seasons: {
       route: '/divisions/:division_id/all_seasons',

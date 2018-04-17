@@ -1,0 +1,40 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : #{verb} Admin Group #{selected_admin_group ? selected_admin_group.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fas.fa-edit
+        span #{verb} Admin Group #{selected_admin_group ? selected_admin_group.name : ''}
+      div
+        form(method='post' action='/admin_groups/edit')
+          if selected_admin_group
+            input(type='hidden' name='id' value=selected_admin_group.id)
+          div.field
+            label.label(for='name') Name:
+            p.control
+              input.input(id='name' type='text' name='name' placeholder='Name' value=(selected_admin_group ? selected_admin_group.name : '') required)
+          div.field
+            label.label(for='selected_admin_group.owner_id') Owner ID:
+            if selected_admin_group
+              p.control
+                select.form-control.input-lg(name='owner_id')
+                  option(value='', selected= true) No Owner
+                  each admin_group in admin_groups
+                    option(value=admin_group.id, selected= admin_group.id == selected_admin_group.owner_id) #{admin_group.name}
+            else
+              p.control
+                select.form-control.input-lg(name='owner_id')
+                  option(value='', selected= true) No Owner
+                  each admin_group in admin_groups
+                    option(value=admin_group.id) #{admin_group.name}
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            if selected_admin_group
+              p.control
+                button.button.is-danger(formaction='/admin_groups/delete') Delete

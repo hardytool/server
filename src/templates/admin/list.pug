@@ -1,0 +1,37 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : Admin List
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fas.fa-list
+        span Admins
+      table.table.is-striped.is-middle-aligned.is-fullwidth
+        thead
+          tr
+            th Name
+            th Avatar
+            th Admin Group
+            th Division
+            if user && user.isAdmin
+              th Edit
+        tbody
+          each admin in admins
+            tr
+              td= admin.name
+              td
+                figure.image.is-32x32.hide-overflow
+                  img(src=admin.avatar)
+              td= admin.admin_group_name
+              td
+                a(href='/divisions/' + admin.division_id) #{admin.division_name}
+              if user && user.isAdmin
+                td
+                  a(href='/admins/' + admin.steam_id + '/edit') edit
+      if user && user.isAdmin
+        a(href='/admins/create')
+          button.button.is-primary Add Admin

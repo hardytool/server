@@ -10,7 +10,7 @@ block content
         span.icon.is-medium
           i.fas.fa-list
         span #{division.name}
-      if division.start_time || division.discord_url
+      if division.start_time || division.discord_url || divisionAdmins
         h4.title
           span Useful Information
         if division.start_time
@@ -21,6 +21,22 @@ block content
           strong Discord URL
           p
             a(href='https://discord.gg/' + division.discord_url) Invite Link
+        if divisionAdmins
+          strong Division Admins
+  div.columns
+      if divisionAdmins
+        each divisionAdmin in divisionAdmins
+          div.column
+            div.card.box
+              div.media
+                div.media-left
+                  figure.image.is-48x48
+                    a(href='/profile/' + divisionAdmin.steam_id title=divisionAdmin.name)
+                      img(src=divisionAdmin.avatar)
+                div.content
+                  p.title.is-4
+                    span= divisionAdmin.name
+
   div.columns
     div.column
       h4.title
