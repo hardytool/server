@@ -1,5 +1,25 @@
 var shortid = require('shortid')
 
+function create(templates, division, admin_group, req, res) {
+  if (!req.user || !req.user.isAdmin) {
+    res.sendStatus(403)
+    return
+  }
+
+  division.getDivisions().then(divisions => {
+    admin_group.getAdminGroups().then(admin_groups => {
+      var html = templates.admin.edit({
+        user: req.user,
+        verb: 'Create',
+        divisions: divisions,
+        admin_groups: admin_groups
+      })
+
+      res.send(html)
+    })
+  })
+}
+
 function list(templates, admin, req, res) {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
@@ -19,7 +39,7 @@ function list(templates, admin, req, res) {
   })
 }
 
-function edit(templates, admin, division, req, res) {
+function edit(templates, admin, division, admin_group, req, res) {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
     return
@@ -29,19 +49,21 @@ function edit(templates, admin, division, req, res) {
 
   admin.getAdmins({ admin_id: admin_id }).then(([admin]) => {
     division.getDivisions().then(divisions => {
+      admin_group.getAdminGroups().then((admin_groups) => {
         var html = templates.admin.edit({
           user: req.user,
           verb: 'Edit',
           admin: admin,
-          divisions: divisions
+          divisions: divisions,
+          admin_groups: admin_groups
         })
-
         res.send(html)
       }).catch(err => {
         console.error(err)
         res.sendStatus(500)
       })
     })
+  })
 }
 
 function post(admin, req, res) {
@@ -62,15 +84,19 @@ function post(admin, req, res) {
   })
 }
 
-module.exports = (templates, admin, division) => {
+module.exports = (templates, admin, division, admin_group) => {
   return {
+    create: {
+      route: '/admins/create',
+      handler: create.bind(null, templates, division, admin_group)
+    },
     list: {
       route: '/admins',
       handler: list.bind(null, templates, admin)
     },
     edit: {
       route: '/admins/:admin_id/edit',
-      handler: edit.bind(null, templates, admin, division)
+      handler: edit.bind(null, templates, admin, division, admin_group)
     },
     post: {
       route: '/admins/edit',

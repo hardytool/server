@@ -32,3 +32,6 @@ block content
               if user && user.isAdmin
                 td
                   a(href='/admins/' + admin.steam_id + '/edit') edit
+      if user && user.isAdmin
+        a(href='/admins/create')
+          button.button.is-primary Add Admin

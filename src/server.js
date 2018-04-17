@@ -62,7 +62,7 @@ var registrationPages = require('./pages/registration')(
   templates, season, division, steam_user, team_player, player, role, player_role, mmr, profile)
 var rosterPages = require('./pages/roster')(templates, season, team, team_player, series)
 var rolePages = require('./pages/roles')(templates, role)
-var adminPages = require('./pages/admins')(templates, admin, division)
+var adminPages = require('./pages/admins')(templates, admin, division, admin_group)
 var adminGroupPages = require('./pages/admin_groups')(templates, admin_group)
 
 // API routes
@@ -204,6 +204,7 @@ app.post(rolePages.post.route, rolePages.post.handler)
 app.post(rolePages.remove.route, rolePages.remove.handler)
 
 app.get(adminPages.list.route, adminPages.list.handler)
+app.get(adminPages.create.route, adminPages.create.handler)
 app.get(adminPages.edit.route, adminPages.edit.handler)
 
 app.post(adminPages.post.route, adminPages.post.handler)
