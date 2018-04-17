@@ -1,0 +1,30 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : #{verb} Admin #{admin ? admin.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fas.fa-edit
+        span #{verb} Admin #{admin ? admin.name : ''}
+      div
+        form(method='post' action='/admins/edit')
+          if admin
+            input(type='hidden' name='steam_id' value=admin.steam_id)
+            input(type='hidden' name='group_id' value=admin.group_id)
+          div.field
+            label.label(for='admin.division_id') Division:
+            p.control
+              select.form-control.input-lg(name='division_id')
+                option(value='0', selected= true) -- Select --
+                each division in divisions
+                  option(value=division.id, selected= admin.division_id == division.id) #{division.name}
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            if role
+              p.control
+                button.button.is-danger(formaction='/admins/delete') Delete

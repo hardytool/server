@@ -27,6 +27,7 @@ var pairings = require('swiss-pairing')({ maxPerRound: 2 })
 
 // repositories
 var admin = require('./repos/admin')(pool)
+var admin_group = require('./repos/admin_group')(pool)
 var division = require('./repos/division')(pool)
 var migration = require('./repos/migration')(pool)
 var player = require('./repos/player')(pool)
@@ -61,7 +62,8 @@ var registrationPages = require('./pages/registration')(
   templates, season, division, steam_user, team_player, player, role, player_role, mmr, profile)
 var rosterPages = require('./pages/roster')(templates, season, team, team_player, series)
 var rolePages = require('./pages/roles')(templates, role)
-var adminPages = require('./pages/admins')(templates, admin)
+var adminPages = require('./pages/admins')(templates, admin, division)
+var adminGroupPages = require('./pages/admin_groups')(templates, admin_group)
 
 // API routes
 // none currently
@@ -202,6 +204,16 @@ app.post(rolePages.post.route, rolePages.post.handler)
 app.post(rolePages.remove.route, rolePages.remove.handler)
 
 app.get(adminPages.list.route, adminPages.list.handler)
+app.get(adminPages.edit.route, adminPages.edit.handler)
+
+app.post(adminPages.post.route, adminPages.post.handler)
+
+app.get(adminGroupPages.list.route, adminGroupPages.list.handler)
+app.get(adminGroupPages.create.route, adminGroupPages.create.handler)
+app.get(adminGroupPages.edit.route, adminGroupPages.edit.handler)
+
+app.post(adminGroupPages.post.route, adminGroupPages.post.handler)
+app.post(adminGroupPages.remove.route, adminGroupPages.remove.handler)
 
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))

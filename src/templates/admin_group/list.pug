@@ -1,0 +1,32 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : Admin Group List
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fas.fa-list
+        span Admin Groups
+      table.table.is-striped.is-middle-aligned.is-fullwidth
+        thead
+          tr
+            th ID
+            th Name
+            th Owner ID
+            if user && user.isAdmin
+              th Edit
+        tbody
+          each admin_group in admin_groups
+            tr
+              td= admin_group.id
+              td= admin_group.name
+              td= admin_group.owner_id
+              if user && user.isAdmin
+                td
+                  a(href='/admin_groups/' + admin_group.id + '/edit') edit
+      if user && user.isAdmin
+        a(href='/admin_groups/create')
+          button.button.is-primary Add Admin Group

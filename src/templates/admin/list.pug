@@ -17,6 +17,8 @@ block content
             th Avatar
             th Admin Group
             th Division
+            if user && user.isAdmin
+              th Edit
         tbody
           each admin in admins
             tr
@@ -27,3 +29,6 @@ block content
               td= admin.admin_group_name
               td
                 a(href='/divisions/' + admin.division_id) #{admin.division_name}
+              if user && user.isAdmin
+                td
+                  a(href='/admins/' + admin.steam_id + '/edit') edit

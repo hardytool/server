@@ -14,7 +14,26 @@ function isAdmin(db, id) {
   })
 }
 
-function getAdmins(db) {
+function saveAdmin(db, admin) {
+  var upsert = sql`
+  INSERT INTO admin (
+    steam_id,
+    group_id,
+    division_id
+  ) VALUES (
+    ${admin.steam_id},
+    ${admin.group_id},
+    ${admin.division_id}
+  ) ON CONFLICT (
+    steam_id
+  ) DO UPDATE SET
+    group_id = ${admin.group_id},
+    division_id = ${admin.division_id}
+  `
+  return db.query(upsert)
+}
+
+function getAdmins(db, criteria) {
   var select = sql`
   SELECT
     steam_user.steam_id,
@@ -30,13 +49,21 @@ function getAdmins(db) {
     admin.steam_id = steam_user.steam_id
   LEFT JOIN profile ON
     steam_user.steam_id = profile.steam_id
-  JOIN division ON
+  LEFT JOIN division ON
     admin.division_id =  division.id
-  JOIN admin_group ON
+  LEFT JOIN admin_group ON
     admin.group_id = admin_group.id
   ORDER BY
     admin.created_at
   `
+  if (criteria) {
+    if (criteria.steam_id) {
+      select = sql.join([select, sql`
+      AND
+        steam_user.steam_id = ${criteria.steam_id}
+      `])
+    }
+  }
 
   return db.query(select).then(result => {
     return result.rows
@@ -67,6 +94,7 @@ function getDivisionAdmins(db, id) {
 
 module.exports = db => {
   return {
+    saveAdmin: saveAdmin.bind(null, db),
     isAdmin: isAdmin.bind(null, db),
     getAdmins: getAdmins.bind(null, db),
     getDivisionAdmins: getDivisionAdmins.bind(null, db)
