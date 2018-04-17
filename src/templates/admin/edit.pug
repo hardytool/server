@@ -24,7 +24,7 @@ block content
               label.label(for='admin.division_id') Division:
               p.control
                 select.form-control.input-lg(name='division_id')
-                  option(value='0', selected= true) -- Select --
+                  option(value='', selected= true) No Division
                   each division in divisions
                     option(value=division.id, selected= admin.division_id == division.id) #{division.name}
           else
@@ -32,7 +32,7 @@ block content
               label.label(for='admin.division_id') Division:
               p.control
                 select.form-control.input-lg(name='division_id')
-                  option(value='0', selected= true) -- Select --
+                  option(value='', selected= true) No Division
                   each division in divisions
                     option(value=division.id) #{division.name}
           div.field
@@ -40,13 +40,13 @@ block content
             if admin
               p.control
                 select.form-control.input-lg(name='group_id')
-                  option(value='0', selected= true) -- Select --
+                  option(value='', selected= true) -- Select --
                   each admin_group in admin_groups
                     option(value=admin_group.id, selected= admin_group.id == admin.group_id) #{admin_group.name}
             else
               p.control
                 select.form-control.input-lg(name='group_id')
-                  option(value='0', selected= true) -- Select --
+                  option(value='', selected= true) -- Select --
                   each admin_group in admin_groups
                     option(value=admin_group.id) #{admin_group.name}
           div.field.is-grouped

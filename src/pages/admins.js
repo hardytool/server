@@ -7,7 +7,7 @@ function create(templates, division, admin_group, req, res) {
   }
 
   division.getDivisions().then(divisions => {
-    admin_group.getAdminGroups().then(admin_groups => {
+    return admin_group.getAdminGroups().then(admin_groups => {
       var html = templates.admin.edit({
         user: req.user,
         verb: 'Create',
@@ -45,11 +45,11 @@ function edit(templates, admin, division, admin_group, req, res) {
     return
   }
 
-  var admin_id = req.params.admin_id
+  var steam_id = req.params.admin_id
 
-  admin.getAdmins({ admin_id: admin_id }).then(([admin]) => {
-    division.getDivisions().then(divisions => {
-      admin_group.getAdminGroups().then((admin_groups) => {
+  admin.getAdmins({ steam_id: steam_id }).then(([admin]) => {
+    return division.getDivisions().then(divisions => {
+      return admin_group.getAdminGroups().then((admin_groups) => {
         var html = templates.admin.edit({
           user: req.user,
           verb: 'Edit',
@@ -72,7 +72,7 @@ function post(admin, req, res) {
     return
   }
 
-  if (req.body.division_id == '0') {
+  if (req.body.division_id == '') {
     req.body.division_id = null
   }
 

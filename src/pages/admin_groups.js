@@ -44,7 +44,7 @@ function edit(templates, admin_group, req, res) {
   var admin_group_id = req.params.admin_group_id
 
   admin_group.getAdminGroups({ admin_group_id: admin_group_id }).then(([selected_admin_group]) => {
-    admin_group.getAdminGroupNames().then((admin_groups) => {
+    return admin_group.getAdminGroupNames().then((admin_groups) => {
       var html = templates.admin_group.edit({
         user: req.user,
         verb: 'Edit',
@@ -70,7 +70,7 @@ function post(admin_group, req, res) {
   var r = req.body
   r.id = id
 
-  if (req.body.owner_id == '0') {
+  if (req.body.owner_id == '') {
     req.body.owner_id = null
   }
 

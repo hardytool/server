@@ -44,7 +44,7 @@ function getAdminGroups(db, criteria) {
 }
 
 function getAdminGroupNames(db, criteria) {
-	var select = sql`
+  var select = sql`
   SELECT
     admin_group.id,
     admin_group.name
@@ -68,7 +68,7 @@ function deleteAdminGroup(db, admin_group_id) {
 
 module.exports = db => {
   return {
-  	saveAdminGroup: saveAdminGroup.bind(null, db),
+    saveAdminGroup: saveAdminGroup.bind(null, db),
     getAdminGroups: getAdminGroups.bind(null, db),
     getAdminGroupNames: getAdminGroupNames.bind(null, db),
     deleteAdminGroup: deleteAdminGroup.bind(null, db)

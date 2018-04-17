@@ -50,11 +50,11 @@ function getAdmins(db, criteria) {
   LEFT JOIN profile ON
     steam_user.steam_id = profile.steam_id
   LEFT JOIN division ON
-    admin.division_id =  division.id
+    admin.division_id = division.id
   LEFT JOIN admin_group ON
     admin.group_id = admin_group.id
-  ORDER BY
-    admin.created_at
+  WHERE
+    1 = 1
   `
   if (criteria) {
     if (criteria.steam_id) {

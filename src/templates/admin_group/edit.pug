@@ -23,13 +23,13 @@ block content
             if selected_admin_group
               p.control
                 select.form-control.input-lg(name='owner_id')
-                  option(value='0', selected= true) -- Select --
+                  option(value='', selected= true) No Owner
                   each admin_group in admin_groups
                     option(value=admin_group.id, selected= admin_group.id == selected_admin_group.owner_id) #{admin_group.name}
             else
               p.control
                 select.form-control.input-lg(name='owner_id')
-                  option(value='0', selected= true) -- Select --
+                  option(value='', selected= true) No Owner
                   each admin_group in admin_groups
                     option(value=admin_group.id) #{admin_group.name}
           div.field.is-grouped

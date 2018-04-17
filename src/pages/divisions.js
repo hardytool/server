@@ -17,7 +17,7 @@ function list(templates, division, req, res) {
 function nav(templates, season, division, admin, req, res) {
   var division_id = req.params.division_id
   division.getDivision(division_id).then(division => {
-    admin.getDivisionAdmins(division_id).then(divisionAdmins => {
+    return admin.getDivisionAdmins(division_id).then(divisionAdmins => {
       return season.getActiveSeason().then(seasons => {
         var html = templates.division.division({
           user: req.user,
