@@ -44,7 +44,6 @@ function view(templates, season, division, steam_user, player, role, player_role
                   }
                   return acc
                 }, {})
-                console.dir(prefs)
                 return templates.registration.edit({
                   user: req.user,
                   steamUser: steamUser,
@@ -107,10 +106,10 @@ function view(templates, season, division, steam_user, player, role, player_role
   })
 }
 
-function shortcut(templates, season, division, steam_user, player, mmr, profile, req, res) {
+function shortcut(templates, season, division, steam_user, player, role, player_role, mmr, profile, req, res) {
   season.getActiveSeason().then(_season => {
     req.params.season_id = _season.id
-    return view(templates, season, division, steam_user, player, mmr, profile, req, res)
+    return view(templates, season, division, steam_user, player, role, player_role, mmr, profile, req, res)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -263,7 +262,7 @@ module.exports = (templates, season, division, steam_user, team_player, player, 
       },
       shortcut: {
         route: '/divisions/:division_id/register',
-        handler: shortcut.bind(null, templates, season, division, steam_user, player, mmr, profile)
+        handler: shortcut.bind(null, templates, season, division, steam_user, player, role, player_role, mmr, profile)
       },
       directory: {
         route: '/seasons/:season_id/register',
