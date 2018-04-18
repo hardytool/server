@@ -18,24 +18,26 @@ block content
                   i.fas.fa-lock
                 span admin
             else if vouched
-              span.has-text-success.has-icon
-                span.icon
-                  i.far.fa-check-circle
-                span vouched
-                if voucher
-                  span &nbsp;by&nbsp;
-                  span
-                    a.has-text-success(href='/profile/' + voucher.steam_id)= ' ' + voucher.name
+              if user && user.isAdmin
+                span.has-text-success.has-icon
+                  span.icon
+                    i.far.fa-check-circle
+                  span vouched
+                  if voucher
+                    span &nbsp;by&nbsp;
+                    span
+                      a.has-text-success(href='/profile/' + voucher.steam_id)= ' ' + voucher.name
             else if has_played
               span.has-text-success.has-icon
                 span.icon
                   i.fa.fa-flask
                 span test subject
             else
-              span.has-text-danger.has-icon
-                span.icon
-                  i.far.fa-times-circle
-                span not vouched
+              if user && user.isAdmin
+                span.has-text-danger.has-icon
+                  span.icon
+                    i.far.fa-times-circle
+                  span not vouched
   div.tile.is-ancestor
     div.tile.is-parent
       article.tile.is-child.notification
