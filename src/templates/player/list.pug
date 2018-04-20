@@ -42,9 +42,9 @@ block content
               th Will Captain?
               th Captain Approved
             th Statement
-            th Vouched?
-            th Draftable?
             if user && user.isAdmin
+              th Vouched?
+              th Draftable?
               th Edit
         tbody
           - var count = 0
@@ -76,21 +76,21 @@ block content
                     span.icon.has-text-danger.has-icon
                       i.far.fa-lg.fa-times-circle
               td.tiny-text= player.statement
-              td
-                if player.is_vouched || player.has_played
-                  span.icon.has-text-success.has-icon
-                    i.far.fa-lg.fa-check-circle
-                else
-                  span.icon.has-text-danger.has-icon
-                    i.far.fa-lg.fa-times-circle
-              td
-                if player.is_draftable
-                  span.icon.has-text-success.has-icon
-                    i.far.fa-lg.fa-check-circle
-                else
-                  span.icon.has-text-danger.has-icon
-                    i.far.fa-lg.fa-times-circle
               if user && user.isAdmin
+                td
+                  if player.is_vouched || player.has_played
+                    span.icon.has-text-success.has-icon
+                      i.far.fa-lg.fa-check-circle
+                  else
+                    span.icon.has-text-danger.has-icon
+                      i.far.fa-lg.fa-times-circle
+                td
+                  if player.is_draftable
+                    span.icon.has-text-success.has-icon
+                      i.far.fa-lg.fa-check-circle
+                  else
+                    span.icon.has-text-danger.has-icon
+                      i.far.fa-lg.fa-times-circle
                 td
                   a(href='/seasons/' + season.id + '/divisions/' + division.id + '/players/' + player.id + '/edit') edit
   +buttons
