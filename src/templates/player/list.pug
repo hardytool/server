@@ -45,7 +45,6 @@ block content
             if user && user.isAdmin
               th Vouched?
               th Draftable?
-            if user && user.isAdmin
               th Edit
         tbody
           - var count = 0
@@ -92,7 +91,6 @@ block content
                   else
                     span.icon.has-text-danger.has-icon
                       i.far.fa-lg.fa-times-circle
-              if user && user.isAdmin
                 td
                   a(href='/seasons/' + season.id + '/divisions/' + division.id + '/players/' + player.id + '/edit') edit
   +buttons
