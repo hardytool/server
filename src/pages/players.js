@@ -195,11 +195,6 @@ function remove(player, req, res) {
 }
 
 function getCSV(player, req, res) {
-  if (!req.user) {
-    res.sendStatus(403)
-    return
-  }
-
   var isCaptains = req.query.captains === '1' ? true : false
   var hideCaptains = req.query.show_captains === '1' ? false : true
   var byMMR = req.query.by_mmr === '1' ? true : false
