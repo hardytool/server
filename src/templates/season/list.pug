@@ -27,7 +27,7 @@ block content
                 if season.registration_open
                   a(href='/seasons/' + season.id + '/register') register
                 else
-                  span &nbsp;Closed
+                  span closed
               if user && user.isAdmin
                 td
                   a(href='/seasons/' + season.id + '/edit') edit
