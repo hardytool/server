@@ -209,6 +209,7 @@ function getCSV(player, req, res) {
   }).then(players => {
     return csv.toCSV(players).then(csv => {
       res.setHeader('Content-Type', 'text/csv')
+      res.setHeader('Content-Disposition', 'attachment; filename="draftsheet.csv"')
       res.end(csv)
     })
   }).catch(err => {
