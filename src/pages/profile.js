@@ -84,9 +84,7 @@ function post(steam_user, profile, req, res) {
   p.adjusted_mmr = Number.parseInt(req.body.adjusted_mmr)
   p.adjusted_rank = Number.parseInt(req.body.adjusted_rank)
   p.name_locked = req.body.name_locked === 'on'
-
-  console.log(req.body)
-
+  
   steam_user.getSteamUser(p.steam_id).then(steamUser => {
     if (!(req.user.isAdmin || req.user.steamId === steamUser.steam_id)) {
       res.sendStatus(403)
