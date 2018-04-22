@@ -57,10 +57,10 @@ var profilePages = require('./pages/profile')(templates, steam_user, profile, te
 var seasonPages = require('./pages/seasons')(templates, season)
 var divisionPages = require('./pages/divisions')(templates, season, division, admin)
 var seriesPages = require('./pages/series')(templates, season, team, series, pairings)
-var teamPages = require('./pages/teams')(templates, season, team)
+var teamPages = require('./pages/teams')(templates, season, division, team)
 var registrationPages = require('./pages/registration')(
   templates, season, division, steam_user, team_player, player, role, player_role, mmr, profile)
-var rosterPages = require('./pages/roster')(templates, season, team, team_player, series)
+var rosterPages = require('./pages/roster')(templates, season, division, team, team_player, series)
 var rolePages = require('./pages/roles')(templates, role)
 var adminPages = require('./pages/admins')(templates, admin, division, admin_group)
 var adminGroupPages = require('./pages/admin_groups')(templates, admin_group)

@@ -38,6 +38,7 @@ block content
                 nav.level.is-mobile
                   div.level-left
                     form.level-item
+                      input(type='hidden' name='division_id' value=division.id)
                       input(type='hidden' name='season_id' value=season.id)
                       input(type='hidden' name='team_id' value=team.id)
                       input(type='hidden' name='id' value=captain.id)
@@ -70,6 +71,7 @@ block content
               if user && user.isAdmin
                 td
                   form
+                    input(type='hidden' name='division_id' value=division.id)
                     input(type='hidden' name='season_id' value=season.id)
                     input(type='hidden' name='team_id' value=team.id)
                     input(type='hidden' name='id' value=player.id)
@@ -77,10 +79,10 @@ block content
       if user && user.isAdmin
         div.field.is-grouped
           p.control
-            a(href='/seasons/' + season.id + '/teams/' + team.id + '/add')
+            a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + team.id + '/add')
               button.button.is-primary Add player
           p.control
-            a(href='/seasons/' + season.id + '/teams/' + team.id + '/edit')
+            a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + team.id + '/edit')
               button.button.is-primary Edit team
   div.columns
     div.column
