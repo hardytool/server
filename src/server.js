@@ -52,7 +52,7 @@ var openid = require('./api/openid')(config)
 
 // Page routes
 var indexPages = require('./pages/index')(templates, path.join(__dirname, 'assets', 'rules.md'))
-var playerPages = require('./pages/players')(templates, season, division, player, steam_user)
+var playerPages = require('./pages/players')(templates, season, division, player, player_role, steam_user)
 var profilePages = require('./pages/profile')(templates, steam_user, profile, team_player, vouch, steamId)
 var seasonPages = require('./pages/seasons')(templates, season)
 var divisionPages = require('./pages/divisions')(templates, season, division, admin)

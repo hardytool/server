@@ -194,7 +194,7 @@ function remove(player, req, res) {
   })
 }
 
-function getCSV(player, req, res) {
+function getCSV(player, player_role, req, res) {
   var isCaptains = req.query.captains === '1' ? true : false
   var hideCaptains = req.query.show_captains === '1' ? false : true
   var byMMR = req.query.by_mmr === '1' ? true : false
@@ -207,10 +207,22 @@ function getCSV(player, req, res) {
   }, {
     by_mmr: isCaptains || byMMR
   }).then(players => {
-    return csv.toCSV(players).then(csv => {
-      res.setHeader('Content-Type', 'text/csv')
-      res.setHeader('Content-Disposition', 'attachment; filename="draftsheet.csv"')
-      res.end(csv)
+    players.forEach(function(player, index) {
+      return player_role.getRoleRanks({player_id: player.id}).then(player_roles => {
+        let rolesArray = player_roles.map(item => (item['role_id'] + ":" + item['rank']));
+        players[index]['roles'] = rolesArray
+
+        //remove ID from the CSV
+        delete(players[index]['id'])
+
+        if (index === players.length - 1) {
+          return csv.toCSV(players).then(csv => {
+            res.setHeader('Content-Type', 'text/csv')
+            res.setHeader('Content-Disposition', 'attachment; filename="draftsheet.csv"')
+            res.end(csv)
+          })
+        }
+      })
     })
   }).catch(err => {
     console.error(err)
@@ -231,7 +243,7 @@ function currentPlayers(func, templates, season, player, req, res) {
   })
 }
 
-module.exports = (templates, season, division, player, steam_user) => {
+module.exports = (templates, season, division, player, player_role, steam_user) => {
   return {
     list: {
       route: '/seasons/:season_id/divisions/:division_id/players',
@@ -263,7 +275,7 @@ module.exports = (templates, season, division, player, steam_user) => {
     },
     csv: {
       route: '/seasons/:season_id/divisions/:division_id/draftsheet',
-      handler: getCSV.bind(null, player)
+      handler: getCSV.bind(null, player, player_role)
     }
   }
 }

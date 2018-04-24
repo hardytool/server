@@ -307,6 +307,7 @@ function unregisterPlayer(db, seasonId, divisionId, steamId) {
 function getDraftSheet(db, criteria, sort) {
   var select = sql`
   SELECT
+    player.id,
     COALESCE(profile.name, steam_user.name) AS name,
     steam_user.solo_mmr,
     steam_user.party_mmr,
