@@ -12,6 +12,7 @@ block content
         span #{verb} Role #{role ? role.name : ''}
       div
         form(method='post' action='/roles/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
           if role
             input(type='hidden' name='id' value=role.id)
           div.field

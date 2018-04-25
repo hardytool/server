@@ -12,6 +12,7 @@ block content
         span #{verb} Season #{season ? season.number : ''}
       div
         form(method='post' action='/seasons/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
           if season
             input(type='hidden' name='id' value=season.id)
           div.field

@@ -7,6 +7,7 @@ var path = require('path')
 var http = require('http')
 var https = require('https')
 var express = require('express')
+var helmet = require('helmet')
 var csurf = require('csurf')
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
@@ -108,6 +109,11 @@ passport.use(new passportSteam.Strategy({
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser(config.server.secret))
+app.use(helmet({
+  frameguard: {
+    action: 'deny'
+  }
+}))
 app.use(csrfMiddleware)
 app.use(session({
   store: new RedisStore({
