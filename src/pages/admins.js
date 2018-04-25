@@ -55,7 +55,8 @@ function edit(templates, admin, division, admin_group, req, res) {
           verb: 'Edit',
           admin: admin,
           divisions: divisions,
-          admin_groups: admin_groups
+          admin_groups: admin_groups,
+          csrfToken: req.csrfToken()
         })
         res.send(html)
       }).catch(err => {
