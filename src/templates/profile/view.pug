@@ -101,7 +101,7 @@ block content
                 td= team.division_name
                 td= team.season_name
                 td
-                  a(href='/seasons/' + team.season_id + '/teams/' + team.id)= team.name
+                  a(href='/seasons/' + team.season_id + '/divisions/' + team.division_id + '/teams/' + team.id)= team.name
                 td
                   figure.image.is-team-logo.hide-overflow
                     img(src=team.logo)
