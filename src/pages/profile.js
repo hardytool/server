@@ -60,7 +60,8 @@ function edit(templates, steam_user, profile, req, res) {
       var html = templates.profile.edit({
         user: req.user,
         steamUser: steamUser,
-        profile: profile
+        profile: profile,
+        csrfToken: req.csrfToken()
       })
       res.send(html)
     })

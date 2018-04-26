@@ -65,7 +65,8 @@ function add(templates, season, team, team_player, req, res) {
           user: req.user,
           season: season,
           team: team,
-          players: players
+          players: players,
+          csrfToken: req.csrfToken()
         })
 
         res.send(html)

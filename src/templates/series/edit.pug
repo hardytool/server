@@ -12,6 +12,7 @@ block content
         span &nbsp;#{verb} Series #{series ? ' - Week ' + series.round + ' - ' + series.home.name + ' v ' + series.away.name : ''}
       div
         form(method='post' action='/series/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
           if series
             input(type='hidden' name='id' value=series.id)
           input(type='hidden' name='season_id' value=season.id)

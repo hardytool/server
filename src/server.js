@@ -7,6 +7,8 @@ var path = require('path')
 var http = require('http')
 var https = require('https')
 var express = require('express')
+var helmet = require('helmet')
+var csurf = require('csurf')
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
 var session = require('express-session')
@@ -74,6 +76,10 @@ console.dir(config, { depth: null })
 
 var app = express()
 
+var csrfMiddleware = csurf({
+  cookie: true
+})
+
 passport.serializeUser((user, done) => {
   done(null, user)
 })
@@ -100,9 +106,15 @@ passport.use(new passportSteam.Strategy({
     })
   }))
 
-app.use(cookieParser(config.server.secret))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cookieParser(config.server.secret))
+app.use(helmet({
+  frameguard: {
+    action: 'deny'
+  }
+}))
+app.use(csrfMiddleware)
 app.use(session({
   store: new RedisStore({
     host: config.redis.host,
@@ -117,7 +129,6 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
-
 app.use('/assets', express.static(path.join(__dirname, 'assets')))
 
 app.get('/auth/steam', passport.authenticate('steam'))

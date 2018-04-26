@@ -61,7 +61,8 @@ function create(templates, req, res) {
 
   var html = templates.division.edit({
     user: req.user,
-    verb: 'Create'
+    verb: 'Create',
+    csrfToken: req.csrfToken()
   })
 
   res.send(html)
@@ -79,7 +80,8 @@ function edit(templates, division, req, res) {
     var html = templates.division.edit({
       user: req.user,
       verb: 'Edit',
-      division: division
+      division: division,
+      csrfToken: req.csrfToken()
     })
 
     res.send(html)

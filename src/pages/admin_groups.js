@@ -28,7 +28,8 @@ function create(templates, admin_group, req, res) {
     var html = templates.admin_group.edit({
       user: req.user,
       verb: 'Create',
-      admin_groups: admin_groups
+      admin_groups: admin_groups,
+      csrfToken: req.csrfToken()
     })
 
     res.send(html)
@@ -49,7 +50,8 @@ function edit(templates, admin_group, req, res) {
         user: req.user,
         verb: 'Edit',
         selected_admin_group: selected_admin_group,
-        admin_groups: admin_groups
+        admin_groups: admin_groups,
+        csrfToken: req.csrfToken()
       })
 
       res.send(html)

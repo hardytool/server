@@ -12,6 +12,7 @@ block content
         span &nbsp;#{verb} Team - #{season.name} #{team ? ' - ' + team.name : ''}
       div
         form(method='post' action='/teams/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
           if team
             input(type='hidden' name='id' value=team.id)
           input(type='hidden' name='season_id' value=season.id)

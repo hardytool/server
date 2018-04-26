@@ -12,6 +12,7 @@ block content
         span #{verb} Admin Group #{selected_admin_group ? selected_admin_group.name : ''}
       div
         form(method='post' action='/admin_groups/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
           if selected_admin_group
             input(type='hidden' name='id' value=selected_admin_group.id)
           div.field
