@@ -22,7 +22,8 @@ function create(templates, req, res) {
 
   var html = templates.season.edit({
     user: req.user,
-    verb: 'Create'
+    verb: 'Create',
+    csrfToken: req.csrfToken()
   })
 
   res.send(html)
@@ -40,7 +41,8 @@ function edit(templates, season, req, res) {
     var html = templates.season.edit({
       user: req.user,
       verb: 'Edit',
-      season: season
+      season: season,
+      csrfToken: req.csrfToken()
     })
 
     res.send(html)

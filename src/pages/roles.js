@@ -27,7 +27,8 @@ function create(templates, req, res) {
 
   var html = templates.role.edit({
     user: req.user,
-    verb: 'Create'
+    verb: 'Create',
+    csrfToken: req.csrfToken()
   })
 
   res.send(html)
@@ -45,7 +46,8 @@ function edit(templates, role, req, res) {
     var html = templates.role.edit({
       user: req.user,
       verb: 'Edit',
-      role: role
+      role: role,
+      csrfToken: req.csrfToken()
     })
 
     res.send(html)

@@ -72,7 +72,8 @@ function add(templates, season, division, team, team_player, req, res) {
             season: season,
             division: division,
             team: team,
-            players: players
+            players: players,
+            csrfToken: req.csrfToken()
           })
 
           res.send(html)

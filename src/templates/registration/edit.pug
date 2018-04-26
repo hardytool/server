@@ -12,6 +12,7 @@ block content
         span #{season.name} #{division.name} Registration
       div
         form(method='post' action='/register')
+          input(type='hidden' name="_csrf" value=csrfToken)
           input(type='hidden' name='season_id' value=season.id)
           input(type='hidden' name='division_id' value=division.id)
           if player

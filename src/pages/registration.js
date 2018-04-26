@@ -51,7 +51,8 @@ function view(templates, season, division, steam_user, player, role, player_role
                   season: season,
                   player: player,
                   roles: roles,
-                  ranks: prefs
+                  ranks: prefs,
+                  csrfToken: req.csrfToken()
                 })
               })
             }
@@ -85,7 +86,8 @@ function view(templates, season, division, steam_user, player, role, player_role
                     steamUser: steamUser,
                     player: profile,
                     roles: roles,
-                    ranks: []
+                    ranks: [],
+                    csrfToken: req.csrfToken()
                   })
                 })
               })

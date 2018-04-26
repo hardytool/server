@@ -12,6 +12,7 @@ block content
         span #{verb} Admin #{admin ? admin.name : ''}
       div
         form(method='post' action='/admins/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
           if admin
             input(type='hidden' name='steam_id' value=admin.steam_id)
           else

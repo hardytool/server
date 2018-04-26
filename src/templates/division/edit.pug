@@ -12,6 +12,7 @@ block content
         span #{verb} Division #{division ? division.name : ''}
       div
         form(method='post' action='/divisions/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
           if division
             input(type='hidden' name='id' value=division.id)
           div.field

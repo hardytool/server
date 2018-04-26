@@ -54,7 +54,8 @@ function create(templates, season, team, req, res) {
         user: req.user,
         verb: 'Create',
         season: season,
-        teams: teams
+        teams: teams,
+        csrfToken: req.csrfToken()
       })
 
       res.send(html)
@@ -93,7 +94,8 @@ function edit(templates, season, team, series, req, res) {
           verb: 'Edit',
           season: season,
           teams: teams,
-          series: series
+          series: series,
+          csrfToken: req.csrfToken()
         })
 
         res.send(html)

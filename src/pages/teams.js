@@ -38,7 +38,8 @@ function create(templates, season, division, req, res) {
         user: req.user,
         verb: 'Create',
         season: season,
-        division: division
+        division: division,
+        csrfToken: req.csrfToken()
       })
 
       res.send(html)
@@ -67,7 +68,8 @@ function edit(templates, season, division, team, req, res) {
           verb: 'Edit',
           team: team,
           season: season,
-          division: division
+          division: division,
+          csrfToken: req.csrfToken()
         })
         res.send(html)
       })

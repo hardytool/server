@@ -112,7 +112,8 @@ function create(templates, season, division, steam_user, req, res) {
           verb: 'Create',
           season: season,
           division: division,
-          steamUsers: steamUsers
+          steamUsers: steamUsers,
+          csrfToken: req.csrfToken()
         })
 
         res.send(html)
@@ -142,7 +143,8 @@ function edit(templates, season, division, player, steam_user, req, res) {
           verb: 'Edit',
           player: player,
           season: season,
-          division: division
+          division: division,
+          csrfToken: req.csrfToken()
         })
         res.send(html)
       })
