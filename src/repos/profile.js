@@ -8,6 +8,7 @@ function getProfile(db, steamId) {
     COALESCE(profile.name, steam_user.name) AS name,
     steam_user.name AS steam_name,
     profile.faceit_name as faceit_name,
+    profile.discord_name as discord_name,
     steam_user.solo_mmr,
     steam_user.party_mmr,
     steam_user.rank,
@@ -49,6 +50,7 @@ function saveProfile(db, profile) {
     steam_id,
     name,
     faceit_name,
+    discord_name,
     adjusted_mmr,
     adjusted_rank,
     name_locked
@@ -56,6 +58,7 @@ function saveProfile(db, profile) {
     ${profile.steam_id},
     ${profile.name},
     ${profile.faceit_name},
+    ${profile.discord_name},
     ${profile.adjusted_mmr},
     ${profile.adjusted_rank},
     ${profile.name_locked}
@@ -65,12 +68,14 @@ function saveProfile(db, profile) {
   ) DO UPDATE SET (
     name,
     faceit_name,
+    discord_name,
     adjusted_mmr,
     adjusted_rank,
     name_locked
   ) = (
     ${profile.name},
     ${profile.faceit_name},
+    ${profile.discord_name},
     ${profile.adjusted_mmr},
     ${profile.adjusted_rank},
     ${profile.name_locked}

@@ -23,6 +23,10 @@ block content
               label.label(for='faceit_name') FACEIT Name:
               p.control
                 input.input(id='faceit_name' type='text' name='faceit_name' placeholder='FACEIT Name' value=(profile ? profile.faceit_name : ''))
+            div.field
+              label.label(for='discord_name') Discord Name:
+              p.control
+                input.input(id='discord_name' type='text' name='discord_name' placeholder='User#1234' value=(profile ? profile.discord_name : ''))
             if user.isAdmin
               div.field
                 label.label(for='adjusted_mmr') Adjusted MMR:
