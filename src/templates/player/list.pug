@@ -75,7 +75,11 @@ block content
                   else
                     span.icon.has-text-danger.has-icon
                       i.far.fa-lg.fa-times-circle
-              td.tiny-text= player.statement
+              - var space = player.statement.lastIndexOf(' ', 15)
+              td.tooltip(tabindex='-1')
+                span(tabindex='-1')=player.statement.length > 15 ? player.statement.slice(0, space > 5 ? space : 15) + '…' : player.statement
+                if player.statement.length > 15
+                  span.tooltiptext= player.statement
               if user && user.isAdmin
                 td
                   if player.is_vouched || player.has_played

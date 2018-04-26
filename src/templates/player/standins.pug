@@ -60,7 +60,8 @@ block content
                   | &nbsp;/
                   |
                 a(href='https://www.opendota.com/players/' + player.steam_id) OpenDota
-              td.tiny-text= player.statement
+              td.tooltip hover
+                span.tooltiptext= player.statement
               if user && user.isAdmin
                 td
                   if player.is_vouched || player.has_played
