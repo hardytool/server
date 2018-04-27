@@ -112,6 +112,17 @@ app.use(cookieParser(config.server.secret))
 app.use(helmet({
   frameguard: {
     action: 'deny'
+  },
+  referrerPolicy: {
+    policy: 'strict-origin-when-cross-origin'
+  },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "use.fontawesome.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "cdnjs.cloudflare.com", "use.fontawesome.com"],
+      imgSrc: ["'self'", "cdn.discordapp.com", "steamcdn-a.akamaihd.net", "i.imgur.com"]
+    }
   }
 }))
 app.use(csrfMiddleware)
