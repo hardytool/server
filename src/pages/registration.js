@@ -199,33 +199,54 @@ function post(templates, season, division, steam_user, team_player, player, role
   delete p.standin_only
 
   season.getSeason(season_id).then(season => {
-    return division.getDivision(division_id).then(division => {
-      return steam_user.getSteamUser(req.user.steamId).then(steamUser => {
-        return team_player.isCaptainAutoApproved(steamUser.steam_id)
-        .then(({ allowed }) => {
-          p.captain_approved = allowed
-          return player.savePlayer(p).then(() => {
-            return role.getRoles().then(roles => {
-              var promises = roles.reduce((promises, role) => {
-                if (p[role.id] !== undefined) {
-                  promises.push(player_role.saveRoleRank(p.id, role.id, p[role.id]))
-                }
-                return promises
-              }, [])
-              return Promise.all(promises).then(() => {
-                var html = templates.registration.discord({
-                  user: req.user,
-                  season: season,
-                  division: division
-                })
+    if (season.registration_open) {
+      return division.getDivision(division_id).then(division => {
+        if (division.active) {
+          return steam_user.getSteamUser(req.user.steamId).then(steamUser => {
+            return team_player.isCaptainAutoApproved(steamUser.steam_id)
+            .then(({ allowed }) => {
+              p.captain_approved = allowed
+              return player.getPlayer(p.id).then(pl => {
+                // If the player ID exists and the steam ID matches, allowed
+                // If the player ID exists and the steam ID doesn't match, not allowed
+                return pl.steam_id === req.user.steamId
+              }).catch(() => {
+                // If the player ID doesn't exist, action allowed
+                return true
+              }).then(allowed => {
+                if (allowed) {
+                  return player.savePlayer(p).then(() => {
+                    return role.getRoles().then(roles => {
+                      var promises = roles.reduce((promises, role) => {
+                        if (p[role.id] !== undefined) {
+                          promises.push(player_role.saveRoleRank(p.id, role.id, p[role.id]))
+                        }
+                        return promises
+                      }, [])
+                      return Promise.all(promises).then(() => {
+                        var html = templates.registration.discord({
+                          user: req.user,
+                          season: season,
+                          division: division
+                        })
 
-                res.send(html)
+                        res.send(html)
+                      })
+                    })
+                  })
+                } else {
+                  Promise.reject('Access forbidden')
+                }
               })
             })
           })
-        })
+        } else {
+          return Promise.reject('Division inactive')
+        }
       })
-    })
+    } else {
+      return Promise.reject('Registration closed')
+    }
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
