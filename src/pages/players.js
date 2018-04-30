@@ -207,22 +207,25 @@ function getCSV(player, player_role, role, req, res) {
   }, {
     by_mmr: isCaptains || byMMR
   }).then(players => {
-    players.forEach(function(player, index) {
-      return player_role.getRoleRanks({player_id: player.id}).then(player_roles => {
-        return role.getRoles().then(roles => {
-          let rolesArray = player_roles.map(item => (roles.find(function(something) { return something['id'] === item['role_id']})['name'] + ":" + item['rank']));
-          players[index]['roles'] = rolesArray
-
-          //remove ID from the CSV
-          delete(players[index]['id'])
-
-          if (index === players.length - 1) {
-            return csv.toCSV(players).then(csv => {
-              res.setHeader('Content-Type', 'text/csv')
-              res.setHeader('Content-Disposition', 'attachment; filename="draftsheet.csv"')
-              res.end(csv)
-            })
-          }
+    return player_role.getRoleRanks().then(roleRanks => {
+      return role.getRoles().then(roles => {
+        players = players.map(player => {
+          var playerRoleRanks = roleRanks.filter(rr => rr.player_id === player.id)
+            .reduce((acc, rr) => {
+              acc[rr.role_id] = rr.rank
+              return rr
+            }, {})
+          var o = roles.reduce((acc, role) => {
+            acc['Role: ' + role.name] = playerRoleRanks[role.id]
+            return acc
+          }, {})
+          delete player.id
+          return Object.assign(player, o)
+        })
+        return csv.toCSV(players).then(csv => {
+          res.setHeader('Content-Type', 'text/csv')
+          res.setHeader('Content-Disposition', 'attachment; filename="draftsheet.csv"')
+          res.end(csv)
         })
       })
     })
