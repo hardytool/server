@@ -213,12 +213,14 @@ function getCSV(player, player_role, role, req, res) {
           var playerRoleRanks = roleRanks.filter(rr => rr.player_id === player.id)
             .reduce((acc, rr) => {
               acc[rr.role_id] = rr.rank
-              return rr
+              return acc
             }, {})
           var o = roles.reduce((acc, role) => {
             acc['Role: ' + role.name] = playerRoleRanks[role.id]
             return acc
           }, {})
+          var rank = player.draft_rank
+          player.draft_rank = (rank - (rank % 10))/10 * 6 + (rank % 10)
           delete player.id
           return Object.assign(player, o)
         })

@@ -309,15 +309,7 @@ function getDraftSheet(db, criteria, sort) {
   SELECT
     player.id,
     COALESCE(profile.name, steam_user.name) AS name,
-    steam_user.solo_mmr,
-    steam_user.party_mmr,
-    COALESCE(profile.adjusted_mmr, 0) AS adjusted_mmr,
-    CASE
-      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
-      THEN profile.adjusted_mmr
-      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
-    END AS draft_mmr,
-    steam_user.rank,
+    COALESCE(steam_user.rank, 0) as rank,
     COALESCE(profile.adjusted_rank, 0) AS adjusted_rank,
     CASE
       WHEN profile.adjusted_rank IS NOT NULL AND profile.adjusted_rank > 0
