@@ -78,6 +78,13 @@ html(lang='en')
           .tooltip:focus-within .tooltiptext {
               visibility: visible;
           }
+
+          .tooltip:focus,
+          .tooltip:focus *,
+          .tooltip :focus {
+            outline: none;
+          }
+
           img.circle {
             border-radius: 50%;
           }
@@ -160,7 +167,7 @@ html(lang='en')
                         span &nbsp;Log in
         block contentFull
           section.section
-            div.container.is-fullhd
+            div
               block content
         block footer
           footer.footer
