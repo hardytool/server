@@ -41,6 +41,7 @@ var series = require('./repos/series')(pool)
 var steam_user = require('./repos/steam_user')(pool)
 var team = require('./repos/team')(pool)
 var team_player = require('./repos/team_player')(pool)
+var blocked_ip = require('./repos/blocked_ip')(pool)
 var vouch = require('./repos/vouch')(pool)
 
 // lib
@@ -68,6 +69,7 @@ var rosterPages = require('./pages/roster')(templates, season, division, team, t
 var rolePages = require('./pages/roles')(templates, role)
 var adminPages = require('./pages/admins')(templates, admin, division, admin_group)
 var adminGroupPages = require('./pages/admin_groups')(templates, admin_group)
+var blockedIPPages = require('./pages/blocked_ips')(templates, blocked_ip)
 
 // API routes
 // none currently
@@ -239,6 +241,11 @@ app.get(adminGroupPages.edit.route, adminGroupPages.edit.handler)
 
 app.post(adminGroupPages.post.route, adminGroupPages.post.handler)
 app.post(adminGroupPages.remove.route, adminGroupPages.remove.handler)
+
+app.get(blockedIPPages.list.route, blockedIPPages.list.handler)
+
+app.post(blockedIPPages.post.route, blockedIPPages.post.handler)
+app.post(blockedIPPages.remove.route, blockedIPPages.remove.handler)
 
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))

@@ -70,9 +70,15 @@ block content
                 else
                   input(id='is_draftable' type='checkbox' name='is_draftable')
                 span &nbsp;Is draftable?
+          div.field
+            p.control
+              label.label(for='ip_address') IP Address:
+              input(type='text' name='ip_address' value=player.ip_address disabled)
           div.field.is-grouped
             p.control
               button.button.is-primary Submit
             if player
               p.control
                 button.button.is-danger(formaction='/players/delete') Delete
+              p.control
+                button.button.is-warning Flag IP
