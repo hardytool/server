@@ -419,7 +419,6 @@ function getDraftSheet(db, criteria, sort) {
       ORDER BY
         draft_rank ASC,
         rank ASC,
-        draft_mmr ASC,
         solo_mmr ASC,
         party_mmr ASC,
         name ASC
