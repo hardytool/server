@@ -16,13 +16,6 @@ function getPlayers(db, criteria, sort) {
     division.name division_name,
     COALESCE(profile.name, steam_user.name) AS name,
     steam_user.avatar,
-    steam_user.solo_mmr,
-    steam_user.party_mmr,
-    CASE
-      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
-      THEN profile.adjusted_mmr
-      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
-    END AS adjusted_mmr,
     steam_user.rank,
     CASE
       WHEN profile.adjusted_rank IS NOT NULL AND profile.adjusted_rank > 0
@@ -172,9 +165,6 @@ function getPlayers(db, criteria, sort) {
       ORDER BY
         adjusted_rank DESC,
         rank DESC,
-        adjusted_mmr DESC,
-        solo_mmr DESC,
-        party_mmr DESC,
         name ASC
       `
     } else if (sort.by_name) {
@@ -207,13 +197,6 @@ function getPlayer(db, id) {
     division.name division_name,
     COALESCE(profile.name, steam_user.name) AS name,
     steam_user.avatar,
-    steam_user.solo_mmr,
-    steam_user.party_mmr,
-    CASE
-      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
-      THEN profile.adjusted_mmr
-      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
-    END AS adjusted_mmr,
     steam_user.rank,
     CASE
       WHEN profile.adjusted_rank IS NOT NULL AND profile.adjusted_rank > 0
@@ -308,14 +291,6 @@ function getDraftSheet(db, criteria, sort) {
   var select = sql`
   SELECT
     COALESCE(profile.name, steam_user.name) AS name,
-    steam_user.solo_mmr,
-    steam_user.party_mmr,
-    COALESCE(profile.adjusted_mmr, 0) AS adjusted_mmr,
-    CASE
-      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
-      THEN profile.adjusted_mmr
-      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
-    END AS draft_mmr,
     steam_user.rank,
     COALESCE(profile.adjusted_rank, 0) AS adjusted_rank,
     CASE
@@ -426,9 +401,6 @@ function getDraftSheet(db, criteria, sort) {
       ORDER BY
         draft_rank ASC,
         rank ASC,
-        draft_mmr ASC,
-        solo_mmr ASC,
-        party_mmr ASC,
         name ASC
       `
     }
