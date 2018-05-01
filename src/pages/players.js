@@ -196,7 +196,7 @@ function remove(player, req, res) {
   })
 }
 
-function getCSV(player, req, res) {
+function getCSV(player, player_role, role, req, res) {
   var isCaptains = req.query.captains === '1' ? true : false
   var hideCaptains = req.query.show_captains === '1' ? false : true
   var byMMR = req.query.by_mmr === '1' ? true : false
@@ -209,10 +209,29 @@ function getCSV(player, req, res) {
   }, {
     by_mmr: isCaptains || byMMR
   }).then(players => {
-    return csv.toCSV(players).then(csv => {
-      res.setHeader('Content-Type', 'text/csv')
-      res.setHeader('Content-Disposition', 'attachment; filename="draftsheet.csv"')
-      res.end(csv)
+    return player_role.getRoleRanks().then(roleRanks => {
+      return role.getRoles().then(roles => {
+        players = players.map(player => {
+          var playerRoleRanks = roleRanks.filter(rr => rr.player_id === player.id)
+            .reduce((acc, rr) => {
+              acc[rr.role_id] = rr.rank
+              return acc
+            }, {})
+          var o = roles.reduce((acc, role) => {
+            acc['Role: ' + role.name] = playerRoleRanks[role.id]
+            return acc
+          }, {})
+          var rank = player.draft_rank
+          player.draft_rank = (rank - (rank % 10))/10 * 6 + (rank % 10)
+          delete player.id
+          return Object.assign(player, o)
+        })
+        return csv.toCSV(players).then(csv => {
+          res.setHeader('Content-Type', 'text/csv')
+          res.setHeader('Content-Disposition', 'attachment; filename="draftsheet.csv"')
+          res.end(csv)
+        })
+      })
     })
   }).catch(err => {
     console.error(err)
@@ -233,7 +252,7 @@ function currentPlayers(func, templates, season, player, req, res) {
   })
 }
 
-module.exports = (templates, season, division, player, steam_user) => {
+module.exports = (templates, season, division, player, player_role, role, steam_user) => {
   return {
     list: {
       route: '/seasons/:season_id/divisions/:division_id/players',
@@ -265,7 +284,7 @@ module.exports = (templates, season, division, player, steam_user) => {
     },
     csv: {
       route: '/seasons/:season_id/divisions/:division_id/draftsheet',
-      handler: getCSV.bind(null, player)
+      handler: getCSV.bind(null, player, player_role, role)
     }
   }
 }
