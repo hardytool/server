@@ -50,7 +50,7 @@ block content
           - var count = 0
           each player in players
             - count++
-            tr
+            tr(class=(count === cutoff ? 'cutoff' : ''))
               td= count
               td
                 a(href='/profile/' + player.steam_id)= player.name

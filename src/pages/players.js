@@ -22,15 +22,22 @@ function list(templates, season, division, player, req, res) {
         hide_captains: !includeCaptains,
         hide_standins: !includeStandins
       }).then(players => {
-        var html = templates.player.list({
-          user: req.user,
-          season: season,
-          division: division,
-          players: players,
-          noun: 'Players'
-        })
+        return player.getPlayers({
+          season_id: season_id,
+          division_id: division_id,
+          is_captain: true
+        }).then(captains => {
+          var html = templates.player.list({
+            user: req.user,
+            season: season,
+            division: division,
+            players: players,
+            noun: 'Players',
+            cutoff: captains.length * 5
+          })
 
-        res.send(html)
+          res.send(html)
+        })
       })
     })
   }).catch(err => {
@@ -49,7 +56,7 @@ function captains(templates, season, division, player, req, res) {
         division_id: division_id,
         is_captain: true
       }, {
-        by_name: true
+        by_mmr: true
       }).then(players => {
         var html = templates.player.captains({
           user: req.user,
