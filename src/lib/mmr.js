@@ -35,6 +35,10 @@ function setAvailable(bool) {
   available = bool
 }
 
+function isAvailable() {
+  return available
+}
+
 module.exports = dota2 => {
   dota2._client.on('error', () => {
     setAvailable(false)
@@ -44,6 +48,7 @@ module.exports = dota2 => {
   })
 
   return {
-    getMMR: getMMR.bind(null, dota2)
+    getMMR: getMMR.bind(null, dota2),
+    isAvailable: isAvailable
   }
 }
