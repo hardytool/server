@@ -290,8 +290,9 @@ function unregisterPlayer(db, seasonId, divisionId, steamId) {
 function getDraftSheet(db, criteria, sort) {
   var select = sql`
   SELECT
+    player.id,
     COALESCE(profile.name, steam_user.name) AS name,
-    steam_user.rank,
+    COALESCE(steam_user.rank, 0) as rank,
     COALESCE(profile.adjusted_rank, 0) AS adjusted_rank,
     CASE
       WHEN profile.adjusted_rank IS NOT NULL AND profile.adjusted_rank > 0

@@ -48,13 +48,15 @@ var mmr = require('./lib/mmr')(dota2)
 var steamId = require('./lib/steamId')
 var auth = require('./lib/auth')(admin, steam_user, profile, mmr, steamId)
 var credentials = require('./lib/credentials')(config.server)
+var wait = require('./lib/wait')
+var timeout = require('./lib/timeout')
 
 // Auth routes
 var openid = require('./api/openid')(config)
 
 // Page routes
 var indexPages = require('./pages/index')(templates, path.join(__dirname, 'assets', 'rules.md'))
-var playerPages = require('./pages/players')(templates, season, division, player, steam_user)
+var playerPages = require('./pages/players')(templates, season, division, player, player_role, role, steam_user)
 var profilePages = require('./pages/profile')(templates, steam_user, profile, team_player, vouch, steamId)
 var seasonPages = require('./pages/seasons')(templates, season)
 var divisionPages = require('./pages/divisions')(templates, season, division, admin)
@@ -270,6 +272,26 @@ migration.migrateIfNeeded(
         }
       })
     }
+
+    var repeat = () => {
+      steam_user.getSteamUsers().then(users => {
+        users.forEach((user, index) => {
+          setTimeout(() => {
+            return wait(1000, () => mmr.isAvailable()).then(() => {
+              return mmr.getMMR(user.steam_id).then(mmr => {
+                user.rank = mmr && mmr.rank ? mmr.rank : user.rank
+                return steam_user.saveSteamUser(user)
+              })
+            })
+          }, 1000 * (index + 1))
+        })
+      }).catch(err => {
+        console.error(err)
+        console.log('Error recovered - continuing')
+      })
+      setTimeout(repeat, 60*60*1000)
+    }
+    repeat()
 
     if (credentials) {
       http.createServer(redirectHttps({
