@@ -11,6 +11,7 @@ function getPlayers(db, criteria, sort) {
     player.captain_approved,
     player.statement,
     player.is_draftable,
+    player.ip_address,
     season.number season_number,
     season.name season_name,
     division.name division_name,
@@ -192,6 +193,7 @@ function getPlayer(db, id) {
     player.captain_approved,
     player.statement,
     player.is_draftable,
+    player.ip_address,
     season.number season_number,
     season.name season_name,
     division.name division_name,
@@ -232,7 +234,8 @@ function savePlayer(db, player) {
       will_captain,
       captain_approved,
       statement,
-      is_draftable
+      is_draftable,
+      ip_address
     ) VALUES (
       ${player.id},
       ${player.season_id},
@@ -241,7 +244,8 @@ function savePlayer(db, player) {
       ${player.will_captain},
       ${player.captain_approved},
       ${player.statement},
-      ${player.is_draftable}
+      ${player.is_draftable},
+      ${player.ip_address}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
@@ -250,14 +254,16 @@ function savePlayer(db, player) {
       will_captain,
       captain_approved,
       statement,
-      is_draftable
+      is_draftable,
+      ip_address
     ) = (
       ${player.season_id},
       ${player.division_id},
       ${player.will_captain},
       ${player.captain_approved},
       ${player.statement},
-      ${player.is_draftable}
+      ${player.is_draftable},
+      ${player.ip_address}
     )
   `
   return db.query(upsert)

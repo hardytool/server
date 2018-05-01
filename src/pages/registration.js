@@ -189,6 +189,7 @@ function post(templates, season, division, steam_user, team_player, player, role
   var season_id = req.body.season_id
   var division_id = req.body.division_id
   var id = req.body.id ? req.body.id : shortid.generate()
+  var ip_address = req.ip
   var p = req.body
 
   p.id = id
@@ -196,6 +197,7 @@ function post(templates, season, division, steam_user, team_player, player, role
   p.captain_approved = false
   p.statement = p.statement.slice(0, 500)
   p.is_draftable = !(p.standin_only === 'on')
+  p.ip_address = ip_address
   delete p.standin_only
 
   season.getSeason(season_id).then(season => {
