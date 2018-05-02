@@ -244,9 +244,8 @@ app.post(adminGroupPages.remove.route, adminGroupPages.remove.handler)
 
 app.get(blockedIPPages.list.route, blockedIPPages.list.handler)
 app.get(blockedIPPages.remove.route, blockedIPPages.remove.handler)
-app.post(blockedIPPages.create.route, blockedIPPages.create.handler)
 
-app.post(blockedIPPages.post.route, blockedIPPages.post.handler)
+app.post(blockedIPPages.create.route, blockedIPPages.create.handler)
 
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))

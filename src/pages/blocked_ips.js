@@ -19,29 +19,6 @@ function list(templates, blocked_ip, req, res) {
   })
 }
 
-function post(player, req, res) {
-  if (!req.user || !req.user.isAdmin) {
-    res.sendStatus(403)
-    return
-  }
-
-  var season_id = req.body.season_id
-  var division_id = req.body.division_id
-  var id = req.body.id ? req.body.id : shortid.generate()
-  var p = req.body
-  p.id = id
-  p.captain_approved = p.captain_approved === 'on'
-  p.statement = p.statement.slice(0, 500)
-  p.is_draftable = p.is_draftable === 'on'
-
-  player.savePlayer(p).then(() => {
-    res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/players')
-  }).catch(err => {
-    console.error(err)
-    res.sendStatus(500)
-  })
-}
-
 function create(blocked_ip, req, res) {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
@@ -81,10 +58,6 @@ module.exports = (templates, blocked_ip) => {
     list: {
       route: '/blocked_ip',
       handler: list.bind(null, templates, blocked_ip)
-    },
-    post: {
-      route: '/blocked_ip/edit',
-      handler: post.bind(null, blocked_ip)
     },
     create: {
         route: '/blocked_ip/create',
