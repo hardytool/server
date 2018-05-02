@@ -42,6 +42,22 @@ function post(player, req, res) {
   })
 }
 
+function create(blocked_ip, req, res) {
+  if (!req.user || !req.user.isAdmin) {
+    res.sendStatus(403)
+    return
+  }
+  var ip = req.body.ip_address
+  ip.id = shortid.generate()
+
+  blocked_ip.createBlockedIP(ip).then(() => {
+    res.redirect('/blocked_ip')
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
 function remove(blocked_ip, req, res) {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
@@ -51,23 +67,7 @@ function remove(blocked_ip, req, res) {
   var id = req.params.id
 
   blocked_ip.deleteBlockedIP(id).then(() => {
-    res.redirect('/blocked_ip/list')
-  }).catch(err => {
-    console.error(err)
-    res.sendStatus(500)
-  })
-}
-
-function create(blocked_ip, req, res) {
-  if (!req.user || !req.user.isAdmin) {
-    res.sendStatus(403)
-    return
-  }
-  var ip = req.body.ip_address
-  var ip.id = shortid.generate()
-
-  blocked_ip.createBlockedIP(ip).then(() => {
-    res.redirect('/blocked_ip/list')
+    res.redirect('/blocked_ip')
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -77,7 +77,7 @@ function create(blocked_ip, req, res) {
 module.exports = (templates, blocked_ip) => {
   return {
     list: {
-      route: '/blocked_ip/list',
+      route: '/blocked_ip',
       handler: list.bind(null, templates, blocked_ip)
     },
     post: {
