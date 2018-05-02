@@ -231,17 +231,18 @@ function getCSV(player, player_role, role, division, req, res) {
               return acc
             }, {})
             var rank = player.draft_rank
-            player.draft_rank = (rank - (rank % 10))/10 * 6 + (rank % 10)
+            player.draft_rank = ((rank - (rank % 10))/10 - 1) * 6 + (rank % 10)
             delete player.id
             return Object.assign(player, o)
           })
           return csv.toCSV(players).then(csv => {
-            var filename = divisions['name']
+            var filename = divisions.name.toLowerCase() + '-'
             if (isCaptains) {
-              filename += 'Captains.csv'
+              filename += 'captains'
             } else {
-              filename += 'Players.csv'
+              filename += 'players'
             }
+            filename += '.csv'
             res.setHeader('Content-Type', 'text/csv')
             res.setHeader('Content-Disposition', 'attachment; filename=' + filename)
             res.end(csv)
