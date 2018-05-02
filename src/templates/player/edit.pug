@@ -73,7 +73,7 @@ block content
           div.field
             p.control
               label.label(for='ip_address') IP Address:
-              input(type='text' name='ip_address' value=player.ip_address disabled)
+              input(type='text' name='ip_address' value=player.ip_address readonly)
           div.field.is-grouped
             p.control
               button.button.is-primary Submit
@@ -81,4 +81,4 @@ block content
               p.control
                 button.button.is-danger(formaction='/players/delete') Delete
               p.control
-                button.button.is-warning Flag IP
+                button.button.is-warning(formaction='/blocked_ip/create') Flag IP

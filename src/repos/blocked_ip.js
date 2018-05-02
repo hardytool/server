@@ -15,6 +15,22 @@ function getBlockedIPs(db, criteria) {
   })
 }
 
+function saveBlockedIP(db, blocked_ip) {
+  var upsert = sql`
+  INSERT INTO blocked_ip (
+    id,
+    address
+  ) VALUES (
+    ${blocked_ip.id},
+    ${blocked_ip.address}
+  ) ON CONFLICT (
+    id
+  ) DO UPDATE SET
+    address = ${blocked_ip.address}
+  `
+  return db.query(upsert)
+}
+
 function deleteBlockedIP(db, id) {
   var query = sql`
   DELETE FROM
@@ -28,6 +44,7 @@ function deleteBlockedIP(db, id) {
 module.exports = db => {
   return {
     getBlockedIPs: getBlockedIPs.bind(null, db),
+    saveBlockedIP: saveBlockedIP.bind(null, db),
     deleteBlockedIP: deleteBlockedIP.bind(null, db)
   }
 }

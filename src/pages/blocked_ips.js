@@ -47,10 +47,12 @@ function create(blocked_ip, req, res) {
     res.sendStatus(403)
     return
   }
-  var ip = req.body.ip_address
+
+  var ip = req.body
+  ip.address = req.body.ip_address
   ip.id = shortid.generate()
 
-  blocked_ip.createBlockedIP(ip).then(() => {
+  blocked_ip.saveBlockedIP(ip).then(() => {
     res.redirect('/blocked_ip')
   }).catch(err => {
     console.error(err)
@@ -83,6 +85,10 @@ module.exports = (templates, blocked_ip) => {
     post: {
       route: '/blocked_ip/edit',
       handler: post.bind(null, blocked_ip)
+    },
+    create: {
+        route: '/blocked_ip/create',
+        handler: create.bind(null, blocked_ip)
     },
     remove: {
       route: '/blocked_ip/:id/delete',
