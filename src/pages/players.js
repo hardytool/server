@@ -203,14 +203,15 @@ function remove(player, req, res) {
   })
 }
 
-function getCSV(player, player_role, role, req, res) {
+function getCSV(player, player_role, role, division, req, res) {
   var isCaptains = req.query.captains === '1' ? true : false
   var hideCaptains = req.query.show_captains === '1' ? false : true
   var byMMR = req.query.by_mmr === '1' ? true : false
+  var division_id = req.params.division_id
 
   player.getDraftSheet({
     season_id: req.params.season_id,
-    division_id: req.params.division_id,
+    division_id: division_id,
     is_captain: isCaptains,
     hide_captains: hideCaptains && !isCaptains
   }, {
@@ -218,25 +219,33 @@ function getCSV(player, player_role, role, req, res) {
   }).then(players => {
     return player_role.getRoleRanks().then(roleRanks => {
       return role.getRoles().then(roles => {
-        players = players.map(player => {
-          var playerRoleRanks = roleRanks.filter(rr => rr.player_id === player.id)
-            .reduce((acc, rr) => {
-              acc[rr.role_id] = rr.rank
+        return division.getDivision(division_id).then(divisions => {
+          players = players.map(player => {
+            var playerRoleRanks = roleRanks.filter(rr => rr.player_id === player.id)
+              .reduce((acc, rr) => {
+                acc[rr.role_id] = rr.rank
+                return acc
+              }, {})
+            var o = roles.reduce((acc, role) => {
+              acc['Role: ' + role.name] = playerRoleRanks[role.id]
               return acc
             }, {})
-          var o = roles.reduce((acc, role) => {
-            acc['Role: ' + role.name] = playerRoleRanks[role.id]
-            return acc
-          }, {})
-          var rank = player.draft_rank
-          player.draft_rank = (rank - (rank % 10))/10 * 6 + (rank % 10)
-          delete player.id
-          return Object.assign(player, o)
-        })
-        return csv.toCSV(players).then(csv => {
-          res.setHeader('Content-Type', 'text/csv')
-          res.setHeader('Content-Disposition', 'attachment; filename="draftsheet.csv"')
-          res.end(csv)
+            var rank = player.draft_rank
+            player.draft_rank = (rank - (rank % 10))/10 * 6 + (rank % 10)
+            delete player.id
+            return Object.assign(player, o)
+          })
+          return csv.toCSV(players).then(csv => {
+            var filename = divisions['name']
+            if (isCaptains) {
+              filename += 'Captains.csv'
+            } else {
+              filename += 'Players.csv'
+            }
+            res.setHeader('Content-Type', 'text/csv')
+            res.setHeader('Content-Disposition', 'attachment; filename=' + filename)
+            res.end(csv)
+          })
         })
       })
     })
@@ -291,7 +300,7 @@ module.exports = (templates, season, division, player, player_role, role, steam_
     },
     csv: {
       route: '/seasons/:season_id/divisions/:division_id/draftsheet',
-      handler: getCSV.bind(null, player, player_role, role)
+      handler: getCSV.bind(null, player, player_role, role, division)
     }
   }
 }
