@@ -91,7 +91,7 @@
      - Team members not playing are permitted to be in a caster slot in the lobby if the opposing captain approves, but are not permitted to communicate with their team in any way while spectating. Coaches are not allowed in game.
      - Only recognized casters are permitted to be in broadcaster channels during matches.
        - Spectators on is encouraged but a 2 minute delay is required. No in-game spectators except admins and authorized casters are allowed in the lobby; they are only allowed to spectate in-client or a twitch stream.
-     - Game remakes or loading from a replay are permitted if there is a major issue affecting gameplay (major ping increases, heavy packet loss, Steam down). Both team captains must agree to attempt the attempt. If load from replay does not work, the game will be remade.
+     - Game remakes are permitted if there is a major issue affecting gameplay (major ping increases, heavy packet loss, Steam down). Both team captains must agree to remake.
    - **Regular Season**
      - The regular season is 8 weeks long, with a Captain’s Mode Bo2 each week.
      - Matches are to begin by their division’s scheduled match time each week on the designated server.
