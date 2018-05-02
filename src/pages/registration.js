@@ -207,6 +207,9 @@ function post(templates, season, division, steam_user, team_player, player, role
             .then(({ allowed }) => {
               p.captain_approved = allowed
               return player.getPlayer(p.id).then(pl => {
+                //stops overwrite of new captains when they edit registration
+                p.captain_approved = pl.captain_approved
+
                 // If the player ID exists and the steam ID matches, allowed
                 // If the player ID exists and the steam ID doesn't match, not allowed
                 return pl.steam_id === req.user.steamId
