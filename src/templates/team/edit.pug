@@ -6,10 +6,10 @@ block title
 block content
   div.columns
     div.column
-      h3.title.is-3
+      h3.title.is-3.has-icon
         span.icon.is-medium
-          i.fa.fa-pencil
-        span &nbsp;#{verb} Team - #{season.name} #{team ? ' - ' + team.name : ''}
+          i.fas.fa-edit
+        span #{verb} Team - #{season.name} #{team ? ' - ' + team.name : ''}
       div
         form(method='post' action='/teams/edit')
           input(type='hidden' name="_csrf" value=csrfToken)
@@ -28,11 +28,12 @@ block content
           div.field
             label.label(for='team_number') Team Number:
             p.control
-              input.input(id='team_number' type='number' name='team_number' placeholder='Team Number (Dotabuff)' min='0' value=(team ? team.team_number : '') required)
+              input.input(id='team_number' type='number' name='team_number' placeholder='Team Number (Dotabuff)' min='0' value=(team ? team.team_number : ''))
           div.field
             label.label(for='seed') Seed:
             p.control
               input.input(id='seed' type='number' name='seed' placeholder='Seed' min='0' value=(team ? team.seed : '') required)
+            p.help Average MMR, captain pick order placement, or other division-unique value
           div.field
             p.control
               label.checkbox

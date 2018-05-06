@@ -92,6 +92,7 @@ function post(team, req, res) {
   var t = req.body
   t.id = id
   t.disbanded = t.disbanded == 'on' ? true : false
+  t.team_number = t.team_number === '' ? null : t.team_number
 
   team.saveTeam(t).then(() => {
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/teams/' + t.id)
