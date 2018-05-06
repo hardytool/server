@@ -239,13 +239,23 @@ function matchups(templates, season, team, series, pairings, division, req, res)
             t.droppedOut = t.disbanded
             return t
           })
-          teams = teams.sort((a, b) => {
-            if (a.seed === b.seed) {
-              return a.name.localeCompare(b.name)
-            } else {
-              return a.seed - b.seed
-            }
-          })
+          if (season.current_round === 0) {
+            teams = teams.sort((a, b) => {
+              return a.id.localeCompare(b.id)
+            })
+            teams = teams.map((team, i) => {
+              team.seed = i
+              return team
+            })
+          } else {
+            teams = teams.sort((a, b) => {
+              if (a.seed === b.seed) {
+                return a.id.localeCompare(b.id)
+              } else {
+                return a.seed - b.seed
+              }
+            })
+          }
           return series.getSeries({
             season_id: season.id,
             round: round
