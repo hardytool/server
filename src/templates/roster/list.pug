@@ -42,6 +42,7 @@ block content
                       input(type='hidden' name='season_id' value=season.id)
                       input(type='hidden' name='team_id' value=team.id)
                       input(type='hidden' name='id' value=captain.id)
+                      input(type='hidden' name="_csrf" value=csrfToken)
                       button.button.is-danger(formaction='/roster/delete' formmethod='post') Remove
       else
         p None
@@ -75,6 +76,7 @@ block content
                     input(type='hidden' name='season_id' value=season.id)
                     input(type='hidden' name='team_id' value=team.id)
                     input(type='hidden' name='id' value=player.id)
+                    input(type='hidden' name="_csrf" value=csrfToken)
                     button.button.is-danger(formaction='/roster/delete' formmethod='post') Remove
       if user && user.isAdmin
         div.field.is-grouped

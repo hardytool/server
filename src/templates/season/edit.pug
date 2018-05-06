@@ -26,7 +26,7 @@ block content
           div.field
             label.label(for='current_round') Current week:
             p.control
-              input.input(id='current_round' type='number' name='current_round' placeholder='Current week' min='1' value=(season ? season.current_round : '') required)
+              input.input(id='current_round' type='number' name='current_round' placeholder='Current week' min='0' value=(season ? season.current_round : '') required)
           div.field
             p.control
               label.checkbox

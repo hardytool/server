@@ -9,7 +9,7 @@ block content
       h3.title.is-3
         span.icon.is-medium
           i.fa.fa-list
-        span &nbsp;#{season.name} Series
+        span &nbsp;#{division.name} #{season.name} Series
       table.table.is-striped.is-middle-aligned.is-fullwidth
         thead
           tr
@@ -80,7 +80,7 @@ block content
                 td None
               if user && user.isAdmin
                 td
-                  a(href='/seasons/' + season.id + '/series/' + _series.id + '/edit') edit
+                  a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series/' + _series.id + '/edit') edit
       if user && user.isAdmin
-        a(href='/seasons/' + season.id + '/series/create')
+        a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series/create')
           button.button.is-primary Add series

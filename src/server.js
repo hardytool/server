@@ -60,7 +60,7 @@ var playerPages = require('./pages/players')(templates, season, division, player
 var profilePages = require('./pages/profile')(templates, steam_user, profile, team_player, vouch, steamId)
 var seasonPages = require('./pages/seasons')(templates, season)
 var divisionPages = require('./pages/divisions')(templates, season, division, admin)
-var seriesPages = require('./pages/series')(templates, season, team, series, pairings)
+var seriesPages = require('./pages/series')(templates, season, team, series, pairings, division)
 var teamPages = require('./pages/teams')(templates, season, division, team)
 var registrationPages = require('./pages/registration')(
   templates, season, division, steam_user, team_player, player, role, player_role, mmr, profile)

@@ -38,7 +38,8 @@ function list(templates, season, division, team, team_player, series, req, res) 
               team: team,
               captain: captain,
               players: players,
-              series: series
+              series: series,
+              csrfToken: req.csrfToken()
             })
 
             res.send(html)
