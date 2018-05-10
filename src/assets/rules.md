@@ -9,6 +9,7 @@
        - Participants must alert the admins if their rank does not accurately reflect their skill level, or if they have alternate accounts they regularly use.
          - Admins may adjust a player's rank to be more accurate in these situations.
        - Players must sign-up on the current Steam account they primarily use for playing Dota, except in the case described in the next rule. The required 500 games and 250 wins on the account must all have been played by the player who is signing up.
+       - Before registering, players are required to turn "Expose Public Match Data" on in the Dota 2 client > Settings > Options > Profile
        - No one should expect to miss more than 3 weeks in the season (including playoffs).
          - If a participant expects inconsistent attendance for an upcoming season, they are encouraged to instead sign up as a stand-in or free agent, as appropriate.
        - Admins will be watching for accounts that have unusual match history. Those accounts may be removed from the league at the time they are discovered at the discretion of the admins. Since there are various ways this rule can be violated, any other punishment will be determined on a case-by-case basis.
