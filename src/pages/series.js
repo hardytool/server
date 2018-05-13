@@ -212,6 +212,7 @@ function standings(templates, season, team, series, pairings, division, req, res
             var html = templates.series.standings({
               user: req.user,
               season: season,
+              division: division,
               round: round,
               standings: standings
             })

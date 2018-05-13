@@ -9,7 +9,7 @@ block content
       h3.title.is-3
         span.icon.is-medium
           i.fa.fa-list
-        span &nbsp;#{season.name} Week #{round} Standings
+        span &nbsp;#{division.name} #{season.name} Week #{round} Standings
       table.table.is-striped.is-middle-aligned.is-fullwidth
         thead
           tr
@@ -22,7 +22,7 @@ block content
           each standing in standings
             tr
               td
-                a(href='/seasons/' + season.id + '/teams/' + standing.id)= standing.name
+                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + standing.id)= standing.name
                 span= standing.captain_name ? ' (' + standing.captain_name + ')' : ''
               td
                 figure.image.is-team-logo.hide-overflow
