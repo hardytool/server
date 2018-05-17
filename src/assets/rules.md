@@ -119,6 +119,6 @@
      - If a participant's behavior is deemed to be toxic, rude, interruptive to team play, or anything undesirable to the general well-being of most of the team, they may be removed by an admin. Depending on severity upon removal, they may be temporarily suspended.
        - If a player or captain is removed for poor conduct, the team is entitled to a free agent.
      - Players are expected to be available and present for all regular season and playoff matches, exceptions are acceptable but a commitment to the league and your team is agreed to upon signing up.
-     - Players are expected to participate in the RD2L until the completion of their season. Quitting/leaving your team may result in future ban from RD2L.
+     - Players are expected to participate in any RD2L division they sign up for until the completion of the season. Quitting/Leaving any RD2L team may result in removal from other RD2L teams and bans from future seasons.
 
 For any additional circumstances, if a majority of the admins approve, any action may be taken and will be accompanied by a post outlining the action and reasoning.
