@@ -60,6 +60,7 @@ function create(templates, season, team, division, req, res) {
           user: req.user,
           verb: 'Create',
           season: season,
+          division: division,
           teams: teams,
           csrfToken: req.csrfToken()
         })
@@ -125,6 +126,7 @@ function post(series, req, res) {
   }
 
   var season_id = req.body.season_id
+  var division_id = req.body.division_id
   var id = req.body.id ? req.body.id : shortid.generate()
   var s = req.body
   s.id = id
@@ -160,7 +162,7 @@ function post(series, req, res) {
   }
 
   series.saveSeries(s).then(() => {
-    res.redirect('/seasons/' + season_id + '/series')
+    res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
