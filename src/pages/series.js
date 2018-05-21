@@ -236,6 +236,7 @@ function matchups(templates, season, team, series, pairings, division, req, res)
   var round = Number.parseInt(req.params.round)
 
   series.getCurrentRound(season_id, round).then(round => {
+    console.dir(round)
     return season.getSeason(season_id).then(season => {
       return division.getDivision(division_id).then(division => {
         return team.getTeams(season.id, division.id).then(teams => {
@@ -262,6 +263,7 @@ function matchups(templates, season, team, series, pairings, division, req, res)
           }
           return series.getSeries({
             season_id: season.id,
+            division_id: division.id,
             round: round
           }).then(series => {
             var matchups = pairings.getMatchups(
