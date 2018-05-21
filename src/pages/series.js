@@ -9,6 +9,7 @@ function list(templates, season, series, division, req, res) {
     return division.getDivision(division_id).then(division => {
       return series.getSeries({
         season_id: season_id,
+        division_id: division_id,
         round: round
       }).then(series => {
         series = series.map(_series => {
