@@ -177,6 +177,7 @@ function remove(series, req, res) {
   }
 
   var season_id = req.body.season_id
+  var division_id = req.body.division_id
   var id = req.body.id
 
   series.deleteSeries(id).then(() => {
