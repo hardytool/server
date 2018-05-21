@@ -180,7 +180,7 @@ function remove(series, req, res) {
   var id = req.body.id
 
   series.deleteSeries(id).then(() => {
-    res.redirect('/seasons/' + season_id + '/series')
+    res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
