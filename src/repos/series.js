@@ -153,7 +153,7 @@ function deleteSeries(db, id) {
 
 function getCurrentRound(db, season_id, round) {
   return Promise.resolve(round).then(round => {
-    if (round) {
+    if (Number.isInteger(round)) {
       return Promise.resolve(round)
     } else {
       var query = sql`

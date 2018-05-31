@@ -245,7 +245,7 @@ function matchups(templates, season, team, series, pairings, division, req, res)
               t.droppedOut = t.disbanded
               return t
             })
-            if (season.current_round === 0) {
+            if (round === 0) {
               teams = teams.sort((a, b) => {
                 return a.id.localeCompare(b.id)
               })

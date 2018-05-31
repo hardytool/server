@@ -6,15 +6,10 @@ block title
 block content
   div.columns
     div.column
-      h3.title.is-3
+      h3.title.is-3.has-icon
         span.icon.is-medium
           i.fa.fa-list
-        span &nbsp;#{division.name} #{season.name} Week #{round} Matchups
-      if round != 0
-        a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + (round - 1)) Previous Week Matchups
-        span &nbsp;
-      if round != maximumRound
-        a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + (round + 1)) Next Week Matchups
+        span #{division.name} #{season.name} Week #{round} Matchups
       table.table.is-striped.is-middle-aligned.is-fullwidth
         thead
           tr
@@ -32,3 +27,21 @@ block content
                   span= matchup.away.captain_name ? ' (' + matchup.away.captain_name + ')' : ''
               else
                 td= matchup.away.name
+      div.has-text-centered
+        if round > 0
+          - var prevRound = round - 1
+          a.button.is-inline-block(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + (prevRound == maximumRound ? '' : prevRound)) Prev
+        else
+          a.button.is-inline-block(disabled) Prev
+        - var i = 0
+        while i <= maximumRound
+          if round === i
+            a.button.is-inline-block.is-white(disabled)= i
+          else
+            a.button.is-inline-block.is-white(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + i)= i
+          - i++
+        if round < maximumRound
+          - var nextRound = round + 1
+          a.button.is-inline-block(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + (nextRound == maximumRound ? '' : nextRound)) Next
+        else
+          a.button.is-inline-block(disabled) Next
