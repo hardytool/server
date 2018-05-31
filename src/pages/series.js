@@ -237,62 +237,66 @@ function matchups(templates, season, team, series, pairings, division, req, res)
   var division_id = req.params.division_id
   var round = Number.parseInt(req.params.round)
 
-  series.getCurrentRound(season_id, round).then(round => {
-    return season.getSeason(season_id).then(season => {
-      return division.getDivision(division_id).then(division => {
-        return team.getTeams(season.id, division.id).then(teams => {
-          teams = teams.map(t => {
-            t.droppedOut = t.disbanded
-            return t
-          })
-          if (season.current_round === 0) {
-            teams = teams.sort((a, b) => {
-              return a.id.localeCompare(b.id)
+  series.getCurrentRound(season_id).then(maximumRound => {
+    return series.getCurrentRound(season_id, round).then(round => {
+      return season.getSeason(season_id).then(season => {
+        return division.getDivision(division_id).then(division => {
+          return team.getTeams(season.id, division.id).then(teams => {
+            teams = teams.map(t => {
+              t.droppedOut = t.disbanded
+              return t
             })
-            teams = teams.map((team, i) => {
-              team.seed = i
-              return team
-            })
-          } else {
-            teams = teams.sort((a, b) => {
-              if (a.seed === b.seed) {
+            if (round === 0) {
+              teams = teams.sort((a, b) => {
                 return a.id.localeCompare(b.id)
-              } else {
-                return a.seed - b.seed
-              }
-            })
-          }
-          return series.getSeries({
-            season_id: season.id,
-            division_id: division.id,
-            round: round
-          }).then(series => {
-            var matchups = pairings.getMatchups(
-              round,
-              teams,
-              mapSeries(series)
-            )
-            matchups = matchups.map(matchup => {
-              matchup.home = teams.filter(team => team.id === matchup.home)[0]
-              if (matchup.away === null) {
-                matchup.away = {
-                  id: null,
-                  name: 'BYE',
-                  logo: null
+              })
+              teams = teams.map((team, i) => {
+                team.seed = i
+                return team
+              })
+            } else {
+              teams = teams.sort((a, b) => {
+                if (a.seed === b.seed) {
+                  return a.id.localeCompare(b.id)
+                } else {
+                  return a.seed - b.seed
                 }
-              } else {
-                matchup.away = teams.filter(team => team.id === matchup.away)[0]
-              }
-              return matchup
+              })
+            }
+            return series.getSeries({
+              season_id: season.id,
+              division_id: division.id,
+              round: round
+            }).then(series => {
+              var matchups = pairings.getMatchups(
+                round,
+                teams,
+                mapSeries(series)
+              )
+              matchups = matchups.map(matchup => {
+                matchup.home = teams.filter(team => team.id === matchup.home)[0]
+                if (matchup.away === null) {
+                  matchup.away = {
+                    id: null,
+                    name: 'BYE',
+                    logo: null
+                  }
+                } else {
+                  matchup.away = teams.filter(team => team.id === matchup.away)[0]
+                }
+                return matchup
+              })
+
+              var html = templates.series.matchups({
+                user: req.user,
+                season: season,
+                division: division,
+                round: round,
+                maximumRound: maximumRound,
+                matchups: matchups
+              })
+              res.send(html)
             })
-            var html = templates.series.matchups({
-              user: req.user,
-              season: season,
-              division: division,
-              round: round,
-              matchups: matchups
-            })
-            res.send(html)
           })
         })
       })
