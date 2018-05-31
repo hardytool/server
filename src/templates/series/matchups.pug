@@ -27,21 +27,22 @@ block content
                   span= matchup.away.captain_name ? ' (' + matchup.away.captain_name + ')' : ''
               else
                 td= matchup.away.name
-      div.has-text-centered
-        if round > 0
-          - var prevRound = round - 1
-          a.button.is-inline-block(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + (prevRound == maximumRound ? '' : prevRound)) Prev
-        else
-          a.button.is-inline-block(disabled) Prev
-        - var i = 0
-        while i <= maximumRound
-          if round === i
-            a.button.is-inline-block.is-white(disabled)= i
+      if user.isAdmin
+        div.has-text-centered
+          if round > 0
+            - var prevRound = round - 1
+            a.button.is-inline-block(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + (prevRound == maximumRound ? '' : prevRound)) Prev
           else
-            a.button.is-inline-block.is-white(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + i)= i
-          - i++
-        if round < maximumRound
-          - var nextRound = round + 1
-          a.button.is-inline-block(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + (nextRound == maximumRound ? '' : nextRound)) Next
-        else
-          a.button.is-inline-block(disabled) Next
+            a.button.is-inline-block(disabled) Prev
+          - var i = 0
+          while i <= maximumRound
+            if round === i
+              a.button.is-inline-block.is-white(disabled)= i
+            else
+              a.button.is-inline-block.is-white(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + i)= i
+            - i++
+          if round < maximumRound
+            - var nextRound = round + 1
+            a.button.is-inline-block(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + (nextRound == maximumRound ? '' : nextRound)) Next
+          else
+            a.button.is-inline-block(disabled) Next
