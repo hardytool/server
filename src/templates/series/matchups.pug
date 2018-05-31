@@ -10,6 +10,11 @@ block content
         span.icon.is-medium
           i.fa.fa-list
         span &nbsp;#{division.name} #{season.name} Week #{round} Matchups
+      if round != 0
+        a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + (round - 1)) Previous Week Matchups
+        span &nbsp;
+      if round != maximumRound
+        a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + (round + 1)) Next Week Matchups
       table.table.is-striped.is-middle-aligned.is-fullwidth
         thead
           tr
