@@ -199,6 +199,7 @@ function standings(templates, season, team, series, pairings, division, req, res
         return team.getTeams(season.id, division.id).then(teams => {
           return series.getSeries({
             season_id: season.id,
+            division_id: division.id,
             round: round
           }).then(series => {
             var standings = pairings.getStandings(
