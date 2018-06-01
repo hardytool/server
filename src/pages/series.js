@@ -212,6 +212,7 @@ function standings(templates, season, team, series, pairings, division, req, res
               standing.name = team.name
               standing.logo = team.logo
               standing.captain_name = team.captain_name
+              standing.disbanded = team.disbanded
               return standing
             })
             var html = templates.series.standings({
