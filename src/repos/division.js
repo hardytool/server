@@ -7,7 +7,8 @@ function getDivisions(db, criteria) {
     division.name,
     division.active,
     division.discord_url,
-    division.start_time
+    division.start_time,
+    division.draft_sheet
   FROM
     division
   WHERE
@@ -37,7 +38,8 @@ function getDivision(db, id) {
     division.name,
     division.active,
     division.discord_url,
-    division.start_time
+    division.start_time,
+    division.draft_sheet
   FROM
     division
   WHERE
@@ -56,25 +58,29 @@ function saveDivision(db, division) {
       name,
       active,
       discord_url,
-      start_time
+      start_time,
+      draft_sheet
     ) VALUES (
       ${division.id},
       ${division.name},
       ${division.active},
       ${division.discord_url},
-      ${division.start_time}
+      ${division.start_time},
+      ${division.draft_sheet}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
       name,
       active,
       discord_url,
-      start_time
+      start_time,
+      draft_sheet
     ) = (
       ${division.name},
       ${division.active},
       ${division.discord_url},
-      ${division.start_time}
+      ${division.start_time},
+      ${division.draft_sheet}
     )
   `
   return db.query(upsert)
