@@ -156,13 +156,12 @@ html(lang='en')
                 div.navbar-menu#seal-menu
                   div.navbar-start
                     a.navbar-item(href='/seasons') Seasons
-                    a.navbar-item(href='/divisions') Divisions
-                    a.navbar-item(href='/register') Register
                     div.navbar-item.has-dropdown.is-hoverable
                       a.navbar-link(href='/divisions') Divisions
                       div.navbar-dropdown
-                        each divisionNav in divisions
+                        each divisionNav in global.locals.divisionsNavbar
                           a.navbar-item(href='divisions/' + divisionNav.id) #{divisionNav.name}
+                    a.navbar-item(href='/register') Register
                   div.navbar-end
                     if user
                       a.navbar-item.is-hidden-touch(href='/profile/' + user.steamId).text-icon
