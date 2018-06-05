@@ -10,7 +10,7 @@ block content
         span.icon.is-medium
           i.fas.fa-list
         span #{division.name}
-      if division.start_time || division.discord_url || divisionAdmins
+      if division.start_time || division.discord_url || divisionAdmins || division.draft_sheet_url
         h4.title
           span Useful Information
         if division.start_time
@@ -21,6 +21,10 @@ block content
           strong Discord URL
           p
             a(href='https://discord.gg/' + division.discord_url) Invite Link
+        if division.draft_sheet_url
+          strong Draft Sheet URL
+          p
+            a(href=division.draft_sheet_url) Draft Sheet
         if divisionAdmins
           strong Division Admins
   div.columns

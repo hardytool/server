@@ -28,6 +28,10 @@ block content
             p.control
               input.input(id='start_time' type='text' name='start_time' placeholder='Sunday 9PM PST' value=(division ? division.start_time : '') required)
           div.field
+            label.label(for='draft_sheet_url') Draft Sheet URL:
+            p.control
+              input.input(id='draft_sheet_url' type='text' name='draft_sheet_url' placeholder='Draft Sheet URL' value=(division ? division.draft_sheet_url : ''))
+          div.field
             p.control
               label.checkbox
                 if division && division.active
