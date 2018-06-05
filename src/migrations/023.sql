@@ -1,2 +1,2 @@
 ALTER TABLE division
-  ADD COLUMN draft_sheet varchar(100);
+  ADD COLUMN draft_sheet_url varchar(300);
