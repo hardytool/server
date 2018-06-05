@@ -240,6 +240,11 @@ app.get(adminGroupPages.edit.route, adminGroupPages.edit.handler)
 app.post(adminGroupPages.post.route, adminGroupPages.post.handler)
 app.post(adminGroupPages.remove.route, adminGroupPages.remove.handler)
 
+division.getDivisions().then(divisions => {
+  var divisionsNavbar = divisions
+  console.log(divisionsNavbar)
+})
+
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))
   .then(versions => {
