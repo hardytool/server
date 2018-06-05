@@ -78,10 +78,7 @@ division.getDivisions().then(divisionNavbars => {
 
   var app = express()
   global.locals = {
-    divisionsNavbar: divisionNavbars,
-    site: {
-      title: 'The Best Title'
-    }
+    divisionsNavbar: divisionNavbars
   }
 
   var csrfMiddleware = csurf({
