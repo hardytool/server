@@ -34,3 +34,26 @@ block content
       if user && user.isAdmin
         a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/create')
           button.button.is-primary Add team
+      div.field.is-grouped
+        p.control
+      div.field.is-grouped
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/players')
+            button.button.is-primary Players
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/captains')
+            button.button.is-success Captains
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/stand-ins')
+            button.button.is-info Stand-ins
+        div.control
+          a.button(disabled) Teams
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series')
+            button.button.is-info Series
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/standings')
+            button.button.is-success Standings
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups')
+            button.button.is-primary Matchups
