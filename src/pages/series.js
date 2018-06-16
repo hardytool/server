@@ -207,12 +207,19 @@ function standings(templates, season, team, series, pairings, division, req, res
               teams,
               mapSeries(series)
             )
+            var counter = 1;
             standings = standings.map(standing => {
               var team = teams.filter(team => team.id === standing.id)[0]
               standing.name = team.name
               standing.logo = team.logo
               standing.captain_name = team.captain_name
               standing.disbanded = team.disbanded
+              if (standing.disbanded) {
+                standing.placement = '-'
+              } else {
+                standing.placement = counter
+                counter++
+              }
               return standing
             })
             var html = templates.series.standings({
