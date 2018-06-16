@@ -13,6 +13,7 @@ block content
       table.table.is-striped.is-middle-aligned.is-fullwidth
         thead
           tr
+            th Place
             th Name (Captain)
             th Logo
             th Wins
@@ -21,6 +22,7 @@ block content
         tbody
           each standing in standings
             tr
+              td= standing.placement
               if standing.disbanded
                 td.disbanded
                   a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + standing.id)= standing.name

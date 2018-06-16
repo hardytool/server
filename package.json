@@ -29,6 +29,7 @@
     "json2csv": "^4.0.2",
     "markdown-it": "^8.4.1",
     "markdown-it-classy": "^0.2.0",
+    "npm": "^6.1.0",
     "passport": "^0.4.0",
     "passport-steam": "^1.0.9",
     "pg": "^7.4.1",
