@@ -35,3 +35,26 @@ block content
               td= standing.wins
               td= standing.losses
               td= standing.tiebreaker
+      div.field.is-grouped
+        p.control
+      div.field.is-grouped
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/players')
+            button.button.is-primary Players
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/captains')
+            button.button.is-success Captains
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/stand-ins')
+            button.button.is-info Stand-ins
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams')
+            button.button.is-warning Teams
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series')
+            button.button.is-info Series
+        div.control
+          a.button(disabled) Standings
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups')
+            button.button.is-primary Matchups
