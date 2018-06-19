@@ -9,7 +9,14 @@ block content
       h3.title.is-3.has-image
         figure.image.is-team-logo-medium.hide-overflow
           img(src=team.logo)
-        span &nbsp;#{season.name} - #{team.name} Roster
+        if team.disbanded
+          span &nbsp;#{season.name} - #{team.name} Roster &nbsp;  
+            span.tooltip(tabindex='-1') 
+              span.icon.is-medium
+                i.fas.fa-window-close
+              span.tooltiptext= "Disbanded"
+        else
+          span &nbsp;#{season.name} - #{team.name} Roster
   if team.team_number
     div.columns
       div.column
