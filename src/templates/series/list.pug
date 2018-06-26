@@ -1,5 +1,13 @@
 extends ../components/base.pug
 
+mixin buttons
+  div.columns
+    div.column
+      div.field.is-grouped
+        if user && user.isAdmin
+          div.control
+            a.button.is-info(href='/seasons/' + season.id + '/divisions/' + division.id + '/series/create') Add series
+
 block title
   title #{title} : #{season.name} Series List
 
@@ -10,77 +18,77 @@ block content
         span.icon.is-medium
           i.fa.fa-list
         span &nbsp;#{division.name} #{season.name} Series
-      table.table.is-striped.is-middle-aligned.is-fullwidth
-        thead
+  +buttons
+  div.columns
+    table.table.is-striped.is-middle-aligned.is-fullwidth
+      thead
+        tr
+          th Week
+          th Home Team Name
+          th Home Team Logo
+          th Home Team Points
+          th Away Team Points
+          th Away Team Logo
+          th Away Team Name
+          th Match 1
+          th Match 2
+          th Forfeit Match 1?
+          th Forfeit Match 2?
+          if user && user.isAdmin
+            th Edit
+      tbody
+        each _series in series
           tr
-            th Week
-            th Home Team Name
-            th Home Team Logo
-            th Home Team Points
-            th Away Team Points
-            th Away Team Logo
-            th Away Team Name
-            th Match 1
-            th Match 2
-            th Forfeit Match 1?
-            th Forfeit Match 2?
-            if user && user.isAdmin
-              th Edit
-        tbody
-          each _series in series
-            tr
-              td= _series.round
-              td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.home.id)= _series.home.name
+            td= _series.round
+            td
+              a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.home.id)= _series.home.name
+            td
+              figure.image.is-team-logo.hide-overflow
+                img(src=_series.home.logo)
+            td= _series.home.points
+            if _series.away
+              td= _series.away.points
               td
                 figure.image.is-team-logo.hide-overflow
-                  img(src=_series.home.logo)
-              td= _series.home.points
-              if _series.away
-                td= _series.away.points
-                td
-                  figure.image.is-team-logo.hide-overflow
-                    img(src=_series.away.logo)
-                td
-                  a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.away.id)= _series.away.name
-              else
-                td 0
-                td BYE
-                td BYE
-              if _series.match_1_id
-                td
-                  a(href='https://www.dotabuff.com/matches/' + _series.match_1_id) Dotabuff
-                  span
-                    | &nbsp;/
-                    |
-                  a(href='https://www.opendota.com/matches/' + _series.match_1_id) OpenDota
-              else
-                td N/A
-              if _series.match_2_id
-                td
-                  a(href='https://www.dotabuff.com/matches/' + _series.match_2_id) Dotabuff
-                  span
-                    |
-                    |/
-                    |
-                  a(href='https://www.opendota.com/matches/' + _series.match_2_id) OpenDota
-              else
-                td N/A
-              if _series.match_1_forfeit_home == true
-                td Home
-              else if _series.match_1_forfeit_home == false
-                  td Away
-              else
-                td None
-              if _series.match_2_forfeit_home == true
-                td Home
-              else if _series.match_2_forfeit_home == false
-                  td Away
-              else
-                td None
-              if user && user.isAdmin
-                td
-                  a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series/' + _series.id + '/edit') edit
-      if user && user.isAdmin
-        a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series/create')
-          button.button.is-primary Add series
+                  img(src=_series.away.logo)
+              td
+                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.away.id)= _series.away.name
+            else
+              td 0
+              td BYE
+              td BYE
+            if _series.match_1_id
+              td
+                a(href='https://www.dotabuff.com/matches/' + _series.match_1_id) Dotabuff
+                span
+                  | &nbsp;/
+                  |
+                a(href='https://www.opendota.com/matches/' + _series.match_1_id) OpenDota
+            else
+              td N/A
+            if _series.match_2_id
+              td
+                a(href='https://www.dotabuff.com/matches/' + _series.match_2_id) Dotabuff
+                span
+                  |
+                  |/
+                  |
+                a(href='https://www.opendota.com/matches/' + _series.match_2_id) OpenDota
+            else
+              td N/A
+            if _series.match_1_forfeit_home == true
+              td Home
+            else if _series.match_1_forfeit_home == false
+                td Away
+            else
+              td None
+            if _series.match_2_forfeit_home == true
+              td Home
+            else if _series.match_2_forfeit_home == false
+                td Away
+            else
+              td None
+            if user && user.isAdmin
+              td
+                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series/' + _series.id + '/edit') edit
+  +buttons
