@@ -1,5 +1,36 @@
 extends ../components/base.pug
 
+mixin adminButtons
+  div.columns
+    div.column
+      div.field.is-grouped
+        if user && user.isAdmin
+        a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/create')
+          button.button.is-link Add team
+
+mixin navigationButtons
+  div.field.is-grouped
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/players')
+        button.button.is-primary Players
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/captains')
+        button.button.is-success Captains
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/stand-ins')
+        button.button.is-info Stand-ins
+    div.control
+      a.button(disabled) Teams
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series')
+        button.button.is-info Series
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/standings')
+        button.button.is-success Standings
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups')
+        button.button.is-primary Matchups
+
 block title
   title #{title} : #{season ? season.name : ''} Team List
 
@@ -10,27 +41,29 @@ block content
         span.icon.is-medium
           i.fas.fa-list
         span #{season ? season.name : ''} Teams
-      table.table.is-striped.is-middle-aligned.is-fullwidth
-        thead
+  +navigationButtons
+  +adminButtons
+  div.columns
+    table.table.is-striped.is-middle-aligned.is-fullwidth
+      thead
+        tr
+          th Name (Captain)
+          th Logo
+          th Seed
+          if user && user.isAdmin
+            th Edit
+      tbody
+        each team in teams
           tr
-            th Name (Captain)
-            th Logo
-            th Seed
+            td
+              a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + team.id)= team.name
+              span= team.captain_name ? ' (' + team.captain_name + ')' : ''
+            td
+              figure.image.is-team-logo.hide-overflow
+                img(src=team.logo)
+            td= team.seed
             if user && user.isAdmin
-              th Edit
-        tbody
-          each team in teams
-            tr
               td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + team.id)= team.name
-                span= team.captain_name ? ' (' + team.captain_name + ')' : ''
-              td
-                figure.image.is-team-logo.hide-overflow
-                  img(src=team.logo)
-              td= team.seed
-              if user && user.isAdmin
-                td
-                  a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + team.id + '/edit') edit
-      if user && user.isAdmin
-        a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/create')
-          button.button.is-primary Add team
+                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + team.id + '/edit') edit
+  +navigationButtons
+  +adminButtons
