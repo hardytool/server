@@ -1,5 +1,28 @@
 extends ../components/base.pug
 
+mixin navigationButtons
+  div.field.is-grouped
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/players')
+        button.button.is-primary Players
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/captains')
+        button.button.is-success Captains
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/stand-ins')
+        button.button.is-info Stand-ins
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams')
+        button.button.is-warning Teams
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series')
+        button.button.is-info Series
+    div.control
+      a.button(disabled) Standings
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups')
+        button.button.is-primary Matchups
+
 block title
   title #{title} : #{season.name} Week #{round} Standings
 
@@ -10,28 +33,51 @@ block content
         span.icon.is-medium
           i.fa.fa-list
         span &nbsp;#{division.name} #{season.name} Week #{round} Standings
-      table.table.is-striped.is-middle-aligned.is-fullwidth
-        thead
+  +navigationButtons
+  div.columns
+    table.table.is-striped.is-middle-aligned.is-fullwidth
+      thead
+        tr
+          th Name (Captain)
+          th Logo
+          th Wins
+          th Losses
+          th Tiebreaker
+      tbody
+        each standing in standings
           tr
-            th Name (Captain)
-            th Logo
-            th Wins
-            th Losses
-            th Tiebreaker
-        tbody
-          each standing in standings
-            tr
-              if standing.disbanded
-                td.disbanded
-                  a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + standing.id)= standing.name
-                  span= standing.captain_name ? ' (' + standing.captain_name + ')' : ''
-              else
-                td
-                  a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + standing.id)= standing.name
-                  span= standing.captain_name ? ' (' + standing.captain_name + ')' : ''
+            if standing.disbanded
+              td.disbanded
+                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + standing.id)= standing.name
+                span= standing.captain_name ? ' (' + standing.captain_name + ')' : ''
+            else
               td
-                figure.image.is-team-logo.hide-overflow
-                  img(src=standing.logo)
-              td= standing.wins
-              td= standing.losses
-              td= standing.tiebreaker
+                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + standing.id)= standing.name
+                span= standing.captain_name ? ' (' + standing.captain_name + ')' : ''
+            td
+              figure.image.is-team-logo.hide-overflow
+                img(src=standing.logo)
+            td= standing.wins
+            td= standing.losses
+            td= standing.tiebreaker
+  div.columns
+    if user && user.isAdmin
+      div.has-text-centered
+        if round > 0
+          - var prevRound = round - 1
+          a.button.is-inline-block(href='/seasons/' + season.id + '/divisions/' + division.id + '/standings/' + (prevRound == maximumRound ? '' : prevRound)) Prev
+        else
+          a.button.is-inline-block(disabled) Prev
+        - var i = 0
+        while i <= maximumRound
+          if round === i
+            a.button.is-inline-block.is-white(disabled)= i
+          else
+            a.button.is-inline-block.is-white(href='/seasons/' + season.id + '/divisions/' + division.id + '/standings/' + i)= i
+          - i++
+        if round < maximumRound
+          - var nextRound = round + 1
+          a.button.is-inline-block(href='/seasons/' + season.id + '/divisions/' + division.id + '/standings/' + (nextRound == maximumRound ? '' : nextRound)) Next
+        else
+          a.button.is-inline-block(disabled) Next
+

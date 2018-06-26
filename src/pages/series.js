@@ -193,36 +193,39 @@ function standings(templates, season, team, series, pairings, division, req, res
   var division_id = req.params.division_id
   var round = Number.parseInt(req.params.round)
 
-  series.getCurrentRound(season_id, round).then(round => {
-    return season.getSeason(season_id).then(season => {
-      return division.getDivision(division_id).then(division => {
-        return team.getTeams(season.id, division.id).then(teams => {
-          return series.getSeries({
-            season_id: season.id,
-            division_id: division.id,
-            round: round
-          }).then(series => {
-            var standings = pairings.getStandings(
-              round,
-              teams,
-              mapSeries(series)
-            )
-            standings = standings.map(standing => {
-              var team = teams.filter(team => team.id === standing.id)[0]
-              standing.name = team.name
-              standing.logo = team.logo
-              standing.captain_name = team.captain_name
-              standing.disbanded = team.disbanded
-              return standing
+  series.getCurrentRound(season_id, round).then(maximumRound => {
+    series.getCurrentRound(season_id, round).then(round => {
+      return season.getSeason(season_id).then(season => {
+        return division.getDivision(division_id).then(division => {
+          return team.getTeams(season.id, division.id).then(teams => {
+            return series.getSeries({
+              season_id: season.id,
+              division_id: division.id,
+              round: round
+            }).then(series => {
+              var standings = pairings.getStandings(
+                round,
+                teams,
+                mapSeries(series)
+              )
+              standings = standings.map(standing => {
+                var team = teams.filter(team => team.id === standing.id)[0]
+                standing.name = team.name
+                standing.logo = team.logo
+                standing.captain_name = team.captain_name
+                standing.disbanded = team.disbanded
+                return standing
+              })
+              var html = templates.series.standings({
+                user: req.user,
+                season: season,
+                division: division,
+                round: round,
+                maximumRound: maximumRound,
+                standings: standings
+              })
+              res.send(html)
             })
-            var html = templates.series.standings({
-              user: req.user,
-              season: season,
-              division: division,
-              round: round,
-              standings: standings
-            })
-            res.send(html)
           })
         })
       })
