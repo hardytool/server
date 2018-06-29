@@ -180,7 +180,7 @@ function directoryShortcut(templates, season, division, steam_user, player, req,
   })
 }
 
-function post(templates, season, division, steam_user, team_player, player, role, player_role, req, res) {
+function post(templates, season, division, steam_user, team_player, player, role, player_role, profile, req, res) {
   if (!req.user) {
     res.sendStatus(403)
     return
@@ -203,43 +203,48 @@ function post(templates, season, division, steam_user, team_player, player, role
       return division.getDivision(division_id).then(division => {
         if (division.active) {
           return steam_user.getSteamUser(req.user.steamId).then(steamUser => {
-            return team_player.isCaptainAutoApproved(steamUser.steam_id)
-            .then(({ allowed }) => {
-              p.captain_approved = allowed
-              return player.getPlayer(p.id).then(pl => {
-                //stops overwrite of new captains when they edit registration
-                p.captain_approved = pl.captain_approved
+            return profile.getProfile(steamUser.steam_id).then(_profile => {
+              _profile.discord_name = req.body.discord_name
+              return team_player.isCaptainAutoApproved(steamUser.steam_id)
+              .then(({ allowed }) => {
+                p.captain_approved = allowed
+                return player.getPlayer(p.id).then(pl => {
+                  //stops overwrite of new captains when they edit registration
+                  p.captain_approved = pl.captain_approved
 
-                // If the player ID exists and the steam ID matches, allowed
-                // If the player ID exists and the steam ID doesn't match, not allowed
-                return pl.steam_id === req.user.steamId
-              }).catch(() => {
-                // If the player ID doesn't exist, action allowed
-                return true
-              }).then(allowed => {
-                if (allowed) {
-                  return player.savePlayer(p).then(() => {
-                    return role.getRoles().then(roles => {
-                      var promises = roles.reduce((promises, role) => {
-                        if (p[role.id] !== undefined) {
-                          promises.push(player_role.saveRoleRank(p.id, role.id, p[role.id]))
-                        }
-                        return promises
-                      }, [])
-                      return Promise.all(promises).then(() => {
-                        var html = templates.registration.discord({
-                          user: req.user,
-                          season: season,
-                          division: division
+                  // If the player ID exists and the steam ID matches, allowed
+                  // If the player ID exists and the steam ID doesn't match, not allowed
+                  return pl.steam_id === req.user.steamId
+                }).catch(() => {
+                  // If the player ID doesn't exist, action allowed
+                  return true
+                }).then(allowed => {
+                  if (allowed) {
+                    return player.savePlayer(p).then(() => {
+                      return profile.saveProfile(_profile).then(() => {
+                        return role.getRoles().then(roles => {
+                          var promises = roles.reduce((promises, role) => {
+                            if (p[role.id] !== undefined) {
+                              promises.push(player_role.saveRoleRank(p.id, role.id, p[role.id]))
+                            }
+                            return promises
+                          }, [])
+                          return Promise.all(promises).then(() => {
+                            var html = templates.registration.discord({
+                              user: req.user,
+                              season: season,
+                              division: division
+                            })
+
+                            res.send(html)
+                          })
                         })
-
-                        res.send(html)
                       })
                     })
-                  })
-                } else {
-                  Promise.reject('Access forbidden')
-                }
+                  } else {
+                    Promise.reject('Access forbidden')
+                  }
+                })
               })
             })
           })
@@ -300,7 +305,7 @@ module.exports = (templates, season, division, steam_user, team_player, player, 
       },
       post: {
         route: '/register',
-        handler: post.bind(null, templates, season, division, steam_user, team_player, player, role, player_role)
+        handler: post.bind(null, templates, season, division, steam_user, team_player, player, role, player_role, profile)
       },
       unregister: {
         route: '/register/delete',
