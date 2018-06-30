@@ -84,6 +84,7 @@
      - Teams have 15 minutes after the end of a game to create the lobby and start the subsequent game.
        - If one team needs more time, the other team needs to agree to the delay. Both captains must report agreement to delay the match to an admin for approval.
      - All chat is allowed, unless either team requests no all chat.
+       - Tipping, Chat Wheel, and Hero Taunts are all allowed in official matches.
        - All chat is always allowed for purpose of calling GG.
        - All chat during games should be civil.
        - Continued all chat after a “no all chat” request by either team will result in a forfeit against the offending team for that game.
