@@ -51,6 +51,7 @@ block content
           th Logo
           th Seed
           if user && user.isAdmin
+            th Standin Count
             th Edit
       tbody
         each team in teams
@@ -63,6 +64,7 @@ block content
                 img(src=team.logo)
             td= team.seed
             if user && user.isAdmin
+              td= team.standinCount
               td
                 a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + team.id + '/edit') edit
   +adminButtons
