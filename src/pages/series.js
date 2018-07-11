@@ -193,7 +193,7 @@ function standings(templates, season, team, series, pairings, division, req, res
   var division_id = req.params.division_id
   var round = Number.parseInt(req.params.round)
 
-  series.getCurrentRound(season_id, round).then(maximumRound => {
+  series.getCurrentRound(season_id).then(maximumRound => {
     series.getCurrentRound(season_id, round).then(round => {
       return season.getSeason(season_id).then(season => {
         return division.getDivision(division_id).then(division => {
