@@ -11,6 +11,7 @@ function getTeams(db, season_id, division_id) {
     team.team_number,
     team.seed,
     team.disbanded,
+    team.standin_count,
     steam_user.steam_id as captain_id,
     COALESCE(profile.name, steam_user.name) AS captain_name,
     season.number AS season_number,
@@ -55,7 +56,8 @@ function getTeam(db, id) {
     logo,
     team_number,
     seed,
-    disbanded
+    disbanded,
+    standin_count
   FROM
     team
   WHERE
@@ -77,7 +79,8 @@ function saveTeam(db, team) {
       logo,
       team_number,
       seed,
-      disbanded
+      disbanded,
+      standin_count
     ) VALUES (
       ${team.id},
       ${team.season_id},
@@ -86,7 +89,8 @@ function saveTeam(db, team) {
       ${team.logo},
       ${team.team_number},
       ${team.seed},
-      ${team.disbanded}
+      ${team.disbanded},
+      ${team.standin_count}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
@@ -96,7 +100,8 @@ function saveTeam(db, team) {
       logo,
       team_number,
       seed,
-      disbanded
+      disbanded,
+      standin_count
     ) = (
       ${team.season_id},
       ${team.division_id},
@@ -104,7 +109,8 @@ function saveTeam(db, team) {
       ${team.logo},
       ${team.team_number},
       ${team.seed},
-      ${team.disbanded}
+      ${team.disbanded},
+      ${team.standin_count}
     )
   `
   return db.query(upsert)

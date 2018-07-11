@@ -179,6 +179,7 @@ function getStandings(db, season_id, division_id, round) {
       team.name,
       team.logo,
       team.seed,
+      team.disbanded,
       steam_user.steam_id as captain_id,
       steam_user.name as captain_name,
       COALESCE(standings.wins, 0) as wins,

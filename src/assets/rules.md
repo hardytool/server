@@ -27,10 +27,12 @@
      - Captains do not have the power to remove players from their team after the draft.
      - Captains should be at least Legend[1] rank or higher. This threshold may be increased or decreased at the discretion of division admins.
    - **Stand-ins**
-     - Teams may use 1 stand-in per match, for a maximum of 2 series (4 games) during a season. If a team finds itself needing more than this, they should contact a division admin with regards to a free-agent.
+     - Teams may use 1 stand-in per match, for a maximum of 3 series (6 games) during a season. If a team finds itself needing more than this, they should contact a division admin with regards to a free-agent.
        - If a team needs two stand-ins in order to play they must forfeit the match.
      - Stand-in usage from the season will be reset for all playoff teams. Playoff teams may use a stand-in for a maximum of two series of the playoffs. (Series means all games of a round, usually best of 3 or best of 5)
      - Each stand-in must be equal rank or lower than the player they are replacing, as listed in the rank tab from the draft sheet.
+       - Each stand-in must be equal rank or lower than the player they are replacing, as listed in the rank tab from the draft sheet. 
+       - If a captain believes a stand-in is not fair they can report it to their division admin to decide if the stand-in can be used or not. (Basically there will be admin discretion for stand-ins).
      - The stand-in must be an RD2L player. The division admin and opposing captain must be notified of who you are missing and who you are using as a stand-in before the match begins.
      - Captains must attempt to use all of their current roster's players before requesting a stand-in. The opposing captain may reject any stand-in with a higher rank than the rank of the player missing from the team, with a floor of Legend[0].
        - The exception to this rule is if one of your top 2 ranked players is missing, then you may find a suitable stand-in.
@@ -82,6 +84,7 @@
      - Teams have 15 minutes after the end of a game to create the lobby and start the subsequent game.
        - If one team needs more time, the other team needs to agree to the delay. Both captains must report agreement to delay the match to an admin for approval.
      - All chat is allowed, unless either team requests no all chat.
+       - Tipping, Chat Wheel, and Hero Taunts are all allowed in official matches.
        - All chat is always allowed for purpose of calling GG.
        - All chat during games should be civil.
        - Continued all chat after a “no all chat” request by either team will result in a forfeit against the offending team for that game.
