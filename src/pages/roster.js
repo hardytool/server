@@ -2,6 +2,8 @@ function list(templates, season, division, team, team_player, series, req, res) 
   var season_id = req.params.season_id
   var division_id = req.params.division_id
   var team_id = req.params.team_id
+  var wins = 0
+  var losses = 0
 
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
@@ -21,6 +23,11 @@ function list(templates, season, division, team, team_player, series, req, res) 
                 _series.home.name = _series.home_team_name
                 _series.home.logo = _series.home_team_logo
                 _series.home.points = _series.home_points
+
+                if (team_id == _series.home.id) {
+                  wins += _series.home_points
+                  losses += _series.away_points
+                }
               }
               if (_series.away_team_id) {
                 _series.away = {}
@@ -28,7 +35,13 @@ function list(templates, season, division, team, team_player, series, req, res) 
                 _series.away.name = _series.away_team_name
                 _series.away.logo = _series.away_team_logo
                 _series.away.points = _series.away_points
+
+                if (team_id == _series.away_team_id) {
+                  wins += _series.away_points
+                  losses += _series.home_points
+                }
               }
+
               return _series
             })
             var html = templates.roster.list({
@@ -38,6 +51,8 @@ function list(templates, season, division, team, team_player, series, req, res) 
               team: team,
               captain: captain,
               players: players,
+              wins: wins,
+              losses: losses,
               series: series,
               csrfToken: req.csrfToken()
             })
