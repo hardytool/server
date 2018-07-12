@@ -103,16 +103,14 @@ block content
         thead
           tr
             th Week
-            th Home Team Name
-            th Home Team Logo
-            th Home Team Points
-            th Away Team Points
-            th Away Team Logo
-            th Away Team Name
+            th Team Name
+            th Team Logo
+            th Team Points
+            th Opponent Team Points
+            th Opponent Team Logo
+            th Opponent Team Name
             th Match 1
             th Match 2
-            th Forfeit Match 1?
-            th Forfeit Match 2?
             if user && user.isAdmin
               th Edit
         tbody
@@ -120,18 +118,18 @@ block content
             tr
               td= _series.round
               td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.home.id)= _series.home.name
+                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.own.id)= _series.own.name
               td
                 figure.image.is-team-logo.hide-overflow
-                  img(src=_series.home.logo)
-              td= _series.home.points
-              if _series.away
-                td= _series.away.points
+                  img(src=_series.own.logo)
+              td= _series.own.points
+              if _series.opp.name
+                td= _series.opp.points
                 td
                   figure.image.is-team-logo.hide-overflow
-                    img(src=_series.away.logo)
+                    img(src=_series.opp.logo)
                 td
-                  a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.away.id)= _series.away.name
+                  a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.opp.id)= _series.opp.name
               else
                 td 0
                 td BYE
@@ -155,18 +153,6 @@ block content
                   a(href='https://www.opendota.com/matches/' + _series.match_2_id) OpenDota
               else
                 td N/A
-              if _series.match_1_forfeit_home == true
-                td Home
-              else if _series.match_1_forfeit_home == false
-                  td Away
-              else
-                td None
-              if _series.match_2_forfeit_home == true
-                td Home
-              else if _series.match_2_forfeit_home == false
-                  td Away
-              else
-                td None
               if user && user.isAdmin
                 td
                   a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series/' + _series.id + '/edit') edit
