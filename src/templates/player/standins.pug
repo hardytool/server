@@ -1,18 +1,35 @@
 extends ../components/base.pug
 
-mixin buttons
+mixin adminButtons
   div.columns
     div.column
       div.field.is-grouped
-        div.control
-          a.button(href='/seasons/' + season.id + '/divisions/' + division.id + '/players') View players
-        div.control
-          a.button(href='/seasons/' + season.id + '/divisions/' + division.id + '/captains') View captains
-        div.control
-          a.button(disabled) View stand-ins
         if user && user.isAdmin
           div.control
             a.button.is-info(href='/seasons/' + season.id + '/divisions/' + division.id + '/players/create') Add player
+
+mixin navigationButtons
+  div.field.is-grouped
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/players')
+        button.button.is-primary Players
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/captains')
+        button.button.is-success Captains
+    div.control
+      a.button(disabled) Stand-ins
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams')
+        button.button.is-warning Teams
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series')
+        button.button.is-info Series
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/standings')
+        button.button.is-success Standings
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups')
+        button.button.is-primary Matchups
 
 block title
   title #{title} : #{season ? season.name : ''} #{division ? division.name : '' } Stand-ins
@@ -24,7 +41,8 @@ block content
         span.icon.is-medium
           i.fa.fa-list
         span #{season ? season.name : ''} #{division ? division.name : '' } Stand-ins
-  +buttons
+  +navigationButtons
+  +adminButtons
   div.columns
     div.column.is-wide-scroll
       table.table.is-striped.is-middle-aligned.is-fullwidth
@@ -82,4 +100,4 @@ block content
                       i.far.fa-lg.fa-times-circle
                 td
                   a(href='/seasons/' + season.id + '/divisions/' + division.id + '/players/' + player.id + '/edit') edit
-  +buttons
+  +adminButtons
