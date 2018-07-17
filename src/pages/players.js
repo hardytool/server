@@ -269,6 +269,21 @@ function currentPlayers(func, templates, season, player, req, res) {
   })
 }
 
+function activityCheck(player, season, req, res) {
+  season.getActiveSeason().then(_season => {
+    season_id = _season.id
+    steam_id = req.user.steamId
+
+    player.activityCheck(season_id, steam_id).then(() => {
+      res.redirect('/profile/' + steam_id)
+    }).catch(err => {
+      console.error(err)
+      res.sendStatus(500)
+    })
+
+  })
+}
+
 module.exports = (templates, season, division, player, player_role, role, steam_user) => {
   return {
     list: {
@@ -302,6 +317,10 @@ module.exports = (templates, season, division, player, player_role, role, steam_
     csv: {
       route: '/seasons/:season_id/divisions/:division_id/draftsheet',
       handler: getCSV.bind(null, player, player_role, role, division)
+    },
+    activityCheck: {
+      route: '/players/activityCheck',
+      handler: activityCheck.bind(null, player, season)
     }
   }
 }

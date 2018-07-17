@@ -1,5 +1,5 @@
 function view(
-  templates, steam_user, profile, vouch, team_player, steamId, req, res) {
+  templates, steam_user, profile, season, vouch, team_player, steamId, req, res) {
     var viewerHasPlayed = Promise.resolve(null)
     if (req.user) {
       viewerHasPlayed = steam_user.getSteamUser(req.user.steamId)
@@ -8,34 +8,38 @@ function view(
         })
     }
     viewerHasPlayed.then(viewerHasPlayed => {
-      return profile.getProfile(req.params.steam_id).then(_profile => {
-        _profile.id64 = steamId.from32to64(_profile.steam_id)
-        return team_player.hasPlayed(_profile.steam_id)
-          .then(({ has_played }) => {
-            return vouch.isVouched(_profile.steam_id)
-              .then(result => {
-                return team_player.getPlayerTeams(_profile.steam_id)
-                  .then(teamsPlayed => {
-                    return profile.getProfile(result.voucher_id).then(voucher => {
-                      result.voucher = voucher
-                      result.teamsPlayed = teamsPlayed
-                      return result
+      return season.getActiveSeason().then(active_season => {
+        return profile.getProfile(req.params.steam_id).then(_profile => {
+          _profile.id64 = steamId.from32to64(_profile.steam_id)
+          return team_player.hasPlayed(_profile.steam_id)
+            .then(({ has_played }) => {
+              return vouch.isVouched(_profile.steam_id)
+                .then(result => {
+                  return team_player.getPlayerTeams(_profile.steam_id)
+                    .then(teamsPlayed => {
+                      return profile.getProfile(result.voucher_id).then(voucher => {
+                        result.voucher = voucher
+                        result.teamsPlayed = teamsPlayed
+                        return result
+                      })
+                    }).then(({ is_vouched, voucher, teamsPlayed }) => {
+                      var html = templates.profile.view({
+                        user: req.user,
+                        profile: _profile,
+                        active_season: active_season,
+                        vouched: is_vouched,
+                        voucher: voucher,
+                        has_played: has_played,
+                        teamsPlayed: teamsPlayed,
+                        csrfToken: req.csrfToken(),
+                        can_vouch: (req.user && req.user.isAdmin)
+                          || (viewerHasPlayed && viewerHasPlayed.has_played)
+                      })
+                      res.send(html)
                     })
-                  }).then(({ is_vouched, voucher, teamsPlayed }) => {
-                    var html = templates.profile.view({
-                      user: req.user,
-                      profile: _profile,
-                      vouched: is_vouched,
-                      voucher: voucher,
-                      has_played: has_played,
-                      teamsPlayed: teamsPlayed,
-                      can_vouch: (req.user && req.user.isAdmin)
-                        || (viewerHasPlayed && viewerHasPlayed.has_played)
-                    })
-                    res.send(html)
-                  })
-              })
-          })
+                })
+            })
+        })
       })
     }).catch(err => {
       console.error(err)
@@ -179,12 +183,12 @@ function unvouch(profile, vouch, req, res) {
 }
 
 module.exports =
-  (templates, steam_user, profile, team_player, _vouch, steamId) => {
+  (templates, steam_user, profile, season, team_player, _vouch, steamId) => {
     return {
       view: {
         route: '/profile/:steam_id',
         handler: view.bind(
-          null, templates, steam_user, profile, _vouch, team_player, steamId)
+          null, templates, steam_user, profile, season, _vouch, team_player, steamId)
       },
       edit: {
         route: '/profile/:steam_id/edit',

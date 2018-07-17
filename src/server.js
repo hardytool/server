@@ -57,7 +57,7 @@ var openid = require('./api/openid')(config)
 // Page routes
 var indexPages = require('./pages/index')(templates, path.join(__dirname, 'assets', 'rules.md'))
 var playerPages = require('./pages/players')(templates, season, division, player, player_role, role, steam_user)
-var profilePages = require('./pages/profile')(templates, steam_user, profile, team_player, vouch, steamId)
+var profilePages = require('./pages/profile')(templates, steam_user, profile, season, team_player, vouch, steamId)
 var seasonPages = require('./pages/seasons')(templates, season)
 var divisionPages = require('./pages/divisions')(templates, season, division, admin)
 var seriesPages = require('./pages/series')(templates, season, team, series, pairings, division)
@@ -194,9 +194,11 @@ app.get(playerPages.standins.route, playerPages.standins.handler)
 app.get(playerPages.create.route, playerPages.create.handler)
 app.get(playerPages.edit.route, playerPages.edit.handler)
 app.get(playerPages.csv.route, playerPages.csv.handler)
+app.get(playerPages.activityCheck.route, playerPages.activityCheck.handler)
 
 app.post(playerPages.post.route, playerPages.post.handler)
 app.post(playerPages.remove.route, playerPages.remove.handler)
+
 
 app.get(rosterPages.list.route, rosterPages.list.handler)
 app.get(rosterPages.add.route, rosterPages.add.handler)

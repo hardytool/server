@@ -11,6 +11,7 @@ function getPlayers(db, criteria, sort) {
     player.captain_approved,
     player.statement,
     player.is_draftable,
+    player.activity_check,
     profile.discord_name,
     season.number season_number,
     season.name season_name,
@@ -193,6 +194,7 @@ function getPlayer(db, id) {
     player.captain_approved,
     player.statement,
     player.is_draftable,
+    player.activity_check,
     season.number season_number,
     season.name season_name,
     profile.discord_name,
@@ -303,6 +305,7 @@ function getDraftSheet(db, criteria, sort) {
     END AS draft_rank,
     player.statement,
     has_played.has_played OR is_vouched.is_vouched AS is_vouched,
+    player.activity_check,
     CONCAT('https://www.dotabuff.com/players/', steam_user.steam_id)
       AS dotabuff,
     CONCAT('https://www.opendota.com/players/', steam_user.steam_id)
@@ -414,6 +417,19 @@ function getDraftSheet(db, criteria, sort) {
   })
 }
 
+function activityCheck(db, season_id, steam_id) {
+  var query = sql`
+    UPDATE player
+    SET
+      activity_check = true
+    WHERE
+      steam_id = ${steam_id}
+    AND
+      season_id = ${season_id}
+  `
+  return db.query(query)
+}
+
 module.exports = db => {
   return {
     getPlayers: getPlayers.bind(null, db),
@@ -421,6 +437,7 @@ module.exports = db => {
     savePlayer: savePlayer.bind(null, db),
     deletePlayer: deletePlayer.bind(null, db),
     unregisterPlayer: unregisterPlayer.bind(null, db),
-    getDraftSheet: getDraftSheet.bind(null, db)
+    getDraftSheet: getDraftSheet.bind(null, db),
+    activityCheck: activityCheck.bind(null, db)
   }
 }
