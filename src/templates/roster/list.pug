@@ -27,6 +27,9 @@ block content
       h5.title.is-5
         span Record: #{wins} - #{losses}
       h5.title.is-5
+        span Division: 
+          a(href='/divisions/' + division.id) #{division.name}
+      h5.title.is-5
         span Captain
       if captain
         div.box
