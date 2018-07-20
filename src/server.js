@@ -61,7 +61,7 @@ var profilePages = require('./pages/profile')(templates, steam_user, profile, te
 var seasonPages = require('./pages/seasons')(templates, season)
 var divisionPages = require('./pages/divisions')(templates, season, division, admin)
 var seriesPages = require('./pages/series')(templates, season, team, series, pairings, division)
-var teamPages = require('./pages/teams')(templates, season, division, team)
+var teamPages = require('./pages/teams')(templates, season, division, team, team_player)
 var registrationPages = require('./pages/registration')(
   templates, season, division, steam_user, team_player, player, role, player_role, mmr, profile)
 var rosterPages = require('./pages/roster')(templates, season, division, team, team_player, series)
@@ -175,6 +175,7 @@ app.post(divisionPages.remove.route, divisionPages.remove.handler)
 app.get(teamPages.list.route, teamPages.list.handler)
 app.get(teamPages.create.route, teamPages.create.handler)
 app.get(teamPages.edit.route, teamPages.edit.handler)
+app.get(teamPages.json.route, teamPages.json.handler)
 
 app.post(teamPages.post.route, teamPages.post.handler)
 app.post(teamPages.remove.route, teamPages.remove.handler)

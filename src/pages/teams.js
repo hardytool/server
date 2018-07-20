@@ -133,7 +133,29 @@ function currentTeams(templates, season, team, req, res) {
   })
 }
 
-module.exports = (templates, season, division, team) => {
+function json(team, season, team_player, req, res) {
+  season.getActiveSeason().then(_season => {
+    seasonName = _season.name
+    return team.getAllSeasonTeams(_season.id).then(teams => {
+      promises = teams.map(_team => {
+        return team_player.getRoster(_team.id).then(roster => {
+          _team.captain = {"name": _team.captain_name, "id": _team.captain_id}
+          _team.player = roster
+          return _team
+        })
+      })
+      return Promise.all(promises).then(teams => {
+        return teams
+      })
+    }).then(teams => {
+      j = {}
+      j[_season.name] = teams
+      res.send(j)
+    })
+  })
+}
+
+module.exports = (templates, season, division, team, team_player) => {
   return {
     list: {
       route: '/seasons/:season_id/divisions/:division_id/teams',
@@ -154,6 +176,10 @@ module.exports = (templates, season, division, team) => {
     remove: {
       route: '/teams/delete',
       handler: remove.bind(null, team)
+    },
+    json: {
+      route: '/teams/json',
+      handler: json.bind(null, team, season, team_player)
     }
   }
 }
