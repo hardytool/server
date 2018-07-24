@@ -86,6 +86,20 @@ function post(admin, req, res) {
   })
 }
 
+function remove(admin, req, res) {
+  if (!req.user || !req.user.isAdmin) {
+    res.sendStatus(403)
+    return
+  }
+
+  admin.deleteAdmin(req.body.steam_id).then(() => {
+    res.redirect('/admins')
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
 module.exports = (templates, admin, division, admin_group) => {
   return {
     create: {
@@ -103,6 +117,10 @@ module.exports = (templates, admin, division, admin_group) => {
     post: {
       route: '/admins/edit',
       handler: post.bind(null, admin)
+    },
+    remove: {
+      route: '/admins/delete',
+      handler: remove.bind(null, admin)
     }
   }
 }

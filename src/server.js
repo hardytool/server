@@ -232,6 +232,7 @@ app.get(adminPages.create.route, adminPages.create.handler)
 app.get(adminPages.edit.route, adminPages.edit.handler)
 
 app.post(adminPages.post.route, adminPages.post.handler)
+app.post(adminPages.remove.route, adminPages.remove.handler)
 
 app.get(adminGroupPages.list.route, adminGroupPages.list.handler)
 app.get(adminGroupPages.create.route, adminGroupPages.create.handler)
