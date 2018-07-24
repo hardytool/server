@@ -269,6 +269,13 @@ function currentPlayers(func, templates, season, player, req, res) {
   })
 }
 
+function json(player, req, res) {
+  player.getPlayers().then(players => {
+    j = players
+    res.send(j)
+  })
+}
+
 module.exports = (templates, season, division, player, player_role, role, steam_user) => {
   return {
     list: {
@@ -302,6 +309,10 @@ module.exports = (templates, season, division, player, player_role, role, steam_
     csv: {
       route: '/seasons/:season_id/divisions/:division_id/draftsheet',
       handler: getCSV.bind(null, player, player_role, role, division)
+    },
+    json: {
+      route: '/players/json',
+      handler: json.bind(null, player)
     }
   }
 }
