@@ -55,7 +55,7 @@ var timeout = require('./lib/timeout')
 var openid = require('./api/openid')(config)
 
 // Page routes
-var indexPages = require('./pages/index')(templates, path.join(__dirname, 'assets', 'rules.md'))
+var indexPages = require('./pages/index')(templates, path.join(__dirname, 'assets', 'rules.md'), path.join(__dirname, 'assets', 'inhouserules.md'))
 var playerPages = require('./pages/players')(templates, season, division, player, player_role, role, steam_user)
 var profilePages = require('./pages/profile')(templates, steam_user, profile, team_player, vouch, steamId)
 var seasonPages = require('./pages/seasons')(templates, season)
@@ -155,6 +155,7 @@ app.get('/logout', openid.logout)
 app.get(indexPages.home.route, indexPages.home.handler)
 app.get(indexPages.complaint.route, indexPages.complaint.handler)
 app.get(indexPages.rules.route, indexPages.rules.handler)
+app.get(indexPages.irules.route, indexPages.irules.handler)
 
 app.get(seasonPages.list.route, seasonPages.list.handler)
 app.get(seasonPages.create.route, seasonPages.create.handler)

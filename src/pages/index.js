@@ -31,7 +31,7 @@ function rules(templates, path, req, res) {
   })
 }
 
-module.exports = (templates, path) => {
+module.exports = (templates, path, irulespath) => {
   return {
     home: {
       route: '/',
@@ -44,6 +44,10 @@ module.exports = (templates, path) => {
     rules: {
       route: '/rules',
       handler: rules.bind(null, templates, path)
+    },
+    irules: {
+      route: '/inhouserules',
+      handler: rules.bind(null, templates, irulespath)
     }
   }
 }
