@@ -280,7 +280,13 @@ function activityCheck(player, season, req, res) {
       console.error(err)
       res.sendStatus(500)
     })
+  })
+}
 
+function json(player, req, res) {
+  player.getPlayers().then(players => {
+    j = players
+    res.send(j)
   })
 }
 
@@ -321,6 +327,10 @@ module.exports = (templates, season, division, player, player_role, role, steam_
     activityCheck: {
       route: '/players/activityCheck',
       handler: activityCheck.bind(null, player, season)
+    },
+    json: {
+      route: '/players/json',
+      handler: json.bind(null, player)
     }
   }
 }

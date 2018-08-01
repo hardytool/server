@@ -92,11 +92,22 @@ function getDivisionAdmins(db, id) {
   })
 }
 
+function deleteAdmin(db, id) {
+    var query = sql`
+      DELETE FROM
+        admin
+      WHERE
+        steam_id = ${id}
+    `
+  return db.query(query)
+}
+
 module.exports = db => {
   return {
     saveAdmin: saveAdmin.bind(null, db),
     isAdmin: isAdmin.bind(null, db),
     getAdmins: getAdmins.bind(null, db),
-    getDivisionAdmins: getDivisionAdmins.bind(null, db)
+    getDivisionAdmins: getDivisionAdmins.bind(null, db),
+    deleteAdmin: deleteAdmin.bind(null, db)
   }
 }

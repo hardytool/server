@@ -55,7 +55,7 @@ var timeout = require('./lib/timeout')
 var openid = require('./api/openid')(config)
 
 // Page routes
-var indexPages = require('./pages/index')(templates, path.join(__dirname, 'assets', 'rules.md'))
+var indexPages = require('./pages/index')(templates, path.join(__dirname, 'assets', 'rules.md'), path.join(__dirname, 'assets', 'inhouserules.md'))
 var playerPages = require('./pages/players')(templates, season, division, player, player_role, role, steam_user)
 var profilePages = require('./pages/profile')(templates, steam_user, profile, season, team_player, vouch, steamId)
 var seasonPages = require('./pages/seasons')(templates, season)
@@ -155,6 +155,7 @@ app.get('/logout', openid.logout)
 app.get(indexPages.home.route, indexPages.home.handler)
 app.get(indexPages.complaint.route, indexPages.complaint.handler)
 app.get(indexPages.rules.route, indexPages.rules.handler)
+app.get(indexPages.irules.route, indexPages.irules.handler)
 
 app.get(seasonPages.list.route, seasonPages.list.handler)
 app.get(seasonPages.create.route, seasonPages.create.handler)
@@ -195,6 +196,7 @@ app.get(playerPages.create.route, playerPages.create.handler)
 app.get(playerPages.edit.route, playerPages.edit.handler)
 app.get(playerPages.csv.route, playerPages.csv.handler)
 app.get(playerPages.activityCheck.route, playerPages.activityCheck.handler)
+app.get(playerPages.json.route, playerPages.json.handler)
 
 app.post(playerPages.post.route, playerPages.post.handler)
 app.post(playerPages.remove.route, playerPages.remove.handler)
@@ -234,6 +236,7 @@ app.get(adminPages.create.route, adminPages.create.handler)
 app.get(adminPages.edit.route, adminPages.edit.handler)
 
 app.post(adminPages.post.route, adminPages.post.handler)
+app.post(adminPages.remove.route, adminPages.remove.handler)
 
 app.get(adminGroupPages.list.route, adminGroupPages.list.handler)
 app.get(adminGroupPages.create.route, adminGroupPages.create.handler)
