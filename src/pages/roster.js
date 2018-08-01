@@ -17,28 +17,36 @@ function list(templates, season, division, team, team_player, series, req, res) 
               return !captain || player.id != captain.id
             })
             series = series.map(_series => {
+              _series.own = {}
+              _series.opp = {}
               if (_series.home_team_id) {
-                _series.home = {}
-                _series.home.id = _series.home_team_id
-                _series.home.name = _series.home_team_name
-                _series.home.logo = _series.home_team_logo
-                _series.home.points = _series.home_points
-
-                if (team_id == _series.home.id) {
+                if (team_id == _series.home_team_id) {
                   wins += _series.home_points
                   losses += _series.away_points
+                  _series.own.id = _series.home_team_id
+                  _series.own.name = _series.home_team_name
+                  _series.own.logo = _series.home_team_logo
+                  _series.own.points = _series.home_points
+
+                  _series.opp.id = _series.away_team_id
+                  _series.opp.name = _series.away_team_name
+                  _series.opp.logo = _series.away_team_logo
+                  _series.opp.points = _series.away_points
                 }
               }
               if (_series.away_team_id) {
-                _series.away = {}
-                _series.away.id = _series.away_team_id
-                _series.away.name = _series.away_team_name
-                _series.away.logo = _series.away_team_logo
-                _series.away.points = _series.away_points
-
                 if (team_id == _series.away_team_id) {
                   wins += _series.away_points
                   losses += _series.home_points
+                  _series.own.id = _series.away_team_id
+                  _series.own.name = _series.away_team_name
+                  _series.own.logo = _series.away_team_logo
+                  _series.own.points = _series.away_points
+
+                  _series.opp.id = _series.home_team_id
+                  _series.opp.name = _series.home_team_name
+                  _series.opp.logo = _series.home_team_logo
+                  _series.opp.points = _series.home_points
                 }
               }
 
