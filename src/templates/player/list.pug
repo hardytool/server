@@ -42,6 +42,7 @@ block content
               th Will Captain?
               th Captain Approved
             th Statement
+            th Activity Check?
             if user && user.isAdmin
               th Vouched?
               th Draftable?
@@ -80,6 +81,13 @@ block content
                 span(tabindex='-1')=player.statement.length > 15 ? player.statement.slice(0, space > 5 ? space : 15) + '…' : player.statement
                 if player.statement.length > 15
                   span.tooltiptext= player.statement
+              td
+                if player.activity_check
+                  span.icon.has-text-success.has-icon
+                    i.far.fa-lg.fa-check-circle
+                else
+                  span.icon.has-text-danger.has-icon
+                    i.far.fa-lg.fa-times-circle
               if user && user.isAdmin
                 td
                   if player.is_vouched || player.has_played

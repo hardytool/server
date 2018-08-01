@@ -38,6 +38,11 @@ block content
                   span.icon
                     i.far.fa-times-circle
                   span not vouched
+  if active_season && active_season.activity_check && user.steamId == profile.steam_id
+    div.columns
+      div.column
+        a(href='/players/activityCheck')
+          button.button.is-success Activity Check
   div.tile.is-ancestor
     div.tile.is-parent
       article.tile.is-child.notification

@@ -7,6 +7,7 @@ function getSeasons(db) {
     number,
     name,
     active,
+    activity_check,
     current_round,
     registration_open
   FROM
@@ -26,6 +27,7 @@ function getSeason(db, id) {
     number,
     name,
     active,
+    activity_check,
     current_round,
     registration_open
   FROM
@@ -45,6 +47,7 @@ function getActiveSeason(db) {
     number,
     name,
     active,
+    activity_check,
     current_round,
     registration_open
   FROM
@@ -65,6 +68,7 @@ function saveSeason(db, season) {
       number,
       name,
       active,
+      activity_check,
       current_round,
       registration_open
     ) VALUES (
@@ -72,6 +76,7 @@ function saveSeason(db, season) {
       ${season.number},
       ${season.name},
       ${season.active},
+      ${season.activity_check},
       ${season.current_round},
       ${season.registration_open}
     ) ON CONFLICT (
@@ -80,12 +85,14 @@ function saveSeason(db, season) {
       number,
       name,
       active,
+      activity_check,
       current_round,
       registration_open
     ) = (
       ${season.number},
       ${season.name},
       ${season.active},
+      ${season.activity_check},
       ${season.current_round},
       ${season.registration_open}
     )
