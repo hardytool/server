@@ -26,6 +26,7 @@ var redirectHttps = require('redirect-https')
 var templates = require('pug-tree')(
   path.join(__dirname, 'templates'), config.templates)
 var pairings = require('swiss-pairing')({ maxPerRound: 2 })
+var fs = require('fs')
 
 // repositories
 var admin = require('./repos/admin')(pool)
@@ -246,6 +247,11 @@ app.get(adminGroupPages.edit.route, adminGroupPages.edit.handler)
 app.post(adminGroupPages.post.route, adminGroupPages.post.handler)
 app.post(adminGroupPages.remove.route, adminGroupPages.remove.handler)
 
+//Pull the list of Steam servers if it exists
+if (fs.existsSync(path.join(__dirname, 'assets', 'servers.js'))) {
+  Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.js')))
+}
+
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))
   .then(versions => {
@@ -266,6 +272,10 @@ migration.migrateIfNeeded(
         if (res.eresult == Steam.EResult.OK) {
           dota2.launch()
         }
+      })
+
+      steam.on('servers', servers => {
+        fs.writeFile(path.join(__dirname, 'assets', 'servers.js'), JSON.stringify(servers));
       })
 
       steam.on('error', err => {
