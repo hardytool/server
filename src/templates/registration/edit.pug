@@ -14,7 +14,7 @@ block content
         form(method='post' action='/register')
           input(type='hidden' name="_csrf" value=csrfToken)
           input(type='hidden' name='season_id' value=season.id)
-          input(type='hidden' name='division_id' value=division.id)
+          input(type='hidden' name='division_id' value=division.id) 
           if player
             input(type='hidden' name='id' value=player.id)
           div.field
@@ -41,6 +41,11 @@ block content
             label.label(for='adjusted_rank') Adjusted Rank:
             p.control
               input.input#adjusted_rank(type='text' value=player.adjusted_rank disabled)
+          div.field
+            label.label(for='mmr_screenshot') MMR Screenshot:
+            p.control
+              input.input#mmr_screenshot(type='text' name='mmr_screenshot' value=(player ? player.mmr_screenshot : ''))
+            p.help Provide a screenshot of your current MMR. Make sure it includes Solo and Party MMR
           div.field
             label.label(for='discord_name') Discord Name:
             p.control

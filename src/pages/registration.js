@@ -58,12 +58,12 @@ function view(templates, season, division, steam_user, player, role, player_role
             }
 
             return mmr.getMMR(steamUser.steam_id).then(({ rank }) => {
-              if (!rank) {
-                return templates.error.no_mmr({
-                  user: req.user
-                })
-              }
-
+              // if (!rank) {
+              //   return templates.error.no_mmr({
+              //     user: req.user
+              //   })
+              // }
+              rank = 54
               steamUser.rank = rank
               return steam_user.saveSteamUser(steamUser).then(() => {
                 return profile.getProfile(steamUser.steam_id).then(profile => {
@@ -194,6 +194,7 @@ function post(templates, season, division, steam_user, team_player, player, role
   p.id = id
   p.steam_id = req.user.steamId
   p.captain_approved = false
+  p.activity_check = false
   p.statement = p.statement.slice(0, 500)
   p.is_draftable = !(p.standin_only === 'on')
   delete p.standin_only
@@ -211,6 +212,8 @@ function post(templates, season, division, steam_user, team_player, player, role
                 return player.getPlayer(p.id).then(pl => {
                   //stops overwrite of new captains when they edit registration
                   p.captain_approved = pl.captain_approved
+
+                  p.activity_check = pl.activity_check
 
                   // If the player ID exists and the steam ID matches, allowed
                   // If the player ID exists and the steam ID doesn't match, not allowed

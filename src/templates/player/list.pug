@@ -55,6 +55,7 @@ block content
             th Avatar
             th Rank
             th Adjusted Rank
+            th Adjusted MMR
             th Dotabuff&nbsp;/ Opendota
             if user && user.isAdmin
               th Will Captain?
@@ -62,6 +63,7 @@ block content
             th Statement
             th Activity Check?
             if user && user.isAdmin
+              th MMR Screenshot
               th Vouched?
               th Draftable?
               th Edit
@@ -78,6 +80,7 @@ block content
                   img(src=player.avatar)
               td= player.rank
               td= player.adjusted_rank
+              td= player.adjusted_mmr
               td
                 a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
                 span
@@ -107,6 +110,8 @@ block content
                   span.icon.has-text-danger.has-icon
                     i.far.fa-lg.fa-times-circle
               if user && user.isAdmin
+                td
+                  a(href=player.mmr_screenshot) Link
                 td
                   if player.is_vouched || player.has_played
                     span.icon.has-text-success.has-icon

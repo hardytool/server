@@ -12,6 +12,7 @@ function getPlayers(db, criteria, sort) {
     player.statement,
     player.is_draftable,
     player.activity_check,
+    player.mmr_screenshot,
     profile.discord_name,
     season.number season_number,
     season.name season_name,
@@ -24,6 +25,11 @@ function getPlayers(db, criteria, sort) {
       THEN profile.adjusted_rank
       ELSE steam_user.rank
     END AS adjusted_rank,
+    CASE
+      WHEN profile.adjusted_mmr IS NOT NULL
+      THEN profile.adjusted_mmr
+      ELSE 0
+    END AS adjusted_mmr,
     has_played.has_played,
     is_vouched.is_vouched
   FROM
@@ -195,6 +201,7 @@ function getPlayer(db, id) {
     player.statement,
     player.is_draftable,
     player.activity_check,
+    player.mmr_screenshot,
     season.number season_number,
     season.name season_name,
     profile.discord_name,
@@ -236,7 +243,9 @@ function savePlayer(db, player) {
       will_captain,
       captain_approved,
       statement,
-      is_draftable
+      is_draftable,
+      activity_check,
+      mmr_screenshot
     ) VALUES (
       ${player.id},
       ${player.season_id},
@@ -245,7 +254,9 @@ function savePlayer(db, player) {
       ${player.will_captain},
       ${player.captain_approved},
       ${player.statement},
-      ${player.is_draftable}
+      ${player.is_draftable},
+      ${player.activity_check},
+      ${player.mmr_screenshot}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
@@ -254,14 +265,18 @@ function savePlayer(db, player) {
       will_captain,
       captain_approved,
       statement,
-      is_draftable
+      is_draftable,
+      activity_check,
+      mmr_screenshot
     ) = (
       ${player.season_id},
       ${player.division_id},
       ${player.will_captain},
       ${player.captain_approved},
       ${player.statement},
-      ${player.is_draftable}
+      ${player.is_draftable},
+      ${player.activity_check},
+      ${player.mmr_screenshot}
     )
   `
   return db.query(upsert)
