@@ -90,12 +90,14 @@
        - Continued all chat after a “no all chat” request by either team will result in a forfeit against the offending team for that game.
        - Caster all chat is still strictly prohibited at all times!
      - Teams will coin flip for choice of side/pick, winner of the flip has first choice game 1 and loser has first choice game 2.
-     - Captains are required to submit results from their matches to the Captain section of rd2l.com within 24 hours if the match was not ticketed. If matches cannot not ticketed due to an unforeseen issue, a screenshot of the score screen will suffice.
+     - Captains are required to ticket all official matches. If matches cannot be ticketed due to an unforeseen issue, a screenshot of the score screen must be sent to an admin within 24 hours of the match.
      - Teams are not allowed to “stream cheat” in any way - no player currently in a game may view a stream of the game, spectate the game, or communicate with anyone doing so.
      - Team members not playing are permitted to be in a caster slot in the lobby if the opposing captain approves, but are not permitted to communicate with their team in any way while spectating. Coaches are not allowed in game.
      - Only recognized casters are permitted to be in broadcaster channels during matches.
        - Spectators on is encouraged but a 2 minute delay is required. No in-game spectators except admins and authorized casters are allowed in the lobby; they are only allowed to spectate in-client or a twitch stream.
      - Game remakes are permitted if there is a major issue affecting gameplay (major ping increases, heavy packet loss, Steam down). Both team captains must agree to remake.
+     - Scripts and Macros are not allowed to be used by any RD2L player in official RD2L matches. Players found using these in official matches may have their team retroactively forfeited for the matches in question.
+     - If a game breaking bug is found; admins reserve the right to put out in announcement banning a certain hero or certain usage of a hero if it would cause the game to break. If players or teams discover bugs of this nature they should inform an admin. Taking advantage of game breaking bugs may result in a forfeit loss.
    - **Regular Season**
      - The regular season is 8 weeks long, with a Captain’s Mode Bo2 each week.
      - Matches are to begin by their division’s scheduled match time each week on the designated server.
