@@ -56,6 +56,7 @@ block content
             th Dotabuff&nbsp;/ Opendota
             th Statement
             if user && user.isAdmin
+              th MMR Screenshot
               th Vouched?
               th Draftable?
               th Edit
@@ -84,6 +85,8 @@ block content
                 if player.statement.length > 15
                   span.tooltiptext= player.statement
               if user && user.isAdmin
+                td
+                  a(href=player.mmr_screenshot) Link
                 td
                   if player.is_vouched || player.has_played
                     span.icon.has-text-success.has-icon
