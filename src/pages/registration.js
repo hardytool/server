@@ -58,12 +58,12 @@ function view(templates, season, division, steam_user, player, role, player_role
             }
 
             return mmr.getMMR(steamUser.steam_id).then(({ rank }) => {
-              // if (!rank) {
-              //   return templates.error.no_mmr({
-              //     user: req.user
-              //   })
-              // }
-              rank = 54
+              if (!rank) {
+                return templates.error.no_mmr({
+                  user: req.user
+                })
+              }
+
               steamUser.rank = rank
               return steam_user.saveSteamUser(steamUser).then(() => {
                 return profile.getProfile(steamUser.steam_id).then(profile => {
