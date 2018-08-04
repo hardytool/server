@@ -42,6 +42,11 @@ block content
             p.control
               input.input#adjusted_rank(type='text' value=player.adjusted_rank disabled)
           div.field
+            label.label(for='mmr_screenshot') MMR Screenshot:
+            p.control
+              input.input#mmr_screenshot(type='text' name='mmr_screenshot' value=(player ? player.mmr_screenshot : ''))
+            p.help Provide a screenshot of your current MMR. Make sure it includes Solo and Party MMR
+          div.field
             label.label(for='discord_name') Discord Name:
             p.control
               input.input#discord_name(type='text' name='discord_name' placeholder='User#1234' value=(player ? player.discord_name : ''))
