@@ -63,6 +63,7 @@ function post(season, req, res) {
   s.id = id
   s.active = s.active == 'on' ? true : false
   s.registration_open = s.registration_open == 'on' ? true : false
+  s.activity_check = s.activity_check == 'on' ? true : false
 
   season.saveSeason(s).then(() => {
     res.redirect('/seasons')
