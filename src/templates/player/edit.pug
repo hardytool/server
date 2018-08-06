@@ -17,7 +17,8 @@ block content
             input(type='hidden' name='id' value=player.id)
             input(type='hidden' name='steam_id' value=player.steam_id)
             input(type='hidden' name='activity_check' value=player.activity_check.toString())
-            input(type='hidden' name='mmr_screenshot' value=player.mmr_screenshot)
+          else
+            input(type='hidden' name='activity_check' value='false')
           input(type='hidden' name='season_id' value=season.id)
           input(type='hidden' name='division_id' value=division.id)
           if !player
@@ -35,6 +36,10 @@ block content
             label.label(for='statement') Statement:
             p.control
               textarea.textarea#statement(name='statement' placeholder='Enter your player statement here - limited to 500 characters' maxlength='500')= player ? player.statement : ''
+          div.field
+            label.label(for='mmr_screenshot') MMR Screenshot:
+            p.control
+              input.input#mmr_screenshot(type='text' name='mmr_screenshot' value=(player ? player.mmr_screenshot : ''))
           div.field
             label.label Willing to captain?:
             p.control
