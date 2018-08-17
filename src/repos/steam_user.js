@@ -42,7 +42,7 @@ function getSteamUsersMissingMMR(db, season_id) {
   })
 }
 
-function getNonPlayerSteamUsers(db, season_id) {
+function getNonPlayerSteamUsers(db, season_id, division_id) {
   var select = sql`
   SELECT
     steam_user.steam_id,
@@ -63,6 +63,8 @@ function getNonPlayerSteamUsers(db, season_id) {
         player.steam_id = steam_user.steam_id
       WHERE
         player.season_id = ${season_id}
+      AND
+        player.division_id = ${division_id}
     )
   ORDER BY
     steam_user.name ASC,

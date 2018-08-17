@@ -113,7 +113,7 @@ function create(templates, season, division, steam_user, req, res) {
 
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
-      return steam_user.getNonPlayerSteamUsers(season.id).then(steamUsers => {
+      return steam_user.getNonPlayerSteamUsers(season.id, division_id).then(steamUsers => {
         var html = templates.player.edit({
           user: req.user,
           verb: 'Create',
