@@ -38,7 +38,7 @@ block content
                   span.icon
                     i.far.fa-times-circle
                   span not vouched
-  if active_season && active_season.activity_check && user.steamId == profile.steam_id
+  if active_season && active_season.activity_check && user.steamId == profile.steam_id && numSeasonsFalseActivity != 0
     div.columns
       div.column
         a(href='/players/activityCheck')

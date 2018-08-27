@@ -445,6 +445,25 @@ function activityCheck(db, season_id, steam_id) {
   return db.query(query)
 }
 
+function hasFalseActivity(db, season_id, steam_id) {
+  var select = sql`
+  SELECT 
+    count(id)
+  FROM 
+    player
+  WHERE
+    steam_id = ${steam_id}
+  AND
+    season_id = ${season_id}
+  AND
+    activity_check = FALSE
+  `
+  return db.query(select).then(result => {
+    return result.rows[0]
+  })
+
+}
+
 module.exports = db => {
   return {
     getPlayers: getPlayers.bind(null, db),
@@ -453,6 +472,7 @@ module.exports = db => {
     deletePlayer: deletePlayer.bind(null, db),
     unregisterPlayer: unregisterPlayer.bind(null, db),
     getDraftSheet: getDraftSheet.bind(null, db),
-    activityCheck: activityCheck.bind(null, db)
+    activityCheck: activityCheck.bind(null, db),
+    hasFalseActivity: hasFalseActivity.bind(null, db)
   }
 }

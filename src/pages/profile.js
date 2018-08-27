@@ -1,5 +1,5 @@
 function view(
-  templates, steam_user, profile, season, vouch, team_player, steamId, req, res) {
+  templates, steam_user, profile, season, vouch, team_player, steamId, player, req, res) {
     var viewerHasPlayed = Promise.resolve(null)
     if (req.user) {
       viewerHasPlayed = steam_user.getSteamUser(req.user.steamId)
@@ -11,7 +11,8 @@ function view(
       return season.getActiveSeason().then(active_season => {
         return profile.getProfile(req.params.steam_id).then(_profile => {
           _profile.id64 = steamId.from32to64(_profile.steam_id)
-          return team_player.hasPlayed(_profile.steam_id)
+          return player.hasFalseActivity(active_season.id, _profile.steam_id).then(numberFalseActivity => {
+            return team_player.hasPlayed(_profile.steam_id)
             .then(({ has_played }) => {
               return vouch.isVouched(_profile.steam_id)
                 .then(result => {
@@ -31,6 +32,7 @@ function view(
                         voucher: voucher,
                         has_played: has_played,
                         teamsPlayed: teamsPlayed,
+                        numSeasonsFalseActivity: numberFalseActivity.count,
                         csrfToken: req.csrfToken(),
                         can_vouch: (req.user && req.user.isAdmin)
                           || (viewerHasPlayed && viewerHasPlayed.has_played)
@@ -39,6 +41,7 @@ function view(
                     })
                 })
             })
+          })
         })
       })
     }).catch(err => {
@@ -183,12 +186,12 @@ function unvouch(profile, vouch, req, res) {
 }
 
 module.exports =
-  (templates, steam_user, profile, season, team_player, _vouch, steamId) => {
+  (templates, steam_user, profile, season, team_player, _vouch, steamId, player) => {
     return {
       view: {
         route: '/profile/:steam_id',
         handler: view.bind(
-          null, templates, steam_user, profile, season, _vouch, team_player, steamId)
+          null, templates, steam_user, profile, season, _vouch, team_player, steamId, player)
       },
       edit: {
         route: '/profile/:steam_id/edit',
