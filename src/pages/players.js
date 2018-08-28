@@ -272,7 +272,15 @@ function currentPlayers(func, templates, season, player, req, res) {
 function activityCheck(player, season, req, res) {
   season.getActiveSeason().then(_season => {
     season_id = _season.id
-    steam_id = req.user.steamId
+    if (req.params.steam_id) {
+      if (!req.user || !req.user.isAdmin) {
+        res.sendStatus(403)
+        return
+      }
+      steam_id = req.params.steam_id
+    } else {
+      steam_id = req.user.steamId
+    }
 
     player.activityCheck(season_id, steam_id).then(() => {
       res.redirect('/profile/' + steam_id)
@@ -326,6 +334,10 @@ module.exports = (templates, season, division, player, player_role, role, steam_
     },
     activityCheck: {
       route: '/players/activityCheck',
+      handler: activityCheck.bind(null, player, season)
+    },
+    activityCheckAdmin: {
+      route: '/players/activityCheck/:steam_id',
       handler: activityCheck.bind(null, player, season)
     },
     json: {
