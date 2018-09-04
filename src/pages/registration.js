@@ -58,12 +58,12 @@ function view(templates, season, division, steam_user, player, role, player_role
             }
 
             return mmr.getMMR(steamUser.steam_id).then(({ rank }) => {
-              if (!rank) {
-                return templates.error.no_mmr({
-                  user: req.user
-                })
-              }
-
+              // if (!rank) {
+              //   return templates.error.no_mmr({
+              //     user: req.user
+              //   })
+              // }
+              rank = 54;
               steamUser.rank = rank
               return steam_user.saveSteamUser(steamUser).then(() => {
                 return profile.getProfile(steamUser.steam_id).then(profile => {
@@ -214,6 +214,10 @@ function post(templates, season, division, steam_user, team_player, player, role
                   p.captain_approved = pl.captain_approved
 
                   p.activity_check = pl.activity_check
+                  // If a player signs up after activity checks are live, mark them fine for the check
+                  if (season.activity_check == true) {
+                    p.activity_check = true;
+                  }
 
                   // If the player ID exists and the steam ID matches, allowed
                   // If the player ID exists and the steam ID doesn't match, not allowed
@@ -223,6 +227,10 @@ function post(templates, season, division, steam_user, team_player, player, role
                   return true
                 }).then(allowed => {
                   if (allowed) {
+                    // If a player signs up after activity checks are live, mark them fine for the check
+                    if (season.activity_check == true) {
+                      p.activity_check = true;
+                    }
                     return player.savePlayer(p).then(() => {
                       return profile.saveProfile(_profile).then(() => {
                         return role.getRoles().then(roles => {
