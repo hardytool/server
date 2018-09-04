@@ -231,7 +231,7 @@ function getCSV(player, player_role, role, division, req, res) {
               return acc
             }, {})
             var rank = player.draft_rank
-            player.draft_rank = ((rank - (rank % 10))/10 - 1) * 6 + (rank % 10)
+            player.draft_rank = ((rank - (rank % 10))/10 - 1) * 5 + (rank % 10)
             delete player.id
             return Object.assign(player, o)
           })
