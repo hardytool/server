@@ -44,12 +44,12 @@ block content
           div.field
             label.label(for='mmr_screenshot') MMR Screenshot:
             p.control
-              input.input#mmr_screenshot(type='text' name='mmr_screenshot' value=(player ? player.mmr_screenshot : ''))
+              input.input#mmr_screenshot(type='text' name='mmr_screenshot' value=(player ? player.mmr_screenshot : '') required)
             p.help Provide a screenshot of your current MMR, upload it to a image hosting site (such as imgur) and post the URL here. Make sure it includes Solo and Party MMR
           div.field
             label.label(for='discord_name') Discord Name:
             p.control
-              input.input#discord_name(type='text' name='discord_name' placeholder='User#1234' value=(player ? player.discord_name : ''))
+              input.input#discord_name(type='text' name='discord_name' placeholder='User#1234' value=(player ? player.discord_name : '') required)
           div.field
             label.label(for='statement') Statement/Availability:
             p.help Please be sure to mention other leagues/divisions you'll be participating in.
