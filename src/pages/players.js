@@ -143,17 +143,20 @@ function edit(templates, season, division, player, steam_user, req, res) {
   var id = req.params.id
 
   season.getSeason(season_id).then(season => {
-    return division.getDivision(division_id).then(division => {
-      return player.getPlayer(id).then(player => {
-        var html = templates.player.edit({
-          user: req.user,
-          verb: 'Edit',
-          player: player,
-          season: season,
-          division: division,
-          csrfToken: req.csrfToken()
+    return division.getDivisions().then(divisions => {
+      return division.getDivision(division_id).then(division => {
+        return player.getPlayer(id).then(player => {
+          var html = templates.player.edit({
+            user: req.user,
+            verb: 'Edit',
+            player: player,
+            season: season,
+            division: division,
+            divisions: divisions,
+            csrfToken: req.csrfToken()
+          })
+          res.send(html)
         })
-        res.send(html)
       })
     })
   }).catch(err => {
