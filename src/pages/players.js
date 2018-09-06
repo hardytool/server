@@ -112,18 +112,21 @@ function create(templates, season, division, steam_user, req, res) {
   var division_id = req.params.division_id
 
   season.getSeason(season_id).then(season => {
-    return division.getDivision(division_id).then(division => {
-      return steam_user.getNonPlayerSteamUsers(season.id, division_id).then(steamUsers => {
-        var html = templates.player.edit({
-          user: req.user,
-          verb: 'Create',
-          season: season,
-          division: division,
-          steamUsers: steamUsers,
-          csrfToken: req.csrfToken()
-        })
+    return division.getDivisions().then(divisions => {
+      return division.getDivision(division_id).then(division => {
+        return steam_user.getNonPlayerSteamUsers(season.id, division_id).then(steamUsers => {
+          var html = templates.player.edit({
+            user: req.user,
+            verb: 'Create',
+            season: season,
+            division: division,
+            divisions: divisions,
+            steamUsers: steamUsers,
+            csrfToken: req.csrfToken()
+          })
 
-        res.send(html)
+          res.send(html)
+        })
       })
     })
   }).catch(err => {
