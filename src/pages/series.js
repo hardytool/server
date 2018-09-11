@@ -374,6 +374,11 @@ function mapSeries(series) {
 }
 
 function importSeries(series, season, team, series, pairings, division, req, res) {
+  // Can't run if you are not an admin
+  if (!req.user || !req.user.isAdmin) {
+    res.sendStatus(403)
+    return
+  }
   var season_id = req.params.season_id
   var division_id = req.params.division_id
   var round = Number.parseInt(req.params.round)
