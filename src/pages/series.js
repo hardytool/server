@@ -428,14 +428,14 @@ function importSeries(series, season, team, series, pairings, division, req, res
                 return matchup
               })
 
-              for (var i = 0; i < matchups.length; i++) {
+              promises = matchups.map(_matchup => {
                 toSave = {}
                 toSave.id = shortid.generate()
                 toSave.round = round
                 toSave.season_id = season_id
                 toSave.division_id = division_id
-                toSave.home_team_id = matchups[i]['home']['id']
-                toSave.away_team_id = matchups[i]['away']['id']
+                toSave.home_team_id = _matchup['home']['id']
+                toSave.away_team_id = _matchup['away']['id']
                 toSave.home_points = 0
                 toSave.away_points = 0
                 toSave.match_1_id = null
@@ -443,8 +443,11 @@ function importSeries(series, season, team, series, pairings, division, req, res
                 toSave.match_1_forfeit_home = null
                 toSave.match_2_forfeit_home = null
                 return series.saveSeries(toSave)
-              }
-              res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
+              })
+
+              return Promise.all(promises).then(submitted => {
+                res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
+              })
             })
           })
         })
