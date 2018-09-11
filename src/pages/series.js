@@ -373,6 +373,89 @@ function mapSeries(series) {
   })
 }
 
+function importSeries(series, season, team, series, pairings, division, req, res) {
+  var season_id = req.params.season_id
+  var division_id = req.params.division_id
+  var round = Number.parseInt(req.params.round)
+
+  series.getCurrentRound(season_id).then(maximumRound => {
+    return series.getCurrentRound(season_id, round).then(round => {
+      return season.getSeason(season_id).then(season => {
+        return division.getDivision(division_id).then(division => {
+          return team.getTeams(season.id, division.id).then(teams => {
+            teams = teams.map(t => {
+              t.droppedOut = t.disbanded
+              return t
+            })
+            if (round === 0) {
+              teams = teams.sort((a, b) => {
+                return a.id.localeCompare(b.id)
+              })
+              teams = teams.map((team, i) => {
+                team.seed = i
+                return team
+              })
+            } else {
+              teams = teams.sort((a, b) => {
+                if (a.seed === b.seed) {
+                  return a.id.localeCompare(b.id)
+                } else {
+                  return a.seed - b.seed
+                }
+              })
+            }
+            return series.getSeries({
+              season_id: season.id,
+              division_id: division.id,
+              round: round
+            }).then(_series => {
+              var matchups = pairings.getMatchups(
+                round,
+                teams,
+                mapSeries(_series)
+              )
+              matchups = matchups.map(matchup => {
+                matchup.home = teams.filter(team => team.id === matchup.home)[0]
+                if (matchup.away === null) {
+                  matchup.away = {
+                    id: null,
+                    name: 'BYE',
+                    logo: null
+                  }
+                } else {
+                  matchup.away = teams.filter(team => team.id === matchup.away)[0]
+                }
+                return matchup
+              })
+
+              for (var i = 0; i < matchups.length; i++) {
+                toSave = {}
+                toSave.id = shortid.generate()
+                toSave.round = round
+                toSave.season_id = season_id
+                toSave.division_id = division_id
+                toSave.home_team_id = matchups[i]['home']['id']
+                toSave.away_team_id = matchups[i]['away']['id']
+                toSave.home_points = 0
+                toSave.away_points = 0
+                toSave.match_1_id = null
+                toSave.match_2_id = null
+                toSave.match_1_forfeit_home = null
+                toSave.match_2_forfeit_home = null
+                return series.saveSeries(toSave)
+              }
+              res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
+            })
+          })
+        })
+      })
+    })
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
 module.exports = (templates, season, team, series, pairings, division) => {
   return {
     list: {
@@ -402,6 +485,10 @@ module.exports = (templates, season, team, series, pairings, division) => {
     matchups: {
       route: '/seasons/:season_id/divisions/:division_id/matchups/:round?',
       handler: matchups.bind(null, templates, season, team, series, pairings, division)
+    },
+    importSeries: {
+      route: '/seasons/:season_id/divisions/:division_id/week/:round/importSeries',
+      handler: importSeries.bind(null, series, season, team, series, pairings, division)
     }
   }
 }
