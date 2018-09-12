@@ -72,8 +72,9 @@ block content
           a.button.is-inline-block(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups/' + (nextRound == maximumRound ? '' : nextRound)) Next
         else
           a.button.is-inline-block(disabled) Next
-  div.columns
-    if user && user.isAdmin
-      div.control
-        a(href='/seasons/' + season.id + '/divisions/' + division.id + '/week/' + round + '/importSeries')
-          button.button.is-success Create Series for these Matchups
+  if round > 0
+    div.columns
+      if user && user.isAdmin
+        div.control
+          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/week/' + round + '/importSeries')
+            button.button.is-success Create Series for these Matchups
