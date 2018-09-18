@@ -49,7 +49,7 @@ block content
           div.field
             label.label(for='discord_name') Discord Name:
             p.control
-              input.input#discord_name(type='text' name='discord_name' placeholder='User#1234' value=(player ? player.discord_name : '') required)
+              input.input#discord_name(type='text' name='discord_name' placeholder='User#1234' pattern='^[^#]{2,32}#\d{4}$' title='Username#1234' value=(player ? player.discord_name : '') required)
           div.field
             label.label(for='statement') Statement/Availability:
             p.help Please be sure to mention other leagues/divisions you'll be participating in.
@@ -57,8 +57,8 @@ block content
               textarea.textarea#statement(name='statement' placeholder='Enter your player statement here - limited to 500 characters' maxlength='500')= player ? player.statement : ''
           div.box
             h3.title.is-5 Comfort/preference
-            p.help 1 being least comfortable 5 being most comfortable
             div.field
+              - var preferenceStrings = ['Uncomfortable', 'Slightly comfortable', 'Comfortable','Very comfortable' ,'Extremely comfortable']
               each role in roles
                 label.label= role.name
                 p.control
@@ -68,7 +68,7 @@ block content
                         input(value=i type='radio' name=role.id id=role.id checked)
                       else
                         input(value=i type='radio' name=role.id id=role.id)
-                      span &nbsp;#{i}
+                      span &nbsp;#{preferenceStrings[i-1]}
           div.field
             label.label Willing to captain?:
             p.control
