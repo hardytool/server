@@ -22,8 +22,12 @@ block content
             tr
               td= division.name
               td= division.start_time
-              td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/register') register
+              if season.registration_open
+                td
+                  a(href='/seasons/' + season.id + '/divisions/' + division.id + '/register') register
+              else
+                td
+                  a(href='/seasons/' + season.id + '/divisions/' + division.id + '/register') register as a free agent
               td
                 if division.registered
                   span.icon.has-text-success.has-icon

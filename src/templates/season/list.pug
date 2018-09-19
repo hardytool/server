@@ -25,7 +25,10 @@ block content
                 if season.registration_open
                   a(href='/seasons/' + season.id + '/register') register
                 else
-                  span closed
+                  if season.active
+                    a(href='/seasons/' + season.id + '/register') register as a free agent
+                  else
+                    span closed
               if user && user.isAdmin
                 td
                   a(href='/seasons/' + season.id + '/edit') edit
