@@ -188,9 +188,11 @@ app.get(seriesPages.edit.route, seriesPages.edit.handler)
 app.get(seriesPages.standings.route, seriesPages.standings.handler)
 app.get(seriesPages.matchups.route, seriesPages.matchups.handler)
 app.get(seriesPages.importSeries.route, seriesPages.importSeries.handler)
+app.get(seriesPages.editRound.route, seriesPages.editRound.handler)
 
 app.post(seriesPages.post.route, seriesPages.post.handler)
 app.post(seriesPages.remove.route, seriesPages.remove.handler)
+app.post(seriesPages.saveRound.route, seriesPages.saveRound.handler)
 
 app.get(playerPages.list.route, playerPages.list.handler)
 app.get(playerPages.captains.route, playerPages.captains.handler)
