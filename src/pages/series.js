@@ -322,6 +322,11 @@ function editRound(templates, season, division, series, req, res) {
   var season_id = req.params.season_id
   var division_id = req.params.division_id
 
+  if (!req.user || !req.user.isAdmin) {
+    res.sendStatus(403)
+    return
+  }
+
   series.getCurrentRound(season_id, division_id).then(round => {
     var html = templates.series.round({
       season_id: season_id,
@@ -340,6 +345,11 @@ function saveRound(series, req, res) {
   var season_id = req.body.season_id
   var division_id = req.body.division_id
   var round = req.body.round
+
+  if (!req.user || !req.user.isAdmin) {
+    res.sendStatus(403)
+    return
+  }
 
   series.saveCurrentRound(season_id, division_id, round).then(() => {
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
