@@ -193,8 +193,8 @@ function standings(templates, season, team, series, pairings, division, req, res
   var division_id = req.params.division_id
   var round = Number.parseInt(req.params.round)
 
-  series.getCurrentRound(season_id).then(maximumRound => {
-    series.getCurrentRound(season_id, round).then(round => {
+  series.getCurrentRound(season_id, division_id).then(maximumRound => {
+    series.getCurrentRound(season_id, division_id, round).then(round => {
       return season.getSeason(season_id).then(season => {
         return division.getDivision(division_id).then(division => {
           return team.getTeams(season.id, division.id).then(teams => {
@@ -208,7 +208,7 @@ function standings(templates, season, team, series, pairings, division, req, res
                 teams,
                 mapSeries(series)
               )
-              var counter = 1;
+              var counter = 1
               standings = standings.map(standing => {
                 var team = teams.filter(team => team.id === standing.id)[0]
                 standing.name = team.name
@@ -248,8 +248,8 @@ function matchups(templates, season, team, series, pairings, division, req, res)
   var division_id = req.params.division_id
   var round = Number.parseInt(req.params.round)
 
-  series.getCurrentRound(season_id).then(maximumRound => {
-    return series.getCurrentRound(season_id, round).then(round => {
+  series.getCurrentRound(season_id, division_id).then(maximumRound => {
+    return series.getCurrentRound(season_id, division_id, round).then(round => {
       return season.getSeason(season_id).then(season => {
         return division.getDivision(division_id).then(division => {
           return team.getTeams(season.id, division.id).then(teams => {
@@ -318,39 +318,41 @@ function matchups(templates, season, team, series, pairings, division, req, res)
   })
 }
 
-function currentStandings(
-  templates,
-  _season,
-  team,
-  series,
-  pairings,
-  req,
-  res) {
-  if (!req.params) {
-    req.params = {}
+function editRound(templates, season, division, series, req, res) {
+  var season_id = req.params.season_id
+  var division_id = req.params.division_id
+
+  if (!req.user || !req.user.isAdmin) {
+    res.sendStatus(403)
+    return
   }
-  _season.getActiveSeason().then(season => {
-    req.params.season_id = season.id
-    return series.getCurrentRound(season.id).then(round => {
-      req.params.round = round
-      return standings(templates, _season, team, series, pairings, req, res)
+
+  series.getCurrentRound(season_id, division_id).then(round => {
+    var html = templates.series.round({
+      season_id: season_id,
+      division_id: division_id,
+      round: round,
+      csrfToken: req.csrfToken()
     })
+    res.send(html)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
   })
 }
 
-function currentMatchups(templates, _season, team, series, pairings, division, req, res) {
-  if (!req.params) {
-    req.params = {}
+function saveRound(series, req, res) {
+  var season_id = req.body.season_id
+  var division_id = req.body.division_id
+  var round = req.body.round
+
+  if (!req.user || !req.user.isAdmin) {
+    res.sendStatus(403)
+    return
   }
-  _season.getActiveSeason().then(season => {
-    req.params.season_id = season.id
-    return series.getCurrentRound(season.id).then(round => {
-      req.params.round = round
-      return matchups(templates, _season, team, series, pairings, division, req, res)
-    })
+
+  series.saveCurrentRound(season_id, division_id, round).then(() => {
+    res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -373,7 +375,7 @@ function mapSeries(series) {
   })
 }
 
-function importSeries(series, season, team, series, pairings, division, req, res) {
+function importSeries(series, season, team, pairings, division, req, res) {
   // Can't run if you are not an admin
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
@@ -383,76 +385,74 @@ function importSeries(series, season, team, series, pairings, division, req, res
   var division_id = req.params.division_id
   var round = Number.parseInt(req.params.round)
 
-  series.getCurrentRound(season_id).then(maximumRound => {
-    return series.getCurrentRound(season_id, round).then(round => {
-      return season.getSeason(season_id).then(season => {
-        return division.getDivision(division_id).then(division => {
-          return team.getTeams(season.id, division.id).then(teams => {
-            teams = teams.map(t => {
-              t.droppedOut = t.disbanded
-              return t
+  series.getCurrentRound(season_id, division_id, round).then(round => {
+    return season.getSeason(season_id).then(season => {
+      return division.getDivision(division_id).then(division => {
+        return team.getTeams(season.id, division.id).then(teams => {
+          teams = teams.map(t => {
+            t.droppedOut = t.disbanded
+            return t
+          })
+          if (round === 0) {
+            teams = teams.sort((a, b) => {
+              return a.id.localeCompare(b.id)
             })
-            if (round === 0) {
-              teams = teams.sort((a, b) => {
+            teams = teams.map((team, i) => {
+              team.seed = i
+              return team
+            })
+          } else {
+            teams = teams.sort((a, b) => {
+              if (a.seed === b.seed) {
                 return a.id.localeCompare(b.id)
-              })
-              teams = teams.map((team, i) => {
-                team.seed = i
-                return team
-              })
-            } else {
-              teams = teams.sort((a, b) => {
-                if (a.seed === b.seed) {
-                  return a.id.localeCompare(b.id)
-                } else {
-                  return a.seed - b.seed
+              } else {
+                return a.seed - b.seed
+              }
+            })
+          }
+          return series.getSeries({
+            season_id: season.id,
+            division_id: division.id,
+            round: round
+          }).then(_series => {
+            var matchups = pairings.getMatchups(
+              round,
+              teams,
+              mapSeries(_series)
+            )
+            matchups = matchups.map(matchup => {
+              matchup.home = teams.filter(team => team.id === matchup.home)[0]
+              if (matchup.away === null) {
+                matchup.away = {
+                  id: null,
+                  name: 'BYE',
+                  logo: null
                 }
-              })
-            }
-            return series.getSeries({
-              season_id: season.id,
-              division_id: division.id,
-              round: round
-            }).then(_series => {
-              var matchups = pairings.getMatchups(
-                round,
-                teams,
-                mapSeries(_series)
-              )
-              matchups = matchups.map(matchup => {
-                matchup.home = teams.filter(team => team.id === matchup.home)[0]
-                if (matchup.away === null) {
-                  matchup.away = {
-                    id: null,
-                    name: 'BYE',
-                    logo: null
-                  }
-                } else {
-                  matchup.away = teams.filter(team => team.id === matchup.away)[0]
-                }
-                return matchup
-              })
+              } else {
+                matchup.away = teams.filter(team => team.id === matchup.away)[0]
+              }
+              return matchup
+            })
 
-              promises = matchups.map(_matchup => {
-                toSave = {}
-                toSave.id = shortid.generate()
-                toSave.round = round
-                toSave.season_id = season_id
-                toSave.division_id = division_id
-                toSave.home_team_id = _matchup['home']['id']
-                toSave.away_team_id = _matchup['away']['id']
-                toSave.home_points = 0
-                toSave.away_points = 0
-                toSave.match_1_id = null
-                toSave.match_2_id = null
-                toSave.match_1_forfeit_home = null
-                toSave.match_2_forfeit_home = null
-                return series.saveSeries(toSave)
-              })
+            var promises = matchups.map(_matchup => {
+              var toSave = {}
+              toSave.id = shortid.generate()
+              toSave.round = round
+              toSave.season_id = season_id
+              toSave.division_id = division_id
+              toSave.home_team_id = _matchup['home']['id']
+              toSave.away_team_id = _matchup['away']['id']
+              toSave.home_points = 0
+              toSave.away_points = 0
+              toSave.match_1_id = null
+              toSave.match_2_id = null
+              toSave.match_1_forfeit_home = null
+              toSave.match_2_forfeit_home = null
+              return series.saveSeries(toSave)
+            })
 
-              return Promise.all(promises).then(submitted => {
-                res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
-              })
+            return Promise.all(promises).then(() => {
+              res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
             })
           })
         })
@@ -494,9 +494,17 @@ module.exports = (templates, season, team, series, pairings, division) => {
       route: '/seasons/:season_id/divisions/:division_id/matchups/:round?',
       handler: matchups.bind(null, templates, season, team, series, pairings, division)
     },
+    editRound: {
+      route: '/seasons/:season_id/divisions/:division_id/round/edit',
+      handler: editRound.bind(null, templates, season, division, series)
+    },
+    saveRound: {
+      route: '/round/edit',
+      handler: saveRound.bind(null, series)
+    },
     importSeries: {
       route: '/seasons/:season_id/divisions/:division_id/week/:round/importSeries',
-      handler: importSeries.bind(null, series, season, team, series, pairings, division)
+      handler: importSeries.bind(null, series, season, team, pairings, division)
     }
   }
 }

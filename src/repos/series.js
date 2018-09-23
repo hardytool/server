@@ -151,7 +151,7 @@ function deleteSeries(db, id) {
   return db.query(query)
 }
 
-function getCurrentRound(db, season_id, round) {
+function getCurrentRound(db, season_id, division_id, round) {
   return Promise.resolve(round).then(round => {
     if (Number.isInteger(round)) {
       return Promise.resolve(round)
@@ -160,15 +160,37 @@ function getCurrentRound(db, season_id, round) {
       SELECT
         current_round as round
       FROM
-        season
+        round
       WHERE
-        id = ${season_id}
+        season_id = ${season_id}
+      AND
+        division_id = ${division_id}
       `
       return db.query(query).then(result => {
         return result.rows[0].round
       })
     }
   })
+}
+
+function saveCurrentRound(db, season_id, division_id, round) {
+  var upsert = sql`
+  INSERT INTO
+    round (
+      season_id,
+      division_id,
+      current_round
+    ) VALUES (
+      ${season_id},
+      ${division_id},
+      ${round}
+    ) ON CONFLICT (
+      season_id,
+      division_id
+    ) DO UPDATE SET
+      current_round = ${round}
+  `
+  return db.query(upsert)
 }
 
 function getStandings(db, season_id, division_id, round) {
@@ -260,6 +282,7 @@ module.exports = db => {
     saveSeries: saveSeries.bind(null, db),
     deleteSeries: deleteSeries.bind(null, db),
     getCurrentRound: getCurrentRound.bind(null, db),
+    saveCurrentRound: saveCurrentRound.bind(null, db),
     getStandings: getStandings.bind(null, db)
   }
 }

@@ -6,10 +6,10 @@ block title
 block content
   div.columns
     div.column
-      h3.title.is-3
+      h3.title.is-3.has-icon
         span.icon.is-medium
-          i.fa.fa-pencil
-        span &nbsp;#{verb} Series #{series ? ' - Week ' + series.round + ' - ' + series.home.name + ' v ' + series.away.name : ''}
+          i.fa.fa-edit
+        span #{verb} Series #{series ? ' - Week ' + series.round + ' - ' + series.home.name + ' v ' + series.away.name : ''}
       div
         form(method='post' action='/series/edit')
           input(type='hidden' name="_csrf" value=csrfToken)
