@@ -52,10 +52,13 @@ block content
                 p
                   a(href='/profile/' + captain.steam_id)
                     strong= captain.name
-                  br
-                  | Rank: #{captain.rank}
-                  br
-                  | Adjusted Rank: #{captain.adjusted_rank}
+                div.column
+                  p.image.is-64x64
+                    span Rank
+                      img(src="/assets/medals/" + captain.rank + ".png")
+                  p.image.is-64x64
+                    span Adjusted
+                      img(src="/assets/medals/" + captain.adjusted_rank + ".png")
               if user && user.isAdmin
                 nav.level.is-mobile
                   div.level-left
@@ -87,10 +90,17 @@ block content
               td
                 a(href='/profile/' + player.steam_id)= player.name
               td
-                figure.image.is-32x32.hide-overflow
+                figure.image.is-roster.hide-overflow
                   img(src=player.avatar)
-              td= player.rank
-              td= player.adjusted_rank
+              td 
+                figure.image.is-roster.hide-overflow
+                  img(src="/assets/medals/" + player.rank + ".png")
+              td
+                figure.image.is-roster.hide-overflow
+                  if player.adjusted_rank > 75
+                    img(src="/assets/medals/80.png")
+                  else
+                    img(src="/assets/medals/" + player.adjusted_rank + ".png")
               if user && user.isAdmin
                 td
                   form
