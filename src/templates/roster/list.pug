@@ -49,23 +49,30 @@ block content
                 img(src=captain.avatar)
             div.media-content
               div.content
-                p
-                  a(href='/profile/' + captain.steam_id)
-                    strong= captain.name
-                  br
-                  | Rank: #{captain.rank}
-                  br
-                  | Adjusted Rank: #{captain.adjusted_rank}
-              if user && user.isAdmin
-                nav.level.is-mobile
-                  div.level-left
-                    form.level-item
-                      input(type='hidden' name='division_id' value=division.id)
-                      input(type='hidden' name='season_id' value=season.id)
-                      input(type='hidden' name='team_id' value=team.id)
-                      input(type='hidden' name='id' value=captain.id)
-                      input(type='hidden' name="_csrf" value=csrfToken)
-                      button.button.is-danger(formaction='/roster/delete' formmethod='post') Remove
+                div.columns
+                  div.column
+                    a(href='/profile/' + captain.steam_id)
+                      strong= captain.name
+                  div.column
+                    figure.image.is-roster
+                      img(src="/assets/medals/" + captain.rank + ".png")
+                  div.column
+                    figure.image.is-roster
+                      if captain.adjusted_rank > 75
+                        img(src="/assets/medals/80.png")
+                      else
+                        img(src="/assets/medals/" + captain.adjusted_rank + ".png")
+                  div.column
+                    if user && user.isAdmin
+                      nav.level.is-mobile
+                        div.level-left
+                          form.level-item
+                            input(type='hidden' name='division_id' value=division.id)
+                            input(type='hidden' name='season_id' value=season.id)
+                            input(type='hidden' name='team_id' value=team.id)
+                            input(type='hidden' name='id' value=captain.id)
+                            input(type='hidden' name="_csrf" value=csrfToken)
+                            button.button.is-danger(formaction='/roster/delete' formmethod='post') Remove
       else
         p None
   div.columns
@@ -87,10 +94,17 @@ block content
               td
                 a(href='/profile/' + player.steam_id)= player.name
               td
-                figure.image.is-32x32.hide-overflow
+                figure.image.is-roster.hide-overflow
                   img(src=player.avatar)
-              td= player.rank
-              td= player.adjusted_rank
+              td 
+                figure.image.is-roster.hide-overflow
+                  img(src="/assets/medals/" + player.rank + ".png")
+              td
+                figure.image.is-roster.hide-overflow
+                  if player.adjusted_rank > 75
+                    img(src="/assets/medals/80.png")
+                  else
+                    img(src="/assets/medals/" + player.adjusted_rank + ".png")
               if user && user.isAdmin
                 td
                   form
