@@ -1,3 +1,6 @@
+var request = require('request')
+const heroes = require('../assets/heroes.json');
+
 function view(
   templates, steam_user, profile, season, vouch, team_player, steamId, player, req, res) {
     var viewerHasPlayed = Promise.resolve(null)
@@ -8,38 +11,50 @@ function view(
         })
     }
     viewerHasPlayed.then(viewerHasPlayed => {
-      return season.getActiveSeason().then(active_season => {
-        return profile.getProfile(req.params.steam_id).then(_profile => {
-          _profile.id64 = steamId.from32to64(_profile.steam_id)
-          return player.hasFalseActivity(active_season.id, _profile.steam_id).then(numberFalseActivity => {
-            return team_player.hasPlayed(_profile.steam_id)
-            .then(({ has_played }) => {
-              return vouch.isVouched(_profile.steam_id)
-                .then(result => {
-                  return team_player.getPlayerTeams(_profile.steam_id)
-                    .then(teamsPlayed => {
-                      return profile.getProfile(result.voucher_id).then(voucher => {
-                        result.voucher = voucher
-                        result.teamsPlayed = teamsPlayed
-                        return result
+      return request({
+          url: "https://api.opendota.com/api/players/" + req.params.steam_id + "/heroes",
+          json: true
+        }, function (error, response, body) {
+        var top5 = body.slice(0,5);
+        notableHeroes = top5.map(hero => {
+          hero.picture = 'https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/' + heroes[hero['hero_id']]['name'].substr(14) + '_sb.png'
+          hero.localName = heroes[hero['hero_id']]['localized_name']
+          return hero
+        })
+        return season.getActiveSeason().then(active_season => {
+          return profile.getProfile(req.params.steam_id).then(_profile => {
+            _profile.id64 = steamId.from32to64(_profile.steam_id)
+            return player.hasFalseActivity(active_season.id, _profile.steam_id).then(numberFalseActivity => {
+              return team_player.hasPlayed(_profile.steam_id)
+              .then(({ has_played }) => {
+                return vouch.isVouched(_profile.steam_id)
+                  .then(result => {
+                    return team_player.getPlayerTeams(_profile.steam_id)
+                      .then(teamsPlayed => {
+                        return profile.getProfile(result.voucher_id).then(voucher => {
+                          result.voucher = voucher
+                          result.teamsPlayed = teamsPlayed
+                          return result
+                        })
+                      }).then(({ is_vouched, voucher, teamsPlayed }) => {
+                        var html = templates.profile.view({
+                          user: req.user,
+                          profile: _profile,
+                          active_season: active_season,
+                          vouched: is_vouched,
+                          voucher: voucher,
+                          has_played: has_played,
+                          teamsPlayed: teamsPlayed,
+                          numSeasonsFalseActivity: numberFalseActivity.count,
+                          csrfToken: req.csrfToken(),
+                          notableHeroes: notableHeroes,
+                          can_vouch: (req.user && req.user.isAdmin)
+                            || (viewerHasPlayed && viewerHasPlayed.has_played)
+                        })
+                        res.send(html)
                       })
-                    }).then(({ is_vouched, voucher, teamsPlayed }) => {
-                      var html = templates.profile.view({
-                        user: req.user,
-                        profile: _profile,
-                        active_season: active_season,
-                        vouched: is_vouched,
-                        voucher: voucher,
-                        has_played: has_played,
-                        teamsPlayed: teamsPlayed,
-                        numSeasonsFalseActivity: numberFalseActivity.count,
-                        csrfToken: req.csrfToken(),
-                        can_vouch: (req.user && req.user.isAdmin)
-                          || (viewerHasPlayed && viewerHasPlayed.has_played)
-                      })
-                      res.send(html)
-                    })
-                })
+                  })
+              })
             })
           })
         })
