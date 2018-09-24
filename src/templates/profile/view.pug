@@ -96,6 +96,12 @@ block content
                 a(href='https://www.faceit.com/en/players/' + profile.faceit_name)
                   span FACEIT Profile
   div.columns
+    div.column
+      h3.title.is-3
+        span &nbsp;Most Played Heroes
+      each notableHero in notableHeroes
+        img(title= "Games: " + notableHero.games + " Wins: " + notableHero.win src=notableHero.picture).notable
+  div.columns
       div.column
         h3.title.is-3
           span &nbsp;Teams Played On

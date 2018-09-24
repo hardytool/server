@@ -27,6 +27,7 @@ var templates = require('pug-tree')(
   path.join(__dirname, 'templates'), config.templates)
 var pairings = require('swiss-pairing')({ maxPerRound: 2 })
 var fs = require('fs')
+var request =  require('request');
 
 // repositories
 var admin = require('./repos/admin')(pool)
