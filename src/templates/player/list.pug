@@ -76,10 +76,17 @@ block content
               td
                 a(href='/profile/' + player.steam_id)= player.name
               td
-                figure.image.is-32x32.hide-overflow
+                figure.image.is-roster.hide-overflow
                   img(src=player.avatar)
-              td= player.rank
-              td= player.adjusted_rank
+              td
+                figure.image.is-roster.hide-overflow
+                  img(src="/assets/medals/" + player.rank + ".png")
+              td
+                figure.image.is-roster.hide-overflow
+                  if player.adjusted_rank > 75
+                    img(src="/assets/medals/80.png")
+                  else
+                    img(src="/assets/medals/" + player.adjusted_rank + ".png")
               td= player.adjusted_mmr
               td
                 a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
