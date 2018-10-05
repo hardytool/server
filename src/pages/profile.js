@@ -12,7 +12,7 @@ function view(
     }
     viewerHasPlayed.then(viewerHasPlayed => {
       return request({
-          url: "https://api.opendota.com/api/players/" + req.params.steam_id + "/heroes",
+          url: "https://api.opendota.com/api/players/" + req.params.steam_id + "/heroes?date=180",
           json: true
         }, function (error, response, body) {
         var top5 = body.slice(0,5);
