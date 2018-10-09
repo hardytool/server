@@ -15,12 +15,18 @@ function view(
           url: "https://api.opendota.com/api/players/" + req.params.steam_id + "/heroes?date=180",
           json: true
         }, function (error, response, body) {
-        var top5 = body.slice(0,5);
-        notableHeroes = top5.map(hero => {
-          hero.picture = 'https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/' + heroes[hero['hero_id']]['name'].substr(14) + '_sb.png'
-          hero.localName = heroes[hero['hero_id']]['localized_name']
-          return hero
-        })
+          
+        if (body.length != undefined) {
+          var top5 = body.slice(0,5);
+          notableHeroes = top5.map(hero => {
+            hero.picture = 'https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/' + heroes[hero['hero_id']]['name'].substr(14) + '_sb.png'
+            hero.localName = heroes[hero['hero_id']]['localized_name']
+            return hero
+          })
+        } else {
+          notableHeroes = []
+        }
+
         return season.getActiveSeason().then(active_season => {
           return profile.getProfile(req.params.steam_id).then(_profile => {
             _profile.id64 = steamId.from32to64(_profile.steam_id)
