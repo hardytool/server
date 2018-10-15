@@ -27,15 +27,14 @@
      - Captains do not have the power to remove players from their team after the draft.
      - Captains should be at least Legend[1] rank or higher. This threshold may be increased or decreased at the discretion of division admins.
    - **Stand-ins**
+     - If a team is missing one of their players, the team is eligible to use a stand-in for this player.
+       - The standin must have been the same badge or lower on the draft sheet (according to adjusted mmr for players that were adjusted) and must not have climbed above the player they are replacing.
+       - The standin must be an RD2L player. The division admin and opposing captain must be notified of who you are missing and who you are using as a stand-in before the match begins.
      - Teams may use 1 stand-in per match, for a maximum of 3 series (6 games) during a season. If a team finds itself needing more than this, they should contact a division admin with regards to a free-agent.
-       - If a team needs two stand-ins in order to play they must forfeit the match.
-     - Stand-in usage from the season will be reset for all playoff teams. Playoff teams may use a stand-in for a maximum of two series of the playoffs. (Series means all games of a round, usually best of 3 or best of 5)
-     - Each stand-in must be equal rank or lower than the player they are replacing, as listed in the rank tab from the draft sheet.
-       - Each stand-in must be equal rank or lower than the player they are replacing, as listed in the rank tab from the draft sheet. 
-       - If a captain believes a stand-in is not fair they can report it to their division admin to decide if the stand-in can be used or not. (Basically there will be admin discretion for stand-ins).
-     - The stand-in must be an RD2L player. The division admin and opposing captain must be notified of who you are missing and who you are using as a stand-in before the match begins.
-     - Captains must attempt to use all of their current roster's players before requesting a stand-in. The opposing captain may reject any stand-in with a higher rank than the rank of the player missing from the team, with a floor of Legend[0].
-       - The exception to this rule is if one of your top 2 ranked players is missing, then you may find a suitable stand-in.
+       - Stand-in usage from the season will be reset for all playoff teams. Playoff teams may use a stand-in for a maximum of two series of the playoffs. (Series means all games of a round, usually best of 3 or best of 5)
+       - If a team is forced to use a standin because admins have not found a free agent for the team yet, these standin uses will not count towards the team total
+     - If a team needs two stand-ins in order to play they must forfeit the match.
+     - If a captain believes a stand-in is not fair they can report it to their division admin to decide if the stand-in can be used or not. (Basically there will be admin discretion for stand-ins).
      - If an admin discovers that a player used an unauthorized stand-in after the matches have been completed, the admin may retroactively call a forfeit for any games the unauthorized player played in. This will be decided on a case by case basis.
    - **Free Agents**
      - Free Agents are players that are eligible to be permanently added to teams during the season. If a captain requests a free agent, an admin will assign one to you after verifying that the free agent still wishes to participate in RD2L.
@@ -97,6 +96,8 @@
        - Spectators on is encouraged but a 2 minute delay is required. No in-game spectators except admins and authorized casters are allowed in the lobby; they are only allowed to spectate in-client or a twitch stream.
      - Game remakes are permitted if there is a major issue affecting gameplay (major ping increases, heavy packet loss, Steam down). Both team captains must agree to remake.
      - Scripts and Macros are not allowed to be used by any RD2L player in official RD2L matches. Players found using these in official matches may have their team retroactively forfeited for the matches in question.
+     - If a player selects the wrong hero in the pick phase of an official match, the team is allowed to have the match remade with the same hero picks for each team. This remake must be requested before the game loads in. Teams that have remakes often from this rule may have their ability to get lobbies remade revoked.
+     - If a teams captain/drafter DC's during a draft, the team is allowed to pause. This pause will use the pause time a team is allotted during the game itself.
      - If a game breaking bug is found; admins reserve the right to put out in announcement banning a certain hero or certain usage of a hero if it would cause the game to break. If players or teams discover bugs of this nature they should inform an admin. Taking advantage of game breaking bugs may result in a forfeit loss.
    - **Regular Season**
      - The regular season is 8 weeks long, with a Captain’s Mode Bo2 each week.
