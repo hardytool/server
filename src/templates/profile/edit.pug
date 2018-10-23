@@ -27,6 +27,15 @@ block content
               label.label(for='discord_name') Discord Name:
               p.control
                 input.input(id='discord_name' type='text' name='discord_name' placeholder='User#1234' value=(profile ? profile.discord_name : ''))
+            div.field
+              label.label(for='theme') Website Theme:
+              p.control
+                select(id='theme' name='theme')
+                  each theme in themes
+                    if profile && profile.theme === theme
+                      option(value=theme selected)= theme
+                    else
+                      option(value=theme)= theme
             if user.isAdmin
               div.field
                 label.label(for='adjusted_mmr') Adjusted MMR:

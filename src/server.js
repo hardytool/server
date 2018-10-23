@@ -123,9 +123,10 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "use.fontawesome.com"],
-      styleSrc: ["'self'", "'unsafe-inline'", "cdnjs.cloudflare.com", "use.fontawesome.com"],
-      imgSrc: ["'self'", "cdn.discordapp.com", "steamcdn-a.akamaihd.net", "i.imgur.com"]
+      scriptSrc: ["'self'", "'unsafe-inline'", "use.fontawesome.com", "unpkg.com", "cdn.joinhoney.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "cdnjs.cloudflare.com", "use.fontawesome.com", "unpkg.com", "cdn.joinhoney.com", "fonts.googleapis.com"],
+      imgSrc: ["'self'", "cdn.discordapp.com", "steamcdn-a.akamaihd.net", "i.imgur.com"],
+      fontSrc: ["'self'", "cdn.joinhoney.com"]
     }
   }
 }))

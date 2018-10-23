@@ -80,6 +80,7 @@ function inflateUser(admin, profile, steamId, user) {
       user.avatar = getAvatar(user.profile)
       user.displayName = profile.name
       user.steamId = id
+      user.theme = getTheme(profile)
       return user
     })
   })
@@ -87,6 +88,10 @@ function inflateUser(admin, profile, steamId, user) {
 
 function getAvatar(profile) {
   return profile.photos[profile.photos.length - 1].value
+}
+
+function getTheme(profile) {
+  return profile.theme
 }
 
 module.exports = (admin, steam_user, profile, mmr, steamId) => {

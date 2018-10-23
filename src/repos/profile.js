@@ -9,6 +9,7 @@ function getProfile(db, steamId) {
     steam_user.name AS steam_name,
     profile.faceit_name as faceit_name,
     profile.discord_name as discord_name,
+    profile.theme,
     steam_user.solo_mmr,
     steam_user.party_mmr,
     steam_user.rank,
@@ -53,7 +54,8 @@ function saveProfile(db, profile) {
     discord_name,
     adjusted_mmr,
     adjusted_rank,
-    name_locked
+    name_locked,
+    theme
   ) VALUES (
     ${profile.steam_id},
     ${profile.name},
@@ -61,7 +63,8 @@ function saveProfile(db, profile) {
     ${profile.discord_name},
     ${profile.adjusted_mmr},
     ${profile.adjusted_rank},
-    ${profile.name_locked}
+    ${profile.name_locked},
+    ${profile.theme}
   )
   ON CONFLICT (
     steam_id
@@ -71,14 +74,16 @@ function saveProfile(db, profile) {
     discord_name,
     adjusted_mmr,
     adjusted_rank,
-    name_locked
+    name_locked,
+    theme
   ) = (
     ${profile.name},
     ${profile.faceit_name},
     ${profile.discord_name},
     ${profile.adjusted_mmr},
     ${profile.adjusted_rank},
-    ${profile.name_locked}
+    ${profile.name_locked},
+    ${profile.theme}
   )
   `
   return db.query(upsert)
