@@ -280,9 +280,10 @@ migration.migrateIfNeeded(
         }
       })
 
-      steam.on('servers', servers => {
-        fs.writeFile(path.join(__dirname, 'assets', 'servers.js'), JSON.stringify(servers));
-      })
+      // Commenting this out because it is causing issues for now on node10
+      // steam.on('servers', servers => {
+      //   fs.writeFile(path.join(__dirname, 'assets', 'servers.js'), JSON.stringify(servers));
+      // })
 
       steam.on('error', err => {
         console.error(err)
