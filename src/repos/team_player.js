@@ -119,7 +119,7 @@ function getPlayerTeams(db, steam_id, season_id, division_id) {
     `])
   }
   select = sql.join([select, sql`
-  ORDER BY season.name ASC
+  ORDER BY division.name ASC, season.name ASC
   `])
   return db.query(select).then(result => {
     return result.rows
