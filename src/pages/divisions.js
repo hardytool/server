@@ -1,8 +1,8 @@
-var shortid = require('shortid')
+const shortid = require('shortid')
 
 function list(templates, division, req, res) {
   division.getDivisions().then(divisions => {
-    var html = templates.division.list({
+    const html = templates.division.list({
       user: req.user,
       divisions: divisions
     })
@@ -15,11 +15,11 @@ function list(templates, division, req, res) {
 }
 
 function nav(templates, season, division, admin, req, res) {
-  var division_id = req.params.division_id
+  const division_id = req.params.division_id
   division.getDivision(division_id).then(division => {
     return admin.getDivisionAdmins(division_id).then(divisionAdmins => {
       return season.getActiveSeason().then(seasons => {
-        var html = templates.division.division({
+        const html = templates.division.division({
           user: req.user,
           division: division,
           seasons: seasons,
@@ -36,10 +36,10 @@ function nav(templates, season, division, admin, req, res) {
 }
 
 function all_seasons(templates, season, division, req, res) {
-  var division_id = req.params.division_id
+  const division_id = req.params.division_id
   division.getDivision(division_id).then(division => {
     return season.getSeasons().then(seasons => {
-      var html = templates.division.all_seasons({
+      const html = templates.division.all_seasons({
         user: req.user,
         division: division,
         seasons: seasons
@@ -59,7 +59,7 @@ function create(templates, req, res) {
     return
   }
 
-  var html = templates.division.edit({
+  const html = templates.division.edit({
     user: req.user,
     verb: 'Create',
     csrfToken: req.csrfToken()
@@ -74,10 +74,10 @@ function edit(templates, division, req, res) {
     return
   }
 
-  var id = req.params.id
+  const id = req.params.id
 
   division.getDivision(id).then(division => {
-    var html = templates.division.edit({
+    const html = templates.division.edit({
       user: req.user,
       verb: 'Edit',
       division: division,
@@ -97,8 +97,8 @@ function post(division, req, res) {
     return
   }
 
-  var d = req.body
-  var id = d.id ? d.id : shortid.generate()
+  const d = req.body
+  const id = d.id ? d.id : shortid.generate()
   d.id = id
   d.active = d.active == 'on' ? true : false
 

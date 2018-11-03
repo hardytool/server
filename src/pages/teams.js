@@ -1,13 +1,13 @@
-var shortid = require('shortid')
+const shortid = require('shortid')
 
 function list(templates, season, division, team, req, res) {
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
 
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
       return team.getTeams(season_id, division_id).then(teams => {
-        var html = templates.team.list({
+        const html = templates.team.list({
           user: req.user,
           season: season,
           division: division,
@@ -29,12 +29,12 @@ function create(templates, season, division, req, res) {
     return
   }
 
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
 
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
-      var html = templates.team.edit({
+      const html = templates.team.edit({
         user: req.user,
         verb: 'Create',
         season: season,
@@ -56,14 +56,14 @@ function edit(templates, season, division, team, req, res) {
     return
   }
 
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
-  var id = req.params.id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
+  const id = req.params.id
 
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
       return team.getTeam(id).then(team => {
-        var html = templates.team.edit({
+        const html = templates.team.edit({
           user: req.user,
           verb: 'Edit',
           team: team,
@@ -86,10 +86,10 @@ function post(team, req, res) {
     return
   }
 
-  var season_id = req.body.season_id
-  var division_id = req.body.division_id
-  var id = req.body.id ? req.body.id : shortid.generate()
-  var t = req.body
+  const season_id = req.body.season_id
+  const division_id = req.body.division_id
+  const id = req.body.id ? req.body.id : shortid.generate()
+  const t = req.body
   t.id = id
   t.disbanded = t.disbanded == 'on' ? true : false
   t.team_number = t.team_number === '' ? null : t.team_number
@@ -108,9 +108,9 @@ function remove(team, req, res) {
     return
   }
 
-  var season_id = req.body.season_id
-  var division_id = req.body.division_id
-  var id = req.body.id
+  const season_id = req.body.season_id
+  const division_id = req.body.division_id
+  const id = req.body.id
 
   team.deleteTeam(id).then(() => {
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/teams')
@@ -123,7 +123,7 @@ function remove(team, req, res) {
 function json(team, season, team_player, req, res) {
   season.getActiveSeason().then(_season => {
     return team.getAllSeasonTeams(_season.id).then(teams => {
-      var promises = teams.map(_team => {
+      const promises = teams.map(_team => {
         return team_player.getRoster(_team.id).then(roster => {
           _team.captain = {'name': _team.captain_name, 'id': _team.captain_id}
           _team.player = roster

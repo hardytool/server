@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function getSeasons(db) {
-  var select = sql`
+  const select = sql`
   SELECT
     id,
     number,
@@ -20,7 +20,7 @@ function getSeasons(db) {
 }
 
 function getSeason(db, id) {
-  var select = sql`
+  const select = sql`
   SELECT
     id,
     number,
@@ -39,7 +39,7 @@ function getSeason(db, id) {
 }
 
 function getActiveSeason(db) {
-  var select = sql`
+  const select = sql`
   SELECT
     id,
     number,
@@ -58,7 +58,7 @@ function getActiveSeason(db) {
 }
 
 function saveSeason(db, season) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO
     season (
       id,
@@ -94,7 +94,7 @@ function saveSeason(db, season) {
 }
 
 function deleteSeason(db, id) {
-  var query = sql`
+  const query = sql`
   DELETE FROM
     season
   WHERE

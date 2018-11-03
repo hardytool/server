@@ -6,7 +6,7 @@ const classy = require('markdown-it-classy')
 md.use(classy)
 
 function home(templates, req, res) {
-    var html = templates.index({
+    const html = templates.index({
       user: req.user
     })
 
@@ -14,15 +14,15 @@ function home(templates, req, res) {
 }
 
 function complaint(templates, req, res) {
-  var html = templates.complaint({user: req.user})
+  const html = templates.complaint({user: req.user})
 
   res.send(html)
 }
 
 function rules(templates, path, req, res) {
   fs.readFile(path, 'utf8', (err, data) => {
-    var rules = md.render(data)
-    var html = templates.rules({
+    const rules = md.render(data)
+    const html = templates.rules({
       user: req.user,
       rules: rules
     })

@@ -1,16 +1,16 @@
 function list(templates, season, division, team, team_player, series, req, res) {
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
-  var team_id = req.params.team_id
-  var wins = 0
-  var losses = 0
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
+  const team_id = req.params.team_id
+  let wins = 0
+  let losses = 0
 
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
       return team.getTeam(team_id).then(team => {
         return team_player.getRoster(team.id).then(players => {
           return series.getSeries({ team_id: team.id }).then(series => {
-            var captain = players.filter(player => {
+            const captain = players.filter(player => {
               return player.is_captain
             })[0]
             players = players.filter(player => {
@@ -52,7 +52,7 @@ function list(templates, season, division, team, team_player, series, req, res) 
 
               return _series
             })
-            var html = templates.roster.list({
+            const html = templates.roster.list({
               user: req.user,
               season: season,
               division: division,
@@ -82,15 +82,15 @@ function add(templates, season, division, team, team_player, req, res) {
     return
   }
 
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
-  var team_id = req.params.team_id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
+  const team_id = req.params.team_id
 
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
       return team.getTeam(team_id).then(team => {
         return team_player.getUnassignedPlayers(season.id, division.id).then(players => {
-          var html = templates.roster.edit({
+          const html = templates.roster.edit({
             verb: 'Add',
             user: req.user,
             season: season,
@@ -116,10 +116,10 @@ function post(team_player, req, res) {
     return
   }
 
-  var season_id = req.body.season_id
-  var division_id = req.body.division_id
-  var team_id = req.body.team_id
-  var p = req.body
+  const season_id = req.body.season_id
+  const division_id = req.body.division_id
+  const team_id = req.body.team_id
+  const p = req.body
   if (p.is_captain === 'on') {
     p.is_captain = true
   } else {
@@ -141,10 +141,10 @@ function remove(team_player, req, res) {
     return
   }
 
-  var season_id = req.body.season_id
-  var division_id = req.body.division_id
-  var team_id = req.body.team_id
-  var player_id = req.body.id
+  const season_id = req.body.season_id
+  const division_id = req.body.division_id
+  const team_id = req.body.team_id
+  const player_id = req.body.id
 
   team_player.removePlayerFromTeam(team_id, player_id).then(() => {
     res.redirect(

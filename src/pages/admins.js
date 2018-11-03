@@ -6,7 +6,7 @@ function create(templates, division, admin_group, req, res) {
 
   division.getDivisions().then(divisions => {
     return admin_group.getAdminGroups().then(admin_groups => {
-      var html = templates.admin.edit({
+      const html = templates.admin.edit({
         user: req.user,
         verb: 'Create',
         divisions: divisions,
@@ -26,7 +26,7 @@ function list(templates, admin, req, res) {
   }
 
   admin.getAdmins().then(admins => {
-    var html = templates.admin.list({
+    const html = templates.admin.list({
       user: req.user,
       admins: admins
     })
@@ -44,12 +44,12 @@ function edit(templates, admin, division, admin_group, req, res) {
     return
   }
 
-  var steam_id = req.params.admin_id
+  const steam_id = req.params.admin_id
 
   admin.getAdmins({ steam_id: steam_id }).then(([admin]) => {
     return division.getDivisions().then(divisions => {
       return admin_group.getAdminGroups().then((admin_groups) => {
-        var html = templates.admin.edit({
+        const html = templates.admin.edit({
           user: req.user,
           verb: 'Edit',
           admin: admin,

@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function isVouched(db, steam_id) {
-  var select = sql`
+  const select = sql`
   SELECT
     CASE
       WHEN vouch.vouched_id IS NOT NULL THEN true
@@ -21,7 +21,7 @@ function isVouched(db, steam_id) {
 }
 
 function vouch(db, voucher_id, vouchee_id) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO vouch (
     vouched_id,
     voucher_id
@@ -37,7 +37,7 @@ function vouch(db, voucher_id, vouchee_id) {
 }
 
 function unvouch(db, steam_id) {
-  var query = sql`
+  const query = sql`
   DELETE FROM
     vouch
   WHERE

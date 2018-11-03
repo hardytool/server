@@ -1,4 +1,4 @@
-var fs = require('fs')
+const fs = require('fs')
 
 module.exports = config => {
   if (config.ssl_key && config.ssl_cert && config.ssl_ca) {

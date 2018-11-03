@@ -1,4 +1,4 @@
-var shortid = require('shortid')
+const shortid = require('shortid')
 
 function list(templates, role, req, res) {
   if (!req.user || !req.user.isAdmin) {
@@ -7,7 +7,7 @@ function list(templates, role, req, res) {
   }
 
   role.getRoles().then(roles => {
-    var html = templates.role.list({
+    const html = templates.role.list({
       user: req.user,
       roles: roles
     })
@@ -25,7 +25,7 @@ function create(templates, req, res) {
     return
   }
 
-  var html = templates.role.edit({
+  const html = templates.role.edit({
     user: req.user,
     verb: 'Create',
     csrfToken: req.csrfToken()
@@ -40,10 +40,10 @@ function edit(templates, role, req, res) {
     return
   }
 
-  var role_id = req.params.role_id
+  const role_id = req.params.role_id
 
   role.getRoles({ role_id: role_id }).then(([role]) => {
-    var html = templates.role.edit({
+    const html = templates.role.edit({
       user: req.user,
       verb: 'Edit',
       role: role,
@@ -63,8 +63,8 @@ function post(role, req, res) {
     return
   }
 
-  var id = req.body.id ? req.body.id : shortid.generate()
-  var r = req.body
+  const id = req.body.id ? req.body.id : shortid.generate()
+  const r = req.body
   r.id = id
 
   role.saveRole(req.body).then(() => {
@@ -81,7 +81,7 @@ function remove(role, req, res) {
     return
   }
 
-  var id = req.body.id
+  const id = req.body.id
 
   role.deleteRole(id).then(() => {
     res.redirect('/roles')

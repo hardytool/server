@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function saveRoleRank(db, player_id, role_id, rank) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO player_role (
     player_id,
     role_id,
@@ -20,7 +20,7 @@ function saveRoleRank(db, player_id, role_id, rank) {
 }
 
 function getRoleRanks(db, criteria) {
-  var select = sql`
+  let select = sql`
   SELECT
     player_role.player_id,
     player_role.role_id,

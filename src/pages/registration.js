@@ -1,8 +1,8 @@
-var shortid = require('shortid')
+const shortid = require('shortid')
 
 function view(templates, season, division, steam_user, player, role, player_role, mmr, profile, req, res) {
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
 
   season.getSeason(season_id).then(season => {
     if (!req.user) {
@@ -30,8 +30,8 @@ function view(templates, season, division, steam_user, player, role, player_role
               return player_role.getRoleRanks({
                 player_id: player.id
               }).then(ranks => {
-                var prefs = roles.reduce((acc, role) => {
-                  var rank = ranks.filter(r => r.role_id === role.id)
+                const prefs = roles.reduce((acc, role) => {
+                  const rank = ranks.filter(r => r.role_id === role.id)
                   if (rank.length) {
                     acc[role.id] = rank[0].rank
                   }
@@ -112,7 +112,7 @@ function shortcut(templates, season, division, steam_user, player, role, player_
 }
 
 function directory(templates, season, division, steam_user, player, req, res) {
-  var season_id = req.params.season_id
+  const season_id = req.params.season_id
 
   season.getSeason(season_id).then(season => {
     if (!req.user) {
@@ -172,10 +172,10 @@ function post(templates, season, division, steam_user, team_player, player, role
     return
   }
 
-  var season_id = req.body.season_id
-  var division_id = req.body.division_id
-  var id = req.body.id ? req.body.id : shortid.generate()
-  var p = req.body
+  const season_id = req.body.season_id
+  const division_id = req.body.division_id
+  const id = req.body.id ? req.body.id : shortid.generate()
+  const p = req.body
 
   p.id = id
   p.steam_id = req.user.steamId
@@ -219,14 +219,14 @@ function post(templates, season, division, steam_user, team_player, player, role
                   return player.savePlayer(p).then(() => {
                     return profile.saveProfile(_profile).then(() => {
                       return role.getRoles().then(roles => {
-                        var promises = roles.reduce((promises, role) => {
+                        const promises = roles.reduce((promises, role) => {
                           if (p[role.id] !== undefined) {
                             promises.push(player_role.saveRoleRank(p.id, role.id, p[role.id]))
                           }
                           return promises
                         }, [])
                         return Promise.all(promises).then(() => {
-                          var html = templates.registration.discord({
+                          const html = templates.registration.discord({
                             user: req.user,
                             season: season,
                             division: division
@@ -260,9 +260,9 @@ function unregister(season, division, steam_user, player, req, res) {
     return
   }
 
-  var seasonId = req.body.season_id
-  var divisionId = req.body.division_id
-  var steamId = req.user.steamId
+  const seasonId = req.body.season_id
+  const divisionId = req.body.division_id
+  const steamId = req.user.steamId
 
   season.getSeason(seasonId).then(season => {
     return division.getDivision(divisionId).then(division => {

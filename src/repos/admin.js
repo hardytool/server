@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function isAdmin(db, id) {
-  var select = sql`
+  const select = sql`
   SELECT
     COUNT(*) > 0 AS is_admin
   FROM
@@ -15,7 +15,7 @@ function isAdmin(db, id) {
 }
 
 function saveAdmin(db, admin) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO admin (
     steam_id,
     group_id,
@@ -34,7 +34,7 @@ function saveAdmin(db, admin) {
 }
 
 function getAdmins(db, criteria) {
-  var select = sql`
+  let select = sql`
   SELECT
     steam_user.steam_id,
     steam_user.avatar,
@@ -71,7 +71,7 @@ function getAdmins(db, criteria) {
 }
 
 function getDivisionAdmins(db, id) {
-  var select = sql`
+  const select = sql`
   SELECT
     steam_user.steam_id,
     steam_user.avatar,
@@ -93,7 +93,7 @@ function getDivisionAdmins(db, id) {
 }
 
 function deleteAdmin(db, id) {
-    var query = sql`
+    const query = sql`
       DELETE FROM
         admin
       WHERE

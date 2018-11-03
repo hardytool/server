@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function getSteamUsers(db) {
-  var select = sql`
+  const select = sql`
   SELECT
     steam_user.steam_id,
     steam_user.name,
@@ -18,7 +18,7 @@ function getSteamUsers(db) {
 }
 
 function getSteamUsersMissingMMR(db, season_id) {
-  var select = sql`
+  const select = sql`
   SELECT
     steam_user.steam_id,
     steam_user.name,
@@ -43,7 +43,7 @@ function getSteamUsersMissingMMR(db, season_id) {
 }
 
 function getNonPlayerSteamUsers(db, season_id, division_id) {
-  var select = sql`
+  const select = sql`
   SELECT
     steam_user.steam_id,
     steam_user.name,
@@ -76,7 +76,7 @@ function getNonPlayerSteamUsers(db, season_id, division_id) {
 }
 
 function getSteamUser(db, steamId) {
-  var select = sql`
+  const select = sql`
   SELECT
     steam_user.steam_id,
     steam_user.name,
@@ -95,7 +95,7 @@ function getSteamUser(db, steamId) {
 }
 
 function saveSteamUser(db, user) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO steam_user (
     steam_id,
     name,
@@ -131,7 +131,7 @@ function saveSteamUser(db, user) {
 }
 
 function deleteSteamUser(db, id) {
-  var query = sql`
+  const query = sql`
   DELETE FROM
     steam_user
   WHERE

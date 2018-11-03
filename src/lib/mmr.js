@@ -1,5 +1,5 @@
-var Promise = require('bluebird')
-var available = false
+const Promise = require('bluebird')
+let available = false
 
 function getMMR(dota2, id) {
   if (!available) {
@@ -11,15 +11,15 @@ function getMMR(dota2, id) {
         reject(err)
       }
 
-      var soloSlot = result.slots.filter(slot => {
+      const soloSlot = result.slots.filter(slot => {
         return slot.stat && slot.stat.stat_id === 1
       })
-      var partySlot = result.slots.filter(slot => {
+      const partySlot = result.slots.filter(slot => {
         return slot.stat && slot.stat.stat_id === 2
       })
-      var solo = soloSlot.length === 1 ? soloSlot[0].stat.stat_score : null
-      var party = partySlot.length === 1 ? partySlot[0].stat.stat_score : null
-      var rank = result.rank_tier
+      const solo = soloSlot.length === 1 ? soloSlot[0].stat.stat_score : null
+      const party = partySlot.length === 1 ? partySlot[0].stat.stat_score : null
+      const rank = result.rank_tier
       resolve({
         solo: solo,
         party: party,

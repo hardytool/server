@@ -11,11 +11,13 @@
       "es6": true
     },
     "rules": {
-      "semi": ["error", "never"],
-      "quotes": ["error", "single"],
-      "no-process-env": "error",
-      "no-console": "off",
       "global-require": "error",
-      "max-len": ["error", 120]
+      "max-len": ["error", 120],
+      "no-console": "off",
+      "no-process-env": "error",
+      "no-var": "error",
+      "prefer-const": "error",
+      "quotes": ["error", "single"],
+      "semi": ["error", "never"]
     }
 }

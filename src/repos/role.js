@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function saveRole(db, role) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO role (
     id,
     name
@@ -17,7 +17,7 @@ function saveRole(db, role) {
 }
 
 function getRoles(db, criteria) {
-  var select = sql`
+  let select = sql`
   SELECT
     role.id,
     role.name
@@ -40,7 +40,7 @@ function getRoles(db, criteria) {
 }
 
 function deleteRole(db, role_id) {
-  var query = sql`
+  const query = sql`
   DELETE FROM
     role
   WHERE

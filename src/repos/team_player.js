@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function getUnassignedPlayers(db, season_id, division_id) {
-  var select = sql`
+  const select = sql`
   SELECT
     player.id,
     steam_user.steam_id,
@@ -41,7 +41,7 @@ function getUnassignedPlayers(db, season_id, division_id) {
 }
 
 function addPlayerToTeam(db, team_id, player_id, is_captain) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO team_player (
     team_id,
     player_id,
@@ -64,7 +64,7 @@ function addPlayerToTeam(db, team_id, player_id, is_captain) {
 }
 
 function removePlayerFromTeam(db, team_id, player_id) {
-  var query = sql`
+  const query = sql`
   DELETE FROM
     team_player
   WHERE
@@ -76,7 +76,7 @@ function removePlayerFromTeam(db, team_id, player_id) {
 }
 
 function getPlayerTeams(db, steam_id, season_id, division_id) {
-  var select = sql`
+  let select = sql`
   SELECT
     team.id,
     team.season_id,
@@ -127,7 +127,7 @@ function getPlayerTeams(db, steam_id, season_id, division_id) {
 }
 
 function getRoster(db, team_id) {
-  var select = sql`
+  const select = sql`
   SELECT
     player.id,
     steam_user.steam_id,
@@ -171,7 +171,7 @@ function getRoster(db, team_id) {
 }
 
 function isCaptainAutoApproved(db, steam_id) {
-  var select = sql`
+  const select = sql`
   SELECT
     NOT disbanded AND captained AS allowed
   FROM (
@@ -198,7 +198,7 @@ function isCaptainAutoApproved(db, steam_id) {
 }
 
 function hasPlayed(db, steam_id) {
-  var select = sql`
+  const select = sql`
   SELECT
     COUNT(1) > 0 AS has_played
   FROM

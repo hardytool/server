@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function getTeams(db, season_id, division_id) {
-  var select = sql`
+  const select = sql`
   SELECT
     team.id,
     team.season_id,
@@ -47,7 +47,7 @@ function getTeams(db, season_id, division_id) {
 }
 
 function getTeam(db, id) {
-  var select = sql`
+  const select = sql`
   SELECT
     id,
     season_id,
@@ -69,7 +69,7 @@ function getTeam(db, id) {
 }
 
 function getAllSeasonTeams(db, season_id) {
-    var select = sql`
+    const select = sql`
       SELECT
         team.id,
         team.season_id,
@@ -113,7 +113,7 @@ function getAllSeasonTeams(db, season_id) {
 }
 
 function saveTeam(db, team) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO
     team (
       id,
@@ -161,7 +161,7 @@ function saveTeam(db, team) {
 }
 
 function deleteTeam(db, id) {
-  var query = sql`
+  const query = sql`
   DELETE FROM
     team
   WHERE

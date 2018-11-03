@@ -1,17 +1,17 @@
-var shortid = require('shortid')
-var csv = require('../lib/csv')
+const shortid = require('shortid')
+const csv = require('../lib/csv')
 
 function list(templates, season, division, player, req, res) {
-  var includeCaptains = req.query.includeCaptains === '1'
+  const includeCaptains = req.query.includeCaptains === '1'
     || req.query.includeCaptains === 'true'
     ? true
     : false
-  var includeStandins = req.query.includeStandins === '1'
+  const includeStandins = req.query.includeStandins === '1'
     || req.query.includeStandins === 'true'
     ? true
     : false
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
       return player.getPlayers({
@@ -27,7 +27,7 @@ function list(templates, season, division, player, req, res) {
           division_id: division_id,
           is_captain: true
         }).then(captains => {
-          var html = templates.player.list({
+          const html = templates.player.list({
             user: req.user,
             season: season,
             division: division,
@@ -47,8 +47,8 @@ function list(templates, season, division, player, req, res) {
 }
 
 function captains(templates, season, division, player, req, res) {
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
       return player.getPlayers({
@@ -58,7 +58,7 @@ function captains(templates, season, division, player, req, res) {
       }, {
         by_mmr: true
       }).then(players => {
-        var html = templates.player.captains({
+        const html = templates.player.captains({
           user: req.user,
           season: season,
           division: division,
@@ -75,8 +75,8 @@ function captains(templates, season, division, player, req, res) {
 }
 
 function standins(templates, season, division, player, req, res) {
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
       return player.getPlayers({
@@ -86,7 +86,7 @@ function standins(templates, season, division, player, req, res) {
       }, {
         by_mmr: true
       }).then(players => {
-        var html = templates.player.standins({
+        const html = templates.player.standins({
           user: req.user,
           season: season,
           division: division,
@@ -108,14 +108,14 @@ function create(templates, season, division, steam_user, req, res) {
     return
   }
 
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
 
   season.getSeason(season_id).then(season => {
     return division.getDivisions().then(divisions => {
       return division.getDivision(division_id).then(division => {
         return steam_user.getNonPlayerSteamUsers(season.id, division_id).then(steamUsers => {
-          var html = templates.player.edit({
+          const html = templates.player.edit({
             user: req.user,
             verb: 'Create',
             season: season,
@@ -141,15 +141,15 @@ function edit(templates, season, division, player, steam_user, req, res) {
     return
   }
 
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
-  var id = req.params.id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
+  const id = req.params.id
 
   season.getSeason(season_id).then(season => {
     return division.getDivisions().then(divisions => {
       return division.getDivision(division_id).then(division => {
         return player.getPlayer(id).then(player => {
-          var html = templates.player.edit({
+          const html = templates.player.edit({
             user: req.user,
             verb: 'Edit',
             player: player,
@@ -174,10 +174,10 @@ function post(player, req, res) {
     return
   }
 
-  var season_id = req.body.season_id
-  var division_id = req.body.division_id
-  var id = req.body.id ? req.body.id : shortid.generate()
-  var p = req.body
+  const season_id = req.body.season_id
+  const division_id = req.body.division_id
+  const id = req.body.id ? req.body.id : shortid.generate()
+  const p = req.body
   p.id = id
   p.captain_approved = p.captain_approved === 'on'
   p.statement = p.statement.slice(0, 500)
@@ -197,9 +197,9 @@ function remove(player, req, res) {
     return
   }
 
-  var season_id = req.body.season_id
-  var division_id = req.body.division_id
-  var id = req.body.id
+  const season_id = req.body.season_id
+  const division_id = req.body.division_id
+  const id = req.body.id
 
   player.deletePlayer(id).then(() => {
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/players')
@@ -210,10 +210,10 @@ function remove(player, req, res) {
 }
 
 function getCSV(player, player_role, role, division, req, res) {
-  var isCaptains = req.query.captains === '1' ? true : false
-  var hideCaptains = req.query.show_captains === '1' ? false : true
-  var byMMR = req.query.by_mmr === '1' ? true : false
-  var division_id = req.params.division_id
+  const isCaptains = req.query.captains === '1' ? true : false
+  const hideCaptains = req.query.show_captains === '1' ? false : true
+  const byMMR = req.query.by_mmr === '1' ? true : false
+  const division_id = req.params.division_id
 
   player.getDraftSheet({
     season_id: req.params.season_id,
@@ -227,22 +227,22 @@ function getCSV(player, player_role, role, division, req, res) {
       return role.getRoles().then(roles => {
         return division.getDivision(division_id).then(divisions => {
           players = players.map(player => {
-            var playerRoleRanks = roleRanks.filter(rr => rr.player_id === player.id)
+            const playerRoleRanks = roleRanks.filter(rr => rr.player_id === player.id)
               .reduce((acc, rr) => {
                 acc[rr.role_id] = rr.rank
                 return acc
               }, {})
-            var o = roles.reduce((acc, role) => {
+            const o = roles.reduce((acc, role) => {
               acc['Role: ' + role.name] = playerRoleRanks[role.id]
               return acc
             }, {})
-            var rank = player.draft_rank
+            const rank = player.draft_rank
             player.draft_rank = ((rank - (rank % 10))/10 - 1) * 5 + (rank % 10)
             delete player.id
             return Object.assign(player, o)
           })
           return csv.toCSV(players).then(csv => {
-            var filename = divisions.name.toLowerCase() + '-'
+            let filename = divisions.name.toLowerCase() + '-'
             if (isCaptains) {
               filename += 'captains'
             } else {
@@ -264,7 +264,7 @@ function getCSV(player, player_role, role, division, req, res) {
 
 function activityCheck(player, season, req, res) {
   season.getActiveSeason().then(_season => {
-    var steam_id
+    let steam_id
     if (req.params.steam_id) {
       if (!req.user || !req.user.isAdmin) {
         res.sendStatus(403)

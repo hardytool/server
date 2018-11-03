@@ -1,9 +1,9 @@
-var shortid = require('shortid')
+const shortid = require('shortid')
 
 function list(templates, season, series, division, req, res) {
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
-  var round = req.query.round
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
+  const round = req.query.round
 
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
@@ -29,7 +29,7 @@ function list(templates, season, series, division, req, res) {
           }
           return _series
         })
-        var html = templates.series.list({
+        const html = templates.series.list({
           user: req.user,
           season: season,
           division: division,
@@ -51,13 +51,13 @@ function create(templates, season, team, division, req, res) {
     return
   }
 
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
 
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
       return team.getTeams(season.id, division.id).then(teams => {
-        var html = templates.series.edit({
+        const html = templates.series.edit({
           user: req.user,
           verb: 'Create',
           season: season,
@@ -81,9 +81,9 @@ function edit(templates, season, team, series, division, req, res) {
     return
   }
 
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
-  var id = req.params.id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
+  const id = req.params.id
 
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
@@ -100,7 +100,7 @@ function edit(templates, season, team, series, division, req, res) {
           series.away.name = series.away_team_name
           series.away.logo = series.away_team_logo
           series.away.points = series.away_points
-          var html = templates.series.edit({
+          const html = templates.series.edit({
             user: req.user,
             verb: 'Edit',
             season: season,
@@ -126,10 +126,10 @@ function post(series, req, res) {
     return
   }
 
-  var season_id = req.body.season_id
-  var division_id = req.body.division_id
-  var id = req.body.id ? req.body.id : shortid.generate()
-  var s = req.body
+  const season_id = req.body.season_id
+  const division_id = req.body.division_id
+  const id = req.body.id ? req.body.id : shortid.generate()
+  const s = req.body
   s.id = id
   if (s.home_team_id === '') {
     s.home_team_id = null
@@ -137,16 +137,16 @@ function post(series, req, res) {
   if (s.away_team_id === '') {
     s.away_team_id = null
   }
-  var match1 = s.match_1_id
-  var match2 = s.match_2_id
+  const match1 = s.match_1_id
+  const match2 = s.match_2_id
   if (!match1) {
     s.match_1_id = null
   }
   if (!match2) {
     s.match_2_id = null
   }
-  var forfeit1 = s.match_1_forfeit_home
-  var forfeit2 = s.match_2_forfeit_home
+  const forfeit1 = s.match_1_forfeit_home
+  const forfeit2 = s.match_2_forfeit_home
   if (forfeit1 === 'home') {
     s.match_1_forfeit_home = true
   } else if (forfeit1 === 'away') {
@@ -176,9 +176,9 @@ function remove(series, req, res) {
     return
   }
 
-  var season_id = req.body.season_id
-  var division_id = req.body.division_id
-  var id = req.body.id
+  const season_id = req.body.season_id
+  const division_id = req.body.division_id
+  const id = req.body.id
 
   series.deleteSeries(id).then(() => {
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
@@ -189,9 +189,9 @@ function remove(series, req, res) {
 }
 
 function standings(templates, season, team, series, pairings, division, req, res) {
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
-  var round = Number.parseInt(req.params.round)
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
+  const round = Number.parseInt(req.params.round)
 
   series.getCurrentRound(season_id, division_id).then(maximumRound => {
     series.getCurrentRound(season_id, division_id, round).then(round => {
@@ -203,14 +203,14 @@ function standings(templates, season, team, series, pairings, division, req, res
               division_id: division.id,
               round: round
             }).then(series => {
-              var standings = pairings.getStandings(
+              let standings = pairings.getStandings(
                 round,
                 teams,
                 mapSeries(series)
               )
-              var counter = 1
+              let counter = 1
               standings = standings.map(standing => {
-                var team = teams.filter(team => team.id === standing.id)[0]
+                const team = teams.filter(team => team.id === standing.id)[0]
                 standing.name = team.name
                 standing.logo = team.logo
                 standing.captain_name = team.captain_name
@@ -223,7 +223,7 @@ function standings(templates, season, team, series, pairings, division, req, res
                 }
                 return standing
               })
-              var html = templates.series.standings({
+              const html = templates.series.standings({
                 user: req.user,
                 season: season,
                 division: division,
@@ -244,9 +244,9 @@ function standings(templates, season, team, series, pairings, division, req, res
 }
 
 function matchups(templates, season, team, series, pairings, division, req, res) {
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
-  var round = Number.parseInt(req.params.round)
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
+  const round = Number.parseInt(req.params.round)
 
   series.getCurrentRound(season_id, division_id).then(maximumRound => {
     return series.getCurrentRound(season_id, division_id, round).then(round => {
@@ -279,7 +279,7 @@ function matchups(templates, season, team, series, pairings, division, req, res)
               division_id: division.id,
               round: round
             }).then(series => {
-              var matchups = pairings.getMatchups(
+              let matchups = pairings.getMatchups(
                 round,
                 teams,
                 mapSeries(series)
@@ -298,7 +298,7 @@ function matchups(templates, season, team, series, pairings, division, req, res)
                 return matchup
               })
 
-              var html = templates.series.matchups({
+              const html = templates.series.matchups({
                 user: req.user,
                 season: season,
                 division: division,
@@ -319,8 +319,8 @@ function matchups(templates, season, team, series, pairings, division, req, res)
 }
 
 function editRound(templates, season, division, series, req, res) {
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
 
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
@@ -328,7 +328,7 @@ function editRound(templates, season, division, series, req, res) {
   }
 
   series.getCurrentRound(season_id, division_id).then(round => {
-    var html = templates.series.round({
+    const html = templates.series.round({
       season_id: season_id,
       division_id: division_id,
       round: round,
@@ -342,9 +342,9 @@ function editRound(templates, season, division, series, req, res) {
 }
 
 function saveRound(series, req, res) {
-  var season_id = req.body.season_id
-  var division_id = req.body.division_id
-  var round = req.body.round
+  const season_id = req.body.season_id
+  const division_id = req.body.division_id
+  const round = req.body.round
 
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
@@ -381,9 +381,9 @@ function importSeries(series, season, team, pairings, division, req, res) {
     res.sendStatus(403)
     return
   }
-  var season_id = req.params.season_id
-  var division_id = req.params.division_id
-  var round = Number.parseInt(req.params.round)
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
+  const round = Number.parseInt(req.params.round)
 
   series.getCurrentRound(season_id, division_id, round).then(round => {
     return season.getSeason(season_id).then(season => {
@@ -415,7 +415,7 @@ function importSeries(series, season, team, pairings, division, req, res) {
             division_id: division.id,
             round: round
           }).then(_series => {
-            var matchups = pairings.getMatchups(
+            let matchups = pairings.getMatchups(
               round,
               teams,
               mapSeries(_series)
@@ -434,8 +434,8 @@ function importSeries(series, season, team, pairings, division, req, res) {
               return matchup
             })
 
-            var promises = matchups.map(_matchup => {
-              var toSave = {}
+            const promises = matchups.map(_matchup => {
+              const toSave = {}
               toSave.id = shortid.generate()
               toSave.round = round
               toSave.season_id = season_id

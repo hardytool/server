@@ -1,9 +1,9 @@
-var request = require('request')
+const request = require('request')
 const heroes = require('../assets/heroes.json')
 
 function view(
   templates, steam_user, profile, season, vouch, team_player, steamId, player, req, res) {
-    var viewerHasPlayed = Promise.resolve(null)
+    let viewerHasPlayed = Promise.resolve(null)
     if (req.user) {
       viewerHasPlayed = steam_user.getSteamUser(req.user.steamId)
         .then(viewer => {
@@ -16,8 +16,8 @@ function view(
           json: true
         }, function (error, response, body) {
           
-        var top5 = body.length ? body.slice(0,5) : []
-        var notableHeroes = top5.map(hero => {
+        const top5 = body.length ? body.slice(0,5) : []
+        const notableHeroes = top5.map(hero => {
           hero.picture =
             'https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/' +
             heroes[hero['hero_id']]['name'].substr(14) + '_sb.png'
@@ -41,7 +41,7 @@ function view(
                           return result
                         })
                       }).then(({ is_vouched, voucher, teamsPlayed }) => {
-                        var html = templates.profile.view({
+                        const html = templates.profile.view({
                           user: req.user,
                           profile: _profile,
                           active_season: active_season,
@@ -74,9 +74,9 @@ function edit(templates, steam_user, profile, req, res) {
     res.sendStatus(403)
     return
   }
-  var steamId = req.params.steam_id
+  const steamId = req.params.steam_id
 
-  var themes = ['default', 'darkly', 'pulse', 'superhero', 'solar']
+  const themes = ['default', 'darkly', 'pulse', 'superhero', 'solar']
 
   steam_user.getSteamUser(steamId).then(steamUser => {
     if (!(req.user.isAdmin || req.user.steamId === steamUser.steam_id)) {
@@ -85,7 +85,7 @@ function edit(templates, steam_user, profile, req, res) {
     }
 
     return profile.getProfile(steamUser.steam_id).then(profile => {
-      var html = templates.profile.edit({
+      const html = templates.profile.edit({
         user: req.user,
         steamUser: steamUser,
         profile: profile,
@@ -106,7 +106,7 @@ function post(steam_user, profile, req, res) {
     return
   }
 
-  var p = {}
+  const p = {}
   p.steam_id = req.body.steam_id
   p.name = req.body.name
   p.faceit_name = req.body.faceit_name
@@ -151,7 +151,7 @@ function vouch(templates, steam_user, profile, team_player, req, res) {
     return profile.getProfile(req.params.steam_id).then(vouchee => {
       return team_player.hasPlayed(voucher.steam_id).then(({ has_played }) => {
         if (has_played || req.user.isAdmin) {
-          var html = templates.profile.vouch_confirm({
+          const html = templates.profile.vouch_confirm({
             user: req.user,
             voucher: voucher,
             vouchee: vouchee,
