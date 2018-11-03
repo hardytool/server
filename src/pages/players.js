@@ -264,7 +264,7 @@ function getCSV(player, player_role, role, division, req, res) {
 
 function activityCheck(player, season, req, res) {
   season.getActiveSeason().then(_season => {
-    season_id = _season.id
+    var steam_id
     if (req.params.steam_id) {
       if (!req.user || !req.user.isAdmin) {
         res.sendStatus(403)
@@ -275,7 +275,7 @@ function activityCheck(player, season, req, res) {
       steam_id = req.user.steamId
     }
 
-    player.activityCheck(season_id, steam_id).then(() => {
+    player.activityCheck(_season.id, steam_id).then(() => {
       res.redirect('/profile/' + steam_id)
     }).catch(err => {
       console.error(err)
@@ -286,8 +286,7 @@ function activityCheck(player, season, req, res) {
 
 function json(player, req, res) {
   player.getPlayers().then(players => {
-    j = players
-    res.send(j)
+    res.send(players)
   })
 }
 

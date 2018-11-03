@@ -122,9 +122,8 @@ function remove(team, req, res) {
 
 function json(team, season, team_player, req, res) {
   season.getActiveSeason().then(_season => {
-    seasonName = _season.name
     return team.getAllSeasonTeams(_season.id).then(teams => {
-      promises = teams.map(_team => {
+      var promises = teams.map(_team => {
         return team_player.getRoster(_team.id).then(roster => {
           _team.captain = {'name': _team.captain_name, 'id': _team.captain_id}
           _team.player = roster
@@ -135,9 +134,9 @@ function json(team, season, team_player, req, res) {
         return teams
       })
     }).then(teams => {
-      j = {}
-      j[_season.name] = teams
-      res.send(j)
+      res.send({
+        [_season.name]: teams
+      })
     })
   })
 }
