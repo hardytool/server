@@ -27,7 +27,6 @@ var templates = require('pug-tree')(
   path.join(__dirname, 'templates'), config.templates)
 var pairings = require('swiss-pairing')({ maxPerRound: 2 })
 var fs = require('fs')
-var request =  require('request')
 
 // repositories
 var admin = require('./repos/admin')(pool)
@@ -51,7 +50,6 @@ var steamId = require('./lib/steamId')
 var auth = require('./lib/auth')(admin, steam_user, profile, mmr, steamId)
 var credentials = require('./lib/credentials')(config.server)
 var wait = require('./lib/wait')
-var timeout = require('./lib/timeout')
 
 // Auth routes
 var openid = require('./api/openid')(config)
@@ -311,7 +309,7 @@ app.post(adminGroupPages.remove.route, adminGroupPages.remove.handler)
 
 //Pull the list of Steam servers if it exists
 if (fs.existsSync(path.join(__dirname, 'assets', 'servers.json'))) {
-  Steam.servers = require(path.join(__dirname, 'assets', 'servers.json'))
+  Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.json')))
 }
 
 migration.migrateIfNeeded(

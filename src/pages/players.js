@@ -262,19 +262,6 @@ function getCSV(player, player_role, role, division, req, res) {
   })
 }
 
-function currentPlayers(func, templates, season, player, req, res) {
-  if (!req.params) {
-    req.params = {}
-  }
-  season.getActiveSeason().then(_season => {
-    req.params.season_id = _season.id
-    return func(templates, season, player, req, res)
-  }).catch(err => {
-    console.error(err)
-    res.sendStatus(500)
-  })
-}
-
 function activityCheck(player, season, req, res) {
   season.getActiveSeason().then(_season => {
     season_id = _season.id

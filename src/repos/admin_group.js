@@ -19,7 +19,7 @@ function saveAdminGroup(db, admin_group) {
   return db.query(upsert)
 }
 
-function getAdminGroups(db, criteria) {
+function getAdminGroups(db) {
   var select = sql`
   SELECT
     admin_group.id,
@@ -43,7 +43,7 @@ function getAdminGroups(db, criteria) {
   })
 }
 
-function getAdminGroupNames(db, criteria) {
+function getAdminGroupNames(db) {
   var select = sql`
   SELECT
     admin_group.id,

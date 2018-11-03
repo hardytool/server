@@ -1,5 +1,3 @@
-var shortid = require('shortid')
-
 function create(templates, division, admin_group, req, res) {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)

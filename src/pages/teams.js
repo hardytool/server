@@ -120,19 +120,6 @@ function remove(team, req, res) {
   })
 }
 
-function currentTeams(templates, season, team, req, res) {
-  if (!req.params) {
-    req.params = {}
-  }
-  season.getActiveSeason().then(_season => {
-    req.params.season_id = _season.id
-    return list(templates, season, team, req, res)
-  }).catch(err => {
-    console.error(err)
-    res.sendStatus(500)
-  })
-}
-
 function json(team, season, team_player, req, res) {
   season.getActiveSeason().then(_season => {
     seasonName = _season.name

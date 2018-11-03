@@ -1,6 +1,6 @@
 var sql = require('pg-sql').sql
 
-function getSteamUsers(db, criteria) {
+function getSteamUsers(db) {
   var select = sql`
   SELECT
     steam_user.steam_id,
