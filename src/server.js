@@ -27,7 +27,7 @@ var templates = require('pug-tree')(
   path.join(__dirname, 'templates'), config.templates)
 var pairings = require('swiss-pairing')({ maxPerRound: 2 })
 var fs = require('fs')
-var request =  require('request');
+var request =  require('request')
 
 // repositories
 var admin = require('./repos/admin')(pool)
@@ -122,11 +122,11 @@ app.use(helmet({
   },
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "use.fontawesome.com", "unpkg.com", "cdn.joinhoney.com"],
-      styleSrc: ["'self'", "'unsafe-inline'", "cdnjs.cloudflare.com", "use.fontawesome.com", "unpkg.com", "cdn.joinhoney.com", "fonts.googleapis.com"],
-      imgSrc: ["'self'", "cdn.discordapp.com", "steamcdn-a.akamaihd.net", "i.imgur.com"],
-      fontSrc: ["'self'", "cdn.joinhoney.com"]
+      defaultSrc: ['\'self\''],
+      scriptSrc: ['\'self\'', '\'unsafe-inline\'', 'use.fontawesome.com', 'unpkg.com', 'cdn.joinhoney.com'],
+      styleSrc: ['\'self\'', '\'unsafe-inline\'', 'cdnjs.cloudflare.com', 'use.fontawesome.com', 'unpkg.com', 'cdn.joinhoney.com', 'fonts.googleapis.com'],
+      imgSrc: ['\'self\'', 'cdn.discordapp.com', 'steamcdn-a.akamaihd.net', 'i.imgur.com'],
+      fontSrc: ['\'self\'', 'cdn.joinhoney.com']
     }
   }
 }))

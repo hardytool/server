@@ -1,5 +1,5 @@
 var request = require('request')
-const heroes = require('../assets/heroes.json');
+const heroes = require('../assets/heroes.json')
 
 function view(
   templates, steam_user, profile, season, vouch, team_player, steamId, player, req, res) {
@@ -12,12 +12,12 @@ function view(
     }
     viewerHasPlayed.then(viewerHasPlayed => {
       return request({
-          url: "https://api.opendota.com/api/players/" + req.params.steam_id + "/heroes?date=180",
+          url: 'https://api.opendota.com/api/players/' + req.params.steam_id + '/heroes?date=180',
           json: true
         }, function (error, response, body) {
           
         if (body.length != undefined) {
-          var top5 = body.slice(0,5);
+          var top5 = body.slice(0,5)
           notableHeroes = top5.map(hero => {
             hero.picture = 'https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/' + heroes[hero['hero_id']]['name'].substr(14) + '_sb.png'
             hero.localName = heroes[hero['hero_id']]['localized_name']

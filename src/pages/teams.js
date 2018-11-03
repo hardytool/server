@@ -139,7 +139,7 @@ function json(team, season, team_player, req, res) {
     return team.getAllSeasonTeams(_season.id).then(teams => {
       promises = teams.map(_team => {
         return team_player.getRoster(_team.id).then(roster => {
-          _team.captain = {"name": _team.captain_name, "id": _team.captain_id}
+          _team.captain = {'name': _team.captain_name, 'id': _team.captain_id}
           _team.player = roster
           return _team
         })

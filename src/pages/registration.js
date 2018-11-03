@@ -201,7 +201,7 @@ function post(templates, season, division, steam_user, team_player, player, role
                 p.activity_check = pl.activity_check
                 // If a player signs up after activity checks are live, mark them fine for the check
                 if (season.activity_check == true) {
-                  p.activity_check = true;
+                  p.activity_check = true
                 }
 
                 // If the player ID exists and the steam ID matches, allowed
@@ -214,7 +214,7 @@ function post(templates, season, division, steam_user, team_player, player, role
                 if (allowed) {
                   // If a player signs up after activity checks are live, mark them fine for the check
                   if (season.activity_check == true) {
-                    p.activity_check = true;
+                    p.activity_check = true
                   }
                   return player.savePlayer(p).then(() => {
                     return profile.saveProfile(_profile).then(() => {
