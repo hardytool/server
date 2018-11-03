@@ -282,27 +282,68 @@ module.exports = (templates, season, division, steam_user, team_player, player, 
     return {
       view: {
         route: '/seasons/:season_id/divisions/:division_id/register',
-        handler: view.bind(null, templates, season, division, steam_user, player, role, player_role, mmr, profile)
+        handler: view.bind(null,
+          templates,
+          season,
+          division,
+          steam_user,
+          player,
+          role,
+          player_role,
+          mmr,
+          profile)
       },
       shortcut: {
         route: '/divisions/:division_id/register',
-        handler: shortcut.bind(null, templates, season, division, steam_user, player, role, player_role, mmr, profile)
+        handler: shortcut.bind(null,
+          templates,
+          season,
+          division,
+          steam_user,
+          player,
+          role,
+          player_role,
+          mmr,
+          profile)
       },
       directory: {
         route: '/seasons/:season_id/register',
-        handler: directory.bind(null, templates, season, division, steam_user, player)
+        handler: directory.bind(null,
+          templates,
+          season,
+          division,
+          steam_user,
+          player)
       },
       directoryShortcut: {
         route: '/register',
-        handler: directoryShortcut.bind(null, templates, season, division, steam_user, player)
+        handler: directoryShortcut.bind(null,
+          templates,
+          season,
+          division,
+          steam_user,
+          player)
       },
       post: {
         route: '/register',
-        handler: post.bind(null, templates, season, division, steam_user, team_player, player, role, player_role, profile)
+        handler: post.bind(null,
+          templates,
+          season,
+          division,
+          steam_user,
+          team_player,
+          player,
+          role,
+          player_role,
+          profile)
       },
       unregister: {
         route: '/register/delete',
-        handler: unregister.bind(null, season, division, steam_user, player)
+        handler: unregister.bind(null,
+          season,
+          division,
+          steam_user,
+          player)
       }
     }
   }

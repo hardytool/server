@@ -57,18 +57,61 @@ var timeout = require('./lib/timeout')
 var openid = require('./api/openid')(config)
 
 // Page routes
-var indexPages = require('./pages/index')(templates, path.join(__dirname, 'assets', 'rules.md'), path.join(__dirname, 'assets', 'inhouserules.md'))
-var playerPages = require('./pages/players')(templates, season, division, player, player_role, role, steam_user)
-var profilePages = require('./pages/profile')(templates, steam_user, profile, season, team_player, vouch, steamId, player)
+var indexPages = require('./pages/index')(templates,
+  path.join(__dirname, 'assets', 'rules.md'),
+  path.join(__dirname, 'assets', 'inhouserules.md'))
+var playerPages = require('./pages/players')(templates,
+  season,
+  division,
+  player,
+  player_role,
+  role,
+  steam_user)
+var profilePages = require('./pages/profile')(templates,
+  steam_user,
+  profile,
+  season,
+  team_player,
+  vouch,
+  steamId,
+  player)
 var seasonPages = require('./pages/seasons')(templates, season)
-var divisionPages = require('./pages/divisions')(templates, season, division, admin)
-var seriesPages = require('./pages/series')(templates, season, team, series, pairings, division)
-var teamPages = require('./pages/teams')(templates, season, division, team, team_player)
-var registrationPages = require('./pages/registration')(
-  templates, season, division, steam_user, team_player, player, role, player_role, mmr, profile)
-var rosterPages = require('./pages/roster')(templates, season, division, team, team_player, series)
+var divisionPages = require('./pages/divisions')(templates,
+  season,
+  division,
+  admin)
+var seriesPages = require('./pages/series')(templates,
+  season,
+  team,
+  series,
+  pairings,
+  division)
+var teamPages = require('./pages/teams')(templates,
+  season,
+  division,
+  team,
+  team_player)
+var registrationPages = require('./pages/registration')(templates,
+  season,
+  division,
+  steam_user,
+  team_player,
+  player,
+  role,
+  player_role,
+  mmr,
+  profile)
+var rosterPages = require('./pages/roster')(templates,
+  season,
+  division,
+  team,
+  team_player,
+  series)
 var rolePages = require('./pages/roles')(templates, role)
-var adminPages = require('./pages/admins')(templates, admin, division, admin_group)
+var adminPages = require('./pages/admins')(templates,
+  admin,
+  division,
+  admin_group)
 var adminGroupPages = require('./pages/admin_groups')(templates, admin_group)
 
 // API routes
@@ -123,9 +166,22 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ['\'self\''],
-      scriptSrc: ['\'self\'', '\'unsafe-inline\'', 'use.fontawesome.com', 'unpkg.com', 'cdn.joinhoney.com'],
-      styleSrc: ['\'self\'', '\'unsafe-inline\'', 'cdnjs.cloudflare.com', 'use.fontawesome.com', 'unpkg.com', 'cdn.joinhoney.com', 'fonts.googleapis.com'],
-      imgSrc: ['\'self\'', 'cdn.discordapp.com', 'steamcdn-a.akamaihd.net', 'i.imgur.com'],
+      scriptSrc: ['\'self\'',
+        '\'unsafe-inline\'',
+        'use.fontawesome.com',
+        'unpkg.com',
+        'cdn.joinhoney.com'],
+      styleSrc: ['\'self\'',
+        '\'unsafe-inline\'',
+        'cdnjs.cloudflare.com',
+        'use.fontawesome.com',
+        'unpkg.com',
+        'cdn.joinhoney.com',
+        'fonts.googleapis.com'],
+      imgSrc: ['\'self\'',
+        'cdn.discordapp.com',
+        'steamcdn-a.akamaihd.net',
+        'i.imgur.com'],
       fontSrc: ['\'self\'', 'cdn.joinhoney.com']
     }
   }
