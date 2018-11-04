@@ -69,7 +69,7 @@ function getTeam(db, id) {
 }
 
 function getAllSeasonTeams(db, season_id) {
-    const select = sql`
+  const select = sql`
       SELECT
         team.id,
         team.season_id,
@@ -107,9 +107,9 @@ function getAllSeasonTeams(db, season_id) {
         team.name ASC,
         team.seed DESC
       `
-      return db.query(select).then(result => {
-        return result.rows
-      })
+  return db.query(select).then(result => {
+    return result.rows
+  })
 }
 
 function saveTeam(db, team) {

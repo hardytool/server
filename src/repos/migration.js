@@ -62,7 +62,7 @@ function getMigrations(directory) {
     const stat = fs.statSync(f)
 
     if (stat && stat.isDirectory()) {
-        results = results.concat(getMigrations(f))
+      results = results.concat(getMigrations(f))
     } else {
       results.push({
         name: path.basename(file, path.extname(file)),

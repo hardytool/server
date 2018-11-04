@@ -93,7 +93,7 @@ function getDivisionAdmins(db, id) {
 }
 
 function deleteAdmin(db, id) {
-    const query = sql`
+  const query = sql`
       DELETE FROM
         admin
       WHERE

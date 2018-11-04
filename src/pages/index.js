@@ -6,11 +6,11 @@ const classy = require('markdown-it-classy')
 md.use(classy)
 
 function home(templates, req, res) {
-    const html = templates.index({
-      user: req.user
-    })
+  const html = templates.index({
+    user: req.user
+  })
 
-    res.send(html)
+  res.send(html)
 }
 
 function complaint(templates, req, res) {

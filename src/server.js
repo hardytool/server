@@ -140,16 +140,16 @@ passport.deserializeUser((user, done) => {
 const realm = 'http' + (credentials ? 's' : '') + '://' + config.server.host +
       ':' + (credentials ? config.server.https_port : config.server.port)
 passport.use(new passportSteam.Strategy({
-    returnURL: realm + '/auth/steam/return',
-    realm: realm,
-    apiKey: config.server.steam_api_key
-  }, (identifier, profile, done) =>  {
-    auth.createUser(profile).then(() => {
-      done(null, { id: identifier, profile: profile })
-    }).catch(err => {
-      done(err, null)
-    })
-  }))
+  returnURL: realm + '/auth/steam/return',
+  realm: realm,
+  apiKey: config.server.steam_api_key
+}, (identifier, profile, done) =>  {
+  auth.createUser(profile).then(() => {
+    done(null, { id: identifier, profile: profile })
+  }).catch(err => {
+    done(err, null)
+  })
+}))
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -390,8 +390,8 @@ migration.migrateIfNeeded(
       })
     }
 
-}).catch(err => {
-  console.error(err)
-})
+  }).catch(err => {
+    console.error(err)
+  })
 
 // Application end

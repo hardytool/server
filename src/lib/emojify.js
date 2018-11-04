@@ -1,5 +1,5 @@
 const emoji = [...
-  '🖕👌👍👎👋👏🙏💩🔫🤔' +
+'🖕👌👍👎👋👏🙏💩🔫🤔' +
   '🔥🙄💯💦💖🚫❌👉👈👇' +
   '👆😏🚀⚓🍺🔪💕💘💤🙌' +
   '✨💧💥🐴🐶🌈🌊💀⛄😘' +
@@ -8,7 +8,7 @@ const emoji = [...
   '😡😠😳👺']
 
 const alpha = [...
- '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_']
+'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_']
 
 const alphaToEmojiMap = alpha.map((a, index) => {
   return [ a, emoji[index] ]
