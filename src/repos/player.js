@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function getPlayers(db, criteria, sort) {
-  var select = sql`
+  let select = sql`
   SELECT
     player.id,
     player.season_id,
@@ -163,7 +163,7 @@ function getPlayers(db, criteria, sort) {
       `])
     }
   }
-  var orderBy = sql`
+  let orderBy = sql`
   ORDER BY
     created_at ASC
   `
@@ -190,7 +190,7 @@ function getPlayers(db, criteria, sort) {
 }
 
 function getPlayer(db, id) {
-  var select = sql`
+  const select = sql`
   SELECT
     player.id,
     player.season_id,
@@ -233,7 +233,7 @@ function getPlayer(db, id) {
 }
 
 function savePlayer(db, player) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO
     player (
       id,
@@ -283,7 +283,7 @@ function savePlayer(db, player) {
 }
 
 function deletePlayer(db, id) {
-  var query = sql`
+  const query = sql`
   DELETE FROM
     player
   WHERE
@@ -293,7 +293,7 @@ function deletePlayer(db, id) {
 }
 
 function unregisterPlayer(db, seasonId, divisionId, steamId) {
-  var query = sql`
+  const query = sql`
   DELETE FROM
     player
   WHERE
@@ -307,7 +307,7 @@ function unregisterPlayer(db, seasonId, divisionId, steamId) {
 }
 
 function getDraftSheet(db, criteria, sort) {
-  var select = sql`
+  let select = sql`
   SELECT
     player.id,
     COALESCE(profile.name, steam_user.name) AS name,
@@ -412,7 +412,7 @@ function getDraftSheet(db, criteria, sort) {
       }
     }
   }
-  var orderBy = sql`
+  let orderBy = sql`
   ORDER BY
     created_at ASC
   `
@@ -433,7 +433,7 @@ function getDraftSheet(db, criteria, sort) {
 }
 
 function activityCheck(db, season_id, steam_id) {
-  var query = sql`
+  const query = sql`
     UPDATE player
     SET
       activity_check = true
@@ -446,7 +446,7 @@ function activityCheck(db, season_id, steam_id) {
 }
 
 function hasFalseActivity(db, season_id, steam_id) {
-  var select = sql`
+  const select = sql`
   SELECT 
     count(id)
   FROM 

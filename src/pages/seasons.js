@@ -1,8 +1,8 @@
-var shortid = require('shortid')
+const shortid = require('shortid')
 
 function list(templates, season, req, res) {
   season.getSeasons().then(seasons => {
-    var html = templates.season.list({
+    const html = templates.season.list({
       user: req.user,
       seasons: seasons,
     })
@@ -20,7 +20,7 @@ function create(templates, req, res) {
     return
   }
 
-  var html = templates.season.edit({
+  const html = templates.season.edit({
     user: req.user,
     verb: 'Create',
     csrfToken: req.csrfToken()
@@ -35,10 +35,10 @@ function edit(templates, season, req, res) {
     return
   }
 
-  var id = req.params.id
+  const id = req.params.id
 
   season.getSeason(id).then(season => {
-    var html = templates.season.edit({
+    const html = templates.season.edit({
       user: req.user,
       verb: 'Edit',
       season: season,
@@ -58,8 +58,8 @@ function post(season, req, res) {
     return
   }
 
-  var s = req.body
-  var id = s.id ? s.id : shortid.generate()
+  const s = req.body
+  const id = s.id ? s.id : shortid.generate()
   s.id = id
   s.active = s.active == 'on' ? true : false
   s.registration_open = s.registration_open == 'on' ? true : false

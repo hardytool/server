@@ -1,75 +1,116 @@
 // Configuration
-var env = require('./env')
-var config = require('./config')(env)
+const env = require('./env')
+const config = require('./config')(env)
 
 // Node & NPM
-var path = require('path')
-var http = require('http')
-var https = require('https')
-var express = require('express')
-var helmet = require('helmet')
-var csurf = require('csurf')
-var bodyParser = require('body-parser')
-var cookieParser = require('cookie-parser')
-var session = require('express-session')
-var passport = require('passport')
-var passportSteam = require('passport-steam')
-var pg = require('pg')
-var pool = new pg.Pool(config.db)
-var RedisStore = require('connect-redis')(session)
-var Steam = require('steam')
-var steam = new Steam.SteamClient()
-var Dota2 = require('dota2')
-var dota2 = new Dota2.Dota2Client(steam, true, true)
-var steamUser = new Steam.SteamUser(steam)
-var redirectHttps = require('redirect-https')
-var templates = require('pug-tree')(
+const path = require('path')
+const http = require('http')
+const https = require('https')
+const express = require('express')
+const helmet = require('helmet')
+const csurf = require('csurf')
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
+const session = require('express-session')
+const passport = require('passport')
+const passportSteam = require('passport-steam')
+const pg = require('pg')
+const pool = new pg.Pool(config.db)
+const RedisStore = require('connect-redis')(session)
+const Steam = require('steam')
+const steam = new Steam.SteamClient()
+const Dota2 = require('dota2')
+const dota2 = new Dota2.Dota2Client(steam, true, true)
+const steamUser = new Steam.SteamUser(steam)
+const redirectHttps = require('redirect-https')
+const templates = require('pug-tree')(
   path.join(__dirname, 'templates'), config.templates)
-var pairings = require('swiss-pairing')({ maxPerRound: 2 })
-var fs = require('fs')
-var request =  require('request');
+const pairings = require('swiss-pairing')({ maxPerRound: 2 })
+const fs = require('fs')
 
 // repositories
-var admin = require('./repos/admin')(pool)
-var admin_group = require('./repos/admin_group')(pool)
-var division = require('./repos/division')(pool)
-var migration = require('./repos/migration')(pool)
-var player = require('./repos/player')(pool)
-var player_role = require('./repos/player_role')(pool)
-var profile = require('./repos/profile')(pool)
-var role = require('./repos/role')(pool)
-var season = require('./repos/season')(pool)
-var series = require('./repos/series')(pool)
-var steam_user = require('./repos/steam_user')(pool)
-var team = require('./repos/team')(pool)
-var team_player = require('./repos/team_player')(pool)
-var vouch = require('./repos/vouch')(pool)
+const admin = require('./repos/admin')(pool)
+const admin_group = require('./repos/admin_group')(pool)
+const division = require('./repos/division')(pool)
+const migration = require('./repos/migration')(pool)
+const player = require('./repos/player')(pool)
+const player_role = require('./repos/player_role')(pool)
+const profile = require('./repos/profile')(pool)
+const role = require('./repos/role')(pool)
+const season = require('./repos/season')(pool)
+const series = require('./repos/series')(pool)
+const steam_user = require('./repos/steam_user')(pool)
+const team = require('./repos/team')(pool)
+const team_player = require('./repos/team_player')(pool)
+const vouch = require('./repos/vouch')(pool)
 
 // lib
-var mmr = require('./lib/mmr')(dota2)
-var steamId = require('./lib/steamId')
-var auth = require('./lib/auth')(admin, steam_user, profile, mmr, steamId)
-var credentials = require('./lib/credentials')(config.server)
-var wait = require('./lib/wait')
-var timeout = require('./lib/timeout')
+const mmr = require('./lib/mmr')(dota2)
+const steamId = require('./lib/steamId')
+const auth = require('./lib/auth')(admin, steam_user, profile, mmr, steamId)
+const credentials = require('./lib/credentials')(config.server)
+const wait = require('./lib/wait')
 
 // Auth routes
-var openid = require('./api/openid')(config)
+const openid = require('./api/openid')(config)
 
 // Page routes
-var indexPages = require('./pages/index')(templates, path.join(__dirname, 'assets', 'rules.md'), path.join(__dirname, 'assets', 'inhouserules.md'))
-var playerPages = require('./pages/players')(templates, season, division, player, player_role, role, steam_user)
-var profilePages = require('./pages/profile')(templates, steam_user, profile, season, team_player, vouch, steamId, player)
-var seasonPages = require('./pages/seasons')(templates, season)
-var divisionPages = require('./pages/divisions')(templates, season, division, admin)
-var seriesPages = require('./pages/series')(templates, season, team, series, pairings, division)
-var teamPages = require('./pages/teams')(templates, season, division, team, team_player)
-var registrationPages = require('./pages/registration')(
-  templates, season, division, steam_user, team_player, player, role, player_role, mmr, profile)
-var rosterPages = require('./pages/roster')(templates, season, division, team, team_player, series)
-var rolePages = require('./pages/roles')(templates, role)
-var adminPages = require('./pages/admins')(templates, admin, division, admin_group)
-var adminGroupPages = require('./pages/admin_groups')(templates, admin_group)
+const indexPages = require('./pages/index')(templates,
+  path.join(__dirname, 'assets', 'rules.md'),
+  path.join(__dirname, 'assets', 'inhouserules.md'))
+const playerPages = require('./pages/players')(templates,
+  season,
+  division,
+  player,
+  player_role,
+  role,
+  steam_user)
+const profilePages = require('./pages/profile')(templates,
+  steam_user,
+  profile,
+  season,
+  team_player,
+  vouch,
+  steamId,
+  player)
+const seasonPages = require('./pages/seasons')(templates, season)
+const divisionPages = require('./pages/divisions')(templates,
+  season,
+  division,
+  admin)
+const seriesPages = require('./pages/series')(templates,
+  season,
+  team,
+  series,
+  pairings,
+  division)
+const teamPages = require('./pages/teams')(templates,
+  season,
+  division,
+  team,
+  team_player)
+const registrationPages = require('./pages/registration')(templates,
+  season,
+  division,
+  steam_user,
+  team_player,
+  player,
+  role,
+  player_role,
+  mmr,
+  profile)
+const rosterPages = require('./pages/roster')(templates,
+  season,
+  division,
+  team,
+  team_player,
+  series)
+const rolePages = require('./pages/roles')(templates, role)
+const adminPages = require('./pages/admins')(templates,
+  admin,
+  division,
+  admin_group)
+const adminGroupPages = require('./pages/admin_groups')(templates, admin_group)
 
 // API routes
 // none currently
@@ -78,9 +119,9 @@ var adminGroupPages = require('./pages/admin_groups')(templates, admin_group)
 
 console.dir(config, { depth: null })
 
-var app = express()
+const app = express()
 
-var csrfMiddleware = csurf({
+const csrfMiddleware = csurf({
   cookie: true
 })
 
@@ -96,19 +137,19 @@ passport.deserializeUser((user, done) => {
   })
 })
 
-var realm = 'http' + (credentials ? 's' : '') + '://' + config.server.host +
+const realm = 'http' + (credentials ? 's' : '') + '://' + config.server.host +
       ':' + (credentials ? config.server.https_port : config.server.port)
 passport.use(new passportSteam.Strategy({
-    returnURL: realm + '/auth/steam/return',
-    realm: realm,
-    apiKey: config.server.steam_api_key
-  }, (identifier, profile, done) =>  {
-    auth.createUser(profile).then(() => {
-      done(null, { id: identifier, profile: profile })
-    }).catch(err => {
-      done(err, null)
-    })
-  }))
+  returnURL: realm + '/auth/steam/return',
+  realm: realm,
+  apiKey: config.server.steam_api_key
+}, (identifier, profile, done) =>  {
+  auth.createUser(profile).then(() => {
+    done(null, { id: identifier, profile: profile })
+  }).catch(err => {
+    done(err, null)
+  })
+}))
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -122,11 +163,24 @@ app.use(helmet({
   },
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "use.fontawesome.com", "unpkg.com", "cdn.joinhoney.com"],
-      styleSrc: ["'self'", "'unsafe-inline'", "cdnjs.cloudflare.com", "use.fontawesome.com", "unpkg.com", "cdn.joinhoney.com", "fonts.googleapis.com"],
-      imgSrc: ["'self'", "cdn.discordapp.com", "steamcdn-a.akamaihd.net", "i.imgur.com"],
-      fontSrc: ["'self'", "cdn.joinhoney.com"]
+      defaultSrc: ['\'self\''],
+      scriptSrc: ['\'self\'',
+        '\'unsafe-inline\'',
+        'use.fontawesome.com',
+        'unpkg.com',
+        'cdn.joinhoney.com'],
+      styleSrc: ['\'self\'',
+        '\'unsafe-inline\'',
+        'cdnjs.cloudflare.com',
+        'use.fontawesome.com',
+        'unpkg.com',
+        'cdn.joinhoney.com',
+        'fonts.googleapis.com'],
+      imgSrc: ['\'self\'',
+        'cdn.discordapp.com',
+        'steamcdn-a.akamaihd.net',
+        'i.imgur.com'],
+      fontSrc: ['\'self\'', 'cdn.joinhoney.com']
     }
   }
 }))
@@ -254,8 +308,8 @@ app.post(adminGroupPages.post.route, adminGroupPages.post.handler)
 app.post(adminGroupPages.remove.route, adminGroupPages.remove.handler)
 
 //Pull the list of Steam servers if it exists
-if (fs.existsSync(path.join(__dirname, 'assets', 'servers.js'))) {
-  Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.js')))
+if (fs.existsSync(path.join(__dirname, 'assets', 'servers.json'))) {
+  Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.json')))
 }
 
 migration.migrateIfNeeded(
@@ -296,7 +350,7 @@ migration.migrateIfNeeded(
       })
     }
 
-    var repeat = () => {
+    const repeat = () => {
       steam_user.getSteamUsers().then(users => {
         users.forEach((user, index) => {
           setTimeout(() => {
@@ -336,8 +390,8 @@ migration.migrateIfNeeded(
       })
     }
 
-}).catch(err => {
-  console.error(err)
-})
+  }).catch(err => {
+    console.error(err)
+  })
 
 // Application end

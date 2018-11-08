@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function getProfile(db, steamId) {
-  var select = sql`
+  const select = sql`
   SELECT
     steam_user.steam_id,
     steam_user.avatar,
@@ -46,7 +46,7 @@ function getProfile(db, steamId) {
 }
 
 function saveProfile(db, profile) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO profile (
     steam_id,
     name,

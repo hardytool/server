@@ -1,18 +1,18 @@
-var timeout = require('./timeout.js')
+const timeout = require('./timeout.js')
 
 function createUser(steam_user, mmr, steamId, profile) {
-  var id = steamId.from64to32(profile.id)
-  var name = profile.displayName
-  var avatar = getAvatar(profile)
+  const id = steamId.from64to32(profile.id)
+  const name = profile.displayName
+  const avatar = getAvatar(profile)
   return steam_user.getSteamUser(id.toString()).then(user => {
     return user
   }).catch(() => {
     return null
   }).then(existingUser => {
-    var currentSolo = existingUser ? existingUser.solo_mmr : 0
-    var currentParty = existingUser ? existingUser.party_mmr : 0
-    var currentRank = existingUser ? existingUser.rank : 0
-    var user = {
+    const currentSolo = existingUser ? existingUser.solo_mmr : 0
+    const currentParty = existingUser ? existingUser.party_mmr : 0
+    const currentRank = existingUser ? existingUser.rank : 0
+    const user = {
       steam_id: id.toString(),
       name: name,
       avatar: avatar,
@@ -36,7 +36,7 @@ function createUser(steam_user, mmr, steamId, profile) {
   })
 }
 
-var updated = false
+let updated = false
 function fetchMissingMMRs(steam_user, mmr, season_id, force) {
   if (!updated || force) {
     return steam_user.getSteamUsersMissingMMR(season_id).then(users => {
@@ -72,7 +72,7 @@ function updateUserMMR(steam_user, mmr, user) {
 }
 
 function inflateUser(admin, profile, steamId, user) {
-  var id = steamId.from64to32(user.profile.id).toString()
+  const id = steamId.from64to32(user.profile.id).toString()
 
   return admin.isAdmin(id).then(isAdmin => {
     return profile.getProfile(id).then(profile => {

@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function getDivisions(db, criteria) {
-  var select = sql`
+  let select = sql`
   SELECT
     division.id,
     division.name,
@@ -32,7 +32,7 @@ function getDivisions(db, criteria) {
 }
 
 function getDivision(db, id) {
-  var select = sql`
+  const select = sql`
   SELECT
     division.id,
     division.name,
@@ -51,7 +51,7 @@ function getDivision(db, id) {
 }
 
 function saveDivision(db, division) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO
     division(
       id,
@@ -87,7 +87,7 @@ function saveDivision(db, division) {
 }
 
 function deleteDivision(db, id) {
-  var query = sql`
+  const query = sql`
   DELETE FROM
     division
   WHERE

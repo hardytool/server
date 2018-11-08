@@ -1,7 +1,7 @@
-var fs = require('fs')
-var path = require('path')
-var sql = require('pg-sql').sql
-var Promise = require('bluebird')
+const fs = require('fs')
+const path = require('path')
+const sql = require('pg-sql').sql
+const Promise = require('bluebird')
 
 function migrateIfNeeded(db, migrations) {
   // 2 - check if the migrations table exists
@@ -21,16 +21,16 @@ function migrateIfNeeded(db, migrations) {
     return db.query('SELECT version FROM migration').catch(() => {
       console.log('MIGRATION TABLE DOES NOT EXIST')
     }).then(result => {
-      var versions = result
+      const versions = result
         ? result.rows.map(row => { return row.version })
         : []
-      var contained = versions.indexOf(migration.name) > -1
+      const contained = versions.indexOf(migration.name) > -1
 
       if (!contained) {
         console.log(`RUNNING MIGRATION ${migration.name}`)
         return db.query(migration.contents).then(() => {
           console.log('UPDATING MIGRATION VERSION')
-          var insert = sql`
+          const insert = sql`
             INSERT INTO migration (
               version,
               migrated
@@ -56,13 +56,13 @@ function migrateIfNeeded(db, migrations) {
 // Default implementation
 // directory should be path.join(__dirname, 'migrations')
 function getMigrations(directory) {
-  var results = []
+  let results = []
   fs.readdirSync(directory).forEach(file => {
-    var f = path.join(directory, file)
-    var stat = fs.statSync(f)
+    const f = path.join(directory, file)
+    const stat = fs.statSync(f)
 
     if (stat && stat.isDirectory()) {
-        results = results.concat(getMigrations(f))
+      results = results.concat(getMigrations(f))
     } else {
       results.push({
         name: path.basename(file, path.extname(file)),

@@ -5,11 +5,11 @@ function toCSV(records) {
     return new Promise('')
   }
 
-  var fields = Object.keys(records[0])
+  const fields = Object.keys(records[0])
 
   return new Promise(function(resolve, reject) {
     try {
-      var csv = json2csv(records, { fields })
+      const csv = json2csv(records, { fields })
       resolve(csv)
     } catch(err) {
       reject(err)

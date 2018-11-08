@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function getSeries(db, criteria) {
-  var select = sql`
+  let select = sql`
   SELECT
     series.id,
     series.round,
@@ -82,7 +82,7 @@ function getSeries(db, criteria) {
 }
 
 function saveSeries(db, series) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO
     series (
       id,
@@ -142,7 +142,7 @@ function saveSeries(db, series) {
 }
 
 function deleteSeries(db, id) {
-  var query = sql`
+  const query = sql`
   DELETE FROM
     series
   WHERE
@@ -156,7 +156,7 @@ function getCurrentRound(db, season_id, division_id, round) {
     if (Number.isInteger(round)) {
       return Promise.resolve(round)
     } else {
-      var query = sql`
+      const query = sql`
       SELECT
         current_round as round
       FROM
@@ -174,7 +174,7 @@ function getCurrentRound(db, season_id, division_id, round) {
 }
 
 function saveCurrentRound(db, season_id, division_id, round) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO
     round (
       season_id,
@@ -195,7 +195,7 @@ function saveCurrentRound(db, season_id, division_id, round) {
 
 function getStandings(db, season_id, division_id, round) {
   return getCurrentRound(db, season_id, round).then(round => {
-    var query = sql`
+    const query = sql`
     SELECT
       team.id,
       team.name,

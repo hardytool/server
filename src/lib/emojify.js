@@ -1,5 +1,5 @@
-var emoji = [...
-  '🖕👌👍👎👋👏🙏💩🔫🤔' +
+const emoji = [...
+'🖕👌👍👎👋👏🙏💩🔫🤔' +
   '🔥🙄💯💦💖🚫❌👉👈👇' +
   '👆😏🚀⚓🍺🔪💕💘💤🙌' +
   '✨💧💥🐴🐶🌈🌊💀⛄😘' +
@@ -7,17 +7,17 @@ var emoji = [...
   '😓😕🙃😲😭😢😨😱😰😬' +
   '😡😠😳👺']
 
-var alpha = [...
- '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_']
+const alpha = [...
+'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_']
 
-var alphaToEmojiMap = alpha.map((a, index) => {
+const alphaToEmojiMap = alpha.map((a, index) => {
   return [ a, emoji[index] ]
 }).reduce((acc, cur) => {
   acc[cur[0]] = cur[1]
   return acc
 }, {})
 
-var emojiToAlphaMap = emoji.map((e, index) => {
+const emojiToAlphaMap = emoji.map((e, index) => {
   return [ e, alpha[index] ]
 }).reduce((acc, cur) => {
   acc[cur[0]] = cur[1]

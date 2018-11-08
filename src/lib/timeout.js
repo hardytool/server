@@ -1,4 +1,4 @@
-var Promise = require('bluebird')
+const Promise = require('bluebird')
 
 module.exports = delay => {
   return new Promise(resolve => {

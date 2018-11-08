@@ -1,7 +1,7 @@
-var sql = require('pg-sql').sql
+const sql = require('pg-sql').sql
 
 function saveAdminGroup(db, admin_group) {
-  var upsert = sql`
+  const upsert = sql`
   INSERT INTO admin_group (
     id,
     name,
@@ -20,7 +20,7 @@ function saveAdminGroup(db, admin_group) {
 }
 
 function getAdminGroups(db, criteria) {
-  var select = sql`
+  let select = sql`
   SELECT
     admin_group.id,
     admin_group.name,
@@ -43,8 +43,8 @@ function getAdminGroups(db, criteria) {
   })
 }
 
-function getAdminGroupNames(db, criteria) {
-  var select = sql`
+function getAdminGroupNames(db) {
+  const select = sql`
   SELECT
     admin_group.id,
     admin_group.name
@@ -57,7 +57,7 @@ function getAdminGroupNames(db, criteria) {
 }
 
 function deleteAdminGroup(db, admin_group_id) {
-  var query = sql`
+  const query = sql`
   DELETE FROM
     admin_group
   WHERE

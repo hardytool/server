@@ -1,4 +1,4 @@
-var shortid = require('shortid')
+const shortid = require('shortid')
 
 function list(templates, admin_group, req, res) {
   if (!req.user || !req.user.isAdmin) {
@@ -7,7 +7,7 @@ function list(templates, admin_group, req, res) {
   }
 
   admin_group.getAdminGroups().then(admin_groups => {
-    var html = templates.admin_group.list({
+    const html = templates.admin_group.list({
       user: req.user,
       admin_groups: admin_groups
     })
@@ -25,7 +25,7 @@ function create(templates, admin_group, req, res) {
     return
   }
   admin_group.getAdminGroupNames().then((admin_groups) => {
-    var html = templates.admin_group.edit({
+    const html = templates.admin_group.edit({
       user: req.user,
       verb: 'Create',
       admin_groups: admin_groups,
@@ -42,11 +42,11 @@ function edit(templates, admin_group, req, res) {
     return
   }
 
-  var admin_group_id = req.params.admin_group_id
+  const admin_group_id = req.params.admin_group_id
 
   admin_group.getAdminGroups({ admin_group_id: admin_group_id }).then(([selected_admin_group]) => {
     return admin_group.getAdminGroupNames().then((admin_groups) => {
-      var html = templates.admin_group.edit({
+      const html = templates.admin_group.edit({
         user: req.user,
         verb: 'Edit',
         selected_admin_group: selected_admin_group,
@@ -68,8 +68,8 @@ function post(admin_group, req, res) {
     return
   }
 
-  var id = req.body.id ? req.body.id : shortid.generate()
-  var r = req.body
+  const id = req.body.id ? req.body.id : shortid.generate()
+  const r = req.body
   r.id = id
 
   if (req.body.owner_id == '') {
@@ -90,7 +90,7 @@ function remove(admin_group, req, res) {
     return
   }
 
-  var id = req.body.id
+  const id = req.body.id
 
   admin_group.deleteAdminGroup(id).then(() => {
     res.redirect('/admin_groups')
