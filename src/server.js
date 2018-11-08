@@ -308,7 +308,7 @@ app.post(adminGroupPages.post.route, adminGroupPages.post.handler)
 app.post(adminGroupPages.remove.route, adminGroupPages.remove.handler)
 
 //Pull the list of Steam servers if it exists
-if (fs.existsSync(path.join(__dirname, "assets", 'servers.json'))) {
+if (fs.existsSync(path.join(__dirname, 'assets', 'servers.json'))) {
   Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.json')))
 }
 
