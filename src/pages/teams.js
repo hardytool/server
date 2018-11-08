@@ -1,7 +1,7 @@
-var shortid = require("shortid")
+const shortid = require('shortid')
 
 function list(templates, season, division, team, req, res) {
-  var season_id = req.params.season_id
+  const season_id = req.params.season_id
   const division_id = req.params.division_id
 
   season.getSeason(season_id).then(season => {
