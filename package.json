@@ -42,9 +42,6 @@
     "swiss-pairing": "^1.3.0"
   },
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "eslint": "^5.9.0"
   }
 }
