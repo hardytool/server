@@ -8,7 +8,8 @@ function getSteamUsers(db) {
     steam_user.avatar,
     steam_user.solo_mmr,
     steam_user.party_mmr,
-    steam_user.rank
+    steam_user.rank,
+    steam_user.previous_rank
   FROM
     steam_user
   `
@@ -25,7 +26,8 @@ function getSteamUsersMissingMMR(db, season_id) {
     steam_user.avatar,
     steam_user.solo_mmr,
     steam_user.party_mmr,
-    steam_user.rank
+    steam_user.rank,
+    steam_user.previous_rank
   FROM
     steam_user
   JOIN player ON
@@ -50,7 +52,8 @@ function getNonPlayerSteamUsers(db, season_id, division_id) {
     steam_user.avatar,
     steam_user.solo_mmr,
     steam_user.party_mmr,
-    steam_user.rank
+    steam_user.rank,
+    steam_user.previous_rank
   FROM
     steam_user
   WHERE

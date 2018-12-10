@@ -13,6 +13,7 @@ function getProfile(db, steamId) {
     steam_user.solo_mmr,
     steam_user.party_mmr,
     steam_user.rank,
+    steam_user.previous_rank
     COALESCE(profile.adjusted_mmr, 0) as adjusted_mmr,
     COALESCE(profile.adjusted_rank, 0) as adjusted_rank,
     CASE
