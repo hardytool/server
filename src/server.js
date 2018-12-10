@@ -357,6 +357,7 @@ migration.migrateIfNeeded(
             return wait(1000, () => mmr.isAvailable()).then(() => {
               return mmr.getMMR(user.steam_id).then(mmr => {
                 user.rank = mmr && mmr.rank ? mmr.rank : user.rank
+                user.previous_rank = mmr && mmr.previous_rank ? mmr.previous_rank ? user.previous_rank
                 return steam_user.saveSteamUser(user)
               })
             })
