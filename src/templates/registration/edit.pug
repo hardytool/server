@@ -15,24 +15,15 @@ block content
           input(type='hidden' name="_csrf" value=csrfToken)
           input(type='hidden' name='season_id' value=season.id)
           input(type='hidden' name='division_id' value=division.id)
+          input(type='hidden' name='solo' value=steamUser.solo_mmr)
+          input(type='hidden' name='party' value=steamUser.party_mmr)
+          input(type='hidden' name='adjusted' value=player.adjusted_mmr)
           if player
             input(type='hidden' name='id' value=player.id)
           div.field
             label.label(for='name') Name:
             p.control
               input.input#name(type='text' value=player.name disabled)
-          div.field
-            label.label(for='solo') Solo MMR:
-            p.control
-              input.input#solo(type='text' value=steamUser.solo_mmr disabled)
-          div.field
-            label.label(for='party') Party MMR:
-            p.control
-              input.input#party(type='text' value=steamUser.party_mmr disabled)
-          div.field
-            label.label(for='adjusted') Adjusted MMR:
-            p.control
-              input.input#adjusted(type='text' value=player.adjusted_mmr disabled)
           div.field
             label.label(for='rank') Rank:
             p.control
@@ -41,6 +32,10 @@ block content
             label.label(for='adjusted_rank') Adjusted Rank:
             p.control
               input.input#adjusted_rank(type='text' value=player.adjusted_rank disabled)
+          div.field
+            label.label(for='previous_rank') Previous Season Rank
+            p.control
+              input.input#previous_rank(type='text' value=steamUser.previous_rank disabled)
           div.field
             label.label(for='mmr_screenshot') MMR Screenshot:
             p.control
