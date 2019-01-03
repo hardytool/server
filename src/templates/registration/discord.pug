@@ -17,3 +17,6 @@ block content
           div.field
             a(href='/seasons/' + season.id + '/divisions/' + division.id + '/players')
               button.button Continue to the player list
+          if !season.activity_check
+            div.field
+              Please Join the RD2L Discord to get more information about doing an activity check to finalize your registration
