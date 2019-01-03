@@ -35,7 +35,7 @@ block content
           div.field
             label.label(for='previous_rank') Previous Season Rank
             p.control
-              input.input#previous_rank(type='text' value=steamUser.previous_rank disabled)
+              input.input#previous_rank(type='text' value=(steamUser.previous_rank ? steamUser.previous_rank : 0) disabled)
           div.field
             label.label(for='mmr_screenshot') MMR Screenshot:
             p.control
@@ -60,9 +60,9 @@ block content
                   each i in [1,2,3,4,5]
                     label.radio
                       if ranks[role.id] === i
-                        input(value=i type='radio' name=role.id id=role.id checked)
+                        input(value=i type='radio' name=role.id id=role.id checked required)
                       else
-                        input(value=i type='radio' name=role.id id=role.id)
+                        input(value=i type='radio' name=role.id id=role.id required)
                       span &nbsp;#{preferenceStrings[i-1]}
           div.field
             label.label Willing to captain?:

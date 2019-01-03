@@ -56,7 +56,6 @@ function view(templates, season, division, steam_user, player, role, player_role
                   user: req.user
                 })
               }
-
               steamUser.rank = rank
               return steam_user.saveSteamUser(steamUser).then(() => {
                 return profile.getProfile(steamUser.steam_id).then(profile => {

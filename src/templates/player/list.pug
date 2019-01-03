@@ -76,8 +76,9 @@ block content
               td
                 a(href='/profile/' + player.steam_id)= player.name
               td
-                figure.image.is-roster.hide-overflow
-                  img(src=player.avatar)
+                a(href='/profile/' + player.steam_id)
+                  figure.image.is-roster.hide-overflow
+                    img(src=player.avatar)
               td
                 figure.image.is-roster.hide-overflow
                   img(src="/assets/medals/" + player.rank + ".png")
