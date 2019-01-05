@@ -55,6 +55,7 @@ block content
             th Avatar
             th Rank
             th Adjusted Rank
+            th Adjusted MMR
             th Dotabuff&nbsp;/ Opendota
             if user && user.isAdmin
               th Will Captain?
@@ -84,6 +85,7 @@ block content
                     img(src="/assets/medals/80.png")
                   else
                     img(src="/assets/medals/" + player.adjusted_rank + ".png")
+              td= player.adjusted_mmr
               td
                 a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
                 span
