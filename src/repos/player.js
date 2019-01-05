@@ -313,6 +313,7 @@ function getDraftSheet(db, criteria, sort) {
     COALESCE(profile.name, steam_user.name) AS name,
     COALESCE(steam_user.rank, 0) as rank,
     COALESCE(profile.adjusted_rank, 0) AS adjusted_rank,
+    COALESCE(profile.adjusted_mmr, 0) AS adjusted_mmr,
     CASE
       WHEN profile.adjusted_rank IS NOT NULL AND profile.adjusted_rank > 0
       THEN profile.adjusted_rank
