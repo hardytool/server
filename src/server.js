@@ -245,6 +245,7 @@ app.get(seriesPages.standings.route, seriesPages.standings.handler)
 app.get(seriesPages.matchups.route, seriesPages.matchups.handler)
 app.get(seriesPages.importSeries.route, seriesPages.importSeries.handler)
 app.get(seriesPages.editRound.route, seriesPages.editRound.handler)
+app.get(seriesPages.newRound.route, seriesPages.newRound.handler)
 
 app.post(seriesPages.post.route, seriesPages.post.handler)
 app.post(seriesPages.remove.route, seriesPages.remove.handler)

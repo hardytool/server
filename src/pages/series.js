@@ -359,6 +359,20 @@ function saveRound(series, req, res) {
   })
 }
 
+//THIS IS A STOPGAP UNTIL WE GET NEW SEASON ROUND STUFF SORTED
+function newRound(series, req, res) {
+  const season_id = req.params.season_id
+  const division_id = req.params.division_id
+  round = 0
+
+  series.saveCurrentRound(season_id, division_id, round).then(() => {
+    res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
 function mapSeries(series) {
   return series.map(series => {
     return {
@@ -501,6 +515,10 @@ module.exports = (templates, season, team, series, pairings, division) => {
     saveRound: {
       route: '/round/edit',
       handler: saveRound.bind(null, series)
+    },
+    newRound: {
+      route: '/seasons/:season_id/divisions/:division_id/round/newRound',
+      handler: newRound.bind(null, series)
     },
     importSeries: {
       route: '/seasons/:season_id/divisions/:division_id/week/:round/importSeries',
