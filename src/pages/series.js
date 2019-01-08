@@ -329,6 +329,7 @@ function editRound(templates, season, division, series, req, res) {
 
   series.getCurrentRound(season_id, division_id).then(round => {
     const html = templates.series.round({
+      user: req.user,
       season_id: season_id,
       division_id: division_id,
       round: round,
