@@ -51,8 +51,7 @@ block content
             th #
             th Name
             th Avatar
-            th Rank
-            th Adjusted Rank
+            th Adjusted MMR
             th Dotabuff&nbsp;/ Opendota
             th Statement
             if user && user.isAdmin
@@ -71,15 +70,7 @@ block content
               td
                 figure.image.is-32x32.hide-overflow
                   img(src=player.avatar)
-              td
-                figure.image.is-roster.hide-overflow
-                  img(src="/assets/medals/" + player.rank + ".png")
-              td
-                figure.image.is-roster.hide-overflow
-                  if player.adjusted_rank > 75
-                    img(src="/assets/medals/80.png")
-                  else
-                    img(src="/assets/medals/" + player.adjusted_rank + ".png")
+              td= player.adjusted_mmr
               td
                 a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
                 span

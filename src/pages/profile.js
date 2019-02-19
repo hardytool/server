@@ -112,7 +112,6 @@ function post(steam_user, profile, req, res) {
   p.faceit_name = req.body.faceit_name
   p.discord_name = req.body.discord_name
   p.adjusted_mmr = Number.parseInt(req.body.adjusted_mmr)
-  p.adjusted_rank = Number.parseInt(req.body.adjusted_rank)
   p.name_locked = req.body.name_locked === 'on'
   p.theme = req.body.theme
   
@@ -125,7 +124,6 @@ function post(steam_user, profile, req, res) {
     return profile.getProfile(steamUser.steam_id).then(_profile => {
       if (!req.user.isAdmin) {
         p.adjusted_mmr = _profile ? _profile.adjusted_mmr : null
-        p.adjusted_rank = _profile ? _profile.adjusted_rank : null
         p.name_locked = _profile ? _profile.name_locked : false
         if (p.name_locked) {
           p.name = _profile ? _profile.name : steamUser.name

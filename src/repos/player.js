@@ -19,12 +19,6 @@ function getPlayers(db, criteria, sort) {
     division.name division_name,
     COALESCE(profile.name, steam_user.name) AS name,
     steam_user.avatar,
-    steam_user.rank,
-    CASE
-      WHEN profile.adjusted_rank IS NOT NULL AND profile.adjusted_rank > 0
-      THEN profile.adjusted_rank
-      ELSE steam_user.rank
-    END AS adjusted_rank,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL
       THEN profile.adjusted_mmr
@@ -171,8 +165,7 @@ function getPlayers(db, criteria, sort) {
     if (sort.by_mmr) {
       orderBy = sql`
       ORDER BY
-        adjusted_rank DESC,
-        rank DESC,
+        adjusted_mmr DESC,
         name ASC
       `
     } else if (sort.by_name) {
@@ -207,13 +200,7 @@ function getPlayer(db, id) {
     profile.discord_name,
     division.name division_name,
     COALESCE(profile.name, steam_user.name) AS name,
-    steam_user.avatar,
-    steam_user.rank,
-    CASE
-      WHEN profile.adjusted_rank IS NOT NULL AND profile.adjusted_rank > 0
-      THEN profile.adjusted_rank
-      ELSE steam_user.rank
-    END AS adjusted_rank
+    steam_user.avatar
   FROM
     player
   JOIN steam_user ON
@@ -311,14 +298,7 @@ function getDraftSheet(db, criteria, sort) {
   SELECT
     player.id,
     COALESCE(profile.name, steam_user.name) AS name,
-    COALESCE(steam_user.rank, 0) as rank,
-    COALESCE(profile.adjusted_rank, 0) AS adjusted_rank,
     COALESCE(profile.adjusted_mmr, 0) AS adjusted_mmr,
-    CASE
-      WHEN profile.adjusted_rank IS NOT NULL AND profile.adjusted_rank > 0
-      THEN profile.adjusted_rank
-      ELSE steam_user.rank
-    END AS draft_rank,
     player.statement,
     has_played.has_played OR is_vouched.is_vouched AS is_vouched,
     player.activity_check,
@@ -421,8 +401,7 @@ function getDraftSheet(db, criteria, sort) {
     if (sort.by_mmr) {
       orderBy = sql`
       ORDER BY
-        draft_rank ASC,
-        rank ASC,
+        draft_mmr ASC,
         name ASC
       `
     }

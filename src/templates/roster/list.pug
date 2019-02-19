@@ -54,14 +54,7 @@ block content
                     a(href='/profile/' + captain.steam_id)
                       strong= captain.name
                   div.column
-                    figure.image.is-roster
-                      img(src="/assets/medals/" + captain.rank + ".png")
-                  div.column
-                    figure.image.is-roster
-                      if captain.adjusted_rank > 75
-                        img(src="/assets/medals/80.png")
-                      else
-                        img(src="/assets/medals/" + captain.adjusted_rank + ".png")
+                    span #{captain.adjusted_mmr}
                   div.column
                     if user && user.isAdmin
                       nav.level.is-mobile
@@ -84,8 +77,7 @@ block content
           tr
             th Name
             th Avatar
-            th Rank
-            th Adjusted Rank
+            th Adjusted MMR
             if user && user.isAdmin
               th Remove
         tbody
@@ -96,15 +88,7 @@ block content
               td
                 figure.image.is-roster.hide-overflow
                   img(src=player.avatar)
-              td 
-                figure.image.is-roster.hide-overflow
-                  img(src="/assets/medals/" + player.rank + ".png")
-              td
-                figure.image.is-roster.hide-overflow
-                  if player.adjusted_rank > 75
-                    img(src="/assets/medals/80.png")
-                  else
-                    img(src="/assets/medals/" + player.adjusted_rank + ".png")
+              td= player.adjusted_mmr
               if user && user.isAdmin
                 td
                   form
