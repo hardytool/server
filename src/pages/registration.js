@@ -51,12 +51,13 @@ function view(templates, season, division, steam_user, player, role, player_role
             }
 
             return mmr.getMMR(steamUser.steam_id).then(({ rank }) => {
+              // Even though we aren't using rank, we require them to
+              // calibrate or be manually entered
               if (!rank) {
                 return templates.error.no_mmr({
                   user: req.user
                 })
               }
-              steamUser.rank = rank
               return steam_user.saveSteamUser(steamUser).then(() => {
                 return profile.getProfile(steamUser.steam_id).then(profile => {
                   profile = profile || {}
@@ -65,8 +66,6 @@ function view(templates, season, division, steam_user, player, role, player_role
                     || (steamUser.solo_mmr > steamUser.party_mmr
                       ? steamUser.solo_mmr
                       : steamUser.party_mmr)
-                  profile.adjusted_rank = profile.adjusted_rank
-                    || steamUser.rank
                   profile.is_draftable = profile.is_draftable === undefined
                     ? true
                     : profile.is_draftable

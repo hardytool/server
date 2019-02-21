@@ -364,7 +364,7 @@ function saveRound(series, req, res) {
 function newRound(series, req, res) {
   const season_id = req.params.season_id
   const division_id = req.params.division_id
-  round = 0
+  const round = 0
 
   series.saveCurrentRound(season_id, division_id, round).then(() => {
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')

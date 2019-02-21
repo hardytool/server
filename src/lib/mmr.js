@@ -20,12 +20,10 @@ function getMMR(dota2, id) {
       const solo = soloSlot.length === 1 ? soloSlot[0].stat.stat_score : null
       const party = partySlot.length === 1 ? partySlot[0].stat.stat_score : null
       const rank = result.rank_tier
-      const previous_rank = result.previous_rank_tier ? result.previous_rank_tier : 0
       resolve({
         solo: solo,
         party: party,
-        rank: rank,
-        previous_rank: previous_rank
+        rank: rank
       })
     })
   })

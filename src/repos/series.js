@@ -69,7 +69,7 @@ function getSeries(db, criteria) {
   }
   select = sql.join([select, sql`
   ORDER BY
-    series.round ASC,
+    series.round DESC,
     (series.home_points + series.away_points) DESC,
     (home_team.seed + away_team.seed) DESC,
     home_team.name ASC,
