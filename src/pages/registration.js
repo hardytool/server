@@ -50,14 +50,7 @@ function view(templates, season, division, steam_user, player, role, player_role
               })
             }
 
-            return mmr.getMMR(steamUser.steam_id).then(({ rank }) => {
-              // Even though we aren't using rank, we require them to
-              // calibrate or be manually entered
-              if (!rank) {
-                return templates.error.no_mmr({
-                  user: req.user
-                })
-              }
+            return mmr.getMMR(steamUser.steam_id).then(() => {
               return steam_user.saveSteamUser(steamUser).then(() => {
                 return profile.getProfile(steamUser.steam_id).then(profile => {
                   profile = profile || {}
@@ -187,6 +180,8 @@ function post(templates, season, division, steam_user, team_player, player, role
     return division.getDivision(division_id).then(division => {
       if (division.active) {
         return steam_user.getSteamUser(req.user.steamId).then(steamUser => {
+          steamUser.solo_mmr = p.solo_mmr
+          steamUser.party_mmr = p.party_mmr
           return profile.getProfile(steamUser.steam_id).then(_profile => {
             _profile.discord_name = req.body.discord_name
             return team_player.isCaptainAutoApproved(steamUser.steam_id)
@@ -214,23 +209,25 @@ function post(templates, season, division, steam_user, team_player, player, role
                     if (season.activity_check == true) {
                       p.activity_check = true
                     }
-                    return player.savePlayer(p).then(() => {
-                      return profile.saveProfile(_profile).then(() => {
-                        return role.getRoles().then(roles => {
-                          const promises = roles.reduce((promises, role) => {
-                            if (p[role.id] !== undefined) {
-                              promises.push(player_role.saveRoleRank(p.id, role.id, p[role.id]))
-                            }
-                            return promises
-                          }, [])
-                          return Promise.all(promises).then(() => {
-                            const html = templates.registration.discord({
-                              user: req.user,
-                              season: season,
-                              division: division
-                            })
+                    return steam_user.saveSteamUser(steamUser).then(() => {
+                      return player.savePlayer(p).then(() => {
+                        return profile.saveProfile(_profile).then(() => {
+                          return role.getRoles().then(roles => {
+                            const promises = roles.reduce((promises, role) => {
+                              if (p[role.id] !== undefined) {
+                                promises.push(player_role.saveRoleRank(p.id, role.id, p[role.id]))
+                              }
+                              return promises
+                            }, [])
+                            return Promise.all(promises).then(() => {
+                              const html = templates.registration.discord({
+                                user: req.user,
+                                season: season,
+                                division: division
+                              })
 
-                            res.send(html)
+                              res.send(html)
+                            })
                           })
                         })
                       })

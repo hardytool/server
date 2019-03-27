@@ -49,7 +49,6 @@ const mmr = require('./lib/mmr')(dota2)
 const steamId = require('./lib/steamId')
 const auth = require('./lib/auth')(admin, steam_user, profile, mmr, steamId)
 const credentials = require('./lib/credentials')(config.server)
-const wait = require('./lib/wait')
 
 // Auth routes
 const openid = require('./api/openid')(config)
@@ -351,25 +350,29 @@ migration.migrateIfNeeded(
       })
     }
 
-    const repeat = () => {
-      steam_user.getSteamUsers().then(users => {
-        users.forEach((user, index) => {
-          setTimeout(() => {
-            return wait(1000, () => mmr.isAvailable()).then(() => {
-              return mmr.getMMR(user.steam_id).then(mmr => {
-                user.rank = mmr && mmr.rank ? mmr.rank : user.rank
-                return steam_user.saveSteamUser(user)
-              })
-            })
-          }, 1000 * (index + 1))
-        })
-      }).catch(err => {
-        console.error(err)
-        console.log('Error recovered - continuing')
-      })
-      setTimeout(repeat, 60*60*1000)
-    }
-    repeat()
+    // If we aren't using MMR/Rank fetching, there is no point for this
+    // const repeat = () => {
+    //   steam_user.getSteamUsers().then(users => {
+    //     users.forEach((user, index) => {
+    //       setTimeout(() => {
+    //         return wait(1000, () => mmr.isAvailable()).then(() => {
+    //           return mmr.getMMR(user.steam_id).then(mmr => {
+    //             user.rank = mmr && mmr.rank ? mmr.rank : user.rank
+    //             // Commenting out this line until Valve can figure out their mmr
+    //             // Rank will stop updating but we don't use that anyway
+    //             //return steam_user.saveSteamUser(user)
+    //             return true
+    //           })
+    //         })
+    //       }, 1000 * (index + 1))
+    //     })
+    //   }).catch(err => {
+    //     console.error(err)
+    //     console.log('Error recovered - continuing')
+    //   })
+    //   setTimeout(repeat, 60*60*1000)
+    // }
+    // repeat()
 
     if (credentials) {
       http.createServer(redirectHttps({

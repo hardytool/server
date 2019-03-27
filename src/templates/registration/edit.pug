@@ -15,8 +15,6 @@ block content
           input(type='hidden' name="_csrf" value=csrfToken)
           input(type='hidden' name='season_id' value=season.id)
           input(type='hidden' name='division_id' value=division.id)
-          input(type='hidden' name='solo' value=steamUser.solo_mmr)
-          input(type='hidden' name='party' value=steamUser.party_mmr)
           if player
             input(type='hidden' name='id' value=player.id)
           div.field
@@ -27,6 +25,14 @@ block content
             label.label(for='adjusted_mmr') Adjusted MMR:
             p.control
               input.input#adjusted_mmr(type='text' value=player.adjusted_mmr disabled)
+          div.field
+            label.label(for='solo_mmr') Solo MMR:
+            p.control
+              input.input#solo_mmr(type='text' name='solo_mmr' value=(steamUser ? steamUser.solo_mmr : 0) required)
+          div.field
+            label.label(for='party_mmr') Party MMR:
+            p.control
+              input.input#party_mmr(type='text' name='party_mmr' value=(steamUser ? steamUser.party_mmr : 0) required)
           div.field
             label.label(for='mmr_screenshot') MMR Screenshot:
             p.control
