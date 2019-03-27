@@ -49,7 +49,6 @@ const mmr = require('./lib/mmr')(dota2)
 const steamId = require('./lib/steamId')
 const auth = require('./lib/auth')(admin, steam_user, profile, mmr, steamId)
 const credentials = require('./lib/credentials')(config.server)
-const wait = require('./lib/wait')
 
 // Auth routes
 const openid = require('./api/openid')(config)
