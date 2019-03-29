@@ -137,13 +137,13 @@ function post(series, req, res) {
   if (s.away_team_id === '') {
     s.away_team_id = null
   }
-  const match1 = s.match_1_id
-  const match2 = s.match_2_id
+  const match1 = s.match_1_url
+  const match2 = s.match_2_url
   if (!match1) {
-    s.match_1_id = null
+    s.match_1_url = null
   }
   if (!match2) {
-    s.match_2_id = null
+    s.match_2_url = null
   }
   const forfeit1 = s.match_1_forfeit_home
   const forfeit2 = s.match_2_forfeit_home
@@ -459,8 +459,8 @@ function importSeries(series, season, team, pairings, division, req, res) {
               toSave.away_team_id = _matchup['away']['id']
               toSave.home_points = 0
               toSave.away_points = 0
-              toSave.match_1_id = null
-              toSave.match_2_id = null
+              toSave.match_1_url = null
+              toSave.match_2_url = null
               toSave.match_1_forfeit_home = null
               toSave.match_2_forfeit_home = null
               return series.saveSeries(toSave)

@@ -11,8 +11,8 @@ function getSeries(db, criteria) {
     series.away_team_id,
     series.home_points,
     series.away_points,
-    series.match_1_id,
-    series.match_2_id,
+    series.match_1_url,
+    series.match_2_url,
     series.match_1_forfeit_home,
     series.match_2_forfeit_home,
     home_team.name as home_team_name,
@@ -93,8 +93,8 @@ function saveSeries(db, series) {
       away_team_id,
       home_points,
       away_points,
-      match_1_id,
-      match_2_id,
+      match_1_url,
+      match_2_url,
       match_1_forfeit_home,
       match_2_forfeit_home
     ) VALUES (
@@ -106,8 +106,8 @@ function saveSeries(db, series) {
       ${series.away_team_id},
       ${series.home_points},
       ${series.away_points},
-      ${series.match_1_id},
-      ${series.match_2_id},
+      ${series.match_1_url},
+      ${series.match_2_url},
       ${series.match_1_forfeit_home},
       ${series.match_2_forfeit_home}
     ) ON CONFLICT (
@@ -120,8 +120,8 @@ function saveSeries(db, series) {
       away_team_id,
       home_points,
       away_points,
-      match_1_id,
-      match_2_id,
+      match_1_url,
+      match_2_url,
       match_1_forfeit_home,
       match_2_forfeit_home
     ) = (
@@ -132,8 +132,8 @@ function saveSeries(db, series) {
       ${series.away_team_id},
       ${series.home_points},
       ${series.away_points},
-      ${series.match_1_id},
-      ${series.match_2_id},
+      ${series.match_1_url},
+      ${series.match_2_url},
       ${series.match_1_forfeit_home},
       ${series.match_2_forfeit_home}
     )

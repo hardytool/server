@@ -83,23 +83,14 @@ block content
               td 0
               td BYE
               td BYE
-            if _series.match_1_id
+            if _series.match_1_url
               td
-                a(href='https://www.dotabuff.com/matches/' + _series.match_1_id) Dotabuff
-                span
-                  | &nbsp;/
-                  |
-                a(href='https://www.opendota.com/matches/' + _series.match_1_id) OpenDota
+                a(href=_series.match_1_url) Link
             else
               td N/A
-            if _series.match_2_id
+            if _series.match_2_url
               td
-                a(href='https://www.dotabuff.com/matches/' + _series.match_2_id) Dotabuff
-                span
-                  |
-                  |/
-                  |
-                a(href='https://www.opendota.com/matches/' + _series.match_2_id) OpenDota
+                a(href=_series.match_2_url) Link
             else
               td N/A
             if _series.match_1_forfeit_home == true
