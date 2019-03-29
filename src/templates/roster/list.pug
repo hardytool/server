@@ -145,14 +145,14 @@ block content
                 td 0
                 td BYE
                 td BYE
-              if _series.match_1_id
+              if _series.match_1_url
                 td
-                  a(href=_series.match_1_id) Link
+                  a(href=_series.match_1_url) Link
               else
                 td N/A
-              if _series.match_2_id
+              if _series.match_2_url
                 td
-                  a(href=_series.match_2_id) Link
+                  a(href=_series.match_2_url) Link
               else
                 td N/A
               if user && user.isAdmin
