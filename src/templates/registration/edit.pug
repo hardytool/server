@@ -63,6 +63,7 @@ block content
                       span &nbsp;#{preferenceStrings[i-1]}
           div.field
             label.label Willing to captain?:
+            p.help A captain is responsible for drafting the members of the team and scheduling team practice. Captains can ask their teammates to handle drafting and shotcalling responsibilities in game or choose to handle it themselves.
             p.control
               label.radio
                 if player && player.will_captain === 'yes'
