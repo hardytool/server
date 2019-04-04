@@ -23,7 +23,17 @@ function createUser(steam_user, mmr, steamId, profile) {
     return user
   }).then(user => {
     return steam_user.saveSteamUser(user).then(() => {
-      return user
+      return profile.getProfile(user.steam_id).then(_profile => {
+        _profile.steam_id = _profile && _profile.steam_id ? _profile.steam_id : user.steam_id
+        _profile.faceit_name = _profile && _profile.faceit_name ? _profile.faceit_name : null
+        _profile.discord_name = _profile && _profile.discord_name ? _profile.discord_name : null
+        _profile.adjusted_mmr = _profile && _profile.adjusted_mmr ? _profile.adjusted_mmr : null
+        _profile.name_locked = _profile && _profile.name_locked ? _profile.name_locked : null
+        _profile.theme = _profile && _profile.theme ? _profile.theme : null
+        return profile.saveProfile(_profile).then(() => {
+          return user
+        })
+      })
     })
   })
 }
