@@ -20,15 +20,7 @@ function createUser(steam_user, mmr, steamId, profile) {
       party_mmr: currentParty,
       rank: currentRank
     }
-    return mmr.getMMR(id).then(result => {
-      user.solo_mmr = result && result.solo ? result.solo : user.solo_mmr
-      user.party_mmr = result && result.party ? result.party : user.party_mmr
-      user.rank = result && result.rank ? result.rank : user.rank
-      return user
-    }).catch(err => {
-      console.error(err)
-      return user
-    })
+    return user
   }).then(user => {
     return steam_user.saveSteamUser(user).then(() => {
       return user
