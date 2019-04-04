@@ -28,7 +28,7 @@ function createUser(steam_user, profile, mmr, steamId, user_profile) {
         _profile.faceit_name = _profile && _profile.faceit_name ? _profile.faceit_name : null
         _profile.discord_name = _profile && _profile.discord_name ? _profile.discord_name : null
         _profile.adjusted_mmr = _profile && _profile.adjusted_mmr ? _profile.adjusted_mmr : null
-        _profile.name_locked = _profile && _profile.name_locked ? _profile.name_locked : null
+        _profile.name_locked = _profile && _profile.name_locked ? _profile.name_locked : false
         _profile.theme = _profile && _profile.theme ? _profile.theme : null
         return profile.saveProfile(_profile).then(() => {
           return user
