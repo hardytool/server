@@ -20,9 +20,9 @@ function getPlayers(db, criteria, sort) {
     COALESCE(profile.name, steam_user.name) AS name,
     steam_user.avatar,
     CASE
-      WHEN profile.adjusted_mmr IS NOT NULL
+      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr
-      ELSE 0
+      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
     END AS adjusted_mmr,
     has_played.has_played,
     is_vouched.is_vouched
@@ -200,7 +200,12 @@ function getPlayer(db, id) {
     profile.discord_name,
     division.name division_name,
     COALESCE(profile.name, steam_user.name) AS name,
-    steam_user.avatar
+    steam_user.avatar,
+    CASE
+      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
+      THEN profile.adjusted_mmr
+      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
+    END AS adjusted_mmr,
   FROM
     player
   JOIN steam_user ON
@@ -299,6 +304,11 @@ function getDraftSheet(db, criteria, sort) {
     player.id,
     COALESCE(profile.name, steam_user.name) AS name,
     COALESCE(profile.adjusted_mmr, 0) AS adjusted_mmr,
+    CASE
+      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
+      THEN profile.adjusted_mmr
+      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
+    END AS draft_mmr,
     player.statement,
     has_played.has_played OR is_vouched.is_vouched AS is_vouched,
     player.activity_check,

@@ -236,8 +236,6 @@ function getCSV(player, player_role, role, division, req, res) {
               acc['Role: ' + role.name] = playerRoleRanks[role.id]
               return acc
             }, {})
-            const rank = player.draft_rank
-            player.draft_rank = ((rank - (rank % 10))/10 - 1) * 5 + (rank % 10)
             delete player.id
             return Object.assign(player, o)
           })
