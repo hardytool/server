@@ -50,34 +50,28 @@ function view(templates, season, division, steam_user, player, role, player_role
               })
             }
 
-            return mmr.getMMR(steamUser.steam_id).then(() => {
-              return steam_user.saveSteamUser(steamUser).then(() => {
-                return profile.getProfile(steamUser.steam_id).then(profile => {
-                  profile = profile || {}
-                  profile.name = profile.name || steamUser.name
-                  profile.adjusted_mmr = profile.adjusted_mmr
-                    || (steamUser.solo_mmr > steamUser.party_mmr
-                      ? steamUser.solo_mmr
-                      : steamUser.party_mmr)
-                  profile.is_draftable = profile.is_draftable === undefined
-                    ? true
-                    : profile.is_draftable
+            return steam_user.saveSteamUser(steamUser).then(() => {
+              return profile.getProfile(steamUser.steam_id).then(profile => {
+                profile = profile || {}
+                profile.name = profile.name || steamUser.name
+                profile.adjusted_mmr = profile.adjusted_mmr
+                  || (steamUser.solo_mmr > steamUser.party_mmr
+                    ? steamUser.solo_mmr
+                    : steamUser.party_mmr)
+                profile.is_draftable = profile.is_draftable === undefined
+                  ? true
+                  : profile.is_draftable
 
-                  return templates.registration.edit({
-                    user: req.user,
-                    season: season,
-                    division: division,
-                    steamUser: steamUser,
-                    player: profile,
-                    roles: roles,
-                    ranks: [],
-                    csrfToken: req.csrfToken()
-                  })
+                return templates.registration.edit({
+                  user: req.user,
+                  season: season,
+                  division: division,
+                  steamUser: steamUser,
+                  player: profile,
+                  roles: roles,
+                  ranks: [],
+                  csrfToken: req.csrfToken()
                 })
-              })
-            }).catch(() => {
-              return templates.error.dota_client_down({
-                user: req.user
               })
             })
           })
