@@ -1,9 +1,9 @@
 const timeout = require('./timeout.js')
 
-function createUser(steam_user, mmr, steamId, profile) {
-  const id = steamId.from64to32(profile.id)
-  const name = profile.displayName
-  const avatar = getAvatar(profile)
+function createUser(steam_user, profile, mmr, steamId, user_profile) {
+  const id = steamId.from64to32(user_profile.id)
+  const name = user_profile.displayName
+  const avatar = getAvatar(user_profile)
   return steam_user.getSteamUser(id.toString()).then(user => {
     return user
   }).catch(() => {
@@ -94,7 +94,7 @@ function getAvatar(profile) {
 
 module.exports = (admin, steam_user, profile, mmr, steamId) => {
   return {
-    createUser: createUser.bind(null, steam_user, mmr, steamId),
+    createUser: createUser.bind(null, steam_user, profile, mmr, steamId),
     fetchMissingMMRs: fetchMissingMMRs.bind(null, steam_user, mmr),
     updateUserMMR: updateUserMMR.bind(null, steam_user, mmr),
     inflateUser: inflateUser.bind(null, admin, profile, steamId),
