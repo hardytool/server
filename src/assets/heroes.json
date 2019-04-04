@@ -114,6 +114,7 @@
 	"114": {"name":"npc_dota_hero_monkey_king","localized_name":"Monkey King","primary_attr":"agi","attack_type":"Melee","roles":["Carry","Escape","Disabler","Initiator"],"legs":2},
 	"119": {"name":"npc_dota_hero_dark_willow","localized_name":"Dark Willow","primary_attr":"int","attack_type":"Ranged","roles":["Support","Nuker","Disabler","Escape"],"legs":2},
 	"120": {"name":"npc_dota_hero_pangolier","localized_name":"Pangolier","primary_attr":"agi","attack_type":"Melee","roles":["Carry","Nuker","Disabler","Durable","Escape","Initiator"],"legs":2},
-    "121": {"name":"npc_dota_hero_grimstroke","localized_name":"Grimstroke","primary_attr":"int","attack_type":"Ranged","roles":["Support","Nuker","Disabler","Escape"],"legs":2}
+    "121": {"name":"npc_dota_hero_grimstroke","localized_name":"Grimstroke","primary_attr":"int","attack_type":"Ranged","roles":["Support","Nuker","Disabler","Escape"],"legs":2},
+    "129": {"name":"npc_dota_hero_mars","localized_name":"Mars","primary_attr":"str","attack_type":"Melee","roles":["Carry","Initiator","Disabler","Durable"],"legs":2}
 
 }

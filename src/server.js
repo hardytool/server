@@ -308,9 +308,9 @@ app.post(adminGroupPages.post.route, adminGroupPages.post.handler)
 app.post(adminGroupPages.remove.route, adminGroupPages.remove.handler)
 
 //Pull the list of Steam servers if it exists
-if (fs.existsSync(path.join(__dirname, 'assets', 'servers.json'))) {
-  Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.json')))
-}
+// if (fs.existsSync(path.join(__dirname, 'assets', 'servers.json'))) {
+//   Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.json')))
+// }
 
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))
@@ -318,37 +318,37 @@ migration.migrateIfNeeded(
     console.log(
       `RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)
 
-    if (config.steam.username && config.steam.password) {
-      steam.connect()
+    // if (config.steam.username && config.steam.password) {
+    //   steam.connect()
 
-      steam.on('connected', () => {
-        steamUser.logOn({
-          account_name: config.steam.username,
-          password: config.steam.password
-        })
-      })
+    //   steam.on('connected', () => {
+    //     steamUser.logOn({
+    //       account_name: config.steam.username,
+    //       password: config.steam.password
+    //     })
+    //   })
 
-      steam.on('logOnResponse', res => {
-        if (res.eresult == Steam.EResult.OK) {
-          dota2.launch()
-        }
-      })
+    //   steam.on('logOnResponse', res => {
+    //     if (res.eresult == Steam.EResult.OK) {
+    //       dota2.launch()
+    //     }
+    //   })
 
-      // Commenting this out because it is causing issues for now on node10
-      // steam.on('servers', servers => {
-      //   fs.writeFile(path.join(__dirname, 'assets', 'servers.js'), JSON.stringify(servers));
-      // })
+    //   // Commenting this out because it is causing issues for now on node10
+    //   // steam.on('servers', servers => {
+    //   //   fs.writeFile(path.join(__dirname, 'assets', 'servers.js'), JSON.stringify(servers));
+    //   // })
 
-      steam.on('error', err => {
-        console.error(err)
-        if (err.message === 'Disconnected') {
-          steam.connect()
-        }
-        else {
-          throw err
-        }
-      })
-    }
+    //   steam.on('error', err => {
+    //     console.error(err)
+    //     if (err.message === 'Disconnected') {
+    //       steam.connect()
+    //     }
+    //     else {
+    //       throw err
+    //     }
+    //   })
+    // }
 
     // If we aren't using MMR/Rank fetching, there is no point for this
     // const repeat = () => {

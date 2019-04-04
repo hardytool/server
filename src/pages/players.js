@@ -33,7 +33,7 @@ function list(templates, season, division, player, req, res) {
             division: division,
             players: players,
             noun: 'Players',
-            cutoff: captains.length * 5
+            cutoff: captains.length * 4
           })
 
           res.send(html)
