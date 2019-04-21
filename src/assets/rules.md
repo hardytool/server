@@ -9,14 +9,14 @@
        - Participants must alert the admins if their rank does not accurately reflect their skill level, or if they have alternate accounts they regularly use.
          - Admins may adjust a player's rank to be more accurate in these situations.
        - Players must sign-up on the current Steam account they primarily use for playing Dota, except in the case described in the next rule. The required 500 games and 250 wins on the account must all have been played by the player who is signing up.
-       - Before registering, players are required to turn "Expose Public Match Data" on in the Dota 2 client > Settings > Options > Profile
-       - No one should expect to miss more than 3 weeks in the season (including playoffs).
+       - Before registering, players are required to turn "Expose Public Match Data" on in the Dota 2 client > Settings > Options > Profile.
+         - Players are not required to keep match data public for the remainder of the season, only for the draft.
+       - No one should expect to miss more than 2 weeks in the season (including playoffs).
          - If a participant expects inconsistent attendance for an upcoming season, they are encouraged to instead sign up as a stand-in or free agent, as appropriate.
        - Admins will be watching for accounts that have unusual match history. Those accounts may be removed from the league at the time they are discovered at the discretion of the admins. Since there are various ways this rule can be violated, any other punishment will be determined on a case-by-case basis.
        - Every player on a team’s roster must play in at least 1 game of the bo2 each week, if available, and each player on the roster must play one game for a minimum of five weeks over the course of the season.
          - This rule is extended into the post season. Every player on a team’s roster must play at least 1 game of the bo3, if available.
        - Participants may only play in 1 sub-division in a season of RD2L. This means a player cannot sign up for multiple sub-divisions or the same division using multiple identities.
-         - The exception to this is the NA FLEX division.
    - **Captains**
      - Captains are also participants and all participant rules apply to captains.
      - Captains should have completed at least one previous season before signing up as a captain, unless they get permission from an admin.
@@ -27,13 +27,14 @@
      - Captains do not have the power to remove players from their team after the draft.
      - Captains should be at least Legend[1] rank or higher. This threshold may be increased or decreased at the discretion of division admins.
    - **Stand-ins**
+     - When a team is missing a player and requires a stand-in, they must formally request one in their divisions stand-in channel in discord, listing the dotabuff of their missing player and the dotabuff of the player they would like to use as a stand-in, they must @ their division admin and opposing captain for that week as well.
      - If a team is missing one of their players, the team is eligible to use a stand-in for this player.
        - The standin must have been the same badge or lower on the draft sheet (according to adjusted mmr for players that were adjusted) and must not have climbed above the player they are replacing.
        - The standin must be an RD2L player. The division admin and opposing captain must be notified of who you are missing and who you are using as a stand-in before the match begins.
-     - Teams may use 1 stand-in per match, for a maximum of 3 series (6 games) during a season. If a team finds itself needing more than this, they should contact a division admin with regards to a free-agent.
+     - Teams may use 2 stand-ins per match, for a maximum of 8 games during a season. Using two standins in one match counts as two standin uses, so using two standins four times will use the entirety of a teams standin usages. If a team finds itself needing more than this, they should contact a division admin with regards to a free agent.
        - Stand-in usage from the season will be reset for all playoff teams. Playoff teams may use a stand-in for a maximum of two series of the playoffs. (Series means all games of a round, usually best of 3 or best of 5)
        - If a team is forced to use a standin because admins have not found a free agent for the team yet, these standin uses will not count towards the team total
-     - If a team needs two stand-ins in order to play they must forfeit the match.
+     - If a team needs three stand-ins in order to play they must forfeit the match.
      - If a captain believes a stand-in is not fair they can report it to their division admin to decide if the stand-in can be used or not. (Basically there will be admin discretion for stand-ins).
      - If an admin discovers that a player used an unauthorized stand-in after the matches have been completed, the admin may retroactively call a forfeit for any games the unauthorized player played in. This will be decided on a case by case basis.
    - **Free Agents**
@@ -55,7 +56,7 @@
      - Each division will have its own admin. This admin will be the first point of contact for captains and players in the division. They will also be responsible for helping run the draft, calling forfeits, approving stand-ins, assigning free agents and checking results.
    - **Draft**
      - There will be 1 draft per sub-division.
-     - The player pool of the draft will consist of the first (5x total number of captains) players who registered for that division.
+     - The player pool of the draft will consist of the first (4x total number of captains) players who registered for that division.
      - The draft type (e.g., snake, linear, etc.) will be determined by the division admins.
      - Pick order is selected based on the captain’s rank. (Roughly, captains lower badges will be earlier in the pick order.)
      - The draft will consist of 5 rounds as needed to fill out teams.
@@ -86,7 +87,7 @@
        - Tipping, Chat Wheel, and Hero Taunts are all allowed in official matches.
        - All chat is always allowed for purpose of calling GG.
        - All chat during games should be civil.
-       - Continued all chat after a “no all chat” request by either team will result in a forfeit against the offending team for that game.
+       - If a team repeatedly violates the no all chat request they may be forfeited by an admin.
        - Caster all chat is still strictly prohibited at all times!
      - Teams will coin flip for choice of side/pick, winner of the flip has first choice game 1 and loser has first choice game 2.
      - Captains are required to ticket all official matches. If matches cannot be ticketed due to an unforeseen issue, a screenshot of the score screen must be sent to an admin within 24 hours of the match.
@@ -107,7 +108,6 @@
      - Match schedules will be posted as soon as all of the previous week’s results are checked (at least a few days before the match is to be played). This will allow teams time to prepare strategies and scout their opponents.
    - **Post Season**
      - After the regular season matches are completed, the top teams from each sub-division will be placed in an interdivisional single elimination playoff bracket for that region (NA or EU).
-       - With the exception of the NA FLEX division.
      - Teams will have one week to schedule and play their required matches. Each match must be scheduled and played by the end of the week for playoffs.
      - Each week a playoff thread will be put up where the captains of each team will be responsible for scheduling their match. You must agree with the other captain what day and time you will play the match. Both captains must post their agreement in the thread for the match to be officially scheduled, you may discuss the specifics in discord/steam if you wish and then just post the final result on the thread.
      - Teams will flip for side/pick/server (if teams have a primary server difference).

@@ -131,7 +131,7 @@ block content
             div.control
               a(href='/profile/' + profile.steam_id + '/edit')
                 button.button.is-primary Edit profile
-          if !vouched && !has_played && can_vouch
+          if !vouched && !has_played && user.isAdmin
             div.control
               a(href='/profile/' + profile.steam_id + '/vouch')
                 button.button.is-warning Vouch player
