@@ -174,6 +174,12 @@ function getPlayers(db, criteria, sort) {
         name ASC,
         steam_id ASC
       `
+    } else if (sort.by_reverse_mmr) {
+      orderBy = sql`
+      ORDER BY
+        adjusted_mmr ASC,
+        name ASC
+      `
     }
   }
   select = sql.join([select, orderBy])
