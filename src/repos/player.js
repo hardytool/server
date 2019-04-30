@@ -163,7 +163,6 @@ function getPlayers(db, criteria, sort) {
   `
   if (sort) {
     if (sort.by_mmr) {
-      console.log("hello")
       orderBy = sql`
       ORDER BY
         adjusted_mmr DESC,
@@ -176,7 +175,6 @@ function getPlayers(db, criteria, sort) {
         steam_id ASC
       `
     } else if (sort.by_reverse_mmr) {
-      console.log("goodbye")
       orderBy = sql`
       ORDER BY
         adjusted_mmr ASC,
