@@ -61,7 +61,7 @@ function captains(templates, season, division, player, req, res) {
         is_captain: true
       }, {
         by_mmr: normal,
-        reverse_mmr: !normal
+        by_reverse_mmr: !normal
       }).then(players => {
         const html = templates.player.captains({
           user: req.user,
