@@ -87,7 +87,8 @@ const teamPages = require('./pages/teams')(templates,
   season,
   division,
   team,
-  team_player)
+  team_player,
+  player)
 const registrationPages = require('./pages/registration')(templates,
   season,
   division,
@@ -233,6 +234,7 @@ app.get(teamPages.list.route, teamPages.list.handler)
 app.get(teamPages.create.route, teamPages.create.handler)
 app.get(teamPages.edit.route, teamPages.edit.handler)
 app.get(teamPages.json.route, teamPages.json.handler)
+app.get(teamPages.importTeams.route, teamPages.importTeams.handler)
 
 app.post(teamPages.post.route, teamPages.post.handler)
 app.post(teamPages.remove.route, teamPages.remove.handler)

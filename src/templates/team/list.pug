@@ -5,8 +5,13 @@ mixin adminButtons
     div.column
       div.field.is-grouped
         if user && user.isAdmin
-          a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/create')
-            button.button.is-link Add team
+          div.control
+            a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/create')
+              button.button.is-link Add team
+          if teams.length == 0
+            div.control
+              a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/import')
+                button.button.is-link Import teams
 
 mixin navigationButtons
   div.field.is-grouped
