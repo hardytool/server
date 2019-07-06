@@ -154,36 +154,6 @@ passport.use(new passportSteam.Strategy({
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser(config.server.secret))
-app.use(helmet({
-  frameguard: {
-    action: 'deny'
-  },
-  referrerPolicy: {
-    policy: 'strict-origin-when-cross-origin'
-  },
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ['\'self\''],
-      scriptSrc: ['\'self\'',
-        '\'unsafe-inline\'',
-        'use.fontawesome.com',
-        'unpkg.com',
-        'cdn.joinhoney.com'],
-      styleSrc: ['\'self\'',
-        '\'unsafe-inline\'',
-        'cdnjs.cloudflare.com',
-        'use.fontawesome.com',
-        'unpkg.com',
-        'cdn.joinhoney.com',
-        'fonts.googleapis.com'],
-      imgSrc: ['\'self\'',
-        'cdn.discordapp.com',
-        'steamcdn-a.akamaihd.net',
-        'i.imgur.com'],
-      fontSrc: ['\'self\'', 'cdn.joinhoney.com']
-    }
-  }
-}))
 app.use(csrfMiddleware)
 app.use(session({
   store: new RedisStore({
@@ -213,6 +183,7 @@ app.get(indexPages.home.route, indexPages.home.handler)
 app.get(indexPages.complaint.route, indexPages.complaint.handler)
 app.get(indexPages.rules.route, indexPages.rules.handler)
 app.get(indexPages.irules.route, indexPages.irules.handler)
+app.get(indexPages.playoffs.route, indexPages.playoffs.handler)
 
 app.get(seasonPages.list.route, seasonPages.list.handler)
 app.get(seasonPages.create.route, seasonPages.create.handler)

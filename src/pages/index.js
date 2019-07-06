@@ -31,6 +31,14 @@ function rules(templates, path, req, res) {
   })
 }
 
+function playoffs(templates, req, res) {
+  const html = templates.playoffs({
+    user: req.user
+  })
+
+  res.send(html)
+}
+
 module.exports = (templates, path, irulespath) => {
   return {
     home: {
@@ -48,6 +56,10 @@ module.exports = (templates, path, irulespath) => {
     irules: {
       route: '/inhouserules',
       handler: rules.bind(null, templates, irulespath)
+    },
+    playoffs: {
+      route: '/playoffs',
+      handler: playoffs.bind(null, templates)
     }
   }
 }
