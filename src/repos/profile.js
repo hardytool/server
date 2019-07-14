@@ -12,6 +12,7 @@ function getProfile(db, steamId) {
     profile.theme,
     steam_user.solo_mmr,
     steam_user.party_mmr,
+    player.activity_check as activity_check,
     COALESCE(profile.adjusted_mmr, 0) as adjusted_mmr,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
@@ -30,6 +31,8 @@ function getProfile(db, steamId) {
      steam_user.steam_id = profile.steam_id
   LEFT JOIN admin ON
     admin.steam_id = profile.steam_id
+  LEFT JOIN player ON
+    steam_user.steam_id = player.steam_id
   WHERE
     steam_user.steam_id = ${steamId}
   `
