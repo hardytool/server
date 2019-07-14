@@ -35,9 +35,10 @@ function getProfile(db, steamId) {
     steam_user.steam_id = player.steam_id
   LEFT JOIN season ON
     player.season_id = season.id
+    AND season.active = TRUE
   WHERE
     steam_user.steam_id = ${steamId}
-    AND season.active = TRUE
+
   `
   return db.query(select).then(result => {
     return result.rows[0]
