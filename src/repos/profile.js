@@ -12,7 +12,6 @@ function getProfile(db, steamId) {
     profile.theme,
     steam_user.solo_mmr,
     steam_user.party_mmr,
-    player.activity_check as activity_check,
     COALESCE(profile.adjusted_mmr, 0) as adjusted_mmr,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
@@ -31,14 +30,27 @@ function getProfile(db, steamId) {
      steam_user.steam_id = profile.steam_id
   LEFT JOIN admin ON
     admin.steam_id = profile.steam_id
-  LEFT JOIN player ON
-    steam_user.steam_id = player.steam_id
-  LEFT JOIN season ON
-    player.season_id = season.id
-    AND season.active = TRUE
   WHERE
     steam_user.steam_id = ${steamId}
+  `
+  return db.query(select).then(result => {
+    return result.rows[0]
+  })
+}
 
+function getActivityCheck(db, steamId) {
+  const select = sql`
+  SELECT
+    player.steam_id,
+    player.activity_check as activity_check
+  FROM
+    player
+  LEFT JOIN season ON
+    player.season_id = season.id
+  WHERE
+    player.steam_id = ${steamId}
+    AND season.active = TRUE
+    AND season.activity_check = TRUE;
   `
   return db.query(select).then(result => {
     return result.rows[0]
@@ -88,6 +100,7 @@ function saveProfile(db, profile) {
 module.exports = db => {
   return {
     getProfile: getProfile.bind(null, db),
+    getActivityCheck: getActivityCheck.bind(null, db),
     saveProfile: saveProfile.bind(null, db)
   }
 }
