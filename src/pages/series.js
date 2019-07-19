@@ -360,8 +360,6 @@ async function playoff(templates, _season, _team, _series, _pairings, _division,
     }
   }
 
-  console.log(rounds)
-
   const html = templates.series.playoff({
     user: req.user,
     rounds: rounds

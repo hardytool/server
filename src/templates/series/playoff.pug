@@ -4,7 +4,12 @@ block title
   title Playoff Bracket
 
 block content
+  <div style='display:flex;'>
   each round in rounds
-    <span>round</span>
-    each matchup in round
-      <span>matchup</span>
+    <div style='display:flex;flex-direction:column;'>
+      <span>ROUND</span>
+      each matchup in round
+        <div>MATCHUP</div>
+    </div>
+  <div>
+
