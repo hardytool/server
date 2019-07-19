@@ -1,0 +1,10 @@
+extends ../components/base.pug
+
+block title
+  title Playoff Bracket
+
+block content
+  each round in rounds
+    <span>round</span>
+    each matchup in round
+      <span>matchup</span>
