@@ -318,7 +318,7 @@ function matchups(templates, season, team, series, pairings, division, req, res)
   })
 }
 
-async function playoff(templates, _season, _team, _series, _pairings, _division, req, res) {
+async function playoffs(templates, _season, _team, _series, _pairings, _division, req, res) {
   const season_id = req.params.season_id
   const division_id = req.params.division_id
 
@@ -360,9 +360,11 @@ async function playoff(templates, _season, _team, _series, _pairings, _division,
     }
   }
 
-  const html = templates.series.playoff({
+  const html = templates.series.playoffs({
     user: req.user,
-    rounds: rounds
+    rounds: rounds,
+    season: season,
+    division: division
   });
 
   res.send(html)
@@ -560,9 +562,9 @@ module.exports = (templates, season, team, series, pairings, division) => {
       route: '/seasons/:season_id/divisions/:division_id/matchups/:round?',
       handler: matchups.bind(null, templates, season, team, series, pairings, division)
     },
-    playoff: {
-      route: '/seasons/:season_id/divisions/:division_id/playoff',
-      handler: playoff.bind(null, templates, season, team, series, pairings, division)
+    playoffs: {
+      route: '/seasons/:season_id/divisions/:division_id/playoffs',
+      handler: playoffs.bind(null, templates, season, team, series, pairings, division)
     },
     editRound: {
       route: '/seasons/:season_id/divisions/:division_id/round/edit',

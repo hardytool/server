@@ -22,6 +22,9 @@ mixin navigationButtons
         button.button.is-success Standings
     div.control
       a.button(disabled) Matchups
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/playoffs')
+        button.button.is-success Playoffs
 
 block title
   title #{title} : #{season.name} Week #{round} Matchups

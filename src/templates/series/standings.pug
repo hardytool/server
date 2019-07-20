@@ -22,6 +22,9 @@ mixin navigationButtons
     div.control
       a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups')
         button.button.is-primary Matchups
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/playoffs')
+        button.button.is-success Playoffs
 
 block title
   title #{title} : #{season.name} Week #{round} Standings

@@ -15,6 +15,8 @@ function getSeries(db, criteria) {
     series.match_2_url,
     series.match_1_forfeit_home,
     series.match_2_forfeit_home,
+    series.playoff_round,
+    series.playoff_match_num,
     home_team.name as home_team_name,
     away_team.name as away_team_name,
     home_team.logo as home_team_logo,
@@ -146,7 +148,9 @@ function saveSeries(db, series) {
       match_1_url,
       match_2_url,
       match_1_forfeit_home,
-      match_2_forfeit_home
+      match_2_forfeit_home,
+      playoff_round,
+      playoff_match_num
     ) VALUES (
       ${series.id},
       ${series.round},
@@ -159,7 +163,9 @@ function saveSeries(db, series) {
       ${series.match_1_url},
       ${series.match_2_url},
       ${series.match_1_forfeit_home},
-      ${series.match_2_forfeit_home}
+      ${series.match_2_forfeit_home},
+      ${series.playoff_round},
+      ${series.playoff_match_num}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
@@ -173,7 +179,9 @@ function saveSeries(db, series) {
       match_1_url,
       match_2_url,
       match_1_forfeit_home,
-      match_2_forfeit_home
+      match_2_forfeit_home,
+      playoff_round,
+      playoff_match_num
     ) = (
       ${series.round},
       ${series.season_id},
@@ -185,7 +193,9 @@ function saveSeries(db, series) {
       ${series.match_1_url},
       ${series.match_2_url},
       ${series.match_1_forfeit_home},
-      ${series.match_2_forfeit_home}
+      ${series.match_2_forfeit_home},
+      ${series.playoff_round},
+      ${series.playoff_match_num}
     )
   `
   return db.query(upsert)
