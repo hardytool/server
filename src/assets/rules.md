@@ -2,6 +2,7 @@
 
 1. **Eligibility**
    - **Participants**
+       - Skater is banned.
        - This is a player draft league. We only accept individual sign-ups, no team sign-ups.
        - All participants will be vouched by a division admin.
        - Participants must sign up with their main account. This account may not be used by any other player for the duration of the season.
