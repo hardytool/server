@@ -1,18 +1,17 @@
 const shortid = require('shortid')
 
-async function list(templates, _season, _playoffSeries, _division, req, res) {
+async function list(templates, _season, _playoffSeries, req, res) {
   const season_id = req.params.season_id;
-  const division_id = req.params.division_id;
 
   const season = await _season.getSeason(season_id);
-  const division = await _division.getDivision(division_id);
-  const playoffSeries = await _playoffSeries.getPlayoffSeries(season_id, division_id);
+  const playoffSeries = await _playoffSeries.getPlayoffSeries(season_id);
 
   const series = playoffSeries.map(_series => {
     if (_series.home_team_id) {
       _series.home = {};
       _series.home.id = _series.home_team_id;
       _series.home.name = _series.home_team_name;
+      _series.home.division_id = _series.home_division_id;
       _series.home.logo = _series.home_team_logo;
       _series.home.points = _series.home_points;
     }
@@ -20,6 +19,7 @@ async function list(templates, _season, _playoffSeries, _division, req, res) {
       _series.away = {};
       _series.away.id = _series.away_team_id;
       _series.away.name = _series.away_team_name;
+      _series.away.division_id = _series.away_division_id;
       _series.away.logo = _series.away_team_logo;
       _series.away.points = _series.away_points;
     }
@@ -29,31 +29,27 @@ async function list(templates, _season, _playoffSeries, _division, req, res) {
   const html = templates.playoffSeries.list({
     user: req.user,
     season: season,
-    division: division,
     series: series
   })
 
   res.send(html);
 }
 
-async function create(templates, _season, _team, _division, req, res) {
+async function create(templates, _season, _team, req, res) {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403);
     return;
   }
 
   const season_id = req.params.season_id;
-  const division_id = req.params.division_id;
 
   const season = await _season.getSeason(season_id);
-  const division = await _division.getDivision(division_id);
-  const teams = await _team.getTeams(season.id, division.id);
+  const teams = await _team.getTeams(season.id);
 
   const html = templates.playoffSeries.edit({
     user: req.user,
     verb: 'Create',
     season: season,
-    division: division,
     teams: teams,
     csrfToken: req.csrfToken()
   });
@@ -61,20 +57,18 @@ async function create(templates, _season, _team, _division, req, res) {
   res.send(html);
 }
 
-async function edit(templates, _season, _team, _playoffSeries, _division, req, res) {
+async function edit(templates, _season, _team, _playoffSeries, req, res) {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403);
     return;
   }
 
   const season_id = req.params.season_id;
-  const division_id = req.params.division_id;
   const id = req.params.id;
 
   const season = await _season.getSeason(season_id);
-  const division = await _division.getDivision(division_id);
-  const teams = await _team.getTeams(season.id, division.id);
-  const playoffSeries = await _playoffSeries.getPlayoffSeries(season_id, division_id, id);
+  const teams = await _team.getTeams(season.id);
+  const playoffSeries = await _playoffSeries.getPlayoffSeries(season_id, id);
 
   const series = playoffSeries[0];
   series.home = {};
@@ -92,7 +86,6 @@ async function edit(templates, _season, _team, _playoffSeries, _division, req, r
     user: req.user,
     verb: 'Edit',
     season: season,
-    division: division,
     teams: teams,
     series: series,
     csrfToken: req.csrfToken()
@@ -101,30 +94,38 @@ async function edit(templates, _season, _team, _playoffSeries, _division, req, r
   res.send(html);
 }
 
-function post(playoffSeries, req, res) {
+async function post(playoffSeries, _team, req, res) {
   if (!req.user || !req.user.isAdmin) {
-    res.sendStatus(403)
-    return
+    res.sendStatus(403);
+    return;
   }
 
-  const season_id = req.body.season_id
-  const division_id = req.body.division_id
-  const id = req.body.id ? req.body.id : shortid.generate()
-  const s = req.body
-  s.id = id
+  const season_id = req.body.season_id;
+  const id = req.body.id ? req.body.id : shortid.generate();
+  const s = req.body;
+  s.id = id;
+
   if (s.home_team_id === '') {
-    s.home_team_id = null
+    s.home_team_id = null;
+  } else {
+    const homeTeam = await _team.getTeam(s.home_team_id);
+    s.home_division_id = homeTeam.division_id;
   }
+
   if (s.away_team_id === '') {
-    s.away_team_id = null
+    s.away_team_id = null;
+  } else {
+    const awayTeam = await _team.getTeam(s.away_team_id);
+    s.away_division_id = awayTeam.division_id;
   }
-  const match1 = s.match_url
-  if (!match1) {
-    s.match_url = null
+
+  const matchUrl = s.match_url;
+  if (!matchUrl) {
+    s.match_url = null;
   }
 
   playoffSeries.savePlayoffSeries(s).then(() => {
-    res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/playoff-series')
+    res.redirect('/seasons/' + season_id + '/playoff-series')
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -142,22 +143,19 @@ function remove(playoffSeries, req, res) {
   const id = req.body.id
 
   playoffSeries.deletePlayoffSeries(id).then(() => {
-    res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/playoff-series')
+    res.redirect('/seasons/' + season_id + '/playoff-series')
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
   })
 }
 
-async function bracket(templates, _season, _team, _playoffSeries, _pairings, _division, req, res) {
+async function bracket(templates, _season, _team, _playoffSeries, _pairings, req, res) {
   const season_id = req.params.season_id
-  const division_id = req.params.division_id
 
   const season = await _season.getSeason(season_id);
-  const division = await _division.getDivision(division_id);
-  const teams = await _team.getTeams(season_id, division_id);
-
-  const series = await _playoffSeries.getPlayoffSeries(season.id, division.id);
+  const series = await _playoffSeries.getPlayoffSeries(season.id);
+  console.log(series)
 
   const roundOne = series.filter((matchup) => {
     return matchup.round === 1;
@@ -196,38 +194,37 @@ async function bracket(templates, _season, _team, _playoffSeries, _pairings, _di
     user: req.user,
     rounds: rounds,
     season: season,
-    division: division
   });
 
   res.send(html)
 
 }
 
-module.exports = (templates, season, team, playoffSeries, pairings, division) => {
+module.exports = (templates, season, team, playoffSeries, pairings) => {
   return {
     list: {
-      route: '/seasons/:season_id/divisions/:division_id/playoff-series',
-      handler: list.bind(null, templates, season, playoffSeries, division)
+      route: '/seasons/:season_id/playoff-series',
+      handler: list.bind(null, templates, season, playoffSeries)
     },
     create: {
-      route: '/seasons/:season_id/divisions/:division_id/playoff-series/create',
-      handler: create.bind(null, templates, season, team, division),
+      route: '/seasons/:season_id/playoff-series/create',
+      handler: create.bind(null, templates, season, team),
     },
     edit: {
-      route: '/seasons/:season_id/divisions/:division_id/playoff-series/:id/edit',
-      handler: edit.bind(null, templates, season, team, playoffSeries, division),
+      route: '/seasons/:season_id/playoff-series/:id/edit',
+      handler: edit.bind(null, templates, season, team, playoffSeries),
     },
     post: {
       route: '/playoff-series/edit',
-      handler: post.bind(null, playoffSeries)
+      handler: post.bind(null, playoffSeries, team)
     },
     remove: {
       route: '/playoff-series/delete',
       handler: remove.bind(null, playoffSeries)
     },
     bracket: {
-      route: '/seasons/:season_id/divisions/:division_id/bracket',
-      handler: bracket.bind(null, templates, season, team, playoffSeries, pairings, division)
+      route: '/seasons/:season_id/bracket',
+      handler: bracket.bind(null, templates, season, team, playoffSeries, pairings)
     }
   }
 }

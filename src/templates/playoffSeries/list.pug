@@ -6,35 +6,14 @@ mixin adminButtons
       div.field.is-grouped
         if user && user.isAdmin
           div.control
-            a.button.is-link(href='/seasons/' + season.id + '/divisions/' + division.id + '/playoff-series/create') Add Playoff Series
+            a.button.is-link(href='/seasons/' + season.id + '/playoff-series/create') Add Playoff Series
 
 mixin navigationButtons
   div.field.is-grouped
     div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/players')
-        button.button.is-primary Players
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/captains')
-        button.button.is-success Captains
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/stand-ins')
-        button.button.is-info Stand-ins
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams')
-        button.button.is-warning Teams
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series')
-        button.button.is-info Series
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/standings')
-        button.button.is-success Standings
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups')
-        button.button.is-primary Matchups
-    div.control
       a.button(disabled) Playoffs
     div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/bracket')
+      a(href='/seasons/' + season.id + '/bracket')
         button.button.is-success Bracket
 
 block title
@@ -46,7 +25,7 @@ block content
       h3.title.is-3.has-icon
         span.icon.is-medium
           i.fa.fa-list
-        span #{division.name} #{season.name} Playoff Series
+        span #{season.name} Playoff Series
   +navigationButtons
   +adminButtons
   div.columns
@@ -67,19 +46,20 @@ block content
         each _series in series
           tr
             td= _series.round
-            td
-              a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.home.id)= _series.home.name
-            td
-              figure.image.is-team-logo.hide-overflow
-                img(src=_series.home.logo)
-            td= _series.home.points
+            if _series.home
+              td
+                a(href='/seasons/' + season.id + '/divisions/' + _series.home.division_id + '/teams/' + _series.home.id)= _series.home.name
+              td
+                figure.image.is-team-logo.hide-overflow
+                  img(src=_series.home.logo)
+              td= _series.home.points
             if _series.away
               td= _series.away.points
               td
                 figure.image.is-team-logo.hide-overflow
                   img(src=_series.away.logo)
               td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.away.id)= _series.away.name
+                a(href='/seasons/' + season.id + '/divisions/' + _series.away.division_id + '/teams/' + _series.away.id)= _series.away.name
             else
               td 0
               td
@@ -91,5 +71,5 @@ block content
               td
             if user && user.isAdmin
               td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/playoff-series/' + _series.id + '/edit') edit
+                a(href='/seasons/' + season.id + '/playoff-series/' + _series.id + '/edit') edit
   +adminButtons

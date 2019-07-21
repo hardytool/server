@@ -3,28 +3,7 @@ extends ../components/base.pug
 mixin navigationButtons
   div.field.is-grouped
     div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/players')
-        button.button.is-primary Players
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/captains')
-        button.button.is-success Captains
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/stand-ins')
-        button.button.is-info Stand-ins
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams')
-        button.button.is-warning Teams
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series')
-        button.button.is-info Series
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/standings')
-        button.button.is-success Standings
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups')
-        button.button.is-primary Matchups
-    div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/playoff-series')
+      a(href='/seasons/' + season.id + '/playoff-series')
         button.button.is-success Playoffs
     div.control
       a.button(disabled) Bracket
@@ -108,7 +87,7 @@ block content
                 figure.image.is-32x32.hide-overflow
                   img(src=matchup.home_team_logo)
                 div.team-name
-                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.division_id + '/teams/' + matchup.home_team_id)
+                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.home_division_id + '/teams/' + matchup.home_team_id)
                     =matchup.home_team_name
                 span.points.tag.is-light
                   = matchup.home_points
@@ -116,11 +95,11 @@ block content
                 figure.image.is-32x32.hide-overflow
                   img(src=matchup.away_team_logo)
                 div.team-name
-                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.division_id + '/teams/' + matchup.away_team_id)
+                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.away_division_id + '/teams/' + matchup.away_team_id)
                     =matchup.away_team_name
                 span.points.tag.is-dark
                   = matchup.away_points
               if user && user.isAdmin
                 div.tag.is-dark.edit-series
-                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.division_id + '/playoff-series/' + matchup.id + '/edit') Edit
+                  a(href='/seasons/' + matchup.season_id + '/playoff-series/' + matchup.id + '/edit') Edit
 

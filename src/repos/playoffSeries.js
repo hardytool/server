@@ -1,12 +1,13 @@
 const sql = require('pg-sql').sql
 
-function getPlayoffSeries(db, season_id, division_id, series_id = null) {
+function getPlayoffSeries(db, season_id, series_id = false) {
   let select = sql`
   SELECT
     playoff_series.id,
     playoff_series.round,
     playoff_series.season_id,
-    playoff_series.division_id,
+    playoff_series.home_division_id,
+    playoff_series.away_division_id,
     playoff_series.home_team_id,
     playoff_series.away_team_id,
     playoff_series.home_points,
@@ -24,13 +25,8 @@ function getPlayoffSeries(db, season_id, division_id, series_id = null) {
     home_team.id = playoff_series.home_team_id
   FULL OUTER JOIN team AS away_team ON
     away_team.id = playoff_series.away_team_id
-  JOIN season ON
-    season.id = playoff_series.season_id
-  JOIN division ON
-    division.id = playoff_series.division_id
   WHERE
     playoff_series.season_id = ${season_id}
-    AND playoff_series.division_id = ${division_id}
   `
   if (series_id) {
     select = sql.join([select, sql`
@@ -68,7 +64,8 @@ function savePlayoffSeries(db, playoffSeries) {
       id,
       round,
       season_id,
-      division_id,
+      home_division_id,
+      away_division_id,
       home_team_id,
       away_team_id,
       home_points,
@@ -80,7 +77,8 @@ function savePlayoffSeries(db, playoffSeries) {
       ${playoffSeries.id},
       ${playoffSeries.round},
       ${playoffSeries.season_id},
-      ${playoffSeries.division_id},
+      ${playoffSeries.home_division_id},
+      ${playoffSeries.away_division_id},
       ${playoffSeries.home_team_id},
       ${playoffSeries.away_team_id},
       ${playoffSeries.home_points},
@@ -93,7 +91,8 @@ function savePlayoffSeries(db, playoffSeries) {
     ) DO UPDATE SET (
       round,
       season_id,
-      division_id,
+      home_division_id,
+      away_division_id,
       home_team_id,
       away_team_id,
       home_points,
@@ -104,7 +103,8 @@ function savePlayoffSeries(db, playoffSeries) {
     ) = (
       ${playoffSeries.round},
       ${playoffSeries.season_id},
-      ${playoffSeries.division_id},
+      ${playoffSeries.home_division_id},
+      ${playoffSeries.away_division_id},
       ${playoffSeries.home_team_id},
       ${playoffSeries.away_team_id},
       ${playoffSeries.home_points},

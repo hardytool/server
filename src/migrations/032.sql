@@ -6,8 +6,8 @@ CREATE TABLE playoff_series (
   away_team_id varchar(50) REFERENCES team (id),
   home_points integer,
   away_points integer,
-  match_url varchar(50),
-  division_id varchar(50) NOT NULL REFERENCES division (id),
-  match_number integer DEFAULT 0,
-  match_time timestamp with time zone
+  match_url varchar(250),
+  home_division_id varchar(50) REFERENCES division (id),
+  away_division_id varchar(50) REFERENCES division (id),
+  match_number integer DEFAULT 0
 );
