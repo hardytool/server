@@ -318,59 +318,6 @@ function matchups(templates, season, team, series, pairings, division, req, res)
   })
 }
 
-async function playoffs(templates, _season, _team, _series, _pairings, _division, req, res) {
-  const season_id = req.params.season_id
-  const division_id = req.params.division_id
-
-  const season = await _season.getSeason(season_id);
-  const division = await _division.getDivision(division_id);
-  const teams = await _team.getTeams(season_id, division_id);
-
-  const series = await _series.getPlayoffSeries(season.id, division.id);
-
-  const roundOne = series.filter((matchup) => {
-    return matchup.playoff_round === 1;
-  });
-
-  const numberOfMatchups = roundOne.length * 2;
-  const numRounds = Math.ceil(Math.log2(numberOfMatchups));
-
-  let remainingSeries = series.slice(roundOne.length - 1);
-  let currentRoundNum = 2;
-
-  const rounds = [];
-  rounds.push(roundOne);
-
-  for (let i = currentRoundNum; i <= numRounds; i++) {
-    rounds.push(
-      series.filter((matchup) => {
-        return matchup.playoff_round === i;
-      })
-    )
-  }
-
-  //fill empty matches where needed
-  let matchNum = roundOne.length + 1;
-  for (let round = 1; round < numRounds; round++) {
-    for (let matchInRound = 0; matchInRound < numberOfMatchups/Math.pow(2,round+1); matchInRound++) {
-      if (!rounds[round][matchInRound] || rounds[round][matchInRound].playoff_match_num !== matchNum) {
-        rounds[round].splice(matchInRound, 0, {playoff_match_num: matchNum});
-      }
-      matchNum++;
-    }
-  }
-
-  const html = templates.series.playoffs({
-    user: req.user,
-    rounds: rounds,
-    season: season,
-    division: division
-  });
-
-  res.send(html)
-
-}
-
 function editRound(templates, season, division, series, req, res) {
   const season_id = req.params.season_id
   const division_id = req.params.division_id
@@ -561,10 +508,6 @@ module.exports = (templates, season, team, series, pairings, division) => {
     matchups: {
       route: '/seasons/:season_id/divisions/:division_id/matchups/:round?',
       handler: matchups.bind(null, templates, season, team, series, pairings, division)
-    },
-    playoffs: {
-      route: '/seasons/:season_id/divisions/:division_id/playoffs',
-      handler: playoffs.bind(null, templates, season, team, series, pairings, division)
     },
     editRound: {
       route: '/seasons/:season_id/divisions/:division_id/round/edit',

@@ -32,6 +32,12 @@ mixin navigationButtons
     div.control
       a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups')
         button.button.is-primary Matchups
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/playoff-series')
+        button.button.is-success Playoffs
+    div.control
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/bracket')
+        button.button.is-success Bracket
 
 block title
   title #{title} : #{season ? season.name : ''} #{division ? division.name : '' } Players

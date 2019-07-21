@@ -1,0 +1,72 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : #{verb} Playoff Series #{series ? ' - Week ' + series.round + ' - ' + series.home.name + ' v ' + series.away.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fa.fa-edit
+        span #{verb} Playoff Series #{series ? ' - Week ' + series.round + ' - ' + series.home.name + ' v ' + series.away.name : ''}
+      div
+        form(method='post' action='/playoff-series/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
+          if series
+            input(type='hidden' name='id' value=series.id)
+          input(type='hidden' name='season_id' value=season.id)
+          input(type='hidden' name='division_id' value=division.id)
+          div.field
+            label.label(for='round') Round:
+            p.control
+              input.input(id='round' type='number' name='round' placeholder='Round' min='1' value=(series ? series.round : '') required)
+          div.field
+            label.label(for='home_team_id') Home team:
+            p.control
+              span.select
+                select(id='home_team_id' name='home_team_id')
+                  option(value='') None
+                  each team in teams
+                    if series && team.id === series.home.id
+                      option(value=team.id selected)
+                        span= team.name
+                        span= team.captain_name ? ' (' + team.captain_name + ')' : ''
+                    else
+                      option(value=team.id)
+                        span= team.name
+                        span= team.captain_name ? ' (' + team.captain_name + ')' : ''
+          div.field
+            label.label(for='home_points') Home points:
+            input.input(id='home_points' type='number' name='home_points' placeholder='Home points' min='0' value=(series ? series.home.points : ''))
+          div.field
+            label.label(for='away_team_id') Away team:
+            p.control
+              span.select
+                select(id='away_team_id' name='away_team_id')
+                  option(value='') None
+                  each team in teams
+                    if series && team.id === series.away.id
+                      option(value=team.id selected)
+                        span= team.name
+                        span= team.captain_name ? ' (' + team.captain_name + ')' : ''
+                    else
+                      option(value=team.id)
+                        span= team.name
+                        span= team.captain_name ? ' (' + team.captain_name + ')' : ''
+          div.field
+            label.label(for='away_points') Away points:
+            input.input(id='away_points' type='number' name='away_points' placeholder='Away points' min='0' value=(series ? series.away.points : ''))
+          div.field
+            label.label(for='match_url') Match URL:
+            input.input(id='match_url' type='text' name='match_url' placeholder='Match URL' value=(series ? series.match_url : ''))
+          div.field
+            label.label.is-marginless(for='match_number') Playoff Match Number:
+            p.help.is-marginless This determines the order of the matches within the round. A match number 1 in round 2 would display this series at the top of the second round.
+            input.input(id='match_number' type='text' name='match_number' placeholder='Which match number' value=(series ? series.match_number : ''))
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            if series
+              p.control
+                button.button.is-danger(formaction='/playoff-series/delete') Delete

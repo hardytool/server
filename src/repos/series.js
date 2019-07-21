@@ -83,56 +83,6 @@ function getSeries(db, criteria) {
   })
 }
 
-function getPlayoffSeries(db, season_id, division_id, playoff_round) {
-  let select = sql`
-  SELECT
-    series.id,
-    series.round,
-    series.season_id,
-    series.division_id,
-    series.home_team_id,
-    series.away_team_id,
-    series.home_points,
-    series.away_points,
-    series.match_1_url,
-    series.match_2_url,
-    series.match_1_forfeit_home,
-    series.match_2_forfeit_home,
-    series.playoff_round,
-    series.playoff_match_num,
-    home_team.name as home_team_name,
-    away_team.name as away_team_name,
-    home_team.logo as home_team_logo,
-    away_team.logo as away_team_logo
-  FROM
-    series
-  FULL OUTER JOIN team AS home_team ON
-    home_team.id = series.home_team_id
-  FULL OUTER JOIN team AS away_team ON
-    away_team.id = series.away_team_id
-  JOIN season ON
-    season.id = series.season_id
-  JOIN division ON
-    division.id = series.division_id
-  WHERE
-    series.season_id = ${season_id}
-    AND series.division_id = ${division_id}
-  `
-  if (playoff_round) {
-    select = sql.join([select, sql`
-      AND series.playoff_round = ${playoff_round}
-    `]);
-  }
-
-  select = sql.join([select, sql`
-    ORDER BY series.playoff_match_num
-  `]);
-
-  return db.query(select).then(result => {
-    return result.rows
-  })
-}
-
 function saveSeries(db, series) {
   const upsert = sql`
   INSERT INTO
@@ -149,8 +99,6 @@ function saveSeries(db, series) {
       match_2_url,
       match_1_forfeit_home,
       match_2_forfeit_home,
-      playoff_round,
-      playoff_match_num
     ) VALUES (
       ${series.id},
       ${series.round},
@@ -163,9 +111,7 @@ function saveSeries(db, series) {
       ${series.match_1_url},
       ${series.match_2_url},
       ${series.match_1_forfeit_home},
-      ${series.match_2_forfeit_home},
-      ${series.playoff_round},
-      ${series.playoff_match_num}
+      ${series.match_2_forfeit_home}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
@@ -179,9 +125,7 @@ function saveSeries(db, series) {
       match_1_url,
       match_2_url,
       match_1_forfeit_home,
-      match_2_forfeit_home,
-      playoff_round,
-      playoff_match_num
+      match_2_forfeit_home
     ) = (
       ${series.round},
       ${series.season_id},
@@ -193,9 +137,7 @@ function saveSeries(db, series) {
       ${series.match_1_url},
       ${series.match_2_url},
       ${series.match_1_forfeit_home},
-      ${series.match_2_forfeit_home},
-      ${series.playoff_round},
-      ${series.playoff_match_num}
+      ${series.match_2_forfeit_home}
     )
   `
   return db.query(upsert)
@@ -339,7 +281,6 @@ function getStandings(db, season_id, division_id, round) {
 module.exports = db => {
   return {
     getSeries: getSeries.bind(null, db),
-    getPlayoffSeries: getPlayoffSeries.bind(null, db),
     saveSeries: saveSeries.bind(null, db),
     deleteSeries: deleteSeries.bind(null, db),
     getCurrentRound: getCurrentRound.bind(null, db),

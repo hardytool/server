@@ -39,6 +39,7 @@ const profile = require('./repos/profile')(pool)
 const role = require('./repos/role')(pool)
 const season = require('./repos/season')(pool)
 const series = require('./repos/series')(pool)
+const playoffSeries = require('./repos/playoffSeries')(pool)
 const steam_user = require('./repos/steam_user')(pool)
 const team = require('./repos/team')(pool)
 const team_player = require('./repos/team_player')(pool)
@@ -81,6 +82,12 @@ const seriesPages = require('./pages/series')(templates,
   season,
   team,
   series,
+  pairings,
+  division)
+const playoffSeriesPages = require('./pages/playoffSeries')(templates,
+  season,
+  team,
+  playoffSeries,
   pairings,
   division)
 const teamPages = require('./pages/teams')(templates,
@@ -215,7 +222,6 @@ app.get(seriesPages.create.route, seriesPages.create.handler)
 app.get(seriesPages.edit.route, seriesPages.edit.handler)
 app.get(seriesPages.standings.route, seriesPages.standings.handler)
 app.get(seriesPages.matchups.route, seriesPages.matchups.handler)
-app.get(seriesPages.playoffs.route, seriesPages.playoffs.handler)
 app.get(seriesPages.importSeries.route, seriesPages.importSeries.handler)
 app.get(seriesPages.editRound.route, seriesPages.editRound.handler)
 app.get(seriesPages.newRound.route, seriesPages.newRound.handler)
@@ -223,6 +229,14 @@ app.get(seriesPages.newRound.route, seriesPages.newRound.handler)
 app.post(seriesPages.post.route, seriesPages.post.handler)
 app.post(seriesPages.remove.route, seriesPages.remove.handler)
 app.post(seriesPages.saveRound.route, seriesPages.saveRound.handler)
+
+app.get(playoffSeriesPages.list.route, playoffSeriesPages.list.handler)
+app.get(playoffSeriesPages.create.route, playoffSeriesPages.create.handler)
+app.get(playoffSeriesPages.edit.route, playoffSeriesPages.edit.handler)
+app.get(playoffSeriesPages.bracket.route, playoffSeriesPages.bracket.handler)
+
+app.post(playoffSeriesPages.post.route, playoffSeriesPages.post.handler)
+app.post(playoffSeriesPages.remove.route, playoffSeriesPages.remove.handler)
 
 app.get(playerPages.list.route, playerPages.list.handler)
 app.get(playerPages.captains.route, playerPages.captains.handler)

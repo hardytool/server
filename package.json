@@ -6,7 +6,7 @@
   "scripts": {
     "test": "eslint src",
     "start": "node src/server.js",
-    "dev": "nodemon --watch src/ --exec 'node src/server.js' -e pug"
+    "dev": "nodemon --exec 'node src/server.js' -e pug,js"
   },
   "repository": {
     "type": "git",

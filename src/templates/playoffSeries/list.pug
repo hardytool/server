@@ -6,9 +6,7 @@ mixin adminButtons
       div.field.is-grouped
         if user && user.isAdmin
           div.control
-            a.button.is-link(href='/seasons/' + season.id + '/divisions/' + division.id + '/series/create') Add series
-          div.control
-            a.button(href='/seasons/' + season.id + '/divisions/' + division.id + '/round/edit') Update round
+            a.button.is-link(href='/seasons/' + season.id + '/divisions/' + division.id + '/playoff-series/create') Add Playoff Series
 
 mixin navigationButtons
   div.field.is-grouped
@@ -25,7 +23,8 @@ mixin navigationButtons
       a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams')
         button.button.is-warning Teams
     div.control
-      a.button(disabled) Series
+      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series')
+        button.button.is-info Series
     div.control
       a(href='/seasons/' + season.id + '/divisions/' + division.id + '/standings')
         button.button.is-success Standings
@@ -33,8 +32,7 @@ mixin navigationButtons
       a(href='/seasons/' + season.id + '/divisions/' + division.id + '/matchups')
         button.button.is-primary Matchups
     div.control
-      a(href='/seasons/' + season.id + '/divisions/' + division.id + '/playoff-series')
-        button.button.is-success Playoffs
+      a.button(disabled) Playoffs
     div.control
       a(href='/seasons/' + season.id + '/divisions/' + division.id + '/bracket')
         button.button.is-success Bracket
@@ -48,24 +46,21 @@ block content
       h3.title.is-3.has-icon
         span.icon.is-medium
           i.fa.fa-list
-        span #{division.name} #{season.name} Series
+        span #{division.name} #{season.name} Playoff Series
   +navigationButtons
   +adminButtons
   div.columns
     table.table.is-striped.is-middle-aligned.is-fullwidth
       thead
         tr
-          th Week
+          th Round
           th Home Team Name
           th Home Team Logo
           th Home Team Points
           th Away Team Points
           th Away Team Logo
           th Away Team Name
-          th Match 1
-          th Match 2
-          th Forfeit Match 1?
-          th Forfeit Match 2?
+          th Match Url
           if user && user.isAdmin
             th Edit
       tbody
@@ -87,31 +82,14 @@ block content
                 a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.away.id)= _series.away.name
             else
               td 0
-              td BYE
-              td BYE
-            if _series.match_1_url
               td
-                a(href=_series.match_1_url) Link
-            else
-              td N/A
-            if _series.match_2_url
               td
-                a(href=_series.match_2_url) Link
+            if _series.match_url
+              td
+                a(href=_series.match_url) Link
             else
-              td N/A
-            if _series.match_1_forfeit_home == true
-              td Home
-            else if _series.match_1_forfeit_home == false
-                td Away
-            else
-              td None
-            if _series.match_2_forfeit_home == true
-              td Home
-            else if _series.match_2_forfeit_home == false
-                td Away
-            else
-              td None
+              td
             if user && user.isAdmin
               td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series/' + _series.id + '/edit') edit
+                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/playoff-series/' + _series.id + '/edit') edit
   +adminButtons
