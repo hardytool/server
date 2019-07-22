@@ -58,7 +58,7 @@
      - There will be 1 draft per division.
      - The player pool of the draft will consist of the first (4x total number of captains) players who registered for that division.
      - Players not making it into the draft pool will go into the free agent pool.
-     - The draft type (e.g., snake, linear, etc.) will be determined by the division admins, but it'll be the MMR rebalancing order thing that I don't want to type out right now.
+     - The draft format (e.g., snake, linear, etc.) will be determined by the division admins.
      - Pick order will be based on the captain’s mmr. (Roughly, captains lower badges will be earlier in the pick order.)
      - The draft will consist of 4 rounds, leaving each team with 5 members.
    - **Games**
