@@ -1,13 +1,32 @@
-CREATE TABLE playoff_series (
-  id varchar(50) PRIMARY KEY NOT NULL,
-  round integer NOT NULL,
-  season_id varchar(50) NOT NULL REFERENCES season (id),
-  home_team_id varchar(50) REFERENCES team (id),
-  away_team_id varchar(50) REFERENCES team (id),
-  home_points integer,
-  away_points integer,
-  match_url varchar(250),
-  home_division_id varchar(50) REFERENCES division (id),
-  away_division_id varchar(50) REFERENCES division (id),
-  match_number integer DEFAULT 0
-);
+ALTER TABLE series
+DROP COLUMN division_id;
+
+ALTER TABLE series
+DROP CONSTRAINT series_check1;
+
+ALTER TABLE series
+DROP CONSTRAINT series_away_points_check;
+
+ALTER TABLE series
+DROP CONSTRAINT series_home_points_check;
+
+ALTER TABLE series
+ALTER COLUMN home_points DROP NOT NULL;
+
+ALTER TABLE series
+ALTER COLUMN away_points DROP NOT NULL;
+
+ALTER TABLE series
+ALTER COLUMN home_team_id DROP NOT NULL;
+
+ALTER TABLE series
+ALTER COLUMN home_team_id DROP NOT NULL;
+
+ALTER TABLE series
+ADD COLUMN match_number INTEGER;
+
+ALTER TABLE series
+ADD COLUMN is_playoff BOOLEAN DEFAULT false;
+
+ALTER TABLE series
+ADD COLUMN series_url varchar(100);

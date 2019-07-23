@@ -87,9 +87,8 @@ const seriesPages = require('./pages/series')(templates,
 const playoffSeriesPages = require('./pages/playoffSeries')(templates,
   season,
   team,
-  playoffSeries,
-  pairings,
-  division)
+  series,
+  pairings)
 const teamPages = require('./pages/teams')(templates,
   season,
   division,

@@ -81,13 +81,13 @@ block content
         div.round
           each matchup in round
             div.matchup.card
-              if matchup.match_url
-                a.link-overlay(href=matchup.match_url)
+              if matchup.series_url
+                a.link-overlay(href=matchup.series_url)
               div.home.notification.is-dark.is-marginless
                 figure.image.is-32x32.hide-overflow
                   img(src=matchup.home_team_logo)
                 div.team-name
-                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.home_division_id + '/teams/' + matchup.home_team_id)
+                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.home_team_division_id + '/teams/' + matchup.home_team_id)
                     =matchup.home_team_name
                 span.points.tag.is-light
                   = matchup.home_points
@@ -95,11 +95,15 @@ block content
                 figure.image.is-32x32.hide-overflow
                   img(src=matchup.away_team_logo)
                 div.team-name
-                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.away_division_id + '/teams/' + matchup.away_team_id)
+                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.away_team_division_id + '/teams/' + matchup.away_team_id)
                     =matchup.away_team_name
                 span.points.tag.is-dark
                   = matchup.away_points
               if user && user.isAdmin
-                div.tag.is-dark.edit-series
-                  a(href='/seasons/' + matchup.season_id + '/playoff-series/' + matchup.id + '/edit') Edit
+                if matchup.id
+                  div.tag.is-link.edit-series
+                    a.has-text-light(href='/seasons/' + matchup.season_id + '/playoff-series/' + matchup.id + '/edit') Edit
+                else
+                  div.tag.is-link.edit-series
+                    a.has-text-light(href='/seasons/' + season.id + '/playoff-series/create?match=' + matchup.match_number + '&round=' + matchup.round) Create
 

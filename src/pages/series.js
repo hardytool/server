@@ -162,6 +162,10 @@ function post(series, req, res) {
     s.match_2_forfeit_home = null
   }
 
+  if (!s.is_playoff) {
+    s.is_playoff = false
+  }
+
   series.saveSeries(s).then(() => {
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
   }).catch(err => {

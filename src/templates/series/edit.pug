@@ -112,12 +112,6 @@ block content
                   input(id='match_2_forfeit_home' value='none' type='radio' name='match_2_forfeit_home')
                   span &nbsp;None
             p.help In the case of a bye, be sure to score 2 points to the team that matched against the bye. Mark each match a forfeit loss for the 'BYE' team
-          div.field
-            label.label(for='playoff_round') Playoff Round:
-            input.input(id='playoff_round' type='text' name='playoff_round' placeholder='Which round in playoffs' value=(series ? series.playoff_round : ''))
-          div.field
-            label.label(for='playoff_match_num') Playoff Match Number:
-            input.input(id='playoff_match_num' type='text' name='playoff_match_num' placeholder='Which match number' value=(series ? series.playoff_match_num : ''))
           div.field.is-grouped
             p.control
               button.button.is-primary Submit

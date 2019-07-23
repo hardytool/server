@@ -14,7 +14,7 @@ mixin navigationButtons
       a.button(disabled) Playoffs
     div.control
       a(href='/seasons/' + season.id + '/bracket')
-        button.button.is-success Bracket
+        button.button.is-info Bracket
 
 block title
   title #{title} : #{season.name} Series List
@@ -53,6 +53,10 @@ block content
                 figure.image.is-team-logo.hide-overflow
                   img(src=_series.home.logo)
               td= _series.home.points
+            else
+              td
+              td
+              td
             if _series.away
               td= _series.away.points
               td
@@ -61,12 +65,12 @@ block content
               td
                 a(href='/seasons/' + season.id + '/divisions/' + _series.away.division_id + '/teams/' + _series.away.id)= _series.away.name
             else
-              td 0
               td
               td
-            if _series.match_url
               td
-                a(href=_series.match_url) Link
+            if _series.series_url
+              td
+                a(href=_series.series_url) Link
             else
               td
             if user && user.isAdmin
