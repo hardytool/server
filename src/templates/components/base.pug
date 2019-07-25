@@ -229,8 +229,12 @@ html(lang='en')
                           a(href='/inhouserules') Inhouse rules
                         li
                           a(href='https://rd2l-fantasy.com/') Fantasy league
-                        li
-                          a(href='/playoffs') Playoff Bracket
+                        if season && season.id
+                          li
+                            a(href='/seasons/' + season.id + '/bracket') Playoff Bracket
+                        else
+                          li
+                            a(href='/playoffs') Playoff Bracket
                 div.column
                   div.level
                     div.level-item

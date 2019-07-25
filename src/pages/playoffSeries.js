@@ -170,6 +170,14 @@ function remove(_series, req, res) {
   })
 }
 
+/* This function operates under the assumption that the number of first round series/matches is accurate.
+ * It counts the number of first round matches, and then creates a layout using round and match_number.
+ * Round determines which column a match is in, match_number determines the order within the column, from
+ * lowest (1) to highest.
+ * The processing proceeds round by round, looping through the matches in that round. If there is no match
+ * with the match number that it expects (matchNum variable) then it fills in an empty matchup in that slot.
+ * Operates under the assumption that the series are ordered by match_number
+ */
 async function bracket(templates, _season, _team, _series, _pairings, req, res) {
   const season_id = req.params.season_id
 
@@ -179,19 +187,30 @@ async function bracket(templates, _season, _team, _series, _pairings, req, res) 
     is_playoff: true
   });
 
+  // filter out the first round matches
+  // these are the first column in the bracket page
   const roundOne = series.filter((matchup) => {
     return matchup.round === 1;
   });
 
+  // used to determine the number of rounds necessary to resolve the bracket
+  // if there are 4 first round matches, the bracket will be done before 8 games
   const numberOfMatchups = roundOne.length * 2;
+  // the number of rounds necessary to resolve the bracket
+  // if there are 4 first round matches the bracket requires 3 rounds to determine a winner
   const numRounds = Math.ceil(Math.log2(numberOfMatchups));
 
+  // all the matches/series that are not first round
   let remainingSeries = series.slice(roundOne.length - 1);
+  // the next round to process, first round matchups are already filtered in the roundOne array
   let currentRoundNum = 2;
 
   const rounds = [];
   rounds.push(roundOne);
 
+  // separate out each match into its respective round array.
+  // This could be optimized but not worth the effort since theres a
+  // fairly small upper limit on number of matchups and this is confusing enough
   for (let i = currentRoundNum; i <= numRounds; i++) {
     rounds.push(
       series.filter((matchup) => {
@@ -200,11 +219,18 @@ async function bracket(templates, _season, _team, _series, _pairings, req, res) 
     )
   }
 
-  //fill empty matches where needed
+  // Fill in empty matches where needed. We loop through the rounds 2D array with the matchNum var
+  // holding the matchup we are expecting to find. For example the first element in the 2 round should
+  // have a match_number of 1, if this is not true, splice an empty matchup with the expected match_number
   let matchNum;
   for (let round = 1; round < numRounds; round++) {
+    // we expect the first element in each round to have a match_number of 1
     matchNum = 1
+
+    // for each matchup/series in the round make sure the expected match_number is there, if not insert an empty matchup
+    // the upper limit equation uses the total number of matchups and current round to derive how many matchups are in this round
     for (let matchInRound = 0; matchInRound < numberOfMatchups/Math.pow(2,round+1); matchInRound++) {
+      // if there is no element here, or the element doesnt have the expected match_number, insert an empty matchup and try again
       if (!rounds[round][matchInRound] || rounds[round][matchInRound].match_number !== matchNum) {
         rounds[round].splice(matchInRound, 0, {
           match_number: matchNum,
