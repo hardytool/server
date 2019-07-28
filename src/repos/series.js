@@ -6,7 +6,6 @@ function getSeries(db, criteria) {
     series.id,
     series.round,
     series.season_id,
-    series.division_id,
     series.home_team_id,
     series.away_team_id,
     series.home_points,
@@ -15,10 +14,15 @@ function getSeries(db, criteria) {
     series.match_2_url,
     series.match_1_forfeit_home,
     series.match_2_forfeit_home,
+    series.match_number,
+    series.is_playoff,
+    series.series_url,
     home_team.name as home_team_name,
     away_team.name as away_team_name,
     home_team.logo as home_team_logo,
-    away_team.logo as away_team_logo
+    away_team.logo as away_team_logo,
+    home_team.division_id as home_team_division_id,
+    away_team.division_id as away_team_division_id
   FROM
     series
   FULL OUTER JOIN team AS home_team ON
@@ -27,8 +31,6 @@ function getSeries(db, criteria) {
     away_team.id = series.away_team_id
   JOIN season ON
     season.id = series.season_id
-  JOIN division ON
-    division.id = series.division_id
   WHERE
     1 = 1
   `
@@ -47,9 +49,12 @@ function getSeries(db, criteria) {
     }
     if (criteria.division_id) {
       select = sql.join([select, sql`
-      AND
-        series.division_id = ${criteria.division_id}
-      `])
+        AND (
+          home_team.division_id = ${criteria.division_id}
+          OR
+          away_team.division_id = ${criteria.division_id}
+        )`
+      ])
     }
     if (criteria.series_id) {
       select = sql.join([select, sql`
@@ -67,15 +72,31 @@ function getSeries(db, criteria) {
       `])
     }
   }
+
+  const isPlayoff = criteria.is_playoff ? 'TRUE' : 'FALSE';
   select = sql.join([select, sql`
-  ORDER BY
-    series.round DESC,
-    (series.home_points + series.away_points) DESC,
-    (home_team.seed + away_team.seed) DESC,
-    home_team.name ASC,
-    away_team.name ASC,
-    series.home_points DESC
-  `])
+    AND (
+      series.is_playoff = ${isPlayoff}
+    )`
+  ]);
+
+  if (criteria.is_playoff) {
+    select = sql.join([select, sql`
+      ORDER BY match_number`
+    ]);
+  } else {
+    select = sql.join([select, sql`
+      ORDER BY
+        series.round DESC,
+        (series.home_points + series.away_points) DESC,
+        (home_team.seed + away_team.seed) DESC,
+        home_team.name ASC,
+        away_team.name ASC,
+        series.home_points DESC
+      `
+    ]);
+  }
+
   return db.query(select).then(result => {
     return result.rows
   })
@@ -88,7 +109,6 @@ function saveSeries(db, series) {
       id,
       round,
       season_id,
-      division_id,
       home_team_id,
       away_team_id,
       home_points,
@@ -96,12 +116,14 @@ function saveSeries(db, series) {
       match_1_url,
       match_2_url,
       match_1_forfeit_home,
-      match_2_forfeit_home
+      match_2_forfeit_home,
+      match_number,
+      is_playoff,
+      series_url
     ) VALUES (
       ${series.id},
       ${series.round},
       ${series.season_id},
-      ${series.division_id},
       ${series.home_team_id},
       ${series.away_team_id},
       ${series.home_points},
@@ -109,13 +131,15 @@ function saveSeries(db, series) {
       ${series.match_1_url},
       ${series.match_2_url},
       ${series.match_1_forfeit_home},
-      ${series.match_2_forfeit_home}
+      ${series.match_2_forfeit_home},
+      ${series.match_number},
+      ${series.is_playoff},
+      ${series.series_url}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
       round,
       season_id,
-      division_id,
       home_team_id,
       away_team_id,
       home_points,
@@ -123,11 +147,13 @@ function saveSeries(db, series) {
       match_1_url,
       match_2_url,
       match_1_forfeit_home,
-      match_2_forfeit_home
+      match_2_forfeit_home,
+      match_number,
+      is_playoff,
+      series_url
     ) = (
       ${series.round},
       ${series.season_id},
-      ${series.division_id},
       ${series.home_team_id},
       ${series.away_team_id},
       ${series.home_points},
@@ -135,7 +161,10 @@ function saveSeries(db, series) {
       ${series.match_1_url},
       ${series.match_2_url},
       ${series.match_1_forfeit_home},
-      ${series.match_2_forfeit_home}
+      ${series.match_2_forfeit_home},
+      ${series.match_number},
+      ${series.is_playoff},
+      ${series.series_url}
     )
   `
   return db.query(upsert)

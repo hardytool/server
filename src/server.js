@@ -83,6 +83,11 @@ const seriesPages = require('./pages/series')(templates,
   series,
   pairings,
   division)
+const playoffSeriesPages = require('./pages/playoffSeries')(templates,
+  season,
+  team,
+  series,
+  pairings)
 const teamPages = require('./pages/teams')(templates,
   season,
   division,
@@ -222,6 +227,14 @@ app.get(seriesPages.newRound.route, seriesPages.newRound.handler)
 app.post(seriesPages.post.route, seriesPages.post.handler)
 app.post(seriesPages.remove.route, seriesPages.remove.handler)
 app.post(seriesPages.saveRound.route, seriesPages.saveRound.handler)
+
+app.get(playoffSeriesPages.list.route, playoffSeriesPages.list.handler)
+app.get(playoffSeriesPages.create.route, playoffSeriesPages.create.handler)
+app.get(playoffSeriesPages.edit.route, playoffSeriesPages.edit.handler)
+app.get(playoffSeriesPages.bracket.route, playoffSeriesPages.bracket.handler)
+
+app.post(playoffSeriesPages.post.route, playoffSeriesPages.post.handler)
+app.post(playoffSeriesPages.remove.route, playoffSeriesPages.remove.handler)
 
 app.get(playerPages.list.route, playerPages.list.handler)
 app.get(playerPages.captains.route, playerPages.captains.handler)

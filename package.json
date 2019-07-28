@@ -5,7 +5,8 @@
   "main": "src/server.js",
   "scripts": {
     "test": "eslint src",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "dev": "nodemon --exec 'node src/server.js' -e pug,js"
   },
   "repository": {
     "type": "git",
