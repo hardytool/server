@@ -150,37 +150,33 @@ function importTeams(team, season, division, player, req, res) {
   const season_id = req.params.season_id
   const division_id = req.params.division_id
 
-  return season.getSeason(season_id).then(season => {
-    return division.getDivision(division_id).then(division => {
-      return player.getPlayers({
-        season_id: season_id,
-        division_id: division_id,
-        is_captain: true
-      }).then(captains => {
-        const promises = captains.map(_captain => {
-          const toSave = {}
-          toSave.id = shortid.generate()
-          toSave.season_id = season_id
-          toSave.division_id = division_id
-          toSave.name = _captain.name
-          toSave.logo = ''
-          toSave.standin_count = 0
-          toSave.team_number = null
-          toSave.disbanded = false
-          toSave.seed = getRandomInt(captains.length * 10)
-          return team.saveTeam(toSave)
-        })
+  return player.getPlayers({
+    season_id: season_id,
+    division_id: division_id,
+    is_captain: true
+  }).then(captains => {
+    const promises = captains.map(_captain => {
+      const toSave = {}
+      toSave.id = shortid.generate()
+      toSave.season_id = season_id
+      toSave.division_id = division_id
+      toSave.name = _captain.name
+      toSave.logo = ''
+      toSave.standin_count = 0
+      toSave.team_number = null
+      toSave.disbanded = false
+      toSave.seed = getRandomInt(captains.length * 10)
+      return team.saveTeam(toSave)
+    })
 
-        return Promise.all(promises).then(() => {
-          res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/teams')
-        })
-      })
+    return Promise.all(promises).then(() => {
+      res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/teams')
     })
   })
 }
 
 function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
+  return Math.floor(Math.random() * Math.floor(max))
 }
 
 module.exports = (templates, season, division, team, team_player, player) => {

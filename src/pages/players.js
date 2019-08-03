@@ -49,8 +49,8 @@ function list(templates, season, division, player, req, res) {
 function captains(templates, season, division, player, req, res) {
   const season_id = req.params.season_id
   const division_id = req.params.division_id
-  var normal = true
-  if (req.query.reverse_mmr && req.query.reverse_mmr == "true") {
+  let normal = true
+  if (req.query.reverse_mmr && req.query.reverse_mmr == 'true') {
     normal = false
   }
   season.getSeason(season_id).then(season => {

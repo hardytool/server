@@ -40,14 +40,14 @@ function getTeams(db, season_id, division_id) {
   if (division_id) {
     select = sql.join([select, sql`
       AND team.division_id = ${division_id}
-    `]);
+    `])
   }
 
   select = sql.join([select, sql`
     ORDER BY
     team.name ASC,
     team.seed DESC
-  `]);
+  `])
 
   return db.query(select).then(result => {
     return result.rows
