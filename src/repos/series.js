@@ -73,17 +73,17 @@ function getSeries(db, criteria) {
     }
   }
 
-  const isPlayoff = criteria.is_playoff ? 'TRUE' : 'FALSE';
+  const isPlayoff = criteria.is_playoff ? 'TRUE' : 'FALSE'
   select = sql.join([select, sql`
     AND (
       series.is_playoff = ${isPlayoff}
     )`
-  ]);
+  ])
 
   if (criteria.is_playoff) {
     select = sql.join([select, sql`
       ORDER BY match_number`
-    ]);
+    ])
   } else {
     select = sql.join([select, sql`
       ORDER BY
@@ -94,7 +94,7 @@ function getSeries(db, criteria) {
         away_team.name ASC,
         series.home_points DESC
       `
-    ]);
+    ])
   }
 
   return db.query(select).then(result => {

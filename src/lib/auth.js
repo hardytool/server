@@ -88,7 +88,7 @@ function inflateUser(admin, profile, steamId, user) {
       return profile.getActivityCheck(id).then((activityCheckRecord) => {
         user.activityCheckRequired = (activityCheckRecord && activityCheckRecord.activity_check === false)
         return user
-      });
+      })
     })
   })
 }
