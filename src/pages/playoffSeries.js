@@ -200,10 +200,8 @@ async function bracket(templates, _season, _team, _series, _pairings, req, res) 
   // if there are 4 first round matches the bracket requires 3 rounds to determine a winner
   const numRounds = Math.ceil(Math.log2(numberOfMatchups))
 
-  // all the matches/series that are not first round
-  let remainingSeries = series.slice(roundOne.length - 1)
   // the next round to process, first round matchups are already filtered in the roundOne array
-  let currentRoundNum = 2
+  const currentRoundNum = 2
 
   const rounds = []
   rounds.push(roundOne)
