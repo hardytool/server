@@ -7,7 +7,7 @@ async function list(templates, _season, _series, req, res) {
   const playoffSeries = await _series.getSeries({
     season_id: season_id,
     is_playoff: true
-  });
+  })
 
   const series = playoffSeries.map(_series => {
     if (_series.home_team_id) {
@@ -35,16 +35,16 @@ async function list(templates, _season, _series, req, res) {
     series: series
   })
 
-  res.send(html);
+  res.send(html)
 }
 
 async function create(templates, _season, _team, req, res) {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
-    return;
+    return
   }
 
-  const season_id = req.params.season_id;
+  const season_id = req.params.season_id
 
   const season = await _season.getSeason(season_id)
   const teams = await _team.getTeams(season.id)
@@ -61,15 +61,15 @@ async function create(templates, _season, _team, req, res) {
     teams: teams,
     series: series,
     csrfToken: req.csrfToken()
-  });
+  })
 
-  res.send(html);
+  res.send(html)
 }
 
 async function edit(templates, _season, _team, _series, req, res) {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
-    return;
+    return
   }
 
   const season_id = req.params.season_id
@@ -81,7 +81,7 @@ async function edit(templates, _season, _team, _series, req, res) {
     season_id: season_id,
     series_id: id,
     is_playoff: true
-  });
+  })
 
   const series = playoffSeries[0]
   series.home = {}
@@ -126,7 +126,7 @@ function post(_series, _team, req, res) {
     series.away_team_id = null
   }
 
-  const seriesUrl = series.series_url;
+  const seriesUrl = series.series_url
   if (!seriesUrl) {
     series.series_url = null
   }
@@ -233,7 +233,7 @@ async function bracket(templates, _season, _team, _series, _pairings, req, res) 
         rounds[round].splice(matchInRound, 0, {
           match_number: matchNum,
           round: round + 1
-        });
+        })
       }
       matchNum++
     }
@@ -243,7 +243,7 @@ async function bracket(templates, _season, _team, _series, _pairings, req, res) 
     user: req.user,
     rounds: rounds,
     season: season,
-  });
+  })
 
   res.send(html)
 
