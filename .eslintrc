@@ -13,7 +13,7 @@
     "rules": {
       "global-require": "error",
       "indent": ["error", 2],
-      "max-len": ["error", 120],
+      "max-len": ["error", 150],
       "no-console": "off",
       "no-process-env": "error",
       "no-var": "error",
