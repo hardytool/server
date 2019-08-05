@@ -146,16 +146,16 @@ function post(_series, _team, req, res) {
     series.away_points = null
   }
 
-  if (!series.home_team_id && !series.away_team_id) {
-    res.redirect('/seasons/' + season_id + '/bracket')
-  }
-
   series.is_playoff = true
 
-  series.match_timestamp = series.match_date + ' ' + series.match_time
+  if (series.match_date && series.match_time) {
+    series.match_timestamp = series.match_date + ' ' + series.match_time
+  } else {
+    series.match_timestamp = null
+  }
 
   _series.saveSeries(series).then(() => {
-    res.redirect('/seasons/' + season_id + '/bracket')
+    res.redirect('/bracket?season=' + season_id)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -172,7 +172,7 @@ function remove(_series, req, res) {
   const id = req.body.id
 
   _series.deleteSeries(id).then(() => {
-    res.redirect('/seasons/' + season_id + '/bracket')
+    res.redirect('/bracket?season=' + season_id)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -188,11 +188,22 @@ function remove(_series, req, res) {
  * Operates under the assumption that the series are ordered by match_number
  */
 async function bracket(templates, _season, _team, _series, _pairings, req, res) {
-  const season_id = req.params.season_id
+  let season
+  if (req.query.season) {
+    season = await _season.getSeason(req.query.season)
+  }
 
-  const season = await _season.getSeason(season_id)
+  if (!season || !season.id) {
+    season = await _season.getActiveSeason()
+  }
+
+  // We cant find an active season, so return home
+  if (!season || !season.id) {
+    return res.redirect('/')
+  }
+
   const series = await _series.getSeries({
-    season_id: season_id,
+    season_id: season.id,
     is_playoff: true
   })
 
@@ -292,7 +303,7 @@ module.exports = (templates, season, team, series, pairings) => {
       handler: remove.bind(null, series)
     },
     bracket: {
-      route: '/seasons/:season_id/bracket',
+      route: '/bracket',
       handler: bracket.bind(null, templates, season, team, series, pairings)
     }
   }

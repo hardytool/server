@@ -36,7 +36,7 @@ mixin navigationButtons
       a(href='/seasons/' + season.id + '/playoff-series')
         button.button.is-success Playoffs
     div.control
-      a(href='/seasons/' + season.id + '/bracket')
+      a(href='/bracket?season=' + season.id)
         button.button.is-info Bracket
 
 block title
