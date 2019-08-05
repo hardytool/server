@@ -84,6 +84,11 @@ function inflateUser(admin, profile, steamId, user) {
       user.steamId = id
       user.theme = profile.theme
       return user
+    }).then((user) => {
+      return profile.getActivityCheck(id).then((activityCheckRecord) => {
+        user.activityCheckRequired = (activityCheckRecord && activityCheckRecord.activity_check === false)
+        return user
+      })
     })
   })
 }

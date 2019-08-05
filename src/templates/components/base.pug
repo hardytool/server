@@ -123,6 +123,11 @@ html(lang='en')
             vertical-align: middle;
             display: inline-block;
           }
+          .navbar-item .activity-check {
+            color: red;
+            margin-left: 0.4em;
+            padding-bottom: 0.25em;
+          }
           .icon-box * {
             margin: 0 0.2em;
           }
@@ -171,6 +176,8 @@ html(lang='en')
                   if user
                     a.is-hidden-desktop.navbar-item(href='/profile/' + user.steamId).text-icon
                       img.circle(src=user.avatar)
+                      if user.activityCheckRequired
+                        i.fa.fa-exclamation-circle.activity-check
                   div.navbar-burger.burger(data-target='seal-menu')
                     span
                     span
@@ -184,6 +191,8 @@ html(lang='en')
                     if user
                       a.navbar-item.is-hidden-touch(href='/profile/' + user.steamId).text-icon
                         span= user.displayName
+                          if user.activityCheckRequired
+                            i.fa.fa-exclamation-circle.activity-check
                         img.circle(src=user.avatar)
                       a.navbar-item(href='/logout') Log out
                     else
@@ -229,8 +238,12 @@ html(lang='en')
                           a(href='/inhouserules') Inhouse rules
                         li
                           a(href='https://rd2l-fantasy.com/') Fantasy league
-                        li
-                          a(href='/playoffs') Playoff Bracket
+                        if season && season.id
+                          li
+                            a(href='/seasons/' + season.id + '/bracket') Playoff Bracket
+                        else
+                          li
+                            a(href='/playoffs') Playoff Bracket
                 div.column
                   div.level
                     div.level-item

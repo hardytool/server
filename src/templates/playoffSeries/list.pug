@@ -1,0 +1,79 @@
+extends ../components/base.pug
+
+mixin adminButtons
+  div.columns
+    div.column
+      div.field.is-grouped
+        if user && user.isAdmin
+          div.control
+            a.button.is-link(href='/seasons/' + season.id + '/playoff-series/create') Add Playoff Series
+
+mixin navigationButtons
+  div.field.is-grouped
+    div.control
+      a.button(disabled) Playoffs
+    div.control
+      a(href='/seasons/' + season.id + '/bracket')
+        button.button.is-info Bracket
+
+block title
+  title #{title} : #{season.name} Series List
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fa.fa-list
+        span #{season.name} Playoff Series
+  +navigationButtons
+  +adminButtons
+  div.columns
+    table.table.is-striped.is-middle-aligned.is-fullwidth
+      thead
+        tr
+          th Round
+          th Home Team Name
+          th Home Team Logo
+          th Home Team Points
+          th Away Team Points
+          th Away Team Logo
+          th Away Team Name
+          th Match Url
+          if user && user.isAdmin
+            th Edit
+      tbody
+        each _series in series
+          tr
+            td= _series.round
+            if _series.home
+              td
+                a(href='/seasons/' + season.id + '/divisions/' + _series.home.division_id + '/teams/' + _series.home.id)= _series.home.name
+              td
+                figure.image.is-team-logo.hide-overflow
+                  img(src=_series.home.logo)
+              td= _series.home.points
+            else
+              td
+              td
+              td
+            if _series.away
+              td= _series.away.points
+              td
+                figure.image.is-team-logo.hide-overflow
+                  img(src=_series.away.logo)
+              td
+                a(href='/seasons/' + season.id + '/divisions/' + _series.away.division_id + '/teams/' + _series.away.id)= _series.away.name
+            else
+              td
+              td
+              td
+            if _series.series_url
+              td
+                a(href=_series.series_url) Link
+            else
+              td
+            if user && user.isAdmin
+              td
+                a(href='/seasons/' + season.id + '/playoff-series/' + _series.id + '/edit') edit
+  +adminButtons

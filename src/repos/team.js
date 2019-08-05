@@ -1,7 +1,7 @@
 const sql = require('pg-sql').sql
 
 function getTeams(db, season_id, division_id) {
-  const select = sql`
+  let select = sql`
   SELECT
     team.id,
     team.season_id,
@@ -35,12 +35,20 @@ function getTeams(db, season_id, division_id) {
     steam_user.steam_id = profile.steam_id
   WHERE
     team.season_id = ${season_id}
-  AND
-    team.division_id = ${division_id}
-  ORDER BY
+  `
+
+  if (division_id) {
+    select = sql.join([select, sql`
+      AND team.division_id = ${division_id}
+    `])
+  }
+
+  select = sql.join([select, sql`
+    ORDER BY
     team.name ASC,
     team.seed DESC
-  `
+  `])
+
   return db.query(select).then(result => {
     return result.rows
   })

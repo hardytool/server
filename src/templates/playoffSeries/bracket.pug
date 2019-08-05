@@ -1,0 +1,109 @@
+extends ../components/base.pug
+
+mixin navigationButtons
+  div.field.is-grouped
+    div.control
+      a(href='/seasons/' + season.id + '/playoff-series')
+        button.button.is-success Playoffs
+    div.control
+      a.button(disabled) Bracket
+
+block append head
+  style(type='text/css').
+    .playoff-wrapper {
+      overflow: scroll;
+    }
+    .playoff {
+      display: flex;
+      justify-content: space-evenly;
+      min-width: fit-content;
+    }
+
+    .round {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin-right: 2rem;
+      width: 245px;
+    }
+
+    .away,
+    .home {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      padding-right: 1.5rem;
+      pointer-events: none;
+    }
+
+    .matchup {
+      margin: 1rem 0;
+    }
+
+    .team-name {
+      margin: 0 0.75rem;
+      max-width: 8rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      pointer-events: all;
+    }
+
+    .team-name a {
+      text-decoration: none !important;
+    }
+
+    .points {
+      width: 25.5px;
+    }
+
+    .link-overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+    }
+
+    .edit-series {
+      position: absolute;
+      right: 0;
+    }
+
+block title
+  title Playoff Bracket
+
+block content
+  +navigationButtons
+  div.playoff-wrapper
+    div.playoff.section
+      each round in rounds
+        div.round
+          each matchup in round
+            div.matchup.card
+              if matchup.series_url
+                a.link-overlay(href=matchup.series_url)
+              div.home.notification.is-dark.is-marginless
+                figure.image.is-32x32.hide-overflow
+                  img(src=matchup.home_team_logo)
+                div.team-name
+                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.home_team_division_id + '/teams/' + matchup.home_team_id)
+                    =matchup.home_team_name
+                span.points.tag.is-light
+                  = matchup.home_points
+              div.away.notification.is-light.is-marginless
+                figure.image.is-32x32.hide-overflow
+                  img(src=matchup.away_team_logo)
+                div.team-name
+                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.away_team_division_id + '/teams/' + matchup.away_team_id)
+                    =matchup.away_team_name
+                span.points.tag.is-dark
+                  = matchup.away_points
+              if user && user.isAdmin
+                if matchup.id
+                  div.tag.is-link.edit-series
+                    a.has-text-light(href='/seasons/' + matchup.season_id + '/playoff-series/' + matchup.id + '/edit') Edit
+                else
+                  div.tag.is-link.edit-series
+                    a.has-text-light(href='/seasons/' + season.id + '/playoff-series/create?match=' + matchup.match_number + '&round=' + matchup.round) Create
+

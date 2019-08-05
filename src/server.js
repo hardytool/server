@@ -7,7 +7,6 @@ const path = require('path')
 const http = require('http')
 const https = require('https')
 const express = require('express')
-const helmet = require('helmet')
 const csurf = require('csurf')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -21,12 +20,10 @@ const Steam = require('steam')
 const steam = new Steam.SteamClient()
 const Dota2 = require('dota2')
 const dota2 = new Dota2.Dota2Client(steam, true, true)
-const steamUser = new Steam.SteamUser(steam)
 const redirectHttps = require('redirect-https')
 const templates = require('pug-tree')(
   path.join(__dirname, 'templates'), config.templates)
 const pairings = require('swiss-pairing')({ maxPerRound: 2 })
-const fs = require('fs')
 
 // repositories
 const admin = require('./repos/admin')(pool)
@@ -83,6 +80,11 @@ const seriesPages = require('./pages/series')(templates,
   series,
   pairings,
   division)
+const playoffSeriesPages = require('./pages/playoffSeries')(templates,
+  season,
+  team,
+  series,
+  pairings)
 const teamPages = require('./pages/teams')(templates,
   season,
   division,
@@ -222,6 +224,14 @@ app.get(seriesPages.newRound.route, seriesPages.newRound.handler)
 app.post(seriesPages.post.route, seriesPages.post.handler)
 app.post(seriesPages.remove.route, seriesPages.remove.handler)
 app.post(seriesPages.saveRound.route, seriesPages.saveRound.handler)
+
+app.get(playoffSeriesPages.list.route, playoffSeriesPages.list.handler)
+app.get(playoffSeriesPages.create.route, playoffSeriesPages.create.handler)
+app.get(playoffSeriesPages.edit.route, playoffSeriesPages.edit.handler)
+app.get(playoffSeriesPages.bracket.route, playoffSeriesPages.bracket.handler)
+
+app.post(playoffSeriesPages.post.route, playoffSeriesPages.post.handler)
+app.post(playoffSeriesPages.remove.route, playoffSeriesPages.remove.handler)
 
 app.get(playerPages.list.route, playerPages.list.handler)
 app.get(playerPages.captains.route, playerPages.captains.handler)

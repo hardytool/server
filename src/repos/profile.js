@@ -38,6 +38,25 @@ function getProfile(db, steamId) {
   })
 }
 
+function getActivityCheck(db, steamId) {
+  const select = sql`
+  SELECT
+    player.steam_id,
+    player.activity_check as activity_check
+  FROM
+    player
+  LEFT JOIN season ON
+    player.season_id = season.id
+  WHERE
+    player.steam_id = ${steamId}
+    AND season.active = TRUE
+    AND season.activity_check = TRUE;
+  `
+  return db.query(select).then(result => {
+    return result.rows[0]
+  })
+}
+
 function saveProfile(db, profile) {
   const upsert = sql`
   INSERT INTO profile (
@@ -81,6 +100,7 @@ function saveProfile(db, profile) {
 module.exports = db => {
   return {
     getProfile: getProfile.bind(null, db),
+    getActivityCheck: getActivityCheck.bind(null, db),
     saveProfile: saveProfile.bind(null, db)
   }
 }
