@@ -1,4 +1,5 @@
 const shortid = require('shortid')
+const moment = require('moment')
 
 async function list(templates, _season, _series, req, res) {
   const season_id = req.params.season_id
@@ -95,6 +96,12 @@ async function edit(templates, _season, _team, _series, req, res) {
   series.away.logo = series.away_team_logo
   series.away.points = series.away_points
 
+  if (series.match_timestamp) {
+    const matchTimestamp = moment(series.match_timestamp)
+    series.match_date = matchTimestamp.format(moment.HTML5_FMT.DATE)
+    series.match_time = matchTimestamp.format(moment.HTML5_FMT.TIME)
+  }
+
   const html = templates.playoffSeries.edit({
     user: req.user,
     verb: 'Edit',
@@ -140,13 +147,15 @@ function post(_series, _team, req, res) {
   }
 
   if (!series.home_team_id && !series.away_team_id) {
-    res.redirect('/seasons/' + season_id + '/playoff-series')
+    res.redirect('/seasons/' + season_id + '/bracket')
   }
 
   series.is_playoff = true
 
+  series.match_timestamp = series.match_date + ' ' + series.match_time
+
   _series.saveSeries(series).then(() => {
-    res.redirect('/seasons/' + season_id + '/playoff-series')
+    res.redirect('/seasons/' + season_id + '/bracket')
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -163,7 +172,7 @@ function remove(_series, req, res) {
   const id = req.body.id
 
   _series.deleteSeries(id).then(() => {
-    res.redirect('/seasons/' + season_id + '/playoff-series')
+    res.redirect('/seasons/' + season_id + '/bracket')
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -236,6 +245,17 @@ async function bracket(templates, _season, _team, _series, _pairings, req, res) 
         })
       }
       matchNum++
+    }
+  }
+
+  for (const match of series) {
+    if (match.match_timestamp) {
+      const matchTime = moment(match.match_timestamp)
+
+      // If match time is in the future, or started less than 3h ago
+      if (matchTime.isAfter(moment().subtract(3, 'hours'))) {
+        match.match_time_formatted = matchTime.format('ddd, MMM D, h:mma')
+      }
     }
   }
 

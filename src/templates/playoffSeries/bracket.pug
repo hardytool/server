@@ -11,6 +11,7 @@ mixin navigationButtons
 block append head
   style(type='text/css').
     .playoff-wrapper {
+      max-height: 95vh;
       overflow: scroll;
     }
     .playoff {
@@ -32,21 +33,29 @@ block append head
       align-items: center;
       display: flex;
       justify-content: space-between;
-      padding-right: 1.5rem;
+      padding: 0 0.25rem 0 0;
       pointer-events: none;
     }
 
     .matchup {
-      margin: 1rem 0;
+      margin: 0 0 1rem;
+      position: relative;
     }
 
     .team-name {
-      margin: 0 0.75rem;
-      max-width: 8rem;
+      margin: 0 auto 0 0.75rem !important;
+      max-width: 10rem;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
       pointer-events: all;
+    }
+
+    .team-name:hover {
+      margin-left: 2.75rem !important;
+      max-width: 100vw;
+      min-width: 10rem;
+      position: absolute;
     }
 
     .team-name a {
@@ -55,6 +64,10 @@ block append head
 
     .points {
       width: 25.5px;
+    }
+
+    .time-placeholder {
+      margin-top: 1.5rem;
     }
 
     .link-overlay {
@@ -66,8 +79,7 @@ block append head
     }
 
     .edit-series {
-      position: absolute;
-      right: 0;
+      position: relative;
     }
 
 block title
@@ -80,24 +92,31 @@ block content
       each round in rounds
         div.round
           each matchup in round
-            div.matchup.card
+            div.matchup
               if matchup.series_url
                 a.link-overlay(href=matchup.series_url)
-              div.home.notification.is-dark.is-marginless
+              if matchup.match_time_formatted
+                div.tag
+                  =matchup.match_time_formatted + ' EST'
+              else
+                div.time-placeholder
+              div.home.notification.is-primary.is-marginless
                 figure.image.is-32x32.hide-overflow
                   img(src=matchup.home_team_logo)
-                div.team-name
-                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.home_team_division_id + '/teams/' + matchup.home_team_id)
-                    =matchup.home_team_name
-                span.points.tag.is-light
+                div.team-name.notification.is-primary.is-paddingless
+                  if matchup.home_team_name
+                    a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.home_team_division_id + '/teams/' + matchup.home_team_id)
+                      =matchup.home_team_name + (matchup.home_team_captain_name ?  ' (' + matchup.home_team_captain_name + ')' : '')
+                span.points.tag.is-secondary
                   = matchup.home_points
-              div.away.notification.is-light.is-marginless
+              div.away.notification.is-secondary.is-marginless
                 figure.image.is-32x32.hide-overflow
                   img(src=matchup.away_team_logo)
-                div.team-name
-                  a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.away_team_division_id + '/teams/' + matchup.away_team_id)
-                    =matchup.away_team_name
-                span.points.tag.is-dark
+                div.team-name.notification.is-secondary.is-paddingless
+                  if matchup.away_team_name
+                    a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.away_team_division_id + '/teams/' + matchup.away_team_id)
+                      =matchup.away_team_name + (matchup.away_team_captain_name ? ' (' + matchup.away_team_captain_name + ')' : '')
+                span.points.tag.is-primary
                   = matchup.away_points
               if user && user.isAdmin
                 if matchup.id

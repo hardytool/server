@@ -17,18 +17,25 @@ function getSeries(db, criteria) {
     series.match_number,
     series.is_playoff,
     series.series_url,
+    series.match_timestamp,
     home_team.name as home_team_name,
     away_team.name as away_team_name,
     home_team.logo as home_team_logo,
     away_team.logo as away_team_logo,
     home_team.division_id as home_team_division_id,
-    away_team.division_id as away_team_division_id
+    away_team.division_id as away_team_division_id,
+    home_team_captain.captain_name as home_team_captain_name,
+    away_team_captain.captain_name as away_team_captain_name
   FROM
     series
   FULL OUTER JOIN team AS home_team ON
     home_team.id = series.home_team_id
+  LEFT JOIN team_captain_name AS home_team_captain ON
+    home_team.id = home_team_captain.team_id
   FULL OUTER JOIN team AS away_team ON
     away_team.id = series.away_team_id
+  LEFT JOIN team_captain_name AS away_team_captain ON
+    away_team.id = away_team_captain.team_id
   JOIN season ON
     season.id = series.season_id
   WHERE
@@ -119,7 +126,8 @@ function saveSeries(db, series) {
       match_2_forfeit_home,
       match_number,
       is_playoff,
-      series_url
+      series_url,
+      match_timestamp
     ) VALUES (
       ${series.id},
       ${series.round},
@@ -134,7 +142,8 @@ function saveSeries(db, series) {
       ${series.match_2_forfeit_home},
       ${series.match_number},
       ${series.is_playoff},
-      ${series.series_url}
+      ${series.series_url},
+      ${series.match_timestamp}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
@@ -150,7 +159,8 @@ function saveSeries(db, series) {
       match_2_forfeit_home,
       match_number,
       is_playoff,
-      series_url
+      series_url,
+      match_timestamp
     ) = (
       ${series.round},
       ${series.season_id},
@@ -164,7 +174,8 @@ function saveSeries(db, series) {
       ${series.match_2_forfeit_home},
       ${series.match_number},
       ${series.is_playoff},
-      ${series.series_url}
+      ${series.series_url},
+      ${series.match_timestamp}
     )
   `
   return db.query(upsert)
