@@ -63,6 +63,13 @@ block content
             label.label.is-marginless(for='match_number') Playoff Match Number:
             p.help.is-marginless This determines the vertical order of the matches within a round, starting from 1.
             input.input(id='match_number' type='text' name='match_number' placeholder='Which match number' value=(series.match_number ? series.match_number : ''))
+          div.field.column.is-half.is-paddingless
+            label.label(for='match_date') Match date
+            input.input(type='date' name='match_date' value=(series.match_date ? series.match_date : ''))
+          div.field.column.is-half.is-paddingless
+            label.label.is-marginless(for='match_time') Match time
+            p.help.is-marginless Set the time in EST.
+            input.input(type='time' name='match_time' value=(series.match_time ? series.match_time : ''))
           div.field.is-grouped
             p.control
               button.button.is-primary Submit

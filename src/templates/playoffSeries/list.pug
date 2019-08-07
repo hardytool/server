@@ -13,7 +13,7 @@ mixin navigationButtons
     div.control
       a.button(disabled) Playoffs
     div.control
-      a(href='/seasons/' + season.id + '/bracket')
+      a(href='/bracket?season=' + season.id)
         button.button.is-info Bracket
 
 block title

@@ -1,4 +1,5 @@
 const shortid = require('shortid')
+const moment = require('moment')
 
 async function list(templates, _season, _series, req, res) {
   const season_id = req.params.season_id
@@ -95,6 +96,12 @@ async function edit(templates, _season, _team, _series, req, res) {
   series.away.logo = series.away_team_logo
   series.away.points = series.away_points
 
+  if (series.match_timestamp) {
+    const matchTimestamp = moment(series.match_timestamp)
+    series.match_date = matchTimestamp.format(moment.HTML5_FMT.DATE)
+    series.match_time = matchTimestamp.format(moment.HTML5_FMT.TIME)
+  }
+
   const html = templates.playoffSeries.edit({
     user: req.user,
     verb: 'Edit',
@@ -139,14 +146,16 @@ function post(_series, _team, req, res) {
     series.away_points = null
   }
 
-  if (!series.home_team_id && !series.away_team_id) {
-    res.redirect('/seasons/' + season_id + '/playoff-series')
-  }
-
   series.is_playoff = true
 
+  if (series.match_date && series.match_time) {
+    series.match_timestamp = series.match_date + ' ' + series.match_time
+  } else {
+    series.match_timestamp = null
+  }
+
   _series.saveSeries(series).then(() => {
-    res.redirect('/seasons/' + season_id + '/playoff-series')
+    res.redirect('/bracket?season=' + season_id)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -163,7 +172,7 @@ function remove(_series, req, res) {
   const id = req.body.id
 
   _series.deleteSeries(id).then(() => {
-    res.redirect('/seasons/' + season_id + '/playoff-series')
+    res.redirect('/bracket?season=' + season_id)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -179,11 +188,22 @@ function remove(_series, req, res) {
  * Operates under the assumption that the series are ordered by match_number
  */
 async function bracket(templates, _season, _team, _series, _pairings, req, res) {
-  const season_id = req.params.season_id
+  let season
+  if (req.query.season) {
+    season = await _season.getSeason(req.query.season)
+  }
 
-  const season = await _season.getSeason(season_id)
+  if (!season || !season.id) {
+    season = await _season.getActiveSeason()
+  }
+
+  // We cant find an active season, so return home
+  if (!season || !season.id) {
+    return res.redirect('/')
+  }
+
   const series = await _series.getSeries({
-    season_id: season_id,
+    season_id: season.id,
     is_playoff: true
   })
 
@@ -239,6 +259,17 @@ async function bracket(templates, _season, _team, _series, _pairings, req, res) 
     }
   }
 
+  for (const match of series) {
+    if (match.match_timestamp) {
+      const matchTime = moment(match.match_timestamp)
+
+      // If match time is in the future, or started less than 3h ago
+      if (matchTime.isAfter(moment().subtract(3, 'hours'))) {
+        match.match_time_formatted = matchTime.format('ddd, MMM D, h:mma')
+      }
+    }
+  }
+
   const html = templates.playoffSeries.bracket({
     user: req.user,
     rounds: rounds,
@@ -272,7 +303,7 @@ module.exports = (templates, season, team, series, pairings) => {
       handler: remove.bind(null, series)
     },
     bracket: {
-      route: '/seasons/:season_id/bracket',
+      route: '/bracket',
       handler: bracket.bind(null, templates, season, team, series, pairings)
     }
   }
