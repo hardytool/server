@@ -77,7 +77,8 @@ block content
           tr
             th Name
             th Avatar
-            th Adjusted MMR
+            th Support MMR
+            th Core MMR
             if user && user.isAdmin
               th Remove
         tbody
@@ -88,7 +89,8 @@ block content
               td
                 figure.image.is-roster.hide-overflow
                   img(src=player.avatar)
-              td= player.adjusted_mmr
+              td= player.solo_mmr
+              td= player.party_mmr
               if user && user.isAdmin
                 td
                   form
