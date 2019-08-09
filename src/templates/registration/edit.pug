@@ -26,17 +26,17 @@ block content
             p.control
               input.input#adjusted_mmr(type='text' value=player.adjusted_mmr disabled)
           div.field
-            label.label(for='solo_mmr') Solo MMR:
+            label.label(for='solo_mmr') Support MMR:
             p.control
               input.input#solo_mmr(type='text' name='solo_mmr' placeholder='1234' pattern='^[0-9]*$' value=(steamUser ? steamUser.solo_mmr : 0) required)
           div.field
-            label.label(for='party_mmr') Party MMR:
+            label.label(for='party_mmr') Core MMR:
             p.control
               input.input#party_mmr(type='text' name='party_mmr' placeholder='1234' pattern='^[0-9]*$' value=(steamUser ? steamUser.party_mmr : 0) required)
           div.field
             label.label(for='mmr_screenshot') MMR Screenshot:
             p.control
-              input.input#mmr_screenshot(type='text' name='mmr_screenshot' value=(player ? player.mmr_screenshot : '') required)
+              input.input#mmr_screenshot(type='text' name='mmr_screenshot' pattern='^https:\/\/.*' value=(player ? player.mmr_screenshot : '') required)
             p.help Provide a screenshot of your current MMR, upload it to a image hosting site (such as imgur) and post the URL here. Make sure it includes the entire stats page
           div.field
             label.label(for='discord_name') Discord Name:
@@ -44,7 +44,7 @@ block content
               input.input#discord_name(type='text' name='discord_name' placeholder='User#1234' pattern='^[^#]{2,32}#\\d{4}$' title='Username#1234' value=(player ? player.discord_name : '') required)
           div.field
             label.label(for='statement') Statement/Availability:
-            p.help Please be sure to mention other leagues/divisions you'll be participating in.
+            p.help Please be sure to mention other leagues/divisions you'll be participating in. Please list the dotabuff links of all your other accounts. Feel free to add if you would like to play a particular role this season.
             p.control
               textarea.textarea#statement(name='statement' placeholder='Enter your player statement here - limited to 500 characters' maxlength='500')= player ? player.statement : ''
           div.box

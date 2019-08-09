@@ -59,7 +59,8 @@ block content
             th #
             th Name
             th Avatar
-            th Draft MMR
+            th Support MMR
+            th Core MMR
             th Dotabuff&nbsp;/ Opendota
             if user && user.isAdmin
               th Will Captain?
@@ -83,7 +84,8 @@ block content
                 a(href='/profile/' + player.steam_id)
                   figure.image.is-roster.hide-overflow
                     img(src=player.avatar)
-              td= player.adjusted_mmr
+              td= player.solo_mmr
+              td= player.party_mmr
               td
                 a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
                 span
