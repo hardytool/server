@@ -24,6 +24,8 @@ function getPlayers(db, criteria, sort) {
       THEN profile.adjusted_mmr
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
     END AS adjusted_mmr,
+    steam_user.solo_mmr,
+    steam_user.party_mmr,
     has_played.has_played,
     is_vouched.is_vouched
   FROM
