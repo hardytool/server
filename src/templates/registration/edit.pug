@@ -26,13 +26,13 @@ block content
             p.control
               input.input#adjusted_mmr(type='text' value=player.adjusted_mmr disabled)
           div.field
-            label.label(for='solo_mmr') Support MMR:
-            p.control
-              input.input#solo_mmr(type='text' name='solo_mmr' placeholder='1234' pattern='^[0-9]*$' value=(steamUser ? steamUser.solo_mmr : 0) required)
-          div.field
             label.label(for='party_mmr') Core MMR:
             p.control
               input.input#party_mmr(type='text' name='party_mmr' placeholder='1234' pattern='^[0-9]*$' value=(steamUser ? steamUser.party_mmr : 0) required)
+          div.field
+            label.label(for='solo_mmr') Support MMR:
+            p.control
+              input.input#solo_mmr(type='text' name='solo_mmr' placeholder='1234' pattern='^[0-9]*$' value=(steamUser ? steamUser.solo_mmr : 0) required)
           div.field
             label.label(for='mmr_screenshot') MMR Screenshot:
             p.control
