@@ -173,7 +173,7 @@ function edit(templates, season, division, player, steam_user, req, res) {
   })
 }
 
-function post(player, req, res) {
+function post(player, steam_user, req, res) {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
     return
@@ -189,7 +189,13 @@ function post(player, req, res) {
   p.is_draftable = p.is_draftable === 'on'
 
   player.savePlayer(p).then(() => {
-    res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/players')
+    steam_user.getSteamUser(p.steam_id).then((steamUser) => {
+      steamUser.party_mmr = req.body.party_mmr
+      steamUser.solo_mmr = req.body.solo_mmr
+      steam_user.saveSteamUser(steamUser).then(() => {
+        res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/players')
+      })
+    })
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -317,7 +323,7 @@ module.exports = (templates, season, division, player, player_role, role, steam_
     },
     post: {
       route: '/players/edit',
-      handler: post.bind(null, player)
+      handler: post.bind(null, player, steam_user),
     },
     remove: {
       route: '/players/delete',

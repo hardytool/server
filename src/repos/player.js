@@ -213,7 +213,9 @@ function getPlayer(db, id) {
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
-    END AS adjusted_mmr
+    END AS adjusted_mmr,
+    steam_user.solo_mmr,
+    steam_user.party_mmr
   FROM
     player
   JOIN steam_user ON
