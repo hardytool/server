@@ -327,7 +327,9 @@ function getDraftSheet(db, criteria, sort) {
     CONCAT('https://www.dotabuff.com/players/', steam_user.steam_id)
       AS dotabuff,
     CONCAT('https://www.opendota.com/players/', steam_user.steam_id)
-      AS opendota
+      AS opendota,
+    TO_CHAR(player.created_at,'mm/dd/yyyy HH24:MI:SS')
+      AS join_timestamp
   FROM
     player
   JOIN steam_user ON
