@@ -71,9 +71,9 @@ function captains(templates, season, division, player, req, res) {
           hide_captains: true,
           hide_standins: true
         }).then(nonCaptains => {
-          let canSupport = players.length * 4
-          let leftoverPlayers = nonCaptains.length - canSupport
-          let neededCaptains = Math.ceil(leftoverPlayers / 4)
+          const canSupport = players.length * 4
+          const leftoverPlayers = nonCaptains.length - canSupport
+          const neededCaptains = Math.ceil(leftoverPlayers / 4)
           const html = templates.player.captains({
             user: req.user,
             season: season,
