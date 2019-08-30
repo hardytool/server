@@ -51,6 +51,10 @@ block content
         span #{season ? season.name : ''} #{division ? division.name : '' } Captains
   +navigationButtons
   +adminButtons
+  if neededCaptains > 0
+    div.columns
+      div.column
+        span Captains needed for draft: #{neededCaptains}. Players cut off: #{leftoverPlayers}
   div.columns
     div.column.is-wide-scroll
       table.table.is-striped.is-middle-aligned.is-fullwidth

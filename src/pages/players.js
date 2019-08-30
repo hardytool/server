@@ -63,14 +63,28 @@ function captains(templates, season, division, player, req, res) {
         by_mmr: normal,
         by_reverse_mmr: !normal
       }).then(players => {
-        const html = templates.player.captains({
-          user: req.user,
-          season: season,
-          division: division,
-          players: players
-        })
+        return player.getPlayers({
+          season_id: season_id,
+          division_id: division_id,
+          is_captain: false,
+          is_standin: false,
+          hide_captains: true,
+          hide_standins: true
+        }).then(nonCaptains => {
+          let canSupport = players.length * 4
+          let leftoverPlayers = nonCaptains.length - canSupport
+          let neededCaptains = Math.ceil(leftoverPlayers / 4)
+          const html = templates.player.captains({
+            user: req.user,
+            season: season,
+            division: division,
+            players: players,
+            neededCaptains: neededCaptains,
+            leftoverPlayers: leftoverPlayers
+          })
 
-        res.send(html)
+          res.send(html)
+        })
       })
     })
   }).catch(err => {
