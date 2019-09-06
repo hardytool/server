@@ -7,6 +7,7 @@
        - Participants must sign up with their main account. This account may not be used by any other player for the duration of the season.
          - Participants are required to use the Steam account provided at the time of sign-ups when playing any RD2L game.
          - 500 games and 250 wins on the account must have been played on the account by the player who is signing up.
+         - Participants must be above 1500 mmr or have played 25 dota games in the past month at the date of their signup.
        - Participants must alert the admins if their rank does not accurately reflect their skill level, or if they have alternate accounts they regularly use.
          - Admins may adjust a participants rank to be more accurate in these situations.
        - Before registering, players are required to turn "Expose Public Match Data" on in the Dota 2 client > Settings > Options > Profile.
@@ -14,8 +15,6 @@
        - No one should expect to miss more than 2 weeks in the season (including playoffs).
          - If a participant expects inconsistent attendance for an upcoming season, they are encouraged to instead sign up as a stand-in or free agent, as appropriate.
        - Admins will be watching for accounts that have unusual match history. Those accounts may be removed at the discretion of the admins. Since there are various ways this rule can be violated, any other punishment will be determined on a case-by-case basis.
-       - Every player on a team’s roster must play each week if available, and each player on the roster must play one game for a minimum of five weeks over the course of the season.
-         - This rule is extended into the post season. Every player on a team’s roster must play in each post season match if available
        - Participants may only play in 1 division in each season of RD2L.
    - **Captains**
      - Captains are also participants and all participant rules apply to captains.
@@ -31,6 +30,7 @@
        - The standin must have been the same mmr or lower on the draft sheet (according to adjusted mmr for players that were adjusted) and must not have climbed above the player they are replacing.
        - The standin must be a player signed up for the current season of RD2L.
        - Any standin may be used if both captains agree or via admin discretion.
+       - If the missing player is below 3000 mmr, the standin may be up to 500 mmr above the missing player, with a maximum mmr of 3000. For example, if a team is missing a 1500 mmr player, they are allowed a standin up to 2000 mmr. If a team is missing a 2700 mmr player, they are allowed a standin up to 3000 mmr.
      - Teams may use 2 stand-ins per match, for a maximum of 8 games during a season. Using two standins in one match counts as two standin uses. If a team finds itself needing more than this, they should contact a division admin with regards to a free agent.
        - Stand-in usage from the season will be reset for all playoff teams. Playoff teams may use a stand-in for a maximum of two series of the playoffs. (Series means all games of a round, usually best of 3 or best of 5)
        - If a team is forced to use a standin because admins have not found a free agent for the team yet, these standin uses will not count towards the team total.
@@ -47,7 +47,6 @@
      - When the admin assigns a new free-agent to the team, this free agent cannot be rejected.
      - The free agent will either be a close match or a player with lower rank (as close as possible), depending on the availability of free agents.
      - Free agents cannot be assigned until the end of scim week (Week 0) to ensure that teams are fully utilizing the players they drafted.
-     - Free agents will not be assigned in the post season.
 2. **Format**
    - **Divisions**
      - Divisions are determined every season by the RD2L admins.
@@ -77,21 +76,18 @@
        - Five players from the team's official roster must be seated on either the dire or radiant side with the team name visible.
        - The screenshot should have the Steam overlay (press ctrl+shift while in Dota) visible, showing the system time.
        - If there is a dispute, captains must work with the admin to try to resolve the situation and play the games. If unresolved, the division admin (or head admin in their stead) will making a ruling on the matter.
-     - Each team is allowed 10 minutes of pause time per game.
-       - Pauses are limited to 5 minutes in length for issues not related to a disconnected player. A team may pause two times in a game for issues not related to disconnection. There must be at least 5 minutes of game time passed between the these two pauses.
+     - Each team is allowed a maximum of 15 minutes of pause time per game. This may be used all in one pause or over multiple pauses.
+       - Pauses are only allowed for reasons relating to players experiencing issues preventing them from playing the game properly. No tactical pauses are allowed.
        - Each team can wait up to a total of 15 minutes per match for disconnected player(s).
-       - In the event a player is unable to continue playing, their team may choose to continue the match without them (using the DC’ed players heroes is permitted).
      - Teams have 15 minutes after the end of a game to create the lobby and start the subsequent game.
        - Both captains must report agreement to delay the match to an admin for approval.
-     - All chat is allowed, unless either team requests no all chat.
-       - Tipping, Chat Wheel, and Hero Taunts are all allowed in official matches, but not battle pass items because this league is srs bzns.
-       - All chat is always allowed for purpose of calling GG.
-       - All chat during games should be civil.
-       - If a team repeatedly violates the no all chat request, they may be forfeited by an admin.
+     - All chat is allowed in official matches, but repeated instances of a player being toxic or flaming in all chat may result in a punishment.
+       - Tipping, Chat Wheel, and Hero Taunts are all allowed in official matches.
        - Caster all chat is still strictly prohibited at all times.
      - Teams will coin flip for choice of side/pick; winner of the flip has first choice game 1 and loser has first choice game 2.
      - Teams are not allowed to “stream cheat” in any way - no player currently in a game may view a stream of the game, spectate the game, or communicate with anyone doing so.
      - Team members not playing are permitted to be in a caster slot in the lobby if the opposing captain approves, but are not permitted to communicate with their team in any way while spectating. Coaches are not allowed in game.
+     - The only people allowed in a teams voice chat during draft & game are members of the team. Teams should ask anybody else sitting in voice to leave the voice chat in the interest of fairness.
      - Only recognized casters are permitted to be in broadcaster channels during matches.
        - Spectators on is encouraged but a 2 minute delay is required.
      - Game remakes are permitted if there is a major issue affecting gameplay (major ping increases, heavy packet loss, Steam down). Both team captains must agree to remake.
@@ -114,7 +110,6 @@
    - **Communication**
      - Each RD2L player is encouraged to be on the RD2L main discord to keep up to date on league information.
        - Keeping up with every channel is not required, but it is highly recommended that alerts are left on in the #announcements channel, and that the channel is checked at least once per week.
-     - Players should check the subreddit at least once a week if possible for information being put out by the moderators or other participants.
    - **Conduct**
      - Flaming is part of Dota 2, but repeated conduct (in games, discord, subreddit, or anywhere) that violates the below standards may result in removal from the league:
        - No hate speech (speech which attacks a person or group on the basis of attributes such as race, religion, ethnic origin, sexual orientation, disability, or gender).
