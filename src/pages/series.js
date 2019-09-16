@@ -4,7 +4,6 @@ function list(templates, season, series, division, req, res) {
   const season_id = req.params.season_id
   const division_id = req.params.division_id
   const round = req.query.round
-
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
       return series.getSeries({
@@ -467,6 +466,7 @@ function importSeries(series, season, team, pairings, division, req, res) {
               toSave.match_2_url = null
               toSave.match_1_forfeit_home = null
               toSave.match_2_forfeit_home = null
+              toSave.is_playoff = false
               return series.saveSeries(toSave)
             })
 
