@@ -56,7 +56,8 @@ block content
         div.content
           p.title Steam Name
           p.subtitle
-            a(href='https://steamcommunity.com/profiles/' + profile.id64) profile.steam_name
+            a(href='https://steamcommunity.com/profiles/' + profile.id64)
+              span= profile.steam_name
         div.content
           p.title RD2L Name
           p.subtitle= profile.name
