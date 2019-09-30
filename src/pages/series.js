@@ -26,10 +26,10 @@ function list(templates, season, series, division, req, res) {
           if (_series.away_team_id) {
             _series.away = {}
             _series.away.id = _series.away_team_id
-            if (_series.home_team_name != _series.home_team_captain_name) {
-              _series.home.name = `${_series.home_team_name} (${_series.home_team_captain_name})`
+            if (_series.away_team_name != _series.away_team_captain_name) {
+              _series.away.name = `${_series.away_team_name} (${_series.away_team_captain_name})`
             } else {
-              _series.home.name = _series.home_team_captain_name
+              _series.away.name = _series.away_team_captain_name
             }
             _series.away.name = _series.away_team_name
             _series.away.logo = _series.away_team_logo
