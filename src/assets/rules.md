@@ -31,7 +31,7 @@
        - The standin must be a player signed up for the current season of RD2L.
        - Any standin may be used if both captains agree or via admin discretion.
        - If the missing player is below 3000 mmr, the standin may be up to 500 mmr above the missing player, with a maximum mmr of 3000. For example, if a team is missing a 1500 mmr player, they are allowed a standin up to 2000 mmr. If a team is missing a 2700 mmr player, they are allowed a standin up to 3000 mmr.
-     - Teams may use 2 stand-ins per match, for a maximum of 8 games during a season. Using two standins in one match counts as two standin uses. If a team finds itself needing more than this, they should contact a division admin with regards to a free agent.
+     - Teams may use 2 stand-ins per match, for a maximum of 10 games during a season. Using two standins in one match counts as two standin uses. If a team finds itself needing more than this, they should contact a division admin with regards to a free agent.
        - Stand-in usage from the season will be reset for all playoff teams. Playoff teams may use a stand-in for a maximum of two series of the playoffs. (Series means all games of a round, usually best of 3 or best of 5)
        - If a team is forced to use a standin because admins have not found a free agent for the team yet, these standin uses will not count towards the team total.
      - If a team needs three stand-ins in order to play, they must forfeit the match.
