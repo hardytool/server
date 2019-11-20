@@ -15,7 +15,7 @@ function view(
       url: 'https://api.opendota.com/api/players/' + req.params.steam_id + '/heroes?date=180',
       json: true
     }, function (error, response, body) {
-          
+
       const top5 = body.length ? body.slice(0,5) : []
       const notableHeroes = top5.map(hero => {
         hero.picture =
@@ -28,7 +28,7 @@ function view(
       return season.getActiveSeason().then(active_season => {
         return profile.getProfile(req.params.steam_id).then(_profile => {
           _profile.id64 = steamId.from32to64(_profile.steam_id)
-          return player.hasFalseActivity(active_season.id, _profile.steam_id).then(numberFalseActivity => {
+                  return player.hasFalseActivity(active_season.id, _profile.steam_id).then(numberFalseActivity => {
             return team_player.hasPlayed(_profile.steam_id)
               .then(({ has_played }) => {
                 return vouch.isVouched(_profile.steam_id)
@@ -41,7 +41,11 @@ function view(
                           return result
                         })
                       }).then(({ is_vouched, voucher, teamsPlayed }) => {
+                        const description = `RD2L Player ${_profile.name}
+                        Adjusted MMR: ${_profile.adjusted_mmr}, Draft MMR: ${_profile.draft_mmr}
+                        Played on team(s): ${teamsPlayed.map(x=>x.name).join(", ")}.`;
                         const html = templates.profile.view({
+                          description: description,
                           user: req.user,
                           profile: _profile,
                           active_season: active_season,
@@ -114,7 +118,7 @@ function post(steam_user, profile, req, res) {
   p.adjusted_mmr = Number.parseInt(req.body.adjusted_mmr)
   p.name_locked = req.body.name_locked === 'on'
   p.theme = req.body.theme
-  
+
   steam_user.getSteamUser(p.steam_id).then(steamUser => {
     if (!(req.user.isAdmin || req.user.steamId === steamUser.steam_id)) {
       res.sendStatus(403)

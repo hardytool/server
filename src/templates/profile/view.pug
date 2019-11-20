@@ -3,6 +3,16 @@ extends ../components/base.pug
 block title
   title #{title} : #{profile.name}
 
+block meta
+  meta(name="og:title" content=title+" : "+profile.name)
+  meta(name="description" content=description)
+  meta(name="og:description" content=description)
+  meta(name="og:image" content=profile.avatar)
+  meta(name="og:image:secure_url" content=profile.avatar)
+  meta(name='og:image:width' content='150')
+  meta(name='og:image:height' content='150')
+  meta(name='og:url' content='https://rd2l.gg')
+
 block content
   div.columns
     div.column
