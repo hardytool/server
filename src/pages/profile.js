@@ -28,7 +28,7 @@ function view(
       return season.getActiveSeason().then(active_season => {
         return profile.getProfile(req.params.steam_id).then(_profile => {
           _profile.id64 = steamId.from32to64(_profile.steam_id)
-                  return player.hasFalseActivity(active_season.id, _profile.steam_id).then(numberFalseActivity => {
+          return player.hasFalseActivity(active_season.id, _profile.steam_id).then(numberFalseActivity => {
             return team_player.hasPlayed(_profile.steam_id)
               .then(({ has_played }) => {
                 return vouch.isVouched(_profile.steam_id)
@@ -43,7 +43,7 @@ function view(
                       }).then(({ is_vouched, voucher, teamsPlayed }) => {
                         const description = `RD2L Player ${_profile.name}
                         Adjusted MMR: ${_profile.adjusted_mmr}, Draft MMR: ${_profile.draft_mmr}
-                        Played on team(s): ${teamsPlayed.map(x=>x.name).join(", ")}.`;
+                        Played on team(s): ${teamsPlayed.map(x=>x.name).join(', ')}.`
                         const html = templates.profile.view({
                           description: description,
                           user: req.user,
