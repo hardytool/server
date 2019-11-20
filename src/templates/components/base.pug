@@ -20,6 +20,25 @@ html(lang='en')
         link(rel='icon' type='image/png' href='/assets/notext.png')
         script(defer src='https://use.fontawesome.com/releases/v5.0.9/js/all.js' integrity='sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl' crossorigin='anonymous')
         style(type='text/css').
+          .logo-container {
+            width: auto;
+            margin: 1.5rem auto 0;
+            text-align: center;
+          }
+          figure.littlelogo {
+            visibility: hidden;
+            display: none;
+          }
+          @media(max-width: 520px) {
+            figure.biglogo {
+              visibility: hidden;
+              display: none;
+            }
+            figure.littlelogo {
+              visibility: visible;
+              display: block;
+            }
+          }
           .disbanded {
             text-decoration: line-through;
           }
