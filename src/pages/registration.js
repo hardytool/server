@@ -176,6 +176,8 @@ function post(templates, season, division, steam_user, team_player, player, role
         return steam_user.getSteamUser(req.user.steamId).then(steamUser => {
           steamUser.solo_mmr = p.solo_mmr
           steamUser.party_mmr = p.party_mmr
+          steamUser.rank = p.rank
+          steamUser.previous_rank = p.previous_rank
           return profile.getProfile(steamUser.steam_id).then(_profile => {
             _profile.discord_name = req.body.discord_name
             return team_player.isCaptainAutoApproved(steamUser.steam_id)

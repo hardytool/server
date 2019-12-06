@@ -2,6 +2,7 @@ const Promise = require('bluebird')
 let available = false
 
 function getMMR(dota2, id) {
+
   if (!available) {
     return Promise.reject(new Error('DotA 2 client not running'))
   }
@@ -11,19 +12,19 @@ function getMMR(dota2, id) {
         reject(err)
       }
 
-      const soloSlot = result.slots.filter(slot => {
-        return slot.stat && slot.stat.stat_id === 1
-      })
-      const partySlot = result.slots.filter(slot => {
-        return slot.stat && slot.stat.stat_id === 2
-      })
-      const solo = soloSlot.length === 1 ? soloSlot[0].stat.stat_score : null
-      const party = partySlot.length === 1 ? partySlot[0].stat.stat_score : null
+      // const soloSlot = result.slots.filter(slot => {
+      //   return slot.stat && slot.stat.stat_id === 1
+      // })
+      // const partySlot = result.slots.filter(slot => {
+      //   return slot.stat && slot.stat.stat_id === 2
+      // })
+      // const solo = soloSlot.length === 1 ? soloSlot[0].stat.stat_score : null
+      // const party = partySlot.length === 1 ? partySlot[0].stat.stat_score : null
       const rank = result.rank_tier
+      const previous_rank = result.previous_rank_tier
       resolve({
-        solo: solo,
-        party: party,
-        rank: rank
+        rank: rank,
+        previous_rank: previous_rank
       })
     })
   })

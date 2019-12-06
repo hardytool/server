@@ -26,6 +26,8 @@ function getPlayers(db, criteria, sort) {
     END AS adjusted_mmr,
     steam_user.solo_mmr,
     steam_user.party_mmr,
+    steam_user.rank,
+    steam_user.previous_rank,
     has_played.has_played,
     is_vouched.is_vouched
   FROM
@@ -215,7 +217,9 @@ function getPlayer(db, id) {
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
     END AS adjusted_mmr,
     steam_user.solo_mmr,
-    steam_user.party_mmr
+    steam_user.party_mmr,
+    steam_user.rank,
+    steam_user.previous_rank
   FROM
     player
   JOIN steam_user ON

@@ -12,6 +12,8 @@ function getProfile(db, steamId) {
     profile.theme,
     steam_user.solo_mmr,
     steam_user.party_mmr,
+    steam_user.rank,
+    steam_user.previous_rank,
     COALESCE(profile.adjusted_mmr, 0) as adjusted_mmr,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
