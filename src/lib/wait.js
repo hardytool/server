@@ -1,6 +1,6 @@
-const timeout = require('./timeout')
+//const timeout = require('./timeout')
 
-function wait(delay, condition){
+function wait(){
   // return timeout(delay).then(() => {
   //   if (condition()) {
   //     return true

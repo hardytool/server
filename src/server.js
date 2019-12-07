@@ -350,7 +350,7 @@ migration.migrateIfNeeded(
                 }
 
                 if(user.rank == null) {
-                  user.rank = 0;
+                  user.rank = 0
                 }
                 user.solo_mmr = 0
                 user.party_mmr = 0

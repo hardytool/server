@@ -12,13 +12,15 @@ function createUser(steam_user, profile, mmr, steamId, user_profile) {
     const currentSolo = existingUser ? existingUser.solo_mmr : 0
     const currentParty = existingUser ? existingUser.party_mmr : 0
     const currentRank = existingUser ? existingUser.rank : 0
+    const previousRank = existingUser ? existingUser.previousRank : 0
     const user = {
       steam_id: id.toString(),
       name: name,
       avatar: avatar,
       solo_mmr: currentSolo,
       party_mmr: currentParty,
-      rank: currentRank
+      rank: currentRank,
+      previousRank: previousRank
     }
     return user
   }).then(user => {
@@ -67,6 +69,8 @@ function updateUserMMR(steam_user, mmr, user) {
   return mmr.getMMR(user.steam_id).then(result => {
     user.solo_mmr = result && result.solo ? result.solo : user.solo_mmr
     user.party_mmr = result && result.party ? result.party : user.party_mmr
+    user.rank = result && result.rank ? result.rank : user.rank
+    user.previous_rank = result && result.previous_rank ? result.previous_rank : user.previous_rank
     return steam_user.saveSteamUser(user).then(() => {
       return user
     })
