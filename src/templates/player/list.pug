@@ -83,7 +83,8 @@ block content
                 a(href='/profile/' + player.steam_id)
                   figure.image.is-roster.hide-overflow
                     img(src=player.avatar)
-              td= player.rank
+              td
+                img.image.rank.is-48x48(src=`/assets/medals/${player.rank}.png` alt=player.rank)
               td
                 a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
                 span
