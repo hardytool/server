@@ -82,11 +82,11 @@ block content
     div.tile.is-parent
       article.tile.is-child.notification
         div.content
-          p.title Rank
-          p.subtitle= profile.rank
+          p.title.is-marginless Rank
+          img.image.is-64x64(src=`/assets/medals/${profile.rank}.png` alt=profile.rank)
         div.content
-          p.title Previous Rank
-          p.subtitle= profile.previous_rank
+          p.title.is-marginless Previous Rank
+          img.image.is-64x64(src=`/assets/medals/${profile.previous_rank}.png` alt=profile.previous_rank)
     div.tile.is-parent
       article.tile.is-child.notification
         div.content
