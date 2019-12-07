@@ -9,6 +9,8 @@ function getUnassignedPlayers(db, season_id, division_id) {
     COALESCE(profile.name, steam_user.name) AS name,
     steam_user.solo_mmr,
     steam_user.party_mmr,
+    steam_user.rank,
+    steam_user.previous_rank,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr
@@ -135,6 +137,8 @@ function getRoster(db, team_id) {
     steam_user.avatar,
     steam_user.solo_mmr,
     steam_user.party_mmr,
+    steam_user.rank,
+    steam_user.previous_rank,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr

@@ -7,6 +7,7 @@ const path = require('path')
 const http = require('http')
 const https = require('https')
 const express = require('express')
+const fs = require('fs')
 const csurf = require('csurf')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -18,6 +19,7 @@ const pool = new pg.Pool(config.db)
 const RedisStore = require('connect-redis')(session)
 const Steam = require('steam')
 const steam = new Steam.SteamClient()
+const steamUser = new Steam.SteamUser(steam)
 const Dota2 = require('dota2')
 const dota2 = new Dota2.Dota2Client(steam, true, true)
 const redirectHttps = require('redirect-https')
@@ -291,9 +293,9 @@ app.post(adminGroupPages.post.route, adminGroupPages.post.handler)
 app.post(adminGroupPages.remove.route, adminGroupPages.remove.handler)
 
 //Pull the list of Steam servers if it exists
-// if (fs.existsSync(path.join(__dirname, 'assets', 'servers.json'))) {
-//   Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.json')))
-// }
+if (fs.existsSync(path.join(__dirname, 'assets', 'servers.json'))) {
+  Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.json')))
+}
 
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))
@@ -301,61 +303,70 @@ migration.migrateIfNeeded(
     console.log(
       `RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)
 
-    // if (config.steam.username && config.steam.password) {
-    //   steam.connect()
+    if (config.steam.username && config.steam.password) {
+      steam.connect()
 
-    //   steam.on('connected', () => {
-    //     steamUser.logOn({
-    //       account_name: config.steam.username,
-    //       password: config.steam.password
-    //     })
-    //   })
+      steam.on('connected', () => {
+        steamUser.logOn({
+          account_name: config.steam.username,
+          password: config.steam.password
+        })
+      })
 
-    //   steam.on('logOnResponse', res => {
-    //     if (res.eresult == Steam.EResult.OK) {
-    //       dota2.launch()
-    //     }
-    //   })
+      steam.on('logOnResponse', res => {
+        if (res.eresult == Steam.EResult.OK) {
+          dota2.launch()
+        }
+      })
 
-    //   // Commenting this out because it is causing issues for now on node10
-    //   // steam.on('servers', servers => {
-    //   //   fs.writeFile(path.join(__dirname, 'assets', 'servers.js'), JSON.stringify(servers));
-    //   // })
+      // Commenting this out because it is causing issues for now on node10
+      // steam.on('servers', servers => {
+      //   fs.writeFile(path.join(__dirname, 'assets', 'servers.js'), JSON.stringify(servers));
+      // })
 
-    //   steam.on('error', err => {
-    //     console.error(err)
-    //     if (err.message === 'Disconnected') {
-    //       steam.connect()
-    //     }
-    //     else {
-    //       throw err
-    //     }
-    //   })
-    // }
+      steam.on('error', err => {
+        console.error(err)
+        if (err.message === 'Disconnected') {
+          steam.connect()
+        }
+        else {
+          throw err
+        }
+      })
+    }
 
-    // If we aren't using MMR/Rank fetching, there is no point for this
-    // const repeat = () => {
-    //   steam_user.getSteamUsers().then(users => {
-    //     users.forEach((user, index) => {
-    //       setTimeout(() => {
-    //         return wait(1000, () => mmr.isAvailable()).then(() => {
-    //           return mmr.getMMR(user.steam_id).then(mmr => {
-    //             user.rank = mmr && mmr.rank ? mmr.rank : user.rank
-    //             // Commenting out this line until Valve can figure out their mmr
-    //             // Rank will stop updating but we don't use that anyway
-    //             //return steam_user.saveSteamUser(user)
-    //             return true
-    //           })
-    //         })
-    //       }, 1000 * (index + 1))
-    //     })
-    //   }).catch(err => {
-    //     console.error(err)
-    //     console.log('Error recovered - continuing')
-    //   })
-    //   setTimeout(repeat, 60*60*1000)
-    // }
-    // repeat()
+    //If we aren't using MMR/Rank fetching, there is no point for this
+    const repeat = () => {
+      steam_user.getSteamUsers().then(users => {
+        setTimeout(() => {
+          users.forEach((user, index) => {
+            setTimeout(() => {
+              return mmr.getMMR(user.steam_id).then(mmr => {
+                user.rank = mmr && mmr.rank ? mmr.rank : user.rank
+                user.previous_rank = mmr && mmr.previous_rank ? mmr.previous_rank : user.previous_rank
+
+                if(user.previous_rank == null) {
+                  user.previous_rank = 0
+                }
+
+                if(user.rank == null) {
+                  user.rank = 0
+                }
+                user.solo_mmr = 0
+                user.party_mmr = 0
+
+                return steam_user.saveSteamUser(user)
+              })
+            }, 1000 * (index + 1))
+          })
+        }, 10000)
+      }).catch(err => {
+        console.error(err)
+        console.log('Error recovered - continuing')
+      })
+      setTimeout(repeat, 60*60*1000)
+    }
+    repeat()
 
     if (credentials) {
       http.createServer(redirectHttps({
