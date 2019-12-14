@@ -42,7 +42,7 @@ function view(
                         })
                       }).then(({ is_vouched, voucher, teamsPlayed }) => {
                         const description = `RD2L Player ${_profile.name}
-                        Adjusted MMR: ${_profile.rank}
+                        Current Rank: ${_profile.rank}
                         Played on team(s): ${teamsPlayed.map(x=>x.name).join(', ')}.`
                         const html = templates.profile.view({
                           description: description,
