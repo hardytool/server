@@ -317,8 +317,7 @@ function getDraftSheet(db, criteria, sort) {
   SELECT
     player.id,
     COALESCE(profile.name, steam_user.name) AS name,
-    steam_user.solo_mmr AS support_mmr,
-    steam_user.party_mmr AS core_mmr,
+    steam_user.rank AS rank,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr
