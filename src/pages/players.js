@@ -313,6 +313,14 @@ function json(player, req, res) {
   })
 }
 
+function countJson(player, season, req, res) {
+  season.getActiveSeason().then(seasons => {
+    player.getCurrentPlayerCount(seasons.id).then(players => {
+      res.send(players)
+    })
+  })
+}
+
 module.exports = (templates, season, division, player, player_role, role, steam_user) => {
   return {
     list: {
@@ -358,6 +366,10 @@ module.exports = (templates, season, division, player, player_role, role, steam_
     json: {
       route: '/players/json',
       handler: json.bind(null, player)
+    },
+    countJson: {
+      route: '/players/divisionCount',
+      handler: countJson.bind(null, player, season)
     }
   }
 }

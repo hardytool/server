@@ -471,6 +471,21 @@ function hasFalseActivity(db, season_id, steam_id) {
 
 }
 
+function getCurrentPlayerCount(db, season_id) {
+  const select = sql`
+  SELECT division.name, count(player.id)
+    FROM public.player
+    LEFT JOIN division ON
+      division.id = division_id
+    WHERE
+      player.season_id = ${season_id}
+    GROUP BY division.name
+  `
+  return db.query(select).then(result => {
+    return result.rows
+  })
+}
+
 module.exports = db => {
   return {
     getPlayers: getPlayers.bind(null, db),
@@ -480,6 +495,7 @@ module.exports = db => {
     unregisterPlayer: unregisterPlayer.bind(null, db),
     getDraftSheet: getDraftSheet.bind(null, db),
     activityCheck: activityCheck.bind(null, db),
-    hasFalseActivity: hasFalseActivity.bind(null, db)
+    hasFalseActivity: hasFalseActivity.bind(null, db),
+    getCurrentPlayerCount: getCurrentPlayerCount.bind(null, db)
   }
 }

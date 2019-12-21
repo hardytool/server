@@ -244,6 +244,7 @@ app.get(playerPages.csv.route, playerPages.csv.handler)
 app.get(playerPages.activityCheck.route, playerPages.activityCheck.handler)
 app.get(playerPages.activityCheckAdmin.route, playerPages.activityCheckAdmin.handler)
 app.get(playerPages.json.route, playerPages.json.handler)
+app.get(playerPages.countJson.route, playerPages.countJson.handler)
 
 app.post(playerPages.post.route, playerPages.post.handler)
 app.post(playerPages.remove.route, playerPages.remove.handler)
