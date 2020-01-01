@@ -24,6 +24,11 @@ function getPlayers(db, criteria, sort) {
       THEN profile.adjusted_mmr
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
     END AS adjusted_mmr,
+    CASE
+      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
+      THEN steam_user.rank
+      ELSE GREATEST(steam_user.rank)
+    END AS adjusted_rank,
     steam_user.solo_mmr,
     steam_user.party_mmr,
     steam_user.rank,
@@ -169,7 +174,7 @@ function getPlayers(db, criteria, sort) {
     if (sort.by_mmr) {
       orderBy = sql`
       ORDER BY
-        adjusted_mmr DESC,
+        adjusted_rank DESC,
         name ASC
       `
     } else if (sort.by_name) {
@@ -181,7 +186,7 @@ function getPlayers(db, criteria, sort) {
     } else if (sort.by_reverse_mmr) {
       orderBy = sql`
       ORDER BY
-        adjusted_mmr ASC,
+        adjusted_rank ASC,
         name ASC
       `
     }
