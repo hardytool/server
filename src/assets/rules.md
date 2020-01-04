@@ -7,7 +7,7 @@
        - Participants must sign up with their main account. This account may not be used by any other player for the duration of the season.
          - Participants are required to use the Steam account provided at the time of sign-ups when playing any RD2L game.
          - 500 games and 250 wins on the account must have been played on the account by the player who is signing up.
-         - Participants must be above 1500 mmr or have played 25 dota games in the past month at the date of their signup.
+         - Participants must be above 2000 mmr or have played 25 dota games in the past month at the date of their signup.
        - Participants must alert the admins if their rank does not accurately reflect their skill level, or if they have alternate accounts they regularly use.
          - Admins may adjust a participants rank to be more accurate in these situations.
        - Before registering, players are required to turn "Expose Public Match Data" on in the Dota 2 client > Settings > Options > Profile.
