@@ -11,8 +11,7 @@ mixin navigationButtons
 block append head
   style(type='text/css').
     .playoff-wrapper {
-      max-height: 95vh;
-      overflow: scroll;
+      overflow-x: auto;
     }
     .playoff {
       display: flex;
@@ -24,8 +23,8 @@ block append head
       display: flex;
       flex-direction: column;
       justify-content: space-around;
-      margin-right: 2rem;
-      width: 245px;
+      margin-right: 36px;
+      width: 200px;
     }
 
     .away,
@@ -38,7 +37,7 @@ block append head
     }
 
     .matchup {
-      margin: 0 0 1rem;
+      margin: 0 0 0.5rem;
       position: relative;
     }
 
@@ -49,13 +48,6 @@ block append head
       white-space: nowrap;
       overflow: hidden;
       pointer-events: all;
-    }
-
-    .team-name:hover {
-      margin-left: 2.75rem !important;
-      max-width: 100vw;
-      min-width: 10rem;
-      position: absolute;
     }
 
     .team-name a {
@@ -79,7 +71,32 @@ block append head
     }
 
     .edit-series {
-      position: relative;
+      display: none !important;
+      left: 200px;
+      height: 64px !important;
+      position: absolute;
+      padding: 0 !important;
+      top: 0;
+    }
+
+    .edit-series a {
+      height: 100%;
+      padding: 20px 10px;
+      width: 100%;
+    }
+
+    .matchup:hover .edit-series {
+      display: inline-flex !important;
+    }
+
+    .matchup .image {
+      min-width: 32px;
+    }
+
+    .team-seed {
+      font-size: 9px;
+      margin-left: 4px;
+      min-width: 46px;
     }
 
 block title
@@ -95,34 +112,37 @@ block content
             div.matchup
               if matchup.series_url
                 a.link-overlay(href=matchup.series_url)
-              if matchup.match_time_formatted
-                div.tag
-                  =matchup.match_time_formatted + ' EST'
-              else
-                div.time-placeholder
               div.home.notification.is-primary.is-marginless
                 figure.image.is-32x32.hide-overflow
                   img(src=matchup.home_team_logo)
+                if matchup.home_seed
+                  div.team-seed=matchup.home_seed
                 div.team-name.notification.is-primary.is-paddingless
-                  if matchup.home_team_name
-                    a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.home_team_division_id + '/teams/' + matchup.home_team_id)
-                      =matchup.home_team_name + (matchup.home_team_captain_name ?  ' (' + matchup.home_team_captain_name + ')' : '')
+                  if matchup.home_team_id
+                    a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.home_team_division_id + '/teams/' + matchup.home_team_id)= matchup.home_team_captain_name
+                  else
+                    =matchup.home_team_captain_name
                 span.points.tag.is-secondary
                   = matchup.home_points
               div.away.notification.is-secondary.is-marginless
                 figure.image.is-32x32.hide-overflow
                   img(src=matchup.away_team_logo)
+                if matchup.away_seed
+                  div.team-seed=matchup.away_seed
                 div.team-name.notification.is-secondary.is-paddingless
-                  if matchup.away_team_name
-                    a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.away_team_division_id + '/teams/' + matchup.away_team_id)
-                      =matchup.away_team_name + (matchup.away_team_captain_name ? ' (' + matchup.away_team_captain_name + ')' : '')
+                  if matchup.away_team_id
+                    a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.away_team_division_id + '/teams/' + matchup.away_team_id)=matchup.away_team_captain_name
+                  else
+                    =matchup.away_team_captain_name
                 span.points.tag.is-primary
                   = matchup.away_points
               if user && user.isAdmin
                 if matchup.id
                   div.tag.is-link.edit-series
-                    a.has-text-light(href='/seasons/' + matchup.season_id + '/playoff-series/' + matchup.id + '/edit') Edit
+                    a.has-text-light(href='/seasons/' + matchup.season_id + '/playoff-series/' + matchup.id + '/edit')
+                      i.far.fa-edit
                 else
                   div.tag.is-link.edit-series
-                    a.has-text-light(href='/seasons/' + season.id + '/playoff-series/create?match=' + matchup.match_number + '&round=' + matchup.round) Create
+                    a.has-text-light(href='/seasons/' + season.id + '/playoff-series/create?match=' + matchup.match_number + '&round=' + matchup.round)
+                      i.far.fa-edit
 

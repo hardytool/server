@@ -64,12 +64,11 @@ block content
             p.help.is-marginless This determines the vertical order of the matches within a round, starting from 1.
             input.input(id='match_number' type='text' name='match_number' placeholder='Which match number' value=(series.match_number ? series.match_number : ''))
           div.field.column.is-half.is-paddingless
-            label.label(for='match_date') Match date
-            input.input(type='date' name='match_date' value=(series.match_date ? series.match_date : ''))
+            label.label(for='home_seed') Home seed
+            input.input(type='text' name='home_seed' value=(series.home_seed ? series.home_seed : ''))
           div.field.column.is-half.is-paddingless
-            label.label.is-marginless(for='match_time') Match time
-            p.help.is-marginless Set the time in EST.
-            input.input(type='time' name='match_time' value=(series.match_time ? series.match_time : ''))
+            label.label(for='away_seed') Away seed
+            input.input(type='text' name='away_seed' value=(series.away_seed ? series.away_seed : ''))
           div.field.is-grouped
             p.control
               button.button.is-primary Submit
