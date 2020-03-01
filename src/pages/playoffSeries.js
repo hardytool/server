@@ -1,5 +1,4 @@
 const shortid = require('shortid')
-const moment = require('moment')
 
 async function list(templates, _season, _series, req, res) {
   const season_id = req.params.season_id
@@ -96,12 +95,6 @@ async function edit(templates, _season, _team, _series, req, res) {
   series.away.logo = series.away_team_logo
   series.away.points = series.away_points
 
-  if (series.match_timestamp) {
-    const matchTimestamp = moment(series.match_timestamp)
-    series.match_date = matchTimestamp.format(moment.HTML5_FMT.DATE)
-    series.match_time = matchTimestamp.format(moment.HTML5_FMT.TIME)
-  }
-
   const html = templates.playoffSeries.edit({
     user: req.user,
     verb: 'Edit',
@@ -148,10 +141,11 @@ function post(_series, _team, req, res) {
 
   series.is_playoff = true
 
-  if (series.match_date && series.match_time) {
-    series.match_timestamp = series.match_date + ' ' + series.match_time
-  } else {
-    series.match_timestamp = null
+  if (series.home_seed === '') {
+    series.home_seed = null
+  }
+  if (series.away_seed === '') {
+    series.away_seed = null
   }
 
   _series.saveSeries(series).then(() => {
@@ -256,17 +250,6 @@ async function bracket(templates, _season, _team, _series, _pairings, req, res) 
         })
       }
       matchNum++
-    }
-  }
-
-  for (const match of series) {
-    if (match.match_timestamp) {
-      const matchTime = moment(match.match_timestamp)
-
-      // If match time is in the future, or started less than 3h ago
-      if (matchTime.isAfter(moment().subtract(3, 'hours'))) {
-        match.match_time_formatted = matchTime.format('ddd, MMM D, h:mma')
-      }
     }
   }
 

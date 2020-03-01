@@ -17,7 +17,8 @@ function getSeries(db, criteria) {
     series.match_number,
     series.is_playoff,
     series.series_url,
-    series.match_timestamp,
+    series.home_seed,
+    series.away_seed,
     home_team.name as home_team_name,
     away_team.name as away_team_name,
     home_team.logo as home_team_logo,
@@ -127,7 +128,8 @@ function saveSeries(db, series) {
       match_number,
       is_playoff,
       series_url,
-      match_timestamp
+      home_seed,
+      away_seed
     ) VALUES (
       ${series.id},
       ${series.round},
@@ -143,7 +145,8 @@ function saveSeries(db, series) {
       ${series.match_number},
       ${series.is_playoff},
       ${series.series_url},
-      ${series.match_timestamp}
+      ${series.home_seed},
+      ${series.away_seed}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
@@ -160,7 +163,8 @@ function saveSeries(db, series) {
       match_number,
       is_playoff,
       series_url,
-      match_timestamp
+      home_seed,
+      away_seed
     ) = (
       ${series.round},
       ${series.season_id},
@@ -175,7 +179,8 @@ function saveSeries(db, series) {
       ${series.match_number},
       ${series.is_playoff},
       ${series.series_url},
-      ${series.match_timestamp}
+      ${series.home_seed},
+      ${series.away_seed}
     )
   `
   return db.query(upsert)

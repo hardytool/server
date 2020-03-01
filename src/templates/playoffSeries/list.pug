@@ -47,8 +47,11 @@ block content
           tr
             td= _series.round
             if _series.home
-              td
-                a(href='/seasons/' + season.id + '/divisions/' + _series.home.division_id + '/teams/' + _series.home.id)= _series.home.name
+              if _series.home.id
+                td
+                  a(href='/seasons/' + season.id + '/divisions/' + _series.home.division_id + '/teams/' + _series.home.id)= _series.home.name
+              else
+                td= _series.home.name
               td
                 figure.image.is-team-logo.hide-overflow
                   img(src=_series.home.logo)
@@ -62,8 +65,11 @@ block content
               td
                 figure.image.is-team-logo.hide-overflow
                   img(src=_series.away.logo)
-              td
-                a(href='/seasons/' + season.id + '/divisions/' + _series.away.division_id + '/teams/' + _series.away.id)= _series.away.name
+              if _series.away.id
+                td
+                  a(href='/seasons/' + season.id + '/divisions/' + _series.away.division_id + '/teams/' + _series.away.id)= _series.away.name
+              else
+                td= _series.away.name
             else
               td
               td
