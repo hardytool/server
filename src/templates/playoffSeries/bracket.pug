@@ -115,8 +115,7 @@ block content
               div.home.notification.is-primary.is-marginless
                 figure.image.is-32x32.hide-overflow
                   img(src=matchup.home_team_logo)
-                if matchup.home_seed
-                  div.team-seed=matchup.home_seed
+                div.team-seed=matchup.home_seed
                 div.team-name.notification.is-primary.is-paddingless
                   if matchup.home_team_id
                     a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.home_team_division_id + '/teams/' + matchup.home_team_id)= matchup.home_team_captain_name
@@ -127,8 +126,7 @@ block content
               div.away.notification.is-secondary.is-marginless
                 figure.image.is-32x32.hide-overflow
                   img(src=matchup.away_team_logo)
-                if matchup.away_seed
-                  div.team-seed=matchup.away_seed
+                div.team-seed=matchup.away_seed
                 div.team-name.notification.is-secondary.is-paddingless
                   if matchup.away_team_id
                     a(href='/seasons/' + matchup.season_id + '/divisions/' + matchup.away_team_division_id + '/teams/' + matchup.away_team_id)=matchup.away_team_captain_name

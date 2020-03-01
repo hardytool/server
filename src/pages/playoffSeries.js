@@ -252,7 +252,7 @@ async function bracket(templates, _season, _team, _series, _pairings, req, res) 
       matchNum++
     }
   }
-console.log(rounds)
+
   const html = templates.playoffSeries.bracket({
     user: req.user,
     rounds: rounds,
