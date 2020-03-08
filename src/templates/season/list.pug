@@ -17,6 +17,7 @@ block content
             th Register
             if user && user.isAdmin
               th Edit
+              th Start
         tbody
           each season in seasons
             tr
@@ -32,6 +33,9 @@ block content
               if user && user.isAdmin
                 td
                   a(href='/seasons/' + season.id + '/edit') edit
+                td
+                  a(href='/seasons/' + season.id + '/start') start
       if user && user.isAdmin
+        p.help Please note that in order to prevent crashes when loading individual series or matchups pages, the 'Start' link must be clicked. Clicking multiple times will result in a Internal Server Error for now
         a(href='/seasons/create')
           button.button.is-primary Add season

@@ -71,7 +71,7 @@ const profilePages = require('./pages/profile')(templates,
   vouch,
   steamId,
   player)
-const seasonPages = require('./pages/seasons')(templates, season)
+const seasonPages = require('./pages/seasons')(templates, season, division)
 const divisionPages = require('./pages/divisions')(templates,
   season,
   division,
@@ -192,6 +192,7 @@ app.get(indexPages.playoffs.route, indexPages.playoffs.handler)
 app.get(seasonPages.list.route, seasonPages.list.handler)
 app.get(seasonPages.create.route, seasonPages.create.handler)
 app.get(seasonPages.edit.route, seasonPages.edit.handler)
+app.get(seasonPages.start.route, seasonPages.start.handler)
 
 app.post(seasonPages.post.route, seasonPages.post.handler)
 app.post(seasonPages.remove.route, seasonPages.remove.handler)

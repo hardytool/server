@@ -52,6 +52,27 @@ function edit(templates, season, req, res) {
   })
 }
 
+function start(templates, season, division, req, res) {
+  if (!req.user || !req.user.isAdmin) {
+    res.sendStatus(403)
+    return
+  }
+  const season_id = req.params.id
+  division.getDivisions().then(divisions => {
+
+    const divisionIds = divisions.map(_division => {
+      return _division.id
+    })
+
+    season.startSeason(divisionIds, season_id).then(() => {
+      res.redirect('/seasons')
+    }).catch(err => {
+      console.error(err)
+      res.status(500).send({status:500, message: 'Error Starting Season', error:err})
+    })
+  })
+}
+
 function post(season, req, res) {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
@@ -87,7 +108,7 @@ function remove(season, req, res) {
   })
 }
 
-module.exports = (templates, season) => {
+module.exports = (templates, season, division) => {
   return {
     list: {
       route: '/seasons',
@@ -108,6 +129,10 @@ module.exports = (templates, season) => {
     remove: {
       route: '/seasons/delete',
       handler: remove.bind(null, season)
+    },
+    start: {
+      route: '/seasons/:id/start',
+      handler: start.bind(null, templates, season, division)
     }
   }
 }
