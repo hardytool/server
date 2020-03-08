@@ -62,7 +62,7 @@ function start(templates, season, division, req, res) {
 
     const divisionIds = divisions.map(_division => {
       return _division.id
-    });
+    })
 
     season.startSeason(divisionIds, season_id).then(() => {
       res.redirect('/seasons')
