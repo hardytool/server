@@ -35,7 +35,7 @@ block content
           div.field
             label.label(for='mmr_screenshot') MMR Screenshot:
             p.control
-              input.input#mmr_screenshot(type='text' name='mmr_screenshot' pattern='^https:\/\/.*' value=(player ? player.mmr_screenshot : '') required)
+              input.input#mmr_screenshot(type='url' name='mmr_screenshot' value=(player ? player.mmr_screenshot : '') required)
             p.help Provide a screenshot of your current MMR, upload it to a image hosting site (such as imgur) and post the URL here. Make sure it includes the entire stats page
           div.field
             label.label(for='discord_name') Discord Name:

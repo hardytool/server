@@ -103,12 +103,21 @@ function deleteSeason(db, id) {
   return db.query(query)
 }
 
+function startSeason(db, divisionIds, seasonId) {
+  const query = sql`
+  INSERT INTO round(season_id, current_round, division_id)
+  values(${seasonId}, 0, unnest(${divisionIds}::text[]))
+  `
+  return db.query(query)
+}
+
 module.exports = db => {
   return {
     getSeasons: getSeasons.bind(null, db),
     getSeason: getSeason.bind(null, db),
     getActiveSeason: getActiveSeason.bind(null, db),
     saveSeason: saveSeason.bind(null, db),
-    deleteSeason: deleteSeason.bind(null, db)
+    deleteSeason: deleteSeason.bind(null, db),
+    startSeason: startSeason.bind(null, db)
   }
 }
