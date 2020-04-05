@@ -111,7 +111,7 @@
      - Each RD2L player is encouraged to be on the RD2L main discord to keep up to date on league information.
        - Keeping up with every channel is not required, but it is highly recommended that alerts are left on in the #announcements channel, and that the channel is checked at least once per week.
    - **Conduct**
-     - Flaming is part of Dota 2, but repeated conduct (in games, discord, subreddit, or anywhere) that violates the below standards may result in removal from the league:
+     - Flaming is part of Dota 2, but repeated conduct (in games, discord, or anywhere) that violates the below standards may result in removal from the league:
        - No hate speech (speech which attacks a person or group on the basis of attributes such as race, religion, ethnic origin, sexual orientation, disability, or gender).
        - No cyber-bullying.
        - No tactical fake GG calls.
