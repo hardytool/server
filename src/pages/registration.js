@@ -27,7 +27,7 @@ function view(templates, season, division, steam_user, player, role, player_role
           if(unvettedPlayers.length > 0 && unvettedPlayers[0].division_id != division.id) {
             return templates.error.multiple_signups({
               user: req.user,
-              error: `You may only sign up for one division at a time. You are already signed up in ${unvettedPlayers[0].season_name} this season.
+              error: `You may only sign up for one division at a time. You are already signed up in ${unvettedPlayers[0].division_name} this season.
               Please ask an admin to move your signup if you wish to change divisions. 
               Name: ${unvettedPlayers[0].name} Season ID: ${unvettedPlayers[0].season_id} Division ID: ${unvettedPlayers[0].division_id}
               Season Name: ${unvettedPlayers[0].season_name} Number Divs: ${unvettedPlayers.length}`
