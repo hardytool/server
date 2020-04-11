@@ -1,0 +1,42 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : Banned Player List
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fas.fa-list
+        span Banned Players
+      table.table.is-striped.is-middle-aligned.is-fullwidth
+        thead
+          tr
+            th Steam ID
+            th Name
+            th Reason
+            th Banned Until
+            th Still Banned?
+            if user && user.isAdmin
+              th Edit
+        tbody
+          each banned_player in banned_players
+            tr
+              td= banned_player.steam_id
+              td= banned_player.name
+              td= banned_player.reason
+              td= banned_player.banned_until
+              td
+                if banned_player.still_banned
+                  span.icon.has-text-success.has-icon
+                    i.far.fa-lg.fa-check-circle
+                else
+                  span.icon.has-text-danger.has-icon
+                    i.far.fa-lg.fa-times-circle
+              if user && user.isAdmin
+                td
+                  a(href='/banned_players/' + banned_player.id + '/edit') edit
+      if user && user.isAdmin
+        a(href='/banned_players/create')
+          button.button.is-primary Create New Banned Player

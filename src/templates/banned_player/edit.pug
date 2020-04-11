@@ -1,0 +1,47 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : #{verb} Banned Player #{banned_players ? banned_players.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fas.fa-edit
+        span #{verb} Banned Player #{banned_players ? banned_players.name : ''}
+      div
+        form(method='post' action='/banned_players/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
+          if banned_players
+            input(type='hidden' name='id' value=banned_players.id)
+          div.field
+            label.label(for='steam_id') Steam ID:
+            p.control
+              input.input(id='steam_id' type='text' name='steam_id' placeholder='Steam ID' value=(banned_players ? banned_players.steam_id : '') required)
+          div.field
+            label.label(for='name') Name:
+            p.control
+              input.input(id='name' type='text' name='name' placeholder='Name' value=(banned_players ? banned_players.name : '') required)
+          div.field
+            label.label(for='reason') Reason:
+            p.control
+              input.input(id='reason' type='text' name='reason' placeholder='Reason' value=(banned_players ? banned_players.reason : '') required)
+          div.field
+            label.label(for='banned_until') Banned Until:
+            p.control
+              input.input(id='banned_until' type='text' name='banned_until' placeholder='Banned Until' value=(banned_players ? banned_players.banned_until : '') required)
+          div.field
+            p.control
+              label.checkbox
+                if banned_players && banned_players.still_banned
+                  input(id='still_banned' type='checkbox' name='still_banned' checked)
+                else
+                  input(id='still_banned' type='checkbox' name='still_banned')
+                span &nbsp;Is this player currently banned?
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            if banned_players
+              p.control
+                button.button.is-danger(formaction='/banned_players/delete') Delete

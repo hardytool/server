@@ -30,6 +30,7 @@ const pairings = require('swiss-pairing')({ maxPerRound: 2 })
 // repositories
 const admin = require('./repos/admin')(pool)
 const admin_group = require('./repos/admin_group')(pool)
+const banned_player = require('./repos/banned_player')(pool)
 const division = require('./repos/division')(pool)
 const migration = require('./repos/migration')(pool)
 const player = require('./repos/player')(pool)
@@ -53,6 +54,16 @@ const credentials = require('./lib/credentials')(config.server)
 const openid = require('./api/openid')(config)
 
 // Page routes
+const adminPages = require('./pages/admins')(templates,
+  admin,
+  division,
+  admin_group)
+const adminGroupPages = require('./pages/admin_groups')(templates, admin_group)
+const bannedPlayerPages = require('./pages/banned_players')(templates, banned_player)
+const divisionPages = require('./pages/divisions')(templates,
+  season,
+  division,
+  admin)
 const indexPages = require('./pages/index')(templates,
   path.join(__dirname, 'assets', 'rules.md'),
   path.join(__dirname, 'assets', 'inhouserules.md'))
@@ -63,6 +74,11 @@ const playerPages = require('./pages/players')(templates,
   player_role,
   role,
   steam_user)
+const playoffSeriesPages = require('./pages/playoffSeries')(templates,
+  season,
+  team,
+  series,
+  pairings)
 const profilePages = require('./pages/profile')(templates,
   steam_user,
   profile,
@@ -70,28 +86,6 @@ const profilePages = require('./pages/profile')(templates,
   team_player,
   vouch,
   steamId,
-  player)
-const seasonPages = require('./pages/seasons')(templates, season, division)
-const divisionPages = require('./pages/divisions')(templates,
-  season,
-  division,
-  admin)
-const seriesPages = require('./pages/series')(templates,
-  season,
-  team,
-  series,
-  pairings,
-  division)
-const playoffSeriesPages = require('./pages/playoffSeries')(templates,
-  season,
-  team,
-  series,
-  pairings)
-const teamPages = require('./pages/teams')(templates,
-  season,
-  division,
-  team,
-  team_player,
   player)
 const registrationPages = require('./pages/registration')(templates,
   season,
@@ -110,11 +104,19 @@ const rosterPages = require('./pages/roster')(templates,
   team_player,
   series)
 const rolePages = require('./pages/roles')(templates, role)
-const adminPages = require('./pages/admins')(templates,
-  admin,
+const seasonPages = require('./pages/seasons')(templates, season, division)
+const seriesPages = require('./pages/series')(templates,
+  season,
+  team,
+  series,
+  pairings,
+  division)
+const teamPages = require('./pages/teams')(templates,
+  season,
   division,
-  admin_group)
-const adminGroupPages = require('./pages/admin_groups')(templates, admin_group)
+  team,
+  team_player,
+  player)
 
 // API routes
 // none currently
@@ -293,6 +295,13 @@ app.get(adminGroupPages.edit.route, adminGroupPages.edit.handler)
 
 app.post(adminGroupPages.post.route, adminGroupPages.post.handler)
 app.post(adminGroupPages.remove.route, adminGroupPages.remove.handler)
+
+app.get(bannedPlayerPages.list.route, bannedPlayerPages.list.handler)
+app.get(bannedPlayerPages.create.route, bannedPlayerPages.create.handler)
+app.get(bannedPlayerPages.edit.route, bannedPlayerPages.edit.handler)
+
+app.post(bannedPlayerPages.post.route, bannedPlayerPages.post.handler)
+app.post(bannedPlayerPages.remove.route, bannedPlayerPages.remove.handler)
 
 //Pull the list of Steam servers if it exists
 if (fs.existsSync(path.join(__dirname, 'assets', 'servers.json'))) {
