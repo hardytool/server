@@ -22,7 +22,7 @@ function view(templates, season, division, steam_user, player, role, player_role
       return steam_user.getSteamUser(req.user.steamId).then(steamUser => {
         return player.getPlayers({
           season_id: season.id,
-          steam_id: steamUser.id
+          steam_id: steamUser.steam_id
         }).then((unvettedPlayers) => {
           if(unvettedPlayers.length > 0 && unvettedPlayers[0].division_id != division.id) {
             return templates.error.multiple_signups({
