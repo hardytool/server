@@ -31,6 +31,15 @@ block content
               if user && user.isAdmin
                 td
                   a(href='/divisions/' + division.id + '/edit') edit
-      if user && user.isAdmin
-        a(href='/divisions/create')
-          button.button.is-primary Add division
+      div.field.is-grouped
+        div.control
+          a(href='/divisions')
+            button.button.is-primary Show Active Divisions
+        div.control
+          a(href='/divisionsAll')
+            button.button.is-primary Show All Divisions
+        if user && user.isAdmin
+          div.control
+            a(href='/divisions/create')
+              button.button.is-warning Add division
+

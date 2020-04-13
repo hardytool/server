@@ -200,6 +200,7 @@ app.post(seasonPages.post.route, seasonPages.post.handler)
 app.post(seasonPages.remove.route, seasonPages.remove.handler)
 
 app.get(divisionPages.list.route, divisionPages.list.handler)
+app.get(divisionPages.listAll.route, divisionPages.listAll.handler)
 app.get(divisionPages.create.route, divisionPages.create.handler)
 app.get(divisionPages.edit.route, divisionPages.edit.handler)
 app.get(divisionPages.nav.route, divisionPages.nav.handler)

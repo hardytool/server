@@ -1,7 +1,21 @@
 const shortid = require('shortid')
 
-function list(templates, division, req, res) {
+function listAll(templates, division, req, res) {
   division.getDivisions().then(divisions => {
+    const html = templates.division.list({
+      user: req.user,
+      divisions: divisions
+    })
+
+    res.send(html)
+  }).catch(err => {
+    console.error(err)
+    res.sendStatus(500)
+  })
+}
+
+function list(templates, division, req, res) {
+  division.getDivisions({active: true}).then(divisions => {
     const html = templates.division.list({
       user: req.user,
       divisions: divisions
@@ -129,6 +143,10 @@ module.exports = (templates, season, division, admin) => {
     list: {
       route: '/divisions',
       handler: list.bind(null, templates, division)
+    },
+    listAll: {
+      route: '/divisionsAll',
+      handler: listAll.bind(null, templates, division)
     },
     nav: {
       route: '/divisions/:division_id',
