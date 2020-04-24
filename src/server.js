@@ -32,6 +32,7 @@ const admin = require('./repos/admin')(pool)
 const admin_group = require('./repos/admin_group')(pool)
 const banned_player = require('./repos/banned_player')(pool)
 const division = require('./repos/division')(pool)
+const ip_address = require('./repos/ip_address')(pool)
 const migration = require('./repos/migration')(pool)
 const player = require('./repos/player')(pool)
 const player_role = require('./repos/player_role')(pool)
@@ -175,6 +176,18 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
+app.use((req, _, next) => {
+  if (req.user) {
+    ip_address.saveIPAddress(req.connection.remoteAddress, req.user.steamId).then(() => {
+    }).catch(err => {
+      console.error(err)
+    }).finally(() => {
+      next()
+    })
+  } else {
+    next()
+  }
+})
 app.use('/assets', express.static(path.join(__dirname, 'assets')))
 
 app.get('/auth/steam', passport.authenticate('steam'))
