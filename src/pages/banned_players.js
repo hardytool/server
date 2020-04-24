@@ -69,7 +69,7 @@ function post(banned_player, req, res) {
     req.body.still_banned = false
   }
 
-  req.body.id = id;
+  req.body.id = id
 
   banned_player.saveBannedPlayer(req.body).then(() => {
     res.redirect('/banned_players')
