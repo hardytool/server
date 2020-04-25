@@ -177,16 +177,17 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.use((req, _, next) => {
-  if (req.user) {
-    ip_address.saveIPAddress(req.connection.remoteAddress, req.user.steamId).then(() => {
-    }).catch(err => {
-      console.error(err)
-    }).finally(() => {
-      next()
-    })
-  } else {
-    next()
-  }
+  // Commenting out because to broke on live
+  // if (req.user) {
+  //   ip_address.saveIPAddress(req.connection.remoteAddress, req.user.steamId).then(() => {
+  //   }).catch(err => {
+  //     console.error(err)
+  //   }).finally(() => {
+  //     next()
+  //   })
+  // } else {
+  //   next()
+  // }
 })
 app.use('/assets', express.static(path.join(__dirname, 'assets')))
 
