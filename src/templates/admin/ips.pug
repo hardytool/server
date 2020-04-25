@@ -1,0 +1,40 @@
+extends ../components/base.pug
+
+block title
+  title #{title} : IP Groups
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fas.fa-list
+        span IP Groups
+      table.table.is-striped.is-middle-aligned.is-fullwidth
+        thead
+          tr
+            th IP
+            th Avatar
+            th Profile name
+            th Steam name
+            th Discord name
+        tbody
+          each users, ip in ipGroups
+            - var first = true
+            each user in users
+              tr
+                if first
+                  td(rowspan=users.length)= ip
+                td
+                  a.has-image(href='/profile/' + user.steam_id)
+                    figure.image.is-32x32.hide-overflow
+                      img(src=user.avatar)
+                  td
+                    a(href='/profile/' + user.steam_id)
+                      span= user.name
+                  td
+                    a(href='http://steamcommunity.com/profiles/' + user.steam_id64)
+                      span= user.steam_name
+                  td
+                    span= user.discord_name
+              - first = false
