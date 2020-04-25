@@ -176,8 +176,8 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
-app.use((req, _, next) => {
-  // Commenting out because to broke on live
+// Commenting out because to broke on live
+//app.use((req, _, next) => {
   // if (req.user) {
   //   ip_address.saveIPAddress(req.connection.remoteAddress, req.user.steamId).then(() => {
   //   }).catch(err => {
@@ -188,7 +188,7 @@ app.use((req, _, next) => {
   // } else {
   //   next()
   // }
-})
+//})
 app.use('/assets', express.static(path.join(__dirname, 'assets')))
 
 app.get('/auth/steam', passport.authenticate('steam'))
