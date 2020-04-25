@@ -28,7 +28,7 @@ function view(templates, season, division, steam_user, player, role, player_role
             return templates.error.multiple_signups({
               user: req.user,
               error: `You may only sign up for one division at a time. You are already signed up in ${unvettedPlayers[0].division_name} this season.
-              Please ask an admin to move your signup if you wish to change divisions. 
+              Please ask an admin to move your signup if you wish to change divisions.
               Name: ${unvettedPlayers[0].name} Season ID: ${unvettedPlayers[0].season_id} Division ID: ${unvettedPlayers[0].division_id}
               Season Name: ${unvettedPlayers[0].season_name} Number Divs: ${unvettedPlayers.length}`
             })
@@ -157,8 +157,15 @@ function directory(templates, season, division, steam_user, player, req, res) {
 
 function directoryShortcut(templates, season, division, steam_user, player, req, res) {
   season.getActiveSeason().then(_season => {
-    req.params.season_id = _season.id
-    return directory(templates, season, division, steam_user, player, req, res)
+    if (_season) {
+      req.params.season_id = _season.id
+      return directory(templates, season, division, steam_user, player, req, res)
+    } else {
+      const html = templates.error.no_seasons({
+        user: req.user
+      })
+      res.send(html)
+    }
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
