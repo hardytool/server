@@ -27,7 +27,7 @@
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "helmet": "^3.14.0",
-    "json2csv": "^4.2.1",
+    "json2csv": "^5.0.1",
     "markdown-it": "^8.4.2",
     "markdown-it-classy": "^0.2.0",
     "passport": "^0.4.0",
