@@ -5,7 +5,8 @@ function list(templates, steam_user, ip_address, steamId, req, res) {
   }
 
   ip_address.getIPAddresses().then(addresses => {
-    const ipGroups = addresses.reduce((acc, ipUser) => {
+    const minCount = (req.query.count ? Number.parseInt(req.query.count) : 1) || 0
+    const ipGroups = Array.from(Object.entries(addresses.reduce((acc, ipUser) => {
       ipUser.steam_id64 = steamId.from32to64(ipUser.steam_id)
       if (acc[ipUser.ip] !== undefined) {
         acc[ipUser.ip].push(ipUser)
@@ -13,7 +14,10 @@ function list(templates, steam_user, ip_address, steamId, req, res) {
         acc[ipUser.ip] = [ipUser]
       }
       return acc
-    }, {})
+    }, []))).filter(e => e[1].length > minCount)
+    ipGroups.sort((a, b) => {
+      return b[1].length - a[1].length
+    })
     const html = templates.admin.ips({
       user: req.user,
       ipGroups: ipGroups

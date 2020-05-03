@@ -19,7 +19,9 @@ block content
             th Steam name
             th Discord name
         tbody
-          each users, ip in ipGroups
+          each arr in ipGroups
+            - var users = arr[1]
+            - var ip = arr[0]
             - var first = true
             each user in users
               tr
