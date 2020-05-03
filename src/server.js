@@ -179,15 +179,11 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use((req, _, next) => {
   if (req.user) {
-    ip_address.saveIPAddress(req.connection.remoteAddress, req.user.steamId).then(() => {
-      next()
-    }).catch(err => {
+    ip_address.saveIPAddress(req.connection.remoteAddress, req.user.steamId).catch(err => {
       console.error(err)
-      next()
     })
-  } else {
-    next()
   }
+  next()
 })
 app.use('/assets', express.static(path.join(__dirname, 'assets')))
 
