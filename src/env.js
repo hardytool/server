@@ -1,4 +1,4 @@
 /*eslint no-process-env:off*/
-require('dotenv').load()
+require('dotenv').config()
 
 module.exports = process.env
