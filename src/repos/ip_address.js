@@ -4,13 +4,17 @@ function getIPAddresses(db) {
   const select = sql`
   SELECT
     ip_address.steam_id,
-    ip_address.ip
+    ip_address.ip,
+    steam_user.avatar,
+    steam_user.name AS steam_name,
+    profile.discord_name,
+    COALESCE(profile.name, steam_user.name) AS name
   FROM
     ip_address
   JOIN steam_user ON
     steam_user.steam_id = ip_address.steam_id
-  GROUP BY
-    ip_address.ip
+  JOIN profile ON
+    profile.steam_id = ip_address.steam_id
   `
   return db.query(select).then(result => {
     return result.rows

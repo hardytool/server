@@ -86,7 +86,7 @@ block content
           img.image.is-64x64(src=`/assets/medals/${profile.rank}.png` alt=profile.rank)
         div.content
           p.title.is-marginless Previous Rank
-          img.image.is-64x64(src=`/assets/medals/${profile.previous_rank}.png` alt=profile.previous_rank)
+          img.image.is-64x64(src=`/assets/medals/${(profile.previous_rank ? profile.previous_rank : 0)}.png` alt=profile.previous_rank)
     div.tile.is-parent
       article.tile.is-child.notification
         div.content

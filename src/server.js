@@ -16,6 +16,7 @@ const passport = require('passport')
 const passportSteam = require('passport-steam')
 const pg = require('pg')
 const pool = new pg.Pool(config.db)
+const redis = require('redis')
 const RedisStore = require('connect-redis')(session)
 const Steam = require('steam')
 const steam = new Steam.SteamClient()
@@ -68,6 +69,7 @@ const divisionPages = require('./pages/divisions')(templates,
 const indexPages = require('./pages/index')(templates,
   path.join(__dirname, 'assets', 'rules.md'),
   path.join(__dirname, 'assets', 'inhouserules.md'))
+const ipPages = require('./pages/ips')(templates, steam_user, ip_address, steamId)
 const playerPages = require('./pages/players')(templates,
   season,
   division,
@@ -164,8 +166,10 @@ app.use(cookieParser(config.server.secret))
 app.use(csrfMiddleware)
 app.use(session({
   store: new RedisStore({
-    host: config.redis.host,
-    port: config.redis.port
+    client: redis.createClient({
+      host: config.redis.host,
+      port: config.redis.port
+    })
   }),
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 365
@@ -176,19 +180,14 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
-// Commenting out because to broke on live
-//app.use((req, _, next) => {
-  // if (req.user) {
-  //   ip_address.saveIPAddress(req.connection.remoteAddress, req.user.steamId).then(() => {
-  //   }).catch(err => {
-  //     console.error(err)
-  //   }).finally(() => {
-  //     next()
-  //   })
-  // } else {
-  //   next()
-  // }
-//})
+app.use((req, _, next) => {
+  if (req.user) {
+    ip_address.saveIPAddress(req.connection.remoteAddress, req.user.steamId).catch(err => {
+      console.error(err)
+    })
+  }
+  next()
+})
 app.use('/assets', express.static(path.join(__dirname, 'assets')))
 
 app.get('/auth/steam', passport.authenticate('steam'))
@@ -318,6 +317,8 @@ app.get(bannedPlayerPages.edit.route, bannedPlayerPages.edit.handler)
 app.post(bannedPlayerPages.post.route, bannedPlayerPages.post.handler)
 app.post(bannedPlayerPages.remove.route, bannedPlayerPages.remove.handler)
 
+app.get(ipPages.list.route, ipPages.list.handler)
+
 //Pull the list of Steam servers if it exists
 if (fs.existsSync(path.join(__dirname, 'assets', 'servers.json'))) {
   Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.json')))
@@ -359,40 +360,40 @@ migration.migrateIfNeeded(
           throw err
         }
       })
+
+      //If we aren't using MMR/Rank fetching, there is no point for this
+      const repeat = () => {
+        steam_user.getSteamUsers().then(users => {
+          setTimeout(() => {
+            users.forEach((user, index) => {
+              setTimeout(() => {
+                return mmr.getMMR(user.steam_id).then(mmr => {
+                  user.rank = mmr && mmr.rank ? mmr.rank : user.rank
+                  user.previous_rank = mmr && mmr.previous_rank ? mmr.previous_rank : user.previous_rank
+
+                  if(user.previous_rank == null) {
+                    user.previous_rank = 0
+                  }
+
+                  if(user.rank == null) {
+                    user.rank = 0
+                  }
+                  user.solo_mmr = 0
+                  user.party_mmr = 0
+
+                  return steam_user.saveSteamUser(user)
+                })
+              }, 1000 * (index + 1))
+            })
+          }, 10000)
+        }).catch(err => {
+          console.error(err)
+          console.log('Error recovered - continuing')
+        })
+        setTimeout(repeat, 60*60*1000)
+      }
+      repeat()
     }
-
-    //If we aren't using MMR/Rank fetching, there is no point for this
-    const repeat = () => {
-      steam_user.getSteamUsers().then(users => {
-        setTimeout(() => {
-          users.forEach((user, index) => {
-            setTimeout(() => {
-              return mmr.getMMR(user.steam_id).then(mmr => {
-                user.rank = mmr && mmr.rank ? mmr.rank : user.rank
-                user.previous_rank = mmr && mmr.previous_rank ? mmr.previous_rank : user.previous_rank
-
-                if(user.previous_rank == null) {
-                  user.previous_rank = 0
-                }
-
-                if(user.rank == null) {
-                  user.rank = 0
-                }
-                user.solo_mmr = 0
-                user.party_mmr = 0
-
-                return steam_user.saveSteamUser(user)
-              })
-            }, 1000 * (index + 1))
-          })
-        }, 10000)
-      }).catch(err => {
-        console.error(err)
-        console.log('Error recovered - continuing')
-      })
-      setTimeout(repeat, 60*60*1000)
-    }
-    repeat()
 
     if (credentials) {
       http.createServer(redirectHttps({
