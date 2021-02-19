@@ -110,7 +110,6 @@ async function post(masters, steam_user, config, req, res) {
   }))
 
   const playersRequest = await asyncRequest()
-  console.log(playersRequest.response)
 
   const steamPlayer = playersRequest.response.players[0]
   player.name = steamPlayer.personaname
