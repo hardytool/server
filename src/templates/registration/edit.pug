@@ -34,6 +34,7 @@ block content
               input.input#previous_rank(type='text' value=steamUser.previous_rank disabled)
           div.field
             label.label(for='mmr_screenshot') MMR Screenshot:
+            p.help Public match data must be exposed for signups.
             p.control
               input.input#mmr_screenshot(type='url' name='mmr_screenshot' value=(player ? player.mmr_screenshot : '') required)
             p.help Provide a screenshot of your current MMR, upload it to a image hosting site (such as imgur) and post the URL here. Make sure it includes the entire stats page
@@ -43,7 +44,7 @@ block content
               input.input#discord_name(type='text' name='discord_name' placeholder='User#1234' pattern='^[^#]{2,32}#\\d{4}$' title='Username#1234' value=(player ? player.discord_name : '') required)
           div.field
             label.label(for='statement') Statement/Availability:
-            p.help Please be sure to mention other leagues/divisions you'll be participating in. Please list the dotabuff links of all your other accounts. Feel free to add if you would like to play a particular role this season.
+            p.help Please be sure to mention other leagues/divisions you'll be participating in. Please list the dotabuff links of all your other accounts. Feel free to add if you would like to play a particular role this season. Player statements should contain relevant information.
             p.control
               textarea.textarea#statement(name='statement' placeholder='Enter your player statement here - limited to 500 characters' maxlength='500')= player ? player.statement : ''
           div.box
