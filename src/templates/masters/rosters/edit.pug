@@ -1,0 +1,42 @@
+extends ../header.pug
+
+block title
+  title #{title} : #{season.name} - #{team.name} - #{verb} Player #{player ? ' - ' + player.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fas.fa-edit
+        span #{season.name} - #{team.name} - #{verb} Player #{player ? ' - ' + player.name : ''}
+      div
+        form(method='post' action='/masters/roster/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
+          if player
+            input(type='hidden' name='id' value=player.id)
+          input(type='hidden' name='season_id' value=season.id)
+          input(type='hidden' name='division_id' value=division.id)
+          input(type='hidden' name='team_id' value=team.id)
+          div.content
+            div.field
+              label.label(for='discord_name') Discord Name:
+              p.control
+                input.input#discord_name(type='text' name='discord_name' placeholder='User#1234' pattern='^[^#]{2,32}#\\d{4}$' title='Username#1234' value=('') required)
+            div.field
+              label.label(for='steam_id') Dota Friend ID:
+              p.control
+                input.input#steam_id(type='text' name='steam_id' value=('') required)
+            div.field
+              label.label(for='mmr_screenshot') MMR Screenshot:
+              p.control
+                input.input#mmr_screenshot(type='url' name='mmr_screenshot' value=('') required)
+            div.field
+              label.label(for='position') Position:
+              p.control
+                input.input#position(type='number' name='position' value=('') required)
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            p.control
+              button.button.is-danger(formaction='masters/roster/delete') Delete

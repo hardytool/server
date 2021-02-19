@@ -1,0 +1,27 @@
+extends ../header.pug
+
+block title
+  title #{title} : #{verb} Division #{division ? division.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fas.fa-edit
+        span #{verb} Division #{division ? division.name : ''}
+      div
+        form(method='post' action='/masters/divisions/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
+          if division
+            input(type='hidden' name='id' value=division.id)
+          div.field
+            label.label(for='name') Name:
+            p.control
+              input.input(id='name' type='text' name='name' placeholder='Name' value=(division ? division.name : '') required)
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            if division
+              p.control
+                button.button.is-danger(formaction='/masters/divisions/delete') Delete

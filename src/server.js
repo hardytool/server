@@ -34,6 +34,7 @@ const admin_group = require('./repos/admin_group')(pool)
 const banned_player = require('./repos/banned_player')(pool)
 const division = require('./repos/division')(pool)
 const ip_address = require('./repos/ip_address')(pool)
+const masters = require('./repos/masters')(pool)
 const migration = require('./repos/migration')(pool)
 const player = require('./repos/player')(pool)
 const player_role = require('./repos/player_role')(pool)
@@ -120,6 +121,14 @@ const teamPages = require('./pages/teams')(templates,
   team,
   team_player,
   player)
+
+const mastersPages = require('./pages/masters/home')(templates, masters)
+const mastersSeasonsPages = require('./pages/masters/seasons')(templates, masters)
+const mastersDivisionsPages = require('./pages/masters/divisions')(templates, masters)
+const mastersTeamsPages = require('./pages/masters/teams')(templates, masters)
+const mastersRostersPages = require('./pages/masters/rosters')(templates, masters, steam_user, config)
+const mastersRegistrationPages = require('./pages/masters/registration')(templates, masters, steam_user, config)
+const mastersSeriesPages = require('./pages/masters/series')(templates, masters)
 
 // API routes
 // none currently
@@ -319,6 +328,62 @@ app.post(bannedPlayerPages.remove.route, bannedPlayerPages.remove.handler)
 
 app.get(ipPages.list.route, ipPages.list.handler)
 
+
+// Masters pages
+
+function safeHandler (fn) {
+  return async function wrappedFn (req, res, next) {
+    try {
+      await fn(req, res)
+    } catch (err) {
+      next(err)
+    }
+  }
+}
+
+app.get(mastersPages.home.route, mastersPages.home.handler)
+
+app.get(mastersSeasonsPages.list.route, safeHandler(mastersSeasonsPages.list.handler))
+app.get(mastersSeasonsPages.create.route, safeHandler(mastersSeasonsPages.create.handler))
+app.get(mastersSeasonsPages.edit.route, safeHandler(mastersSeasonsPages.edit.handler))
+app.post(mastersSeasonsPages.post.route, safeHandler(mastersSeasonsPages.post.handler))
+app.post(mastersSeasonsPages.remove.route, safeHandler(mastersSeasonsPages.remove.handler))
+
+app.get(mastersDivisionsPages.list.route, safeHandler(mastersDivisionsPages.list.handler))
+app.get(mastersDivisionsPages.create.route, safeHandler(mastersDivisionsPages.create.handler))
+app.get(mastersDivisionsPages.edit.route, safeHandler(mastersDivisionsPages.edit.handler))
+app.get(mastersDivisionsPages.view.route, safeHandler(mastersDivisionsPages.view.handler))
+app.post(mastersDivisionsPages.post.route, safeHandler(mastersDivisionsPages.post.handler))
+app.post(mastersDivisionsPages.remove.route, safeHandler(mastersDivisionsPages.remove.handler))
+
+app.get(mastersTeamsPages.list.route, safeHandler(mastersTeamsPages.list.handler))
+app.get(mastersTeamsPages.create.route, safeHandler(mastersTeamsPages.create.handler))
+app.get(mastersTeamsPages.edit.route, safeHandler(mastersTeamsPages.edit.handler))
+app.post(mastersTeamsPages.post.route, safeHandler(mastersTeamsPages.post.handler))
+app.post(mastersTeamsPages.remove.route, safeHandler(mastersTeamsPages.remove.handler))
+
+app.get(mastersRostersPages.list.route, safeHandler(mastersRostersPages.list.handler))
+app.get(mastersRostersPages.add.route, safeHandler(mastersRostersPages.add.handler))
+app.post(mastersRostersPages.post.route, safeHandler(mastersRostersPages.post.handler))
+app.post(mastersRostersPages.remove.route, safeHandler(mastersRostersPages.remove.handler))
+
+app.get(mastersRegistrationPages.view.route, safeHandler(mastersRegistrationPages.view.handler))
+app.get(mastersRegistrationPages.shortcut.route, safeHandler(mastersRegistrationPages.shortcut.handler))
+app.get(mastersRegistrationPages.directory.route, safeHandler(mastersRegistrationPages.directory.handler))
+app.get(mastersRegistrationPages.directoryShortcut.route, safeHandler(mastersRegistrationPages.directoryShortcut.handler))
+app.post(mastersRegistrationPages.post.route, safeHandler(mastersRegistrationPages.post.handler))
+
+app.get(mastersSeriesPages.list.route, safeHandler(mastersSeriesPages.list.handler))
+app.get(mastersSeriesPages.create.route, safeHandler(mastersSeriesPages.create.handler))
+app.get(mastersSeriesPages.edit.route, safeHandler(mastersSeriesPages.edit.handler))
+app.get(mastersSeriesPages.standings.route, safeHandler(mastersSeriesPages.standings.handler))
+app.get(mastersSeriesPages.matchups.route, safeHandler(mastersSeriesPages.matchups.handler))
+
+app.post(mastersSeriesPages.post.route, safeHandler(mastersSeriesPages.post.handler))
+app.post(mastersSeriesPages.remove.route, safeHandler(mastersSeriesPages.remove.handler))
+
+// End masters pages
+
 //Pull the list of Steam servers if it exists
 if (fs.existsSync(path.join(__dirname, 'assets', 'servers.json'))) {
   Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.json')))
@@ -330,70 +395,70 @@ migration.migrateIfNeeded(
     console.log(
       `RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)
 
-    if (config.steam.username && config.steam.password) {
-      steam.connect()
+    // if (config.steam.username && config.steam.password) {
+    //   steam.connect()
 
-      steam.on('connected', () => {
-        steamUser.logOn({
-          account_name: config.steam.username,
-          password: config.steam.password
-        })
-      })
+    //   steam.on('connected', () => {
+    //     steamUser.logOn({
+    //       account_name: config.steam.username,
+    //       password: config.steam.password
+    //     })
+    //   })
 
-      steam.on('logOnResponse', res => {
-        if (res.eresult == Steam.EResult.OK) {
-          dota2.launch()
-        }
-      })
+    //   steam.on('logOnResponse', res => {
+    //     if (res.eresult == Steam.EResult.OK) {
+    //       dota2.launch()
+    //     }
+    //   })
 
-      // Commenting this out because it is causing issues for now on node10
-      // steam.on('servers', servers => {
-      //   fs.writeFile(path.join(__dirname, 'assets', 'servers.js'), JSON.stringify(servers));
-      // })
+    //   // Commenting this out because it is causing issues for now on node10
+    //   // steam.on('servers', servers => {
+    //   //   fs.writeFile(path.join(__dirname, 'assets', 'servers.js'), JSON.stringify(servers));
+    //   // })
 
-      steam.on('error', err => {
-        console.error(err)
-        if (err.message === 'Disconnected') {
-          steam.connect()
-        }
-        else {
-          throw err
-        }
-      })
+    //   steam.on('error', err => {
+    //     console.error(err)
+    //     if (err.message === 'Disconnected') {
+    //       steam.connect()
+    //     }
+    //     else {
+    //       throw err
+    //     }
+    //   })
 
-      //If we aren't using MMR/Rank fetching, there is no point for this
-      const repeat = () => {
-        steam_user.getSteamUsers().then(users => {
-          setTimeout(() => {
-            users.forEach((user, index) => {
-              setTimeout(() => {
-                return mmr.getMMR(user.steam_id).then(mmr => {
-                  user.rank = mmr && mmr.rank ? mmr.rank : user.rank
-                  user.previous_rank = mmr && mmr.previous_rank ? mmr.previous_rank : user.previous_rank
+    //   //If we aren't using MMR/Rank fetching, there is no point for this
+    //   const repeat = () => {
+    //     steam_user.getSteamUsers().then(users => {
+    //       setTimeout(() => {
+    //         users.forEach((user, index) => {
+    //           setTimeout(() => {
+    //             return mmr.getMMR(user.steam_id).then(mmr => {
+    //               user.rank = mmr && mmr.rank ? mmr.rank : user.rank
+    //               user.previous_rank = mmr && mmr.previous_rank ? mmr.previous_rank : user.previous_rank
 
-                  if(user.previous_rank == null) {
-                    user.previous_rank = 0
-                  }
+    //               if(user.previous_rank == null) {
+    //                 user.previous_rank = 0
+    //               }
 
-                  if(user.rank == null) {
-                    user.rank = 0
-                  }
-                  user.solo_mmr = 0
-                  user.party_mmr = 0
+    //               if(user.rank == null) {
+    //                 user.rank = 0
+    //               }
+    //               user.solo_mmr = 0
+    //               user.party_mmr = 0
 
-                  return steam_user.saveSteamUser(user)
-                })
-              }, 1000 * (index + 1))
-            })
-          }, 10000)
-        }).catch(err => {
-          console.error(err)
-          console.log('Error recovered - continuing')
-        })
-        setTimeout(repeat, 60*60*1000)
-      }
-      repeat()
-    }
+    //               return steam_user.saveSteamUser(user)
+    //             })
+    //           }, 1000 * (index + 1))
+    //         })
+    //       }, 10000)
+    //     }).catch(err => {
+    //       console.error(err)
+    //       console.log('Error recovered - continuing')
+    //     })
+    //     setTimeout(repeat, 60*60*1000)
+    //   }
+    //   repeat()
+    // }
 
     if (credentials) {
       http.createServer(redirectHttps({

@@ -1,0 +1,19 @@
+extends ../header.pug
+
+block title
+  title #{title} : Thanks
+
+block content
+  div.hero-body.has-text-centered
+    div.container
+      div.columns
+        div.column
+          div.field
+            a(href='https://discord.gg/syGGKWcZFj' alt='Join the Discord' target='_blank')
+              figure.image.is-hero.is-inline-block
+                img(src='/assets/discord.png')
+              div
+                button.button.is-primary Join the RD2L Masters Discord
+          div.field
+            a(href='masters/seasons/' + season.id + '/divisions/' + division.id + '/teams')
+              button.button Continue to the teams list

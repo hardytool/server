@@ -1,0 +1,38 @@
+extends ../components/base.pug
+
+block header
+  section.hero
+    div.hero-head
+      nav.navbar
+        div.navbar-brand
+          a.navbar-item(href='/masters')
+            img(src="/assets/notext.png")
+            div.navbar-item Masters
+          if user
+            a.is-hidden-desktop.navbar-item(href='/profile/' + user.steamId).text-icon
+              img.circle(src=user.avatar)
+              if user.activityCheckRequired
+                i.fa.fa-exclamation-circle.activity-check
+          div.navbar-burger.burger(data-target='seal-menu')
+            span
+            span
+            span
+        div.navbar-menu#seal-menu
+          div.navbar-start
+            a.navbar-item(href='/masters/seasons') Seasons
+            a.navbar-item(href='/masters/divisions') Divisions
+            a.navbar-item(href='/masters/register') Register
+            a.navbar-item(href='/') Main
+          div.navbar-end
+            if user
+              a.navbar-item.is-hidden-touch(href='/profile/' + user.steamId).text-icon
+                span= user.displayName
+                  if user.activityCheckRequired
+                    i.fa.fa-exclamation-circle.activity-check
+                img.circle(src=user.avatar)
+              a.navbar-item(href='/logout') Log out
+            else
+              a.navbar-item(href='/auth/steam').has-icon
+                span.icon.is-small
+                  i.fab.fa-steam
+                span &nbsp;Log in

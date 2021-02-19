@@ -1,0 +1,54 @@
+extends ./header.pug
+
+block title
+  title RD2L Masters
+
+block append header
+  div.logo-container
+    figure.biglogo
+      img(src="/assets/rd2l-lame.png")
+    figure.littlelogo
+      img(src="/assets/notext.png")
+
+block contentFull
+  section.section
+    div.container
+      div.columns
+        div.column
+          div.level
+            div.level-item
+              h5.title.is-5.has-icon
+                span.icon
+                  i.fa.fa-info-circle
+                | General Info
+          div.level
+            div.level-item
+              ul
+                li Team signups
+        div.column
+          div.level
+            div.level-item
+              h5.title.is-5.has-icon
+                span.icon
+                  i.fa.fa-users
+                | Player Culture
+          div.level
+            div.level-item
+              ul
+                li Grow with your teammates
+                li Enjoy community content
+                li Play with against similar skill levels
+        div.column
+          div.level
+            div.level-item
+              h5.title.is-5.has-icon
+                span.icon
+                  i.fa.fa-trophy
+                | RD2L Features
+          div.level
+            div.level-item
+              ul
+                li Participate in inhouses
+                li Play in weekend tourneys
+                li Mini leagues between seasons
+                li Find Battlecup stacks
