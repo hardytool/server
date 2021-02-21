@@ -1,0 +1,45 @@
+extends ../header.pug
+
+block title
+  title #{title} : #{verb} Team - Season #{season.number} #{team ? ' - ' + team.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fas.fa-edit
+        span #{verb} Team - Season #{season.number} #{team ? ' - ' + team.name : ''}
+      div
+        form(method='post' action='/masters/teams/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
+          if team
+            input(type='hidden' name='id' value=team.id)
+          input(type='hidden' name='season_id' value=season.id)
+          input(type='hidden' name='division_id' value=division.id)
+          div.field
+            label.label(for='name') Name:
+            p.control
+              input.input(id='name' type='text' name='name' placeholder='Name' value=(team ? team.name : '') required)
+          div.field
+            label.label(for='logo') Logo:
+            p.control
+              input.input(id='logo' type='url' name='logo' placeholder='Imgur URL' value=(team ? team.logo : ''))
+          div.field
+            label.label(for='scheduler_discord_id') Scheduler Discord ID:
+            p.control
+              input.input(id='scheduler_discord_id' type='text' name='scheduler_discord_id' placeholder='Name#1234' value=(team ? team.scheduler_discord_id : '') required)
+          div.field
+            p.control
+              label.checkbox
+                if team && team.approved
+                  input(id='approved' type='checkbox' name='approved' checked)
+                else
+                  input(id='approved' type='checkbox' name='approved')
+                span &nbsp;Approved
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            if team
+              p.control
+                button.button.is-danger(formaction='/masters/teams/delete') Delete
