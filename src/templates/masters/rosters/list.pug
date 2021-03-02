@@ -46,6 +46,7 @@ block content
             th Avatar
             th Rank
             if user && user.isAdmin
+              th Screenshot
               th Remove
         tbody
           each player in roster
@@ -58,6 +59,8 @@ block content
               td
                 img.image.rank.is-48x48(src=`/assets/medals/${player.rank}.png` alt=player.rank)
               if user && user.isAdmin
+                td
+                  a(href=player.mmr_screenshot) Screenshot
                 td
                   form
                     input(type='hidden' name='division_id' value=division.id)

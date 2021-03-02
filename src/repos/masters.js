@@ -349,7 +349,8 @@ function getRoster(db, team_id) {
     steam_user.name AS name,
     steam_user.avatar,
     steam_user.rank,
-    masters_team_player.position
+    masters_team_player.position,
+    masters_player.mmr_screenshot
   FROM masters_team
   JOIN masters_team_player ON masters_team.id = masters_team_player.team_id
   JOIN masters_player ON masters_team_player.player_id = masters_player.id
