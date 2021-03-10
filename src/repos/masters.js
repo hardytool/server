@@ -163,6 +163,8 @@ function getTeams(db, season_id, division_id) {
     masters_team.logo,
     masters_team.scheduler_discord_id,
     masters_team.approved,
+    masters_team.group_number,
+    masters_team.disbanded,
     masters_season.number AS season_number,
     masters_division.name AS division_name
   FROM
@@ -182,7 +184,7 @@ function getTeams(db, season_id, division_id) {
   }
 
   select = sql.join([select, sql`
-    ORDER BY masters_team.name ASC
+    ORDER BY masters_team.group_number ASC, masters_team.name ASC
   `])
 
   return db.query(select).then(result => {
@@ -199,7 +201,8 @@ function getTeam(db, id) {
     name,
     logo,
     scheduler_discord_id,
-    approved
+    approved,
+    disbanded
   FROM
     masters_team
   WHERE
@@ -220,7 +223,8 @@ function saveTeam(db, team) {
       name,
       logo,
       scheduler_discord_id,
-      approved
+      approved,
+      disbanded
     ) VALUES (
       ${team.id},
       ${team.season_id},
@@ -228,7 +232,8 @@ function saveTeam(db, team) {
       ${team.name},
       ${team.logo},
       ${team.scheduler_discord_id},
-      ${team.approved}
+      ${team.approved},
+      ${team.disbanded}
     ) ON CONFLICT ON CONSTRAINT masters_team_season_id_name_key
     DO UPDATE SET (
       season_id,
@@ -236,16 +241,18 @@ function saveTeam(db, team) {
       name,
       logo,
       scheduler_discord_id,
-      approved
+      approved,
+      disbanded
     ) = (
       ${team.season_id},
       ${team.division_id},
       ${team.name},
       ${team.logo},
       ${team.scheduler_discord_id},
-      ${team.approved}
+      ${team.approved},
+      ${team.disbanded}
     )
-    RETURNING id, season_id, division_id, name, logo, scheduler_discord_id, approved
+    RETURNING id, season_id, division_id, name, logo, scheduler_discord_id, approved, disbanded
   `
   return db.query(upsert).then(result => {
     return result.rows[0]
@@ -420,14 +427,20 @@ function getSeries(db, criteria) {
     masters_series.away_team_id,
     masters_series.home_points,
     masters_series.away_points,
-    masters_series.series_url,
     masters_series.round,
+    masters_series.match_1_url,
+    masters_series.match_2_url,
+    masters_series.match_1_forfeit_home,
+    masters_series.match_2_forfeit_home,
     home_team.name as home_team_name,
     away_team.name as away_team_name,
     home_team.logo as home_team_logo,
     away_team.logo as away_team_logo,
+    home_team.scheduler_discord_id as home_team_scheduler_discord_id,
+    away_team.scheduler_discord_id as away_team_scheduler_discord_id,
     home_team.division_id as home_team_division_id,
-    away_team.division_id as away_team_division_id
+    away_team.division_id as away_team_division_id,
+    home_team.group_number as group_number
   FROM masters_series
   FULL OUTER JOIN masters_team AS home_team ON home_team.id = masters_series.home_team_id
   FULL OUTER JOIN masters_team AS away_team ON away_team.id = masters_series.away_team_id
@@ -449,6 +462,11 @@ function getSeries(db, criteria) {
           away_team.division_id = ${criteria.division_id}
         )`
       ])
+    }
+    if (criteria.round) {
+      select = sql.join([select, sql`
+      AND masters_series.round < ${criteria.round}
+      `])
     }
     if (criteria.series_id) {
       select = sql.join([select, sql`
@@ -483,38 +501,54 @@ function saveSeries(db, series) {
       id,
       round,
       season_id,
+      division_id,
       home_team_id,
       away_team_id,
       home_points,
       away_points,
-      series_url
+      match_1_url,
+      match_2_url,
+      match_1_forfeit_home,
+      match_2_forfeit_home
     ) VALUES (
       ${series.id},
       ${series.round},
       ${series.season_id},
+      ${series.division_id},
       ${series.home_team_id},
       ${series.away_team_id},
       ${series.home_points},
       ${series.away_points},
-      ${series.series_url}
+      ${series.match_1_url},
+      ${series.match_2_url},
+      ${series.match_1_forfeit_home},
+      ${series.match_2_forfeit_home}
     ) ON CONFLICT (
       id
     ) DO UPDATE SET (
       round,
       season_id,
+      division_id,
       home_team_id,
       away_team_id,
       home_points,
       away_points,
-      series_url
+      match_1_url,
+      match_2_url,
+      match_1_forfeit_home,
+      match_2_forfeit_home
     ) = (
       ${series.round},
       ${series.season_id},
+      ${series.division_id},
       ${series.home_team_id},
       ${series.away_team_id},
       ${series.home_points},
       ${series.away_points},
-      ${series.series_url}
+      ${series.match_1_url},
+      ${series.match_2_url},
+      ${series.match_1_forfeit_home},
+      ${series.match_2_forfeit_home}
     )
   `
   return db.query(upsert)
@@ -590,6 +624,41 @@ function getStandings(db, season_id, division_id) {
   })
 }
 
+function getCurrentRound(db, season_id, division_id) {
+  const query = sql`
+  SELECT
+    current_round as round
+  FROM
+    masters_round
+  WHERE
+    season_id = ${season_id}
+    AND division_id = ${division_id}
+  `
+  return db.query(query).then(result => {
+    return result.rows[0].round
+  })
+}
+
+function saveCurrentRound(db, season_id, division_id, round) {
+  const upsert = sql`
+  INSERT INTO
+    masters_round (
+      season_id,
+      division_id,
+      current_round
+    ) VALUES (
+      ${season_id},
+      ${division_id},
+      ${round}
+    ) ON CONFLICT (
+      season_id,
+      division_id
+    ) DO UPDATE SET
+      current_round = ${round}
+  `
+  return db.query(upsert)
+}
+
 module.exports = (db) => {
   return {
     getSeasons: getSeasons.bind(null, db),
@@ -618,6 +687,8 @@ module.exports = (db) => {
     getSeries: getSeries.bind(null, db),
     saveSeries: saveSeries.bind(null, db),
     deleteSeries: deleteSeries.bind(null, db),
-    getStandings: getStandings.bind(null, db)
+    getStandings: getStandings.bind(null, db),
+    getCurrentRound: getCurrentRound.bind(null, db),
+    saveCurrentRound: saveCurrentRound.bind(null, db)
   }
 }

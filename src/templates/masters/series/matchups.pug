@@ -1,0 +1,51 @@
+extends ../header.pug
+
+mixin navigationButtons
+  div.field.is-grouped
+    div.control
+      a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/teams')
+        button.button.is-warning Teams
+    div.control
+      a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/series')
+        button.button.is-info Series
+    div.control
+      a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/standings')
+        button.button.is-success Standings
+    div.control
+      a.button(disabled) Matchups
+
+block title
+  title #{title} : #{season ? `Season ${season.number}` : ''} Week #{round} Matchups
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fa.fa-list
+        span #{division.name} #{season ? `Season ${season.number}` : ''} Week #{round} Matchups
+  +navigationButtons
+  each matchups in groupedMatchups
+    div.columns
+      table.table.is-striped.is-middle-aligned.is-fullwidth
+        thead
+          tr
+            th Home Team
+            th Away Team
+        tbody
+          each matchup in matchups
+            tr
+              td
+                a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + matchup.home.id) #{matchup.home.name}
+              if matchup.away && matchup.away.id
+                td
+                  a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + matchup.away.id) #{matchup.away.name}
+              else
+                td= matchup.away.name
+  if user && user.isAdmin
+    div.field.is-grouped
+      div.control
+        a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/week/' + round + '/importSeries')
+          button.button.is-success Create Series for these Matchups
+      div.control
+          a.button(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/round/edit') Update round

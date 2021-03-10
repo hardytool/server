@@ -128,7 +128,7 @@ const mastersDivisionsPages = require('./pages/masters/divisions')(templates, ma
 const mastersTeamsPages = require('./pages/masters/teams')(templates, masters)
 const mastersRostersPages = require('./pages/masters/rosters')(templates, masters, steam_user, config)
 const mastersRegistrationPages = require('./pages/masters/registration')(templates, masters, steam_user, config)
-const mastersSeriesPages = require('./pages/masters/series')(templates, masters)
+const mastersSeriesPages = require('./pages/masters/series')(templates, masters, pairings)
 
 // API routes
 // none currently
@@ -378,9 +378,12 @@ app.get(mastersSeriesPages.create.route, safeHandler(mastersSeriesPages.create.h
 app.get(mastersSeriesPages.edit.route, safeHandler(mastersSeriesPages.edit.handler))
 app.get(mastersSeriesPages.standings.route, safeHandler(mastersSeriesPages.standings.handler))
 app.get(mastersSeriesPages.matchups.route, safeHandler(mastersSeriesPages.matchups.handler))
+app.get(mastersSeriesPages.editRound.route, safeHandler(mastersSeriesPages.editRound.handler))
+app.get(mastersSeriesPages.importSeries.route, safeHandler(mastersSeriesPages.importSeries.handler))
 
 app.post(mastersSeriesPages.post.route, safeHandler(mastersSeriesPages.post.handler))
 app.post(mastersSeriesPages.remove.route, safeHandler(mastersSeriesPages.remove.handler))
+app.post(mastersSeriesPages.saveRound.route, safeHandler(mastersSeriesPages.saveRound.handler))
 
 // End masters pages
 

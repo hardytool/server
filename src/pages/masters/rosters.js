@@ -16,15 +16,42 @@ async function list(templates, masters, req, res) {
   const roster = await masters.getRoster(team.id)
   const series = await masters.getSeries({ team_id: team.id })
 
-  for (const s of series) {
-    if (s.home_team_id === team_id) {
-      wins += s.home_points
-      losses += s.away_points
-    } else {
-      wins += s.away_points
-      losses += s.home_points
+  const formattedSeries = series.map(_series => {
+    _series.own = {}
+    _series.opp = {}
+    if (_series.home_team_id) {
+      if (team_id == _series.home_team_id) {
+        wins += _series.home_points
+        losses += _series.away_points
+        _series.own.id = _series.home_team_id
+        _series.own.name = _series.home_team_name
+        _series.own.logo = _series.home_team_logo
+        _series.own.points = _series.home_points
+
+        _series.opp.id = _series.away_team_id
+        _series.opp.name = _series.away_team_name
+        _series.opp.logo = _series.away_team_logo
+        _series.opp.points = _series.away_points
+      }
     }
-  }
+    if (_series.away_team_id) {
+      if (team_id == _series.away_team_id) {
+        wins += _series.away_points
+        losses += _series.home_points
+        _series.own.id = _series.away_team_id
+        _series.own.name = _series.away_team_name
+        _series.own.logo = _series.away_team_logo
+        _series.own.points = _series.away_points
+
+        _series.opp.id = _series.home_team_id
+        _series.opp.name = _series.home_team_name
+        _series.opp.logo = _series.home_team_logo
+        _series.opp.points = _series.home_points
+      }
+    }
+
+    return _series
+  })
 
   const html = templates.masters.rosters.list({
     user: req.user,
@@ -34,7 +61,7 @@ async function list(templates, masters, req, res) {
     roster,
     wins,
     losses,
-    series,
+    series: formattedSeries,
     csrfToken: req.csrfToken()
   })
 
