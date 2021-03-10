@@ -203,6 +203,7 @@ html(lang='en')
                   a.navbar-item(href='/')
                     span.icon
                       i.fa.fa-lg.fa-home
+                    div.navbar-item Main
                   if user
                     a.is-hidden-desktop.navbar-item(href='/profile/' + user.steamId).text-icon
                       img.circle(src=user.avatar)
@@ -217,6 +218,7 @@ html(lang='en')
                     a.navbar-item(href='/seasons') Seasons
                     a.navbar-item(href='/divisions') Divisions
                     a.navbar-item(href='/register') Register
+                    a.navbar-item(href='/masters') Masters
                   div.navbar-end
                     if user
                       a.navbar-item.is-hidden-touch(href='/profile/' + user.steamId).text-icon
