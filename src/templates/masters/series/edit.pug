@@ -31,11 +31,11 @@ block content
                     if series && team.id === series.home.id
                       option(value=team.id selected)
                         span= team.name
-                        span= team.captain_name ? ' (' + team.captain_name + ')' : ''
+                        span= team.scheduler_discord_id ? ' (' + team.scheduler_discord_id + ')' : ''
                     else
                       option(value=team.id)
                         span= team.name
-                        span= team.captain_name ? ' (' + team.captain_name + ')' : ''
+                        span= team.scheduler_discord_id ? ' (' + team.scheduler_discord_id + ')' : ''
           div.field
             label.label(for='home_points') Home points:
             input.input(id='home_points' type='number' name='home_points' placeholder='Home points' min='0' max='2' value=(series ? series.home.points : '') required)
@@ -49,11 +49,11 @@ block content
                     if series && team.id === series.away.id
                       option(value=team.id selected)
                         span= team.name
-                        span= team.captain_name ? ' (' + team.captain_name + ')' : ''
+                        span= team.scheduler_discord_id ? ' (' + team.scheduler_discord_id + ')' : ''
                     else
                       option(value=team.id)
                         span= team.name
-                        span= team.captain_name ? ' (' + team.captain_name + ')' : ''
+                        span= team.scheduler_discord_id ? ' (' + team.scheduler_discord_id + ')' : ''
           div.field
             label.label(for='away_points') Away points:
             input.input(id='away_points' type='number' name='away_points' placeholder='Away points' min='0' max='2' value=(series ? series.away.points : '') required)

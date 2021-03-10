@@ -234,7 +234,7 @@ function saveTeam(db, team) {
       ${team.scheduler_discord_id},
       ${team.approved},
       ${team.disbanded}
-    ) ON CONFLICT ON CONSTRAINT masters_team_season_id_name_key
+    ) ON CONFLICT ON CONSTRAINT masters_team_pkey
     DO UPDATE SET (
       season_id,
       division_id,
@@ -485,7 +485,7 @@ function getSeries(db, criteria) {
   }
 
   select = sql.join([select, sql`
-    ORDER BY masters_series.round DESC
+    ORDER BY masters_series.round DESC, home_team.group_number ASC
     `
   ])
 

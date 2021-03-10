@@ -28,6 +28,8 @@ block content
         span Division:
           a(href='/masters/divisions/' + division.id) #{division.name}
       h5.title.is-5
+        span Scheduler: #{team.scheduler_discord_id}
+      h5.title.is-5
         span Approved:
           if team.approved
             span.icon.has-text-success

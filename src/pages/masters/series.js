@@ -34,7 +34,6 @@ async function list(templates, masters, req, res) {
         _series.away = {}
         _series.away.id = _series.away_team_id
         _series.away.name = `${_series.away_team_name} (${_series.away_team_scheduler_discord_id.split('#')[0]})`
-        _series.away.name = _series.away_team_name
         _series.away.logo = _series.away_team_logo
         _series.away.points = _series.away_points
       }
@@ -288,6 +287,7 @@ async function matchups(templates, masters, pairings, req, res) {
 
   teams = teams.map(t => {
     t.droppedOut = t.disbanded
+    t.name = `${t.name} (${t.scheduler_discord_id})`
     return t
   })
 
@@ -423,7 +423,17 @@ async function importSeries(masters, pairings, req, res) {
       groupedSeries.push([])
     }
 
-    groupedSeries[s.group_number - 1].push(s)
+    groupedSeries[s.group_number - 1].push({
+      round: s.round,
+      home: {
+        id: s.home_team_id,
+        points: s.home_points
+      },
+      away: {
+        id: s.away_team_id,
+        points: s.away_points
+      }
+    })
   }
 
   for (let g = 0; g < groupedTeams.length; g++) {
