@@ -202,7 +202,8 @@ function getTeam(db, id) {
     logo,
     scheduler_discord_id,
     approved,
-    disbanded
+    disbanded,
+    group_number
   FROM
     masters_team
   WHERE
@@ -224,7 +225,8 @@ function saveTeam(db, team) {
       logo,
       scheduler_discord_id,
       approved,
-      disbanded
+      disbanded,
+      group_number
     ) VALUES (
       ${team.id},
       ${team.season_id},
@@ -233,7 +235,8 @@ function saveTeam(db, team) {
       ${team.logo},
       ${team.scheduler_discord_id},
       ${team.approved},
-      ${team.disbanded}
+      ${team.disbanded},
+      ${team.group_number}
     ) ON CONFLICT ON CONSTRAINT masters_team_pkey
     DO UPDATE SET (
       season_id,
@@ -242,7 +245,8 @@ function saveTeam(db, team) {
       logo,
       scheduler_discord_id,
       approved,
-      disbanded
+      disbanded,
+      group_number
     ) = (
       ${team.season_id},
       ${team.division_id},
@@ -250,7 +254,8 @@ function saveTeam(db, team) {
       ${team.logo},
       ${team.scheduler_discord_id},
       ${team.approved},
-      ${team.disbanded}
+      ${team.disbanded},
+      ${team.group_number}
     )
     RETURNING id, season_id, division_id, name, logo, scheduler_discord_id, approved, disbanded
   `
