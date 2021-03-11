@@ -28,6 +28,8 @@ block content
         span Division:
           a(href='/masters/divisions/' + division.id) #{division.name}
       h5.title.is-5
+        span Scheduler: #{team.scheduler_discord_id}
+      h5.title.is-5
         span Approved:
           if team.approved
             span.icon.has-text-success
@@ -100,7 +102,7 @@ block content
             tr
               td= _series.round
               td
-                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.own.id)= _series.own.name
+                a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.own.id)= _series.own.name
               td
                 figure.image.is-team-logo.hide-overflow
                   img(src=_series.own.logo)
@@ -111,7 +113,7 @@ block content
                   figure.image.is-team-logo.hide-overflow
                     img(src=_series.opp.logo)
                 td
-                  a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.opp.id)= _series.opp.name
+                  a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.opp.id)= _series.opp.name
               else
                 td 0
                 td BYE
@@ -128,4 +130,4 @@ block content
                 td N/A
               if user && user.isAdmin
                 td
-                  a(href='/seasons/' + season.id + '/divisions/' + division.id + '/series/' + _series.id + '/edit') edit
+                  a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/series/' + _series.id + '/edit') edit

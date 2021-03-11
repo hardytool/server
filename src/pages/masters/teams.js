@@ -79,6 +79,7 @@ async function post(masters, req, res) {
   const team = req.body
   team.id = id
   team.approved = !!team.approved
+  team.disbanded = !!team.disbanded
 
   await masters.saveTeam(team)
   res.redirect('/masters/seasons/' + season_id + '/divisions/' + division_id + '/teams/' + team.id)

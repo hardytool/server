@@ -19,6 +19,9 @@ mixin navigationButtons
     div.control
       a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/standings')
         button.button.is-success Standings
+    div.control
+      a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/matchups')
+        button.button.is-primary Matchups
 
 block title
   title #{title} : #{season ? `Season ${season.number}` : ''} Team List
@@ -38,6 +41,7 @@ block content
         tr
           th Name
           th Logo
+          th Group
           if user && user.isAdmin
             th Approved
             th Edit
@@ -49,6 +53,7 @@ block content
             td
               figure.image.is-team-logo.hide-overflow
                 img(src=team.logo)
+            td=team.group_number
             if user && user.isAdmin
               td
                 if team.approved

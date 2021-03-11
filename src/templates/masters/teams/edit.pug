@@ -37,6 +37,14 @@ block content
                 else
                   input(id='approved' type='checkbox' name='approved')
                 span &nbsp;Approved
+          div.field
+            p.control
+              label.checkbox
+                if team && team.disbanded
+                  input(id='disbanded' type='checkbox' name='disbanded' checked)
+                else
+                  input(id='disbanded' type='checkbox' name='disbanded')
+                span &nbsp;Disbanded
           div.field.is-grouped
             p.control
               button.button.is-primary Submit
