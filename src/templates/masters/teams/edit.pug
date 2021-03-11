@@ -30,6 +30,10 @@ block content
             p.control
               input.input(id='scheduler_discord_id' type='text' name='scheduler_discord_id' placeholder='Name#1234' value=(team ? team.scheduler_discord_id : '') required)
           div.field
+            label.label(for='group_number') Group:
+            p.control
+              input.input(id='group_number' type='number' name='group_number' value=(team ? team.group_number : '') required)
+          div.field
             p.control
               label.checkbox
                 if team && team.approved
