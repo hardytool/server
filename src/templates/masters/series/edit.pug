@@ -1,0 +1,120 @@
+extends ../header.pug
+
+block title
+  title #{title} : #{verb} Series #{series ? ' - Week ' + series.round + ' - ' + series.home.name + ' v ' + series.away.name : ''}
+
+block content
+  div.columns
+    div.column
+      h3.title.is-3.has-icon
+        span.icon.is-medium
+          i.fa.fa-edit
+        span #{verb} Series #{series ? ' - Week ' + series.round + ' - ' + series.home.name + ' v ' + series.away.name : ''}
+      div
+        form(method='post' action='/masters/series/edit')
+          input(type='hidden' name="_csrf" value=csrfToken)
+          if series
+            input(type='hidden' name='id' value=series.id)
+          input(type='hidden' name='season_id' value=season.id)
+          input(type='hidden' name='division_id' value=division.id)
+          div.field
+            label.label(for='round') Week:
+            p.control
+              input.input(id='round' type='number' name='round' placeholder='Week' min='1' value=(series ? series.round : '') required)
+          div.field
+            label.label(for='home_team_id') Home team:
+            p.control
+              span.select
+                select(id='home_team_id' name='home_team_id')
+                  option(value='') BYE
+                  each team in teams
+                    if series && team.id === series.home.id
+                      option(value=team.id selected)
+                        span= team.name
+                        span= team.scheduler_discord_id ? ' (' + team.scheduler_discord_id + ')' : ''
+                    else
+                      option(value=team.id)
+                        span= team.name
+                        span= team.scheduler_discord_id ? ' (' + team.scheduler_discord_id + ')' : ''
+          div.field
+            label.label(for='home_points') Home points:
+            input.input(id='home_points' type='number' name='home_points' placeholder='Home points' min='0' max='2' value=(series ? series.home.points : '') required)
+          div.field
+            label.label(for='away_team_id') Away team:
+            p.control
+              span.select
+                select(id='away_team_id' name='away_team_id')
+                  option(value='') BYE
+                  each team in teams
+                    if series && team.id === series.away.id
+                      option(value=team.id selected)
+                        span= team.name
+                        span= team.scheduler_discord_id ? ' (' + team.scheduler_discord_id + ')' : ''
+                    else
+                      option(value=team.id)
+                        span= team.name
+                        span= team.scheduler_discord_id ? ' (' + team.scheduler_discord_id + ')' : ''
+          div.field
+            label.label(for='away_points') Away points:
+            input.input(id='away_points' type='number' name='away_points' placeholder='Away points' min='0' max='2' value=(series ? series.away.points : '') required)
+          div.field
+            label.label(for='match_1_url') Match 1 URL:
+            input.input(id='match_1_url' type='text' name='match_1_url' placeholder='Match 1 URL' value=(series ? series.match_1_url : ''))
+          div.field
+            label.label(for='match_2_url') Match 2 URL:
+            input.input(id='match_2_url' type='text' name='match_2_url' placeholder='Match 2 URL' value=(series ? series.match_2_url : ''))
+          div.field
+            label.label Match 1 forfeit?:
+            p.control
+              label.radio
+                if series && series.match_1_forfeit_home === true
+                  input(id='match_1_forfeit_home' value='home' type='radio' name='match_1_forfeit_home' checked)
+                  span &nbsp;Home
+                else
+                  input(id='match_1_forfeit_home' value='home' type='radio' name='match_1_forfeit_home')
+                  span &nbsp;Home
+              label.radio
+                if series && series.match_1_forfeit_home === false
+                  input(id='match_1_forfeit_home' value='away' type='radio' name='match_1_forfeit_home' checked)
+                  span &nbsp;Away
+                else
+                  input(id='match_1_forfeit_home' value='away' type='radio' name='match_1_forfeit_home')
+                  span &nbsp;Away
+              label.radio
+                if !series || series.match_1_forfeit_home === null
+                  input(id='match_1_forfeit_home' value='none' type='radio' name='match_1_forfeit_home' checked)
+                  span &nbsp;None
+                else
+                  input(id='match_1_forfeit_home' value='none' type='radio' name='match_1_forfeit_home')
+                  span &nbsp;None
+          div.field
+            label.label Match 2 forfeit?:
+            p.control
+              label.radio
+                if series && series.match_2_forfeit_home === true
+                  input(id='match_2_forfeit_home' value='home' type='radio' name='match_2_forfeit_home' checked)
+                  span &nbsp;Home
+                else
+                  input(id='match_2_forfeit_home' value='home' type='radio' name='match_2_forfeit_home')
+                  span &nbsp;Home
+              label.radio
+                if series && series.match_2_forfeit_home === false
+                  input(id='match_2_forfeit_home' value='away' type='radio' name='match_2_forfeit_home' checked)
+                  span &nbsp;Away
+                else
+                  input(id='match_2_forfeit_home' value='away' type='radio' name='match_2_forfeit_home')
+                  span &nbsp;Away
+              label.radio
+                if !series || series.match_2_forfeit_home === null
+                  input(id='match_2_forfeit_home' value='none' type='radio' name='match_2_forfeit_home' checked)
+                  span &nbsp;None
+                else
+                  input(id='match_2_forfeit_home' value='none' type='radio' name='match_2_forfeit_home')
+                  span &nbsp;None
+            p.help In the case of a bye, be sure to score 2 points to the team that matched against the bye. Mark each match a forfeit loss for the 'BYE' team
+          div.field.is-grouped
+            p.control
+              button.button.is-primary Submit
+            if series
+              p.control
+                button.button.is-danger(formaction='/masters/series/delete') Delete
