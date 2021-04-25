@@ -118,5 +118,6 @@
     "123": {"name":"npc_dota_hero_hoodwink","localized_name":"Hoodwink","primary_attr":"agi","attack_type":"Ranged","roles":["Nuker","Escape","Disabler"],"legs":2},
     "126": {"name":"npc_dota_hero_void_spirit","localized_name":"Void Spirit","primary_attr":"int","attack_type":"Melee","roles":["Carry","Escape","Nuker","Disabler"],"legs":2},
     "128": {"name":"npc_dota_hero_snapfire","localized_name":"Snapfire","primary_attr":"str","attack_type":"Ranged","roles":["Support","Nuker","Disabler","Escape"],"legs":2},
-    "129": {"name":"npc_dota_hero_mars","localized_name":"Mars","primary_attr":"str","attack_type":"Melee","roles":["Carry","Initiator","Disabler","Durable"],"legs":2}
+    "129": {"name":"npc_dota_hero_mars","localized_name":"Mars","primary_attr":"str","attack_type":"Melee","roles":["Carry","Initiator","Disabler","Durable"],"legs":2},
+    "135": {"name":"npc_dota_hero_dawnbreaker","localized_name":"Dawnbreaker","primary_attr":"str","attack_type":"Melee","roles":["Carry","Durable"],"legs":2}
 }
