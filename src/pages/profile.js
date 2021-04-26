@@ -19,8 +19,8 @@ function view(
       const top5 = body.length ? body.slice(0,5) : []
       const notableHeroes = top5.map(hero => {
         hero.picture =
-            'https://steamcdn-a.akamaihd.net/apps/dota2/images/heroes/' +
-            heroes[hero['hero_id']]['name'].substr(14) + '_sb.png'
+            'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/' +
+            heroes[hero['hero_id']]['name'].substr(14) + '.png'
         hero.localName = heroes[hero['hero_id']]['localized_name']
         return hero
       })
