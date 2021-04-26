@@ -108,7 +108,7 @@ block content
         span &nbsp;Most Played Heroes in the Last 6 Months
       if notableHeroes.length > 0
         each notableHero in notableHeroes
-          img(title= "Games: " + notableHero.games + " Wins: " + notableHero.win src=notableHero.picture).notable
+          img(title= "Games: " + notableHero.games + " Wins: " + notableHero.win src=notableHero.picture).notable-hero
       else
         span &nbsp;Could not retrieve hero data
   div.columns
