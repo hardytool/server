@@ -43,11 +43,11 @@ block content
               td= standing.placement
               if standing.disbanded
                 td.disbanded
-                  a(href='masters/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + standing.id)= standing.name
+                  a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + standing.id)= standing.name
                   span= standing.captain_name ? ' (' + standing.captain_name + ')' : ''
               else
                 td
-                  a(href='masters/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + standing.id)= standing.name
+                  a(href='/masters/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + standing.id)= standing.name
                   span= standing.captain_name ? ' (' + standing.captain_name + ')' : ''
               td
                 figure.image.is-team-logo.hide-overflow
