@@ -156,6 +156,7 @@ async function post(templates, masters, steam_user, config, req, res) {
     name: req.body.name,
     logo: req.body.logo,
     scheduler_discord_id: req.body.scheduler_discord_id,
+    disbanded: false,
     approved: false
   })
 
