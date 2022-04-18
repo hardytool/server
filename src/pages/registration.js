@@ -188,7 +188,7 @@ function post(templates, season, division, steam_user, team_player, player, role
   p.captain_approved = false
   p.activity_check = false
   p.statement = p.statement.slice(0, 500)
-  p.statement = p.statement.match(/\p{Extended_Pictographic}/gmu).join('')
+  p.statement = p.statement.match(/\p{Extended_Pictographic}/gmu)?.join('') || ''
   p.is_draftable = !(p.standin_only === 'on')
   delete p.standin_only
 
