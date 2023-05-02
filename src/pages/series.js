@@ -31,7 +31,6 @@ function list(templates, season, series, division, req, res) {
             } else {
               _series.away.name = _series.away_team_captain_name
             }
-            _series.away.name = _series.away_team_name
             _series.away.logo = _series.away_team_logo
             _series.away.points = _series.away_points
           }
