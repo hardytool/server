@@ -1,6 +1,5 @@
 # Server
-[![Dependency Status](https://img.shields.io/david/redditdota2league/server.svg)](https://david-dm.org/redditdota2league/server "Check this project's dependencies")
-[![Dependency Status](https://img.shields.io/david/dev/redditdota2league/server.svg)](https://david-dm.org/redditdota2league/server?type=dev "Check this project's dependencies")
+[![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/redditdota2league/server)](https://libraries.io/github/redditdota2league/server/dependencies)
 
 This is RD2L's backend and website.
 
