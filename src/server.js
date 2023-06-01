@@ -450,15 +450,16 @@ migration.migrateIfNeeded(
                   user.party_mmr = 0
 
                   return steam_user.saveSteamUser(user)
+                }).catch(err => {
+                  console.error(err)
                 })
               }, 1000 * (index + 1))
             })
           }, 10000)
         }).catch(err => {
           console.error(err)
-          console.log('Error recovered - continuing')
         })
-        setTimeout(repeat, 60*60*1000)
+        setTimeout(repeat, 12*60*60*1000)
       }
       repeat()
     }
