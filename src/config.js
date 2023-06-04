@@ -24,7 +24,8 @@ function config(env) {
     },
     redis: {
       host: env.REDIS_HOST || 'redis',
-      port: env.REDIS_PORT || 6379
+      port: env.REDIS_PORT || 6379,
+      password: env.REDIS_PASSWORD || null,
     },
     steam: {
       username: env.STEAM_BOT_USERNAME || false,
