@@ -6,7 +6,8 @@
   "scripts": {
     "test": "eslint src",
     "start": "node src/server.js",
-    "dev": "nodemon --exec 'node src/server.js' -e pug,js"
+    "dev": "nodemon --exec 'node src/server.js' -e pug,js",
+    "build": "docker build -t rd2l/server ."
   },
   "repository": {
     "type": "git",
