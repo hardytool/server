@@ -8,13 +8,13 @@ function steamIdReturn(config, req, res) {
 
 function logout(config, req, res) {
   if (req.user) {
-    req.logout()
-  }
-
-  if (!config.server.website_url) {
-    res.redirect('/')
-  } else {
-    res.redirect(config.server.website_url)
+    req.logout(() => {
+      if (!config.server.website_url) {
+        res.redirect('/')
+      } else {
+        res.redirect(config.server.website_url)
+      }
+    })
   }
 }
 
