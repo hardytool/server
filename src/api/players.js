@@ -63,7 +63,7 @@ module.exports = (season, division, player) => {
       handler: list.bind(null, season, division, player)
     },
     captains: {
-      route: '/api/v1//seasons/:season_id/divisions/:division_id/players',
+      route: '/api/v1//seasons/:season_id/divisions/:division_id/captains',
       handler: captains.bind(null, season, division, player)
     }
   }
