@@ -17,6 +17,7 @@ function list(season, division, player, req, res) {
           is_captain: true
         }).then(captains => {
           const maxPlayers = captains.length * 4
+          console.log('%d captains, %d max players', captains.length, maxPlayers)
           res.json({
             draftable: players.slice(0, maxPlayers),
             belowCutoff: players.slice(maxPlayers)
