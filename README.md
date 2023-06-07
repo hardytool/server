@@ -1,6 +1,6 @@
 # Server
 [![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/redditdota2league/server)](https://libraries.io/github/redditdota2league/server/dependencies)
-[![CI status](https://img.shields.io/github/actions/workflow/status/dambrisco/pug-tree/node.js.yml?logo=github)](https://github.com/dambrisco/pug-tree/actions/workflows/node.js.yml?query=branch%3Atrunk "View this project's CI run history")
+[![CI status](https://img.shields.io/github/actions/workflow/status/redditdota2league/server/node.js.yml?logo=github)](https://github.com/redditdota2league/server/actions/workflows/node.js.yml?query=branch%3Atrunk "View this project's CI run history")
 
 This is RD2L's backend and website.
 
