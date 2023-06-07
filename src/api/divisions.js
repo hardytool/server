@@ -7,7 +7,7 @@ function list(division, _req, res) {
   })
 }
 
-function view(division, req, res) {
+function view(division, admin, req, res) {
   const division_id = req.params.division_id
   division.getDivision(division_id).then(division => {
     return admin.getDivisionAdmins(division_id).then(divisionAdmins => {
@@ -22,7 +22,7 @@ function view(division, req, res) {
   })
 }
 
-module.exports = (division) => {
+module.exports = (division, admin) => {
   return {
     list: {
       route: '/api/v1/divisions',
@@ -30,7 +30,7 @@ module.exports = (division) => {
     },
     view: {
       route: '/api/v1/divisions/:division_id',
-      handler: view.bind(null, division)
+      handler: view.bind(null, division, admin)
     }
   }
 }

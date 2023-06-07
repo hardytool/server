@@ -57,7 +57,7 @@ const credentials = require('./lib/credentials')(config.server)
 const openid = require('./api/openid')(config)
 
 // API controllers
-const apiDivisions = require('./api/divisions')(division)
+const apiDivisions = require('./api/divisions')(division, admin)
 const apiSeasons = require('./api/seasons')(season)
 const apiPlayers = require('./api/players')(season, division, player)
 
