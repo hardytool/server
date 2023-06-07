@@ -53,10 +53,15 @@ const steamId = require('./lib/steamId')
 const auth = require('./lib/auth')(admin, steam_user, profile, mmr, steamId)
 const credentials = require('./lib/credentials')(config.server)
 
-// Auth routes
+// Auth controller
 const openid = require('./api/openid')(config)
 
-// Page routes
+// API controllers
+const apiDivisions = require('./api/divisions')(division)
+const apiSeasons = require('./api/seasons')(season)
+const apiPlayers = require('./api/players')(season, division, player)
+
+// Page controllers
 const adminPages = require('./pages/admins')(templates,
   admin,
   division,
@@ -122,6 +127,7 @@ const teamPages = require('./pages/teams')(templates,
   team_player,
   player)
 
+// Masters controllers
 const mastersPages = require('./pages/masters/home')(templates, masters)
 const mastersSeasonsPages = require('./pages/masters/seasons')(templates, masters)
 const mastersDivisionsPages = require('./pages/masters/divisions')(templates, masters)
@@ -129,9 +135,6 @@ const mastersTeamsPages = require('./pages/masters/teams')(templates, masters)
 const mastersRostersPages = require('./pages/masters/rosters')(templates, masters, steam_user, config)
 const mastersRegistrationPages = require('./pages/masters/registration')(templates, masters, steam_user, config)
 const mastersSeriesPages = require('./pages/masters/series')(templates, masters, pairings)
-
-// API routes
-// none currently
 
 // Application start
 
@@ -208,6 +211,15 @@ app.get('/auth/steam/return',
   }),
   openid.steamIdReturn)
 app.get('/logout', openid.logout)
+
+app.get(apiDivisions.list.route, apiDivisions.list.handler)
+app.get(apiDivisions.view.route, apiDivisions.view.handler)
+
+app.get(apiSeasons.list.route, apiSeasons.list.handler)
+app.get(apiSeasons.view.route, apiSeasons.view.handler)
+
+app.get(apiPlayers.list.route, apiPlayers.list.handler)
+app.get(apiPlayers.captains.route, apiPlayers.captains.handler)
 
 app.get(indexPages.home.route, indexPages.home.handler)
 app.get(indexPages.complaint.route, indexPages.complaint.handler)
@@ -329,7 +341,6 @@ app.post(bannedPlayerPages.post.route, bannedPlayerPages.post.handler)
 app.post(bannedPlayerPages.remove.route, bannedPlayerPages.remove.handler)
 
 app.get(ipPages.list.route, ipPages.list.handler)
-
 
 // Masters pages
 
