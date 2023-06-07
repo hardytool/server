@@ -7,7 +7,7 @@ function list(division, _req, res) {
   })
 }
 
-function view(division, admin, req, res) {
+function view(division, req, res) {
   const division_id = req.params.division_id
   division.getDivision(division_id).then(division => {
     return admin.getDivisionAdmins(division_id).then(divisionAdmins => {
