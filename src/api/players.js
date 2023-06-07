@@ -47,18 +47,7 @@ function captains(season, division, player, req, res) {
         by_mmr: normal,
         by_reverse_mmr: !normal
       }).then(captains => {
-        return player.getPlayers({
-          season_id: season_id,
-          division_id: division_id,
-          is_captain: false,
-          is_standin: false,
-          hide_captains: true,
-          hide_standins: true
-        }).then(players => {
-          const maxPlayers = players.length * 4
-          const leftoverPlayers = players.length - maxPlayers
-          res.json(captains)
-        })
+        res.json(captains)
       })
     })
   }).catch(err => {
