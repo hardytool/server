@@ -17,7 +17,6 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: backup
 
     steps:
       - name: Checkout
@@ -26,7 +25,7 @@ jobs:
           fetch-depth: 0
       - name: Run pg_dump
         run: |
-          pg_dump --format=custom --compress=9 --dbname="${{ secrets.DATABASE_URL }}" --file="./backup.dump" || exit 1
+          pg_dump --format=custom --compress=9 --dbname="${{ secrets.DATABASE_URL }}" --file="backup.dump" || exit 1
       - name: Upload to Dropbox
         run: |
           today=$(date +%Y-%m-%d)
@@ -34,7 +33,7 @@ jobs:
             --header "Authorization: Bearer ${{ secrets.DROPBOX_ACCESS_TOKEN }}" \
             --header "Dropbox-API-Arg: {\"path\": \"//$today.dump\",\"mode\": \"add\",\"autorename\": true,\"mute\": false}" \
             --header "Content-Type: application/octet-stream" \
-            --data-binary @./backup.dump || exit 1
+            --data-binary @backup.dump || exit 1
       - name: Remove backup directory
         run: |
-          rm -rf ./backup
+          rm -f backup.dump
