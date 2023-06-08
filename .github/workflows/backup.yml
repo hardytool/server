@@ -30,4 +30,4 @@ jobs:
             --header "Dropbox-API-Arg: {\"path\": \"//$today.dump\",\"mode\": \"add\",\"autorename\": true,\"mute\": false}" \
             --header "Content-Type: application/octet-stream" \
             --data-binary @./backup/backup.dump
-          rm -f $DATABASE_NAME.backup $DATABASE_NAME.backup.gz
+          rm -f ./backup/backup.dump
