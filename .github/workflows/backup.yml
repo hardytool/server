@@ -1,0 +1,26 @@
+name: Backup
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    name: Run pg_dump
+    services:
+      postgres:
+        image: postgres
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.5.2
+        with:
+          fetch-depth: 0
+      - name: Run pg_dump
+        run: |
+          mkdir -p ./backup
+          pg_dump -d "${{ secrets.DATABASE_URL }}" > ./backup/dump.sql
