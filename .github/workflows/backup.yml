@@ -14,18 +14,19 @@ jobs:
         image: postgres
         ports:
           - 5432:5432
+    defaults:
+      run:
+        shell: bash
+        working-directory: backup
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3.5.2
         with:
           fetch-depth: 0
-      - name: Create backup directory
-        run: |
-          mkdir -p ./backup
       - name: Run pg_dump
         run: |
-          pg_dump --format=custom --compress=9 --dbname="${{ secrets.DATABASE_URL }}" --file="./backup/backup.dump" || exit 1
+          pg_dump --format=custom --compress=9 --dbname="${{ secrets.DATABASE_URL }}" --file="./backup.dump" || exit 1
       - name: Upload to Dropbox
         run: |
           today=$(date +%Y-%m-%d)
@@ -33,7 +34,7 @@ jobs:
             --header "Authorization: Bearer ${{ secrets.DROPBOX_ACCESS_TOKEN }}" \
             --header "Dropbox-API-Arg: {\"path\": \"//$today.dump\",\"mode\": \"add\",\"autorename\": true,\"mute\": false}" \
             --header "Content-Type: application/octet-stream" \
-            --data-binary @./backup/backup.dump || exit 1
+            --data-binary @./backup.dump || exit 1
       - name: Remove backup directory
         run: |
           rm -rf ./backup
