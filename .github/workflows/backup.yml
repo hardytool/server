@@ -26,7 +26,7 @@ jobs:
           today=$(date +%Y-%m-%d)
           pg_dump --format=custom --compress=9 --dbname="${{ secrets.DATABASE_URL }}" --file="./backup/backup.dump"
           curl -X POST https://content.dropboxapi.com/2/files/upload \
-            --header "Authorization: Bearer $DROPBOX_ACCESS_TOKEN" \
+            --header "Authorization: Bearer ${{ secrets.DROPBOX_ACCESS_TOKEN }}" \
             --header "Dropbox-API-Arg: {\"path\": \"//$today.dump\",\"mode\": \"add\",\"autorename\": true,\"mute\": false}" \
             --header "Content-Type: application/octet-stream" \
             --data-binary @./backup/backup.dump
