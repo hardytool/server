@@ -21,11 +21,11 @@ function list(season, division, player, player_role, role, req, res) {
                     acc[rr.role_id] = rr.rank
                     return acc
                   }, {})
-                const o = roles.reduce((acc, role) => {
+                player.roles = roles.reduce((acc, role) => {
                   acc[role.name] = playerRoleRanks[role.id]
                   return acc
                 }, {})
-                return Object.assign(player, o)
+                return player
               })
               res.json({
                 draftable: players.slice(0, maxPlayers),
