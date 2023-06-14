@@ -1,4 +1,4 @@
-function list(season, division, player, req, res) {
+function list(season, division, player, player_role, role, req, res) {
   const season_id = req.params.season_id
   const division_id = req.params.division_id
   season.getSeason(season_id).then(_season => {
@@ -7,28 +7,30 @@ function list(season, division, player, req, res) {
         season_id: season_id,
         division_id: division_id
       }).then(players => {
-        return player_role.getRoleRanks().then(roleRanks => {
-          return player.getPlayers({
-            season_id: season_id,
-            division_id: division_id,
-            is_captain: true
-          }).then(captains => {
-            const maxPlayers = captains.length * 4
-            players = players.map(player => {
-              const playerRoleRanks = roleRanks.filter(rr => rr.player_id === player.id)
-                .reduce((acc, rr) => {
-                  acc[rr.role_id] = rr.rank
+        return role.getRoles().then(roles => {
+          return player_role.getRoleRanks().then(roleRanks => {
+            return player.getPlayers({
+              season_id: season_id,
+              division_id: division_id,
+              is_captain: true
+            }).then(captains => {
+              const maxPlayers = captains.length * 4
+              players = players.map(player => {
+                const playerRoleRanks = roleRanks.filter(rr => rr.player_id === player.id)
+                  .reduce((acc, rr) => {
+                    acc[rr.role_id] = rr.rank
+                    return acc
+                  }, {})
+                const o = roles.reduce((acc, role) => {
+                  acc[role.name] = playerRoleRanks[role.id]
                   return acc
                 }, {})
-              const o = roles.reduce((acc, role) => {
-                acc[role.name] = playerRoleRanks[role.id]
-                return acc
-              }, {})
-              return Object.assign(player, o)
-            })
-            res.json({
-              draftable: players.slice(0, maxPlayers),
-              belowCutoff: players.slice(maxPlayers)
+                return Object.assign(player, o)
+              })
+              res.json({
+                draftable: players.slice(0, maxPlayers),
+                belowCutoff: players.slice(maxPlayers)
+              })
             })
           })
         })
@@ -66,11 +68,11 @@ function captains(season, division, player, req, res) {
   })
 }
 
-module.exports = (season, division, player) => {
+module.exports = (season, division, player, player_role, role) => {
   return {
     list: {
       route: '/api/v1/seasons/:season_id/divisions/:division_id/players',
-      handler: list.bind(null, season, division, player)
+      handler: list.bind(null, season, division, player, player_role, role)
     },
     captains: {
       route: '/api/v1/seasons/:season_id/divisions/:division_id/captains',
