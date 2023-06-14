@@ -3,23 +3,33 @@ function list(season, division, player, req, res) {
   const division_id = req.params.division_id
   season.getSeason(season_id).then(_season => {
     return division.getDivision(division_id).then(_division => {
-      return player.getPlayers({
+      return player.getDraftSheet({
         season_id: season_id,
-        division_id: division_id,
-        is_captain: false,
-        is_standin: false,
-        hide_captains: true,
-        hide_standins: true
+        division_id: division_id
       }).then(players => {
-        return player.getPlayers({
-          season_id: season_id,
-          division_id: division_id,
-          is_captain: true
-        }).then(captains => {
-          const maxPlayers = captains.length * 4
-          res.json({
-            draftable: players.slice(0, maxPlayers),
-            belowCutoff: players.slice(maxPlayers)
+        return player_role.getRoleRanks().then(roleRanks => {
+          return player.getPlayers({
+            season_id: season_id,
+            division_id: division_id,
+            is_captain: true
+          }).then(captains => {
+            const maxPlayers = captains.length * 4
+            players = players.map(player => {
+              const playerRoleRanks = roleRanks.filter(rr => rr.player_id === player.id)
+                .reduce((acc, rr) => {
+                  acc[rr.role_id] = rr.rank
+                  return acc
+                }, {})
+              const o = roles.reduce((acc, role) => {
+                acc[role.name] = playerRoleRanks[role.id]
+                return acc
+              }, {})
+              return Object.assign(player, o)
+            })
+            res.json({
+              draftable: players.slice(0, maxPlayers),
+              belowCutoff: players.slice(maxPlayers)
+            })
           })
         })
       })
