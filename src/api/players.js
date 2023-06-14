@@ -59,11 +59,11 @@ function captains(season, division, player, req, res) {
 module.exports = (season, division, player) => {
   return {
     list: {
-      route: '/api/v1//seasons/:season_id/divisions/:division_id/players',
+      route: '/api/v1/seasons/:season_id/divisions/:division_id/players',
       handler: list.bind(null, season, division, player)
     },
     captains: {
-      route: '/api/v1//seasons/:season_id/divisions/:division_id/captains',
+      route: '/api/v1/seasons/:season_id/divisions/:division_id/captains',
       handler: captains.bind(null, season, division, player)
     }
   }
