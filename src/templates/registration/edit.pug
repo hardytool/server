@@ -41,7 +41,7 @@ block content
           div.field
             label.label(for='discord_name') Discord Name:
             p.control
-              input.input#discord_name(type='text' name='discord_name' placeholder='User#1234' pattern='^[^#]{2,32}#\\d{4}$' title='Username#1234' value=(player ? player.discord_name : '') required)
+              input.input#discord_name(type='text' name='discord_name' placeholder='username' title='username' value=(player ? player.discord_name : '') required)
           div.field
             label.label(for='statement') Statement/Availability:
             p.help Please be sure to mention other leagues/divisions you'll be participating in. Please list the dotabuff links of all your other accounts. Feel free to add if you would like to play a particular role this season. Player statements should contain relevant information.
