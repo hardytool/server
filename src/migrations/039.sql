@@ -1,0 +1,1 @@
+DROP INDEX player_steam_id_season_id_unique;

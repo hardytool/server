@@ -22,69 +22,55 @@ function view(templates, season, division, steam_user, player, role, player_role
       return steam_user.getSteamUser(req.user.steamId).then(steamUser => {
         return player.getPlayers({
           season_id: season.id,
+          division_id: division.id,
           steam_id: steamUser.steam_id
-        }).then((unvettedPlayers) => {
-          if(unvettedPlayers.length > 0 && unvettedPlayers[0].division_id != division.id) {
-            return templates.error.multiple_signups({
-              user: req.user,
-              error: `You may only sign up for one division at a time. You are already signed up in ${unvettedPlayers[0].division_name} this season.
-              Please ask an admin to move your signup if you wish to change divisions.
-              Name: ${unvettedPlayers[0].name} Season ID: ${unvettedPlayers[0].season_id} Division ID: ${unvettedPlayers[0].division_id}
-              Season Name: ${unvettedPlayers[0].season_name} Number Divs: ${unvettedPlayers.length}`
-            })
-          }
-          return player.getPlayers({
-            season_id: season.id,
-            division_id: division.id,
-            steam_id: steamUser.steam_id
-          }).then(([player]) => {
-            return role.getRoles().then(roles => {
-              if (player) {
-                return player_role.getRoleRanks({
-                  player_id: player.id
-                }).then(ranks => {
-                  const prefs = roles.reduce((acc, role) => {
-                    const rank = ranks.filter(r => r.role_id === role.id)
-                    if (rank.length) {
-                      acc[role.id] = rank[0].rank
-                    }
-                    return acc
-                  }, {})
-                  return templates.registration.edit({
-                    user: req.user,
-                    steamUser: steamUser,
-                    division: division,
-                    season: season,
-                    player: player,
-                    roles: roles,
-                    ranks: prefs,
-                    csrfToken: req.csrfToken()
-                  })
+        }).then(([player]) => {
+          return role.getRoles().then(roles => {
+            if (player) {
+              return player_role.getRoleRanks({
+                player_id: player.id
+              }).then(ranks => {
+                const prefs = roles.reduce((acc, role) => {
+                  const rank = ranks.filter(r => r.role_id === role.id)
+                  if (rank.length) {
+                    acc[role.id] = rank[0].rank
+                  }
+                  return acc
+                }, {})
+                return templates.registration.edit({
+                  user: req.user,
+                  steamUser: steamUser,
+                  division: division,
+                  season: season,
+                  player: player,
+                  roles: roles,
+                  ranks: prefs,
+                  csrfToken: req.csrfToken()
                 })
-              }
+              })
+            }
 
-              return steam_user.saveSteamUser(steamUser).then(() => {
-                return profile.getProfile(steamUser.steam_id).then(profile => {
-                  profile = profile || {}
-                  profile.name = profile.name || steamUser.name
-                  profile.adjusted_mmr = profile.adjusted_mmr
-                    || (steamUser.solo_mmr > steamUser.party_mmr
-                      ? steamUser.solo_mmr
-                      : steamUser.party_mmr)
-                  profile.is_draftable = profile.is_draftable === undefined
-                    ? true
-                    : profile.is_draftable
+            return steam_user.saveSteamUser(steamUser).then(() => {
+              return profile.getProfile(steamUser.steam_id).then(profile => {
+                profile = profile || {}
+                profile.name = profile.name || steamUser.name
+                profile.adjusted_mmr = profile.adjusted_mmr
+                  || (steamUser.solo_mmr > steamUser.party_mmr
+                    ? steamUser.solo_mmr
+                    : steamUser.party_mmr)
+                profile.is_draftable = profile.is_draftable === undefined
+                  ? true
+                  : profile.is_draftable
 
-                  return templates.registration.edit({
-                    user: req.user,
-                    season: season,
-                    division: division,
-                    steamUser: steamUser,
-                    player: profile,
-                    roles: roles,
-                    ranks: [],
-                    csrfToken: req.csrfToken()
-                  })
+                return templates.registration.edit({
+                  user: req.user,
+                  season: season,
+                  division: division,
+                  steamUser: steamUser,
+                  player: profile,
+                  roles: roles,
+                  ranks: [],
+                  csrfToken: req.csrfToken()
                 })
               })
             })
