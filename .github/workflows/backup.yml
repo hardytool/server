@@ -26,14 +26,13 @@ jobs:
       - name: Run pg_dump
         run: |
           pg_dump --format=custom --compress=9 --dbname="${{ secrets.DATABASE_URL }}" --file="backup.dump"
-      - name: Upload to Dropbox
+      - name: Upload to Discord
         run: |
           today=$(date +%Y-%m-%d)
-          curl --fail-with-body -X POST https://content.dropboxapi.com/2/files/upload \
-            --header "Authorization: Bearer ${{ secrets.DROPBOX_ACCESS_TOKEN }}" \
-            --header "Dropbox-API-Arg: {\"path\": \"/$today.dump\",\"mode\": \"add\",\"autorename\": true,\"mute\": false}" \
-            --header "Content-Type: application/octet-stream" \
-            --data-binary @backup.dump
+          curl --fail-with-body -X POST \
+            -F "payload_json={}" \
+            -F "file0=@backup.dump" \
+            ${{ secrets.DISCORD_WEBHOOK_URL }} 
       - name: Remove backup directory
         run: |
           rm -f backup.dump
