@@ -33,7 +33,7 @@ jobs:
           curl --fail-with-body -X POST \
             -F "payload_json={}" \
             -F "file0=@backup_$TODAY.dump" \
-            ${{ secrets.DISCORD_WEBHOOK_URL }} 
+            ${{ secrets.DISCORD_WEBHOOK_URL }} > /dev/null
       - name: Remove backup directory
         run: |
           rm -f backup.dump
