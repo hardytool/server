@@ -30,7 +30,7 @@ jobs:
         run: |
           export TODAY=$(date +%Y-%m-%d)
           mv backup.dump "backup_$TODAY.dump"
-          curl --fail-with-body -X POST \
+          curl --fail-with-body --silent -X POST \
             -F "payload_json={}" \
             -F "file0=@backup_$TODAY.dump" \
             ${{ secrets.DISCORD_WEBHOOK_URL }} > /dev/null
