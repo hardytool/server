@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
       - name: Run pg_dump
         run: |
-          pg_dump --format=custom --compress=9 --dbname="${{ secrets.DATABASE_URL }}" --file="backup.dump"
+          pg_dump --format=custom --compress=9 --dbname="postgres://${{ secrets.DATABASE_USERNAME }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" --file="backup.dump"
       - name: Upload to Discord
         run: |
           export TODAY=$(date +%Y-%m-%d)
