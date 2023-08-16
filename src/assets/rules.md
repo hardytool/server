@@ -11,27 +11,27 @@
        - Participants must alert the admins if their rank does not accurately reflect their skill level, or if they have alternate accounts they regularly use.
          - Admins may adjust a participants rank to be more accurate in these situations.
        - Before registering, players are required to turn "Expose Public Match Data" on in the Dota 2 client > Settings > Options > Profile.
-         - Players are not required to keep match data public for the remainder of the season, only for the draft.
+         - Players are required to keep match data public for the remainder of the season. If players do not comply, their team may be assessed with draft penalties and potential forfeits at admin discretion.
        - No one should expect to miss more than 2 weeks in the season (including playoffs).
          - If a participant expects inconsistent attendance for an upcoming season, they are encouraged to instead sign up as a stand-in or free agent, as appropriate.
        - Admins will be watching for accounts that have unusual match history. Those accounts may be removed at the discretion of the admins. Since there are various ways this rule can be violated, any other punishment will be determined on a case-by-case basis.
-       - Participants may only play in 1 division in each season of RD2L.
+       - Participants may play in as many divisions as they wish in each season of RD2L, as long as those divisions are not on the same day. i.e. Please do not sign up for EST-SUN and PST-SUN. Doing so may result in your removal from both divisions once it is discovered during the season.
    - **Captains**
      - Captains are also participants and all participant rules apply to captains.
      - Captains should have completed at least one previous season before signing up as a captain, unless they get permission from an admin.
-     - Captains will be responsible for drafting and organizing their teams.
-     - Captains will be responsible for reporting the results of each match immediately if the match is not ticketed.
+     - Captains will be responsible for drafting and organizing their teams (i.e. creating a Discord server and inviting their team to it).
+     - Captains will be responsible for reporting the results of each match immediately if the match is not ticketed, including providing a screenshot of the results.
      - Captains will be the primary contacts for their teams. This includes communication with other teams and RD2L admins.
      - Captains do not have the power to remove players from their teams after the draft.
      - Captains should be at least Legend[1] rank or higher. This threshold may be altered at the discretion of division admins.
    - **Stand-ins**
-     - When a team is missing a player and requires a stand-in, they must formally request one in their divisions stand-in channel in discord, listing the dotabuff of their missing player and the dotabuff of the player they would like to use as a stand-in, they must @ their division admin and opposing captain for that week as well.
+     - When a team is missing a player and requires a stand-in, they must formally request one in their divisions stand-in channel in discord, listing the Dotabuff of their missing player and the Dotabuff of the player they would like to use as a stand-in, & they must @ their division admin and opposing captain for that week as well.
      - If a team is missing one of their players, the team is eligible to use a stand-in for this player.
-       - The standin must have been the same mmr or lower on the draft sheet (according to adjusted mmr for players that were adjusted) and must not have climbed above the player they are replacing.
-       - The standin must be a player signed up for the current season of RD2L.
+       - The standin should, at the time of the match, be the same MMR-or-lower than the draft MMR was set to for the player they are replacing.
+       - Standins are expected to abide by the same rules as normal players, i.e. sportspersonlike conduct and having their match history marked public.
        - Any standin may be used if both captains agree or via admin discretion.
        - If the missing player is below 3000 mmr, the standin may be up to 500 mmr above the missing player, with a maximum mmr of 3000. For example, if a team is missing a 1500 mmr player, they are allowed a standin up to 2000 mmr. If a team is missing a 2700 mmr player, they are allowed a standin up to 3000 mmr.
-     - Teams may use 2 stand-ins per match, for a maximum of 10 games during a season. Using two standins in one match counts as two standin uses. If a team finds itself needing more than this, they should contact a division admin with regards to a free agent.
+     - Teams may use 2 stand-ins per match, for a maximum of 10 games during a season. Using two standins in one match counts as two standin uses. If a team finds itself needing more than this, they should contact a division admin to inquire about a free agent if desired.
        - Stand-in usage from the season will be reset for all playoff teams. Playoff teams may use a stand-in for a maximum of three series of the playoffs. (Series means all games of a round, usually best of 3 or best of 5)
        - If a team is forced to use a standin because admins have not found a free agent for the team yet, these standin uses will not count towards the team total.
      - If a team needs three stand-ins in order to play, they must forfeit the match.
@@ -102,13 +102,13 @@
      - Teams will be matched against other teams that have a similar record each week.
      - Match schedules will be posted as soon as all of the previous week’s results are checked (at least a few days before the match is to be played).
    - **Post Season**
-     - After the regular season matches are completed, the top teams from each sub-division will be placed in an interdivisional single elimination playoff bracket.
+     - After the regular season matches are completed, each division will run a single elimination playoff bracket for their division's top teams.
      - Teams will have one week to schedule and play their required matches. Each match must be scheduled and played by the end of the week for playoffs.
-     - Teams will flip for side/pick/server (if teams have a primary server difference).
-       - The team that won the flip will choose side or pick or server, the team that lost will choose from the remaining two, and then the team that won the flip will choose the final option. For game 2 the team that lost the flip game 1 will have first choice. If a series goes to game 3, a new flip will occur for the third game.
+     - Teams will flip for side/pick.
+       - For game 2 the team that lost the flip game 1 will have first choice. If a series goes to game 3, a new flip will occur for the third game.
 3. **Other**
    - **Communication**
-     - Each RD2L player is encouraged to be on the RD2L main discord to keep up to date on league information.
+     - Each RD2L player is encouraged to be on the Discord for their division, and optionally the RD2L main discord as well to keep up to date on league information.
        - Keeping up with every channel is not required, but it is highly recommended that alerts are left on in the #announcements channel, and that the channel is checked at least once per week.
    - **Conduct**
      - Flaming is part of Dota 2, but repeated conduct (in games, discord, or anywhere) that violates the below standards may result in removal from the league:
