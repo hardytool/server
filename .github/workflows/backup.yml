@@ -18,6 +18,12 @@ jobs:
         uses: actions/checkout@v3.5.2
         with:
           fetch-depth: 0
+      - name: Install postgres
+        run: |
+          sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          sudo apt-get update
+          sudo apt-get install -y "postgresql-15"
       - name: Run pg_dump
         run: |
           pg_dump --format=custom --compress=9 --dbname="postgres://${{ secrets.DATABASE_USERNAME }}:${{ secrets.DATABASE_PASSWORD }}@${{ secrets.DATABASE_HOST }}:${{ secrets.DATABASE_PORT }}/${{ secrets.DATABASE_NAME }}" --file="backup.dump"
