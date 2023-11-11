@@ -9,11 +9,6 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     name: Run pg_dump
-    services:
-      postgres:
-        image: postgres:15
-        ports:
-          - 5432:5432
     defaults:
       run:
         shell: bash
