@@ -6,16 +6,6 @@
 
 This is RD2L's backend and website.
 
-## Dependencies
-### Develop and run locally
-* nodejs
-* npm
-* postgres
-* redis
-
-### Run in Docker
-* docker
-
 ## Installation
 First, install the project's dependencies.
 ```sh
