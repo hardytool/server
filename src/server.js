@@ -179,9 +179,11 @@ app.use(csrfMiddleware)
 app.use(session({
   store: new RedisStore({
     client: redis.createClient({
-      host: config.redis.host,
-      port: config.redis.port,
-      user: config.redis.user,
+      socket: {
+        host: config.redis.host,
+        port: config.redis.port
+      },
+      username: config.redis.user,
       password: config.redis.password
     })
   }),
