@@ -16,8 +16,7 @@ const passport = require('passport')
 const passportSteam = require('passport-steam')
 const pg = require('pg')
 const pool = new pg.Pool(config.db)
-const redis = require('redis')
-const RedisStore = require('connect-redis')(session)
+const PGStore = require('connect-pg-simple')(session)
 const Steam = require('steam')
 const steam = new Steam.SteamClient()
 const steamUser = new Steam.SteamUser(steam)
@@ -177,21 +176,12 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser(config.server.secret))
 app.use(csrfMiddleware)
 app.use(session({
-  store: new RedisStore({
-    client: redis.createClient({
-      url: config.redis.url
-    })
-    /*client: redis.createClient({
-      socket: {
-        host: config.redis.host,
-        port: config.redis.port
-      },
-      username: config.redis.user,
-      password: config.redis.password
-    })*/
+  store: new PGStore({
+    pool: pool,
+    createTableIfMissing: true
   }),
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 365
+    maxAge: 1000 * 60 * 60 * 24 * 7
   },
   secret: config.server.secret,
   resave: true,
