@@ -179,13 +179,16 @@ app.use(csrfMiddleware)
 app.use(session({
   store: new RedisStore({
     client: redis.createClient({
+      url: config.redis.url
+    })
+    /*client: redis.createClient({
       socket: {
         host: config.redis.host,
         port: config.redis.port
       },
       username: config.redis.user,
       password: config.redis.password
-    })
+    })*/
   }),
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 365
