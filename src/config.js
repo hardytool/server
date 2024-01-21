@@ -23,6 +23,7 @@ function config(env) {
       idleTimeoutMillis: env.POSTGRES_TIMEOUT || 30000
     },
     redis: {
+      url: env.REDIS_URL || 'redis://redis:6379',
       host: env.REDIS_HOST || 'redis',
       port: env.REDIS_PORT || 6379,
       user: env.REDIS_USER || null,
