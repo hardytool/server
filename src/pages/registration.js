@@ -1,6 +1,6 @@
 const shortid = require('shortid')
 
-function view(templates, season, division, steam_user, player, role, player_role, mmr, profile, req, res) {
+function view(templates, season, division, steam_user, player, role, player_role, profile, req, res) {
   const season_id = req.params.season_id
   const division_id = req.params.division_id
 
@@ -86,10 +86,10 @@ function view(templates, season, division, steam_user, player, role, player_role
   })
 }
 
-function shortcut(templates, season, division, steam_user, player, role, player_role, mmr, profile, req, res) {
+function shortcut(templates, season, division, steam_user, player, role, player_role, profile, req, res) {
   season.getActiveSeason().then(_season => {
     req.params.season_id = _season.id
-    return view(templates, season, division, steam_user, player, role, player_role, mmr, profile, req, res)
+    return view(templates, season, division, steam_user, player, role, player_role, profile, req, res)
   }).catch(err => {
     console.error(err)
     res.sendStatus(500)
@@ -274,7 +274,7 @@ function unregister(season, division, steam_user, player, req, res) {
   })
 }
 
-module.exports = (templates, season, division, steam_user, team_player, player, role, player_role, mmr, profile) => {
+module.exports = (templates, season, division, steam_user, team_player, player, role, player_role, profile) => {
   return {
     view: {
       route: '/seasons/:season_id/divisions/:division_id/register',
@@ -286,7 +286,6 @@ module.exports = (templates, season, division, steam_user, team_player, player, 
         player,
         role,
         player_role,
-        mmr,
         profile)
     },
     shortcut: {
@@ -299,7 +298,6 @@ module.exports = (templates, season, division, steam_user, team_player, player, 
         player,
         role,
         player_role,
-        mmr,
         profile)
     },
     directory: {

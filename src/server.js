@@ -43,7 +43,7 @@ const vouch = require('./repos/vouch')(pool)
 
 // lib
 const steamId = require('./lib/steamId')
-const auth = require('./lib/auth')(admin, steam_user, profile, mmr, steamId)
+const auth = require('./lib/auth')(admin, steam_user, profile, steamId)
 const credentials = require('./lib/credentials')(config.server)
 
 // Auth controller
@@ -97,7 +97,6 @@ const registrationPages = require('./pages/registration')(templates,
   player,
   role,
   player_role,
-  mmr,
   profile)
 const rosterPages = require('./pages/roster')(templates,
   season,
@@ -391,11 +390,6 @@ app.post(mastersSeriesPages.remove.route, safeHandler(mastersSeriesPages.remove.
 app.post(mastersSeriesPages.saveRound.route, safeHandler(mastersSeriesPages.saveRound.handler))
 
 // End masters pages
-
-//Pull the list of Steam servers if it exists
-if (fs.existsSync(path.join(__dirname, 'assets', 'servers.json'))) {
-  Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.json')))
-}
 
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))
