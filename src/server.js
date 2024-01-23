@@ -182,6 +182,7 @@ app.use(session({
     createTableIfMissing: true
   }),
   cookie: {
+    secure: true,
     maxAge: 1000 * 60 * 60 * 24 * 7
   },
   secret: config.server.secret,
