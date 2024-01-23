@@ -192,8 +192,8 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.use((req, _, next) => {
-  if (req.user) {
-    ip_address.saveIPAddress(req.connection.remoteAddress, req.user.steamId).catch(err => {
+  if (req.user && req.ip) {
+    ip_address.saveIPAddress(req.ip, req.user.steamId).catch(err => {
       console.error(err)
     })
   }
