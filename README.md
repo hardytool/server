@@ -73,3 +73,13 @@ make run
 Running in docker requires environment variables, not .env variables.
 Additionally, and unsurprisingly, it requires docker to be installed and
 running.
+
+
+<!-- Basic Layout So Far -->
+api Folder -> Is to get all the data from the databases
+assets Folder -> Self explanetory
+lib Folder -> Unsure really
+migrations Folder -> Is for the sql database migrations
+pages Folder -> I believe this is for reinterpreting the data from the api into an understandable thing for the html.
+repos Folder -> I believe it to be how data is sent into the sql database
+templates Folder -> Hosts the html and css using pug
