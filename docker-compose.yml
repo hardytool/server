@@ -6,7 +6,6 @@ services:
       - '8080:8080'
     links:
       - 'db'
-      - 'redis'
     restart: 'always'
     environment:
       - 'STEAM_API_KEY'
@@ -15,8 +14,6 @@ services:
       - 'PORT=8080'
       - 'HTTPS_PORT=443'
       - 'NODE_ENV=production'
-      - 'REDIS_HOST=redis'
-      - 'REDIS_PORT=6379'
       - 'POSTGRES_DB=seal'
       - 'POSTGRES_USER'
       - 'POSTGRES_PASSWORD'
