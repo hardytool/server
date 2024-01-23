@@ -1,6 +1,4 @@
-const timeout = require('./timeout.js')
-
-function createUser(steam_user, profile, mmr, steamId, user_profile) {
+function createUser(steam_user, profile, steamId, user_profile) {
   const id = steamId.from64to32(user_profile.id)
   const name = user_profile.displayName
   const avatar = getAvatar(user_profile)
@@ -40,43 +38,6 @@ function createUser(steam_user, profile, mmr, steamId, user_profile) {
   })
 }
 
-let updated = false
-function fetchMissingMMRs(steam_user, mmr, season_id, force) {
-  if (!updated || force) {
-    return steam_user.getSteamUsersMissingMMR(season_id).then(users => {
-      updated = true
-      return Promise.all(users.map((user) => {
-        return updateUserMMR(steam_user, mmr, user).then(user => {
-          console.log(`User ${user.steam_id} ${user.name} updated`)
-        }).catch(err => {
-          console.error(err)
-        })
-      })).catch(() => {
-        // Doesn't matter if we have an error
-        return null
-      }).then(() => {
-        return timeout(60 * 60 * 1000).then(() => {
-          updated = false
-        })
-      })
-    })
-  } else {
-    return Promise.resolve({ message: 'Sleeping' })
-  }
-}
-
-function updateUserMMR(steam_user, mmr, user) {
-  return mmr.getMMR(user.steam_id).then(result => {
-    user.solo_mmr = result && result.solo ? result.solo : user.solo_mmr
-    user.party_mmr = result && result.party ? result.party : user.party_mmr
-    user.rank = result && result.rank ? result.rank : user.rank
-    user.previous_rank = result && result.previous_rank ? result.previous_rank : user.previous_rank
-    return steam_user.saveSteamUser(user).then(() => {
-      return user
-    })
-  })
-}
-
 function inflateUser(admin, profile, steamId, user) {
   const id = steamId.from64to32(user.profile.id).toString()
 
@@ -103,9 +64,7 @@ function getAvatar(profile) {
 
 module.exports = (admin, steam_user, profile, mmr, steamId) => {
   return {
-    createUser: createUser.bind(null, steam_user, profile, mmr, steamId),
-    fetchMissingMMRs: fetchMissingMMRs.bind(null, steam_user, mmr),
-    updateUserMMR: updateUserMMR.bind(null, steam_user, mmr),
+    createUser: createUser.bind(null, steam_user, profile, steamId),
     inflateUser: inflateUser.bind(null, admin, profile, steamId),
     getAvatar: getAvatar
   }

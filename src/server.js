@@ -7,7 +7,6 @@ const path = require('path')
 const http = require('http')
 const https = require('https')
 const express = require('express')
-const fs = require('fs')
 const csurf = require('csurf')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -17,11 +16,6 @@ const passportSteam = require('passport-steam')
 const pg = require('pg')
 const pool = new pg.Pool(config.db)
 const PGStore = require('connect-pg-simple')(session)
-const Steam = require('steam')
-const steam = new Steam.SteamClient()
-const steamUser = new Steam.SteamUser(steam)
-const Dota2 = require('dota2')
-const dota2 = new Dota2.Dota2Client(steam, true, true)
 const redirectHttps = require('redirect-https')
 const templates = require('pug-tree')(
   path.join(__dirname, 'templates'), config.templates)
@@ -47,9 +41,8 @@ const team_player = require('./repos/team_player')(pool)
 const vouch = require('./repos/vouch')(pool)
 
 // lib
-const mmr = require('./lib/mmr')(dota2)
 const steamId = require('./lib/steamId')
-const auth = require('./lib/auth')(admin, steam_user, profile, mmr, steamId)
+const auth = require('./lib/auth')(admin, steam_user, profile, steamId)
 const credentials = require('./lib/credentials')(config.server)
 
 // Auth controller
@@ -103,7 +96,6 @@ const registrationPages = require('./pages/registration')(templates,
   player,
   role,
   player_role,
-  mmr,
   profile)
 const rosterPages = require('./pages/roster')(templates,
   season,
@@ -398,82 +390,11 @@ app.post(mastersSeriesPages.saveRound.route, safeHandler(mastersSeriesPages.save
 
 // End masters pages
 
-//Pull the list of Steam servers if it exists
-if (fs.existsSync(path.join(__dirname, 'assets', 'servers.json'))) {
-  Steam.servers = JSON.parse(fs.readFileSync(path.join(__dirname, 'assets', 'servers.json')))
-}
-
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))
   .then(versions => {
     console.log(
       `RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)
-
-    if (config.steam.username && config.steam.password) {
-      steam.connect()
-
-      steam.on('connected', () => {
-        steamUser.logOn({
-          account_name: config.steam.username,
-          password: config.steam.password
-        })
-      })
-
-      steam.on('logOnResponse', res => {
-        if (res.eresult == Steam.EResult.OK) {
-          dota2.launch()
-        }
-      })
-
-      // Commenting this out because it is causing issues for now on node10
-      // steam.on('servers', servers => {
-      //   fs.writeFile(path.join(__dirname, 'assets', 'servers.js'), JSON.stringify(servers));
-      // })
-
-      steam.on('error', err => {
-        console.error(err)
-        if (err.message === 'Disconnected') {
-          steam.connect()
-        }
-        else {
-          throw err
-        }
-      })
-
-      //If we aren't using MMR/Rank fetching, there is no point for this
-      const repeat = () => {
-        steam_user.getSteamUsers().then(users => {
-          setTimeout(() => {
-            users.forEach((user, index) => {
-              setTimeout(() => {
-                return mmr.getMMR(user.steam_id).then(mmr => {
-                  user.rank = mmr && mmr.rank ? mmr.rank : user.rank
-                  user.previous_rank = mmr && mmr.previous_rank ? mmr.previous_rank : user.previous_rank
-
-                  if(user.previous_rank == null) {
-                    user.previous_rank = 0
-                  }
-
-                  if(user.rank == null) {
-                    user.rank = 0
-                  }
-                  user.solo_mmr = 0
-                  user.party_mmr = 0
-
-                  return steam_user.saveSteamUser(user)
-                }).catch(err => {
-                  console.error(err)
-                })
-              }, 1000 * (index + 1))
-            })
-          }, 10000)
-        }).catch(err => {
-          console.error(err)
-        })
-        setTimeout(repeat, 12*60*60*1000)
-      }
-      repeat()
-    }
 
     if (credentials) {
       http.createServer(redirectHttps({
