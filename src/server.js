@@ -137,9 +137,8 @@ const mastersSeriesPages = require('./pages/masters/series')(templates, masters,
 
 // Application start
 
-if (!config?.server?.production) {
-  console.dir(config, { depth: null })
-}
+// Uncomment this line if debugging configuration issues
+// console.dir(config, { depth: null })
 
 const app = express()
 
