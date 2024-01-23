@@ -9,7 +9,8 @@ function config(env) {
       ssl_ca: env.SSL_CA || false,
       steam_api_key: env.STEAM_API_KEY || false,
       website_url: (!env.WEBSITE_URL) ? false : ('//' + env.WEBSITE_URL),
-      secret: env.SECRET || false
+      secret: env.SECRET || false,
+      production: env.IS_PRODUCTION || false
     },
     db: {
       user: env.POSTGRES_USER || env.PGUSER || false,
