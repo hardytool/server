@@ -62,7 +62,7 @@ function getAvatar(profile) {
   return profile.photos[profile.photos.length - 1].value
 }
 
-module.exports = (admin, steam_user, profile, mmr, steamId) => {
+module.exports = (admin, steam_user, profile, steamId) => {
   return {
     createUser: createUser.bind(null, steam_user, profile, steamId),
     inflateUser: inflateUser.bind(null, admin, profile, steamId),
