@@ -1,5 +1,3 @@
-const timeout = require('./timeout.js')
-
 function createUser(steam_user, profile, steamId, user_profile) {
   const id = steamId.from64to32(user_profile.id)
   const name = user_profile.displayName
