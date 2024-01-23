@@ -27,6 +27,10 @@ function view(
 
       return season.getActiveSeason().then(active_season => {
         return profile.getProfile(req.params.steam_id).then(_profile => {
+          if !_profile {
+            res.sendStatus(404)
+            return
+          }
           _profile.id64 = steamId.from32to64(_profile.steam_id)
           return player.hasFalseActivity(active_season.id, _profile.steam_id).then(numberFalseActivity => {
             return team_player.hasPlayed(_profile.steam_id)
