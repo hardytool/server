@@ -172,6 +172,7 @@ passport.use(new passportSteam.Strategy({
   })
 }))
 
+app.set('trust proxy', true)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser(config.server.secret))
