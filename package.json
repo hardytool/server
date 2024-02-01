@@ -31,7 +31,7 @@
     "markdown-it": "^14.0.0",
     "markdown-it-classy": "^0.2.0",
     "passport": "^0.7.0",
-    "passport-steam": "^1.0.10",
+    "passport-steam": "^1.0.18",
     "pg": "^8.0.3",
     "pg-sql": "^1.1.0",
     "pug": "^3.0.1",
