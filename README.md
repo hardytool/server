@@ -94,7 +94,7 @@ running.
 │   │   └── *.js       # Page content controllers
 │   ├── repos
 │   │   └── *.js       # Database model repositories
-│   └── templates
+│   ├── templates
 │   │   └── **/*.pug   # Template files structure as a hierarchical tree
 ├── Dockerfile
 ├── docker-compose.yml # Development-oriented quickstart compose file
