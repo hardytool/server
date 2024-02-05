@@ -1,4 +1,5 @@
 # Server
+
 [![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/hardytool/server?logo=npm&logoColor=FFFFFF)](https://libraries.io/github/hardytool/server/dependencies)
 [![CI status](https://img.shields.io/github/actions/workflow/status/hardytool/server/node.js.yml?logo=github)](https://github.com/hardytool/server/actions/workflows/node.js.yml?query=branch%3Atrunk "View this project's CI run history")
 [![Checks status](https://img.shields.io/github/checks-status/hardytool/server/trunk?logo=railway&label=deploy)](https://github.com/hardytool/server/commit/trunk)
@@ -7,6 +8,7 @@
 This is RD2L's backend and website.
 
 ## Installation
+
 First, install the project's dependencies.
 ```sh
 npm install
@@ -59,6 +61,7 @@ POSTGRES_TIMEOUT='30000'
 ```
 
 ## Running
+
 To run locally:
 ```sh
 npm start
@@ -73,3 +76,29 @@ make run
 Running in docker requires environment variables, not .env variables.
 Additionally, and unsurprisingly, it requires docker to be installed and
 running.
+
+## Project structure
+```bash
+├── src
+│   ├── api
+│   │   └── *.js         # API-oriented controllers
+│   ├── assets
+│   │   └── **/*         # Static files (including images, markdown, etc.)
+│   ├── lib
+│   │   └── *.js         # Common utilities/shared libraries
+│   ├── migrations
+│   │   └── (\d\d\d).sql # Database migration files run at startup in order starting from 001.sql
+│   ├── pages
+│   │   ├── masters
+│   │   │   ├── *.js     # Masters-specific controllers
+│   │   └── *.js         # Page content controllers
+│   ├── repos
+│   │   └── *.js         # Database model repositories
+│   └── templates
+│   │   └── **/*.pug     # Template files structure as a hierarchical tree
+├── Dockerfile
+├── docker-compose.yml   # Development-oriented quickstart compose file
+├── Makefile             # Command wrapper
+├── package.json
+└── package-lock.json
+```
