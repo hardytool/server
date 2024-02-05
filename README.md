@@ -81,24 +81,24 @@ running.
 ```bash
 ├── src
 │   ├── api
-│   │   └── *.js         # API-oriented controllers
+│   │   └── *.js       # API-oriented controllers
 │   ├── assets
-│   │   └── **/*         # Static files (including images, markdown, etc.)
+│   │   └── **/*       # Static files (including images, markdown, etc.)
 │   ├── lib
-│   │   └── *.js         # Common utilities/shared libraries
+│   │   └── *.js       # Common utilities/shared libraries
 │   ├── migrations
-│   │   └── (\d\d\d).sql # Database migration files run at startup in order starting from 001.sql
+│   │   └── *.sql      # Database migration files run at startup in order starting from 001.sql
 │   ├── pages
 │   │   ├── masters
-│   │   │   ├── *.js     # Masters-specific controllers
-│   │   └── *.js         # Page content controllers
+│   │   │   ├── *.js   # Masters-specific controllers
+│   │   └── *.js       # Page content controllers
 │   ├── repos
-│   │   └── *.js         # Database model repositories
+│   │   └── *.js       # Database model repositories
 │   └── templates
-│   │   └── **/*.pug     # Template files structure as a hierarchical tree
+│   │   └── **/*.pug   # Template files structure as a hierarchical tree
 ├── Dockerfile
-├── docker-compose.yml   # Development-oriented quickstart compose file
-├── Makefile             # Command wrapper
+├── docker-compose.yml # Development-oriented quickstart compose file
+├── Makefile           # Command wrapper
 ├── package.json
 └── package-lock.json
 ```
