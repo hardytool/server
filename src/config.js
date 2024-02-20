@@ -17,6 +17,7 @@ function config(env) {
       database: env.POSTGRES_DB || env.PGDATABASE || false,
       host: env.POSTGRES_HOST || 'db',
       port: env.POSTGRES_PORT || 5432,
+      ssl: (!env.POSTGRES_SSL) ? false : true,
       // maximum number of clients in client pool
       max: env.POSTGRES_POOL_MAX || 10,
       // duration that clients are kept open while idle
