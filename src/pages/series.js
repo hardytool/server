@@ -295,11 +295,9 @@ function matchups(templates, season, team, series, pairings, division, req, res)
                 teams,
                 mapSeries(series)
               )
-              console.dir(teams, { depth: null })
-              console.dir(matchups, { depth: null })
               matchups = matchups.map(matchup => {
                 matchup.home = teams.filter(team => team.id === matchup.home)[0]
-                if (matchup.away === null || matchup.away === undefined) {
+                if (matchup.away === null) {
                   matchup.away = {
                     id: null,
                     name: 'BYE',
