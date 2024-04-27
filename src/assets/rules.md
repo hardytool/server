@@ -6,16 +6,16 @@
        - All signups will be reviewed by a division admin.
        - Participants must sign up with their main account. This account may not be used by any other player for the duration of the season.
          - Participants are required to use the Steam account provided at the time of sign-ups when playing any RD2L game.
-         - 500 games and 250 wins on the account must have been played on the account by the player who is signing up.
-         - Participants must be above 2000 mmr at the date of their signup.
+         - 1000 games and 500 wins on the account must have been played on the account by the player who is signing up.
+         - New participants must be above 2500 mmr at the date of their signup. However, if a player has already played in at least 1 previous season but has since fallen below the 2500 mmr floor, they will generally still be allowed to participate in any future seasons.
        - Participants must alert the admins if their rank does not accurately reflect their skill level, or if they have alternate accounts they regularly use.
-         - Admins may adjust a participants rank to be more accurate in these situations.
+         - Admins may adjust a participant's rank to be more accurate in these situations.
        - Before registering, players are required to turn "Expose Public Match Data" on in the Dota 2 client > Settings > Options > Profile.
          - Players are required to keep match data public for the remainder of the season. If players do not comply, their team may be assessed with draft penalties and potential forfeits at admin discretion.
        - No one should expect to miss more than 2 weeks in the season (including playoffs).
          - If a participant expects inconsistent attendance for an upcoming season, they are encouraged to instead sign up as a stand-in or free agent, as appropriate.
        - Admins will be watching for accounts that have unusual match history. Those accounts may be removed at the discretion of the admins. Since there are various ways this rule can be violated, any other punishment will be determined on a case-by-case basis.
-       - Participants may play in as many divisions as they wish in each season of RD2L, as long as those divisions are not on the same day. i.e. Please do not sign up for EST-SUN and PST-SUN. Doing so may result in your removal from both divisions once it is discovered during the season.
+       - Participants may play in as many divisions as they wish in each season of RD2L, as long as those divisions are not on the same day. i.e. Please do not sign up for EST-SUN and PST-SUN. Doing so may result in your removal from both divisions once it is discovered during the season. Also please note that removal from a team (i.e. due to behavioral issues and/or abandoning a team) will result in the participant being removed from any teams they are on in other divisions as well.
    - **Captains**
      - Captains are also participants and all participant rules apply to captains.
      - Captains should have completed at least one previous season before signing up as a captain, unless they get permission from an admin.
@@ -27,15 +27,15 @@
    - **Stand-ins**
      - When a team is missing a player and requires a stand-in, they must formally request one in their divisions stand-in channel in discord, listing the Dotabuff of their missing player and the Dotabuff of the player they would like to use as a stand-in, & they must @ their division admin and opposing captain for that week as well.
      - If a team is missing one of their players, the team is eligible to use a stand-in for this player.
-       - The standin should, at the time of the match, be the same MMR-or-lower than the draft MMR was set to for the player they are replacing.
+       - The standin should, at the time of the match, be the same MMR-or-lower than the current MMR for the player they are replacing.
        - Standins are expected to abide by the same rules as normal players, i.e. sportspersonlike conduct and having their match history marked public.
        - Any standin may be used if both captains agree or via admin discretion.
-       - If the missing player is below 3000 mmr, the standin may be up to 500 mmr above the missing player, with a maximum mmr of 3000. For example, if a team is missing a 1500 mmr player, they are allowed a standin up to 2000 mmr. If a team is missing a 2700 mmr player, they are allowed a standin up to 3000 mmr.
-     - Teams may use 2 stand-ins per match, for a maximum of 10 games during a season. Using two standins in one match counts as two standin uses. If a team finds itself needing more than this, they should contact a division admin to inquire about a free agent if desired.
-       - Stand-in usage from the season will be reset for all playoff teams. Playoff teams may use a stand-in for a maximum of three series of the playoffs. (Series means all games of a round, usually best of 3 or best of 5)
-       - If a team is forced to use a standin because admins have not found a free agent for the team yet, these standin uses will not count towards the team total.
+       - If the missing player is below 3500 mmr, the standin may be up to 500 mmr above the missing player, with a maximum mmr of 3000. For example, if a team is missing a 2000 mmr player, they are allowed a standin up to 2500 mmr. If a team is missing a 3200 mmr player, they are allowed a standin up to 3500 mmr.
+     - Teams may use 2 stand-ins per match, for a maximum of 10 games during a season. Using two stand-ins in one match counts as two stand-in uses. If a team finds itself needing more than this, they should contact a division admin to inquire about a free agent if desired.
+       - Stand-in usage from the season will be reset for all playoff teams. Playoff teams may use a stand-in for a maximum of three series of the playoffs. (Series means all games of a round, usually best of 3)
+       - If a team is forced to use a stand-in because admins have not found a free agent for the team yet, these stand-in uses will not count towards the team total.
      - If a team needs three stand-ins in order to play, they must forfeit the match.
-     - If a captain believes a stand-in is not fair, they can report it to their division admin for a ruling.
+     - If a captain believes a stand-in is not fair, they should contact an admin for their division to rule on the stand-in's legitimacy.
      - If an admin discovers that a player used an unauthorized stand-in after the matches have been completed, the admin may retroactively award a forfeit for any games the unauthorized player played in.
    - **Free Agents**
      - Free agents are players that are eligible to be permanently added to teams during the season
