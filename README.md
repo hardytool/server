@@ -1,6 +1,5 @@
 # Server
 
-[![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/hardytool/server?logo=npm&logoColor=FFFFFF)](https://libraries.io/github/hardytool/server/dependencies)
 [![CI status](https://img.shields.io/github/actions/workflow/status/hardytool/server/node.js.yml?logo=github)](https://github.com/hardytool/server/actions/workflows/node.js.yml?query=branch%3Atrunk "View this project's CI run history")
 [![Checks status](https://img.shields.io/github/checks-status/hardytool/server/trunk?logo=railway&label=deploy)](https://github.com/hardytool/server/commit/trunk)
 [![Uptime Robot status](https://img.shields.io/uptimerobot/status/m787441842-04cf73902b7c489f45837dd0?logo=railway)](https://stats.uptimerobot.com/4zOmnCzkKJ)
