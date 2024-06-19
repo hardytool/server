@@ -1,5 +1,6 @@
 # Server
 
+[![Depfu](https://badges.depfu.com/badges/716ec0618e99a09b8ac57861528cefa7/count.svg)](https://depfu.com/github/hardytool/server?project_id=39851)
 [![CI status](https://img.shields.io/github/actions/workflow/status/hardytool/server/node.js.yml?logo=github)](https://github.com/hardytool/server/actions/workflows/node.js.yml?query=branch%3Atrunk "View this project's CI run history")
 [![Checks status](https://img.shields.io/github/checks-status/hardytool/server/trunk?logo=railway&label=deploy)](https://github.com/hardytool/server/commit/trunk)
 [![Uptime Robot status](https://img.shields.io/uptimerobot/status/m787441842-04cf73902b7c489f45837dd0?logo=railway)](https://stats.uptimerobot.com/4zOmnCzkKJ)
