@@ -265,6 +265,10 @@ function getCSV(player, player_role, role, division, req, res) {
             return Object.assign(player, o)
           })
           return csv.toCSV(players).then(csv => {
+            if (!csv) {
+              res.sendStatus(204)
+              return
+            }
             let filename = divisions.name.toLowerCase() + '-'
             if (isCaptains) {
               filename += 'captains'
