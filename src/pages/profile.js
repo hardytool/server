@@ -11,9 +11,8 @@ function view(
       })
   }
   viewerHasPlayed.then(viewerHasPlayed => {
-    return axios.get('https://api.opendota.com/api/players/' + req.params.steam_id + '/heroes?date=180').then(response => {
-      const body = response.body
-      const top5 = body.length ? body.slice(0, 5) : []
+    return axios.get('https://api.opendota.com/api/players/' + req.params.steam_id + '/heroes?date=180').then(({data}) => {
+      const top5 = data.length ? data.slice(0, 5) : []
       const notableHeroes = top5.map(hero => {
         hero.picture =
           'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/' +
@@ -21,8 +20,6 @@ function view(
         hero.localName = heroes[hero['hero_id']]['localized_name']
         return hero
       })
-      return notableHeroes
-    }).catch(_ => []).then(notableHeroes => {
       return season.getActiveSeason().then(active_season => {
         return profile.getProfile(req.params.steam_id).then(_profile => {
           if (!_profile) {
