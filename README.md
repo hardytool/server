@@ -89,8 +89,6 @@ running.
 │   ├── migrations
 │   │   └── *.sql      # Database migration files run at startup in order starting from 001.sql
 │   ├── pages
-│   │   ├── masters
-│   │   │   ├── *.js   # Masters-specific controllers
 │   │   └── *.js       # Page content controllers
 │   ├── repos
 │   │   └── *.js       # Database model repositories
