@@ -27,7 +27,6 @@ const admin_group = require('./repos/admin_group')(pool)
 const banned_player = require('./repos/banned_player')(pool)
 const division = require('./repos/division')(pool)
 const ip_address = require('./repos/ip_address')(pool)
-const masters = require('./repos/masters')(pool)
 const migration = require('./repos/migration')(pool)
 const player = require('./repos/player')(pool)
 const player_role = require('./repos/player_role')(pool)
@@ -117,15 +116,6 @@ const teamPages = require('./pages/teams')(templates,
   team,
   team_player,
   player)
-
-// Masters controllers
-const mastersPages = require('./pages/masters/home')(templates, masters)
-const mastersSeasonsPages = require('./pages/masters/seasons')(templates, masters)
-const mastersDivisionsPages = require('./pages/masters/divisions')(templates, masters)
-const mastersTeamsPages = require('./pages/masters/teams')(templates, masters)
-const mastersRostersPages = require('./pages/masters/rosters')(templates, masters, steam_user, config)
-const mastersRegistrationPages = require('./pages/masters/registration')(templates, masters, steam_user, config)
-const mastersSeriesPages = require('./pages/masters/series')(templates, masters, pairings)
 
 // Application start
 
@@ -331,64 +321,6 @@ app.post(bannedPlayerPages.post.route, bannedPlayerPages.post.handler)
 app.post(bannedPlayerPages.remove.route, bannedPlayerPages.remove.handler)
 
 app.get(ipPages.list.route, ipPages.list.handler)
-
-// Masters pages
-
-function safeHandler (fn) {
-  return async function wrappedFn (req, res, next) {
-    try {
-      await fn(req, res)
-    } catch (err) {
-      next(err)
-    }
-  }
-}
-
-app.get(mastersPages.home.route, mastersPages.home.handler)
-
-app.get(mastersSeasonsPages.list.route, safeHandler(mastersSeasonsPages.list.handler))
-app.get(mastersSeasonsPages.create.route, safeHandler(mastersSeasonsPages.create.handler))
-app.get(mastersSeasonsPages.edit.route, safeHandler(mastersSeasonsPages.edit.handler))
-app.post(mastersSeasonsPages.post.route, safeHandler(mastersSeasonsPages.post.handler))
-app.post(mastersSeasonsPages.remove.route, safeHandler(mastersSeasonsPages.remove.handler))
-
-app.get(mastersDivisionsPages.list.route, safeHandler(mastersDivisionsPages.list.handler))
-app.get(mastersDivisionsPages.create.route, safeHandler(mastersDivisionsPages.create.handler))
-app.get(mastersDivisionsPages.edit.route, safeHandler(mastersDivisionsPages.edit.handler))
-app.get(mastersDivisionsPages.view.route, safeHandler(mastersDivisionsPages.view.handler))
-app.post(mastersDivisionsPages.post.route, safeHandler(mastersDivisionsPages.post.handler))
-app.post(mastersDivisionsPages.remove.route, safeHandler(mastersDivisionsPages.remove.handler))
-
-app.get(mastersTeamsPages.list.route, safeHandler(mastersTeamsPages.list.handler))
-app.get(mastersTeamsPages.create.route, safeHandler(mastersTeamsPages.create.handler))
-app.get(mastersTeamsPages.edit.route, safeHandler(mastersTeamsPages.edit.handler))
-app.post(mastersTeamsPages.post.route, safeHandler(mastersTeamsPages.post.handler))
-app.post(mastersTeamsPages.remove.route, safeHandler(mastersTeamsPages.remove.handler))
-
-app.get(mastersRostersPages.list.route, safeHandler(mastersRostersPages.list.handler))
-app.get(mastersRostersPages.add.route, safeHandler(mastersRostersPages.add.handler))
-app.post(mastersRostersPages.post.route, safeHandler(mastersRostersPages.post.handler))
-app.post(mastersRostersPages.remove.route, safeHandler(mastersRostersPages.remove.handler))
-
-app.get(mastersRegistrationPages.view.route, safeHandler(mastersRegistrationPages.view.handler))
-app.get(mastersRegistrationPages.shortcut.route, safeHandler(mastersRegistrationPages.shortcut.handler))
-app.get(mastersRegistrationPages.directory.route, safeHandler(mastersRegistrationPages.directory.handler))
-app.get(mastersRegistrationPages.directoryShortcut.route, safeHandler(mastersRegistrationPages.directoryShortcut.handler))
-app.post(mastersRegistrationPages.post.route, safeHandler(mastersRegistrationPages.post.handler))
-
-app.get(mastersSeriesPages.list.route, safeHandler(mastersSeriesPages.list.handler))
-app.get(mastersSeriesPages.create.route, safeHandler(mastersSeriesPages.create.handler))
-app.get(mastersSeriesPages.edit.route, safeHandler(mastersSeriesPages.edit.handler))
-app.get(mastersSeriesPages.standings.route, safeHandler(mastersSeriesPages.standings.handler))
-app.get(mastersSeriesPages.matchups.route, safeHandler(mastersSeriesPages.matchups.handler))
-app.get(mastersSeriesPages.editRound.route, safeHandler(mastersSeriesPages.editRound.handler))
-app.get(mastersSeriesPages.importSeries.route, safeHandler(mastersSeriesPages.importSeries.handler))
-
-app.post(mastersSeriesPages.post.route, safeHandler(mastersSeriesPages.post.handler))
-app.post(mastersSeriesPages.remove.route, safeHandler(mastersSeriesPages.remove.handler))
-app.post(mastersSeriesPages.saveRound.route, safeHandler(mastersSeriesPages.saveRound.handler))
-
-// End masters pages
 
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))

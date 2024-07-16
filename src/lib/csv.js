@@ -2,7 +2,7 @@ const json2csv = require('json2csv').parse
 
 function toCSV(records) {
   if (!records.length) {
-    return new Promise('')
+    return Promise.resolve(null)
   }
 
   const fields = Object.keys(records[0])
