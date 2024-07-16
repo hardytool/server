@@ -1,37 +1,43 @@
-version: '3'
 services:
   server:
     build: .
     ports:
-      - '8080:8080'
+      - "$PORT:80"
     links:
-      - 'db'
-    restart: 'always'
+      - "db"
+    restart: "always"
     environment:
-      - 'STEAM_API_KEY'
-      - 'SECRET'
-      - 'HOST'
-      - 'PORT=8080'
-      - 'HTTPS_PORT=443'
-      - 'NODE_ENV=production'
-      - 'POSTGRES_DB=seal'
-      - 'POSTGRES_USER'
-      - 'POSTGRES_PASSWORD'
-    network_mode: 'default'
+      - "STEAM_API_KEY"
+      - "SECRET"
+      - "HOST"
+      - "HTTPS_PORT=443"
+      - "NODE_ENV=production"
+      - "POSTGRES_DB=seal"
+      - "POSTGRES_USER"
+      - "POSTGRES_PASSWORD"
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
-    image: 'library/postgres:latest'
-    restart: 'always'
+    image: "library/postgres:latest"
+    restart: "always"
     ports:
-      - '5432:5432'
+      - "5432:5432"
     environment:
-      - 'POSTGRES_USER'
-      - 'POSTGRES_PASSWORD'
-      - 'PGDATA=/var/lib/postgresql/data'
-      - 'POSTGRES_DB=seal'
+      - "POSTGRES_USER"
+      - "POSTGRES_PASSWORD"
+      - "PGDATA=/var/lib/postgresql/data"
+      - "POSTGRES_DB=seal"
     volumes:
-      - 'db:/var/lib/postgresql/data'
-    network_mode: 'default'
+      - "db:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $$POSTGRES_DB -U $$POSTGRES_USER"]
+      start_period: 30s
+      start_interval: 1s
+      interval: 30s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db:

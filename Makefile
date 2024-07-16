@@ -1,4 +1,4 @@
-HOST?=$(shell docker-machine ip)
+HOST?=localhost
 POSTGRES_USER?="postgres"
 POSTGRES_PASSWORD?="postgres"
 STEAM_BOT_USERNAME?=""
