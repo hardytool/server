@@ -20,6 +20,14 @@ function view(
         hero.localName = heroes[hero['hero_id']]['localized_name']
         return hero
       })
+    }).catch((err) => {
+      console.error(err.toJSON())
+      if (error.response) {
+        console.log(error.response.headers)
+      }
+      return []
+    })
+    .finally((notableHeroes) => {
       return season.getActiveSeason().then(active_season => {
         return profile.getProfile(req.params.steam_id).then(_profile => {
           if (!_profile) {
