@@ -36,7 +36,7 @@ function nav(templates, season, division, admin, req, res) {
         const html = templates.division.division({
           user: req.user,
           division: division,
-          seasons: seasons.toReversed(),
+          seasons: seasons,
           divisionAdmins: divisionAdmins,
         })
 
