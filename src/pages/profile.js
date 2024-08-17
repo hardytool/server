@@ -27,7 +27,7 @@ function view(
         console.log(err.response.headers)
       }
       return []
-    }).finally((notableHeroes) => {
+    }).then((notableHeroes) => {
       return season.getActiveSeason().then(active_season => {
         return profile.getProfile(req.params.steam_id).then(_profile => {
           if (!_profile) {
