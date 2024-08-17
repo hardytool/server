@@ -36,8 +36,8 @@ function nav(templates, season, division, admin, req, res) {
         const html = templates.division.division({
           user: req.user,
           division: division,
-          seasons: seasons,
-          divisionAdmins: divisionAdmins
+          seasons: seasons.toReversed(),
+          divisionAdmins: divisionAdmins,
         })
 
         res.send(html)
@@ -56,7 +56,7 @@ function all_seasons(templates, season, division, req, res) {
       const html = templates.division.all_seasons({
         user: req.user,
         division: division,
-        seasons: seasons
+        seasons: seasons.toReversed(),
       })
 
       res.send(html)

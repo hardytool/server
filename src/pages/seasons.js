@@ -4,7 +4,7 @@ function list(templates, season, req, res) {
   season.getSeasons().then(seasons => {
     const html = templates.season.list({
       user: req.user,
-      seasons: seasons,
+      seasons: seasons.toReversed(),
     })
 
     res.send(html)
