@@ -212,7 +212,11 @@ function getCurrentRound(db, season_id, division_id, round) {
         division_id = ${division_id}
       `
       return db.query(query).then(result => {
-        return result.rows[0].round
+        if (result.rows[0]) {
+          return result.rows[0].round
+        } else {
+          return 0
+        }
       })
     }
   })
