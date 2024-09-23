@@ -27,7 +27,7 @@
    - **Stand-ins**
      - When a team is missing a player and requires a stand-in, they must formally request one in their divisions stand-in channel in discord, listing the Dotabuff of their missing player and the Dotabuff of the player they would like to use as a stand-in, & they must @ their division admin and opposing captain for that week as well.
      - If a team is missing one of their players, the team is eligible to use a stand-in for this player.
-       - The standin should, at the time of the match, be in a magical undefined buffer zone based on the whims of peenix for the player they are replacing.
+       - The standin should, at the time of the match, be in a one star buffer zone based on the whims of peenix for the player they are replacing.
        - Standins are expected to abide by the same rules as normal players, i.e. sportspersonlike conduct and having their match history marked public.
        - Any standin may be used if both captains agree or via admin discretion.
        - If the missing player is below 3500 mmr, the standin may be up to 500 mmr above the missing player, with a maximum mmr of 3000. For example, if a team is missing a 2000 mmr player, they are allowed a standin up to 2500 mmr. If a team is missing a 3200 mmr player, they are allowed a standin up to 3500 mmr.
