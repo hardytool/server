@@ -20,7 +20,7 @@
     "bignumber.js": "^9.1.2",
     "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
-    "connect-pg-simple": "^9.0.1",
+    "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.3",
     "csurf": "^1.9.0",
     "dotenv": "^16.4.5",
