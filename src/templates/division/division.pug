@@ -31,15 +31,15 @@ block content
       if divisionAdmins
         each divisionAdmin in divisionAdmins
           div.column
-            div.card.box
-              div.media
-                div.media-left
-                  figure.image.is-48x48
-                    a(href='/profile/' + divisionAdmin.steam_id title=divisionAdmin.name)
+            a(href='/profile/' + divisionAdmin.steam_id title=divisionAdmin.name)
+              div.card.box
+                div.media
+                  div.media-left
+                    figure.image.is-48x48
                       img(src=divisionAdmin.avatar)
-                div.content
-                  p.title.is-4
-                    span= divisionAdmin.name
+                  div.content
+                    p.title.is-4
+                      span= divisionAdmin.name
 
   div.columns
     div.column
