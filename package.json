@@ -42,6 +42,6 @@
     "swiss-pairing": "^1.4.3"
   },
   "devDependencies": {
-    "eslint": "^9.15.0"
+    "eslint": "^9.16.0"
   }
 }
