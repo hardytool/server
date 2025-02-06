@@ -30,7 +30,7 @@
        - The standin should, at the time of the match, be the same MMR-or-lower than the current MMR for the player they are replacing.
        - Standins are expected to abide by the same rules as normal players, i.e. sportspersonlike conduct and having their match history marked public.
        - Any standin may be used if both captains agree or via admin discretion.
-       - If the missing player is below 3500 mmr, the standin may be up to 500 mmr above the missing player, with a maximum mmr of 3000. For example, if a team is missing a 2000 mmr player, they are allowed a standin up to 2500 mmr. If a team is missing a 3200 mmr player, they are allowed a standin up to 3500 mmr.
+       - If the missing player is below 3500 mmr, the standin may be up to 500 mmr above the missing player, with a maximum mmr of 3500. For example, if a team is missing a 2000 mmr player, they are allowed a standin up to 2500 mmr. If a team is missing a 3200 mmr player, they are allowed a standin up to 3500 mmr.
      - Teams may use 2 stand-ins per match, for a maximum of 10 games during a season. Using two stand-ins in one match counts as two stand-in uses. If a team finds itself needing more than this, they should contact a division admin to inquire about a free agent if desired.
        - Stand-in usage from the season will be reset for all playoff teams. Playoff teams may use a stand-in for a maximum of three series of the playoffs. (Series means all games of a round, usually best of 3)
        - If a team is forced to use a stand-in because admins have not found a free agent for the team yet, these stand-in uses will not count towards the team total.
