@@ -2,6 +2,8 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
 name: Node.js CI
+permissions:
+  contents: read
 
 on:
   push:
@@ -11,16 +13,43 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
     - name: Use Node.js latest
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f
       with:
         node-version: latest
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - name: Use Docker Compose latest
+      uses: docker/setup-compose-action@364cc21a5de5b1ee4a7f5f9d3fa374ce0ccde746
+      with:
+        version: latest
+    - run: docker compose up --yes --detach --wait
+      env:
+        PORT: 3000
+        POSTGRES_USER: test
+        POSTGRES_PASSWORD: test
+        SECRET: test
+        HOST: localhost
+    - name: Check site is available
+      run: curl --fail --silent --show-error --max-time 5 --retry 5 --retry-delay 0 --retry-max-time 30 --retry-all-errors "http://localhost:3000/" || exit 1
+    - name: Show server logs on failure
+      if: failure()
+      run: |
+        echo "=== Server logs ==="
+        docker compose logs server
+        echo "=== Database logs ==="
+        docker compose logs db
+    - name: Cleanup
+      if: always()
+      run: |
+        docker compose down --volumes --timeout 10
