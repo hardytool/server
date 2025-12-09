@@ -30,6 +30,6 @@ jobs:
       uses: docker/setup-compose-action@364cc21a5de5b1ee4a7f5f9d3fa374ce0ccde746
       with:
         version: latest
-    - run: PORT=3000 docker compose up --yes --detach --wait
+    - run: PORT=3000 POSTGRES_USER=test POSTGRES_PASSWORD=test docker compose up --yes --detach --wait
     - name: Check site is available
       run: curl -fsS --max-time 5 "http://localhost:3000/" || exit 1
