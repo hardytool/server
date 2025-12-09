@@ -15,12 +15,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
     - name: Use Node.js latest
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f
       with:
         node-version: latest
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+    - name: Use Docker Compose latest
+      uses: docker/setup-compose-action@364cc21a5de5b1ee4a7f5f9d3fa374ce0ccde746
+      with:
+        version: latest
+    - run: PORT=3000 docker compose up --yes --detach --wait
+    - name: Check site is available
+      run: curl -fsS --max-time 5 "http://localhost:3000/" || exit 1
