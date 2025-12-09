@@ -39,4 +39,4 @@ jobs:
         POSTGRES_USER: test
         POSTGRES_PASSWORD: test
     - name: Check site is available
-      run: curl -fsS --max-time 5 "http://localhost:3000/" || exit 1
+      run: curl -fsS --max-time 5 --retry 5 --retry-delay 0 --retry-max-time 30 "http://localhost:3000/" || exit 1
