@@ -1,0 +1,90 @@
+name: Health Check
+
+on:
+  push:
+    branches: [ "trunk" ]
+  pull_request:
+    branches: [ "trunk" ]
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build and start services with docker compose
+      run: |
+        echo "Building Docker images..."
+        docker compose build --progress=plain
+        echo "Starting services..."
+        docker compose up -d
+        echo "Checking service status..."
+        docker compose ps
+      env:
+        PORT: 8080
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        STEAM_API_KEY: test-api-key-for-ci-only
+        SECRET: test-secret-for-ci-only
+        HOST: localhost
+      timeout-minutes: 10
+    
+    - name: Wait for server to be ready
+      run: |
+        echo "Waiting for server to start..."
+        timeout=120
+        elapsed=0
+        
+        while [ $elapsed -lt $timeout ]; do
+          if curl -f -s http://localhost:8080/ > /dev/null 2>&1; then
+            echo "Server is ready!"
+            exit 0
+          fi
+          if [ $((elapsed % 10)) -eq 0 ]; then
+            echo "Still waiting... ($elapsed seconds elapsed)"
+            docker compose ps
+          fi
+          sleep 5
+          elapsed=$((elapsed + 5))
+        done
+        
+        echo "Server failed to start within $timeout seconds"
+        echo "=== Container status ==="
+        docker compose ps
+        echo "=== Server logs ==="
+        docker compose logs server
+        echo "=== Database logs ==="
+        docker compose logs db
+        exit 1
+    
+    - name: Test website accessibility
+      run: |
+        echo "Testing website accessibility..."
+        response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/)
+        echo "HTTP response code: $response"
+        
+        if [ "$response" = "200" ] || [ "$response" = "302" ] || [ "$response" = "301" ]; then
+          echo "✓ Website is accessible!"
+          echo "Making a test request to get the page content..."
+          curl -s -i http://localhost:8080/ | head -20
+          exit 0
+        else
+          echo "✗ Website returned unexpected status code: $response"
+          echo "=== Server logs ==="
+          docker compose logs server
+          exit 1
+        fi
+    
+    - name: Show server logs (on failure)
+      if: failure()
+      run: |
+        echo "=== Server logs ==="
+        docker compose logs server
+        echo "=== Database logs ==="
+        docker compose logs db
+    
+    - name: Cleanup
+      if: always()
+      run: |
+        docker compose down -v
