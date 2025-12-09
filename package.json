@@ -18,13 +18,13 @@
   "dependencies": {
     "bignumber.js": "^9.2.0",
     "bluebird": "^3.7.2",
-    "body-parser": "^2.2.0",
+    "body-parser": "^2.2.1",
     "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.7",
     "csurf": "^1.9.0",
     "dotenv": "^17.2.3",
     "edmonds-blossom": "^1.0.0",
-    "express": "^4.21.2",
+    "express": "^4.22.0",
     "express-session": "^1.18.1",
     "got": "^14.4.7",
     "helmet": "^8.1.0",
@@ -42,6 +42,6 @@
     "swiss-pairing": "^1.4.3"
   },
   "devDependencies": {
-    "eslint": "^9.24.0"
+    "eslint": "^9.39.1"
   }
 }
