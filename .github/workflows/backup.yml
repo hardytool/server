@@ -1,4 +1,6 @@
 name: Backup
+permissions:
+  contents: none
 
 on:
   schedule:
