@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '/.github/workflows/backup.yml'
+      - '.github/workflows/backup.yml'
 
 jobs:
   backup:
