@@ -121,7 +121,7 @@ const teamPages = require('./pages/teams')(templates,
 
 const app = express()
 
-const { generateToken, doubleCsrfProtection } = doubleCsrf({
+const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
   getSecret: () => config.server.secret,
   cookieName: '_csrf',
   cookieOptions: {
@@ -163,7 +163,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser(config.server.secret))
 app.use(doubleCsrfProtection)
 app.use((req, res, next) => {
-  req.csrfToken = () => generateToken(req, res)
+  req.csrfToken = () => generateCsrfToken(req, res)
   next()
 })
 app.use(session({
