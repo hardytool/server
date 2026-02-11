@@ -123,6 +123,7 @@ const app = express()
 
 const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
   getSecret: () => config.server.secret,
+  getSessionIdentifier: (req) => req.session.id,
   cookieName: '_csrf',
   cookieOptions: {
     httpOnly: true,
@@ -161,11 +162,6 @@ app.set('trust proxy', true)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser(config.server.secret))
-app.use(doubleCsrfProtection)
-app.use((req, res, next) => {
-  req.csrfToken = () => generateCsrfToken(req, res)
-  next()
-})
 app.use(session({
   store: new PGStore({
     pool: pool,
@@ -179,6 +175,11 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }))
+app.use(doubleCsrfProtection)
+app.use((req, res, next) => {
+  req.csrfToken = () => generateCsrfToken(req, res)
+  next()
+})
 app.use(passport.initialize())
 app.use(passport.session())
 app.use((req, _, next) => {
