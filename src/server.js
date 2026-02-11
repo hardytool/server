@@ -129,7 +129,7 @@ const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
     sameSite: 'strict',
     secure: config.server.host !== 'localhost',
   },
-  getTokenFromRequest: (req) => req.body && req.body._csrf,
+  getCsrfTokenFromRequest: (req) => req.body && req.body._csrf,
 })
 
 passport.serializeUser((user, done) => {
