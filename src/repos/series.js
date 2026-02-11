@@ -243,7 +243,7 @@ function saveCurrentRound(db, season_id, division_id, round) {
 }
 
 function getStandings(db, season_id, division_id, round) {
-  return getCurrentRound(db, season_id, round).then(round => {
+  return getCurrentRound(db, season_id, division_id, round).then(round => {
     const query = sql`
     SELECT
       team.id,
