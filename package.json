@@ -45,6 +45,8 @@
     "eslint": "^9.39.2"
   },
   "overrides": {
-    "form-data": "^4.0.5"
+    "axios": "^1.13.5",
+    "form-data": "^4.0.5",
+    "js-yaml": "^4.1.1"
   }
 }
