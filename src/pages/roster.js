@@ -8,6 +8,10 @@ function list(templates, season, division, team, team_player, series, req, res) 
   season.getSeason(season_id).then(season => {
     return division.getDivision(division_id).then(division => {
       return team.getTeam(team_id).then(team => {
+        if (!team) {
+          res.sendStatus(404)
+          return
+        }
         return team_player.getRoster(team.id).then(players => {
           return series.getSeries({ team_id: team.id }).then(series => {
             const captain = players.filter(player => {
