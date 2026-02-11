@@ -6,7 +6,7 @@ const config = require('./config')(env)
 const path = require('path')
 const http = require('http')
 const express = require('express')
-const csurf = require('csurf')
+const { doubleCsrf } = require('csrf-csrf')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
@@ -121,8 +121,15 @@ const teamPages = require('./pages/teams')(templates,
 
 const app = express()
 
-const csrfMiddleware = csurf({
-  cookie: true
+const { generateToken, doubleCsrfProtection } = doubleCsrf({
+  getSecret: () => config.server.secret,
+  cookieName: '_csrf',
+  cookieOptions: {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: config.server.host !== 'localhost',
+  },
+  getTokenFromRequest: (req) => req.body && req.body._csrf,
 })
 
 passport.serializeUser((user, done) => {
@@ -154,7 +161,11 @@ app.set('trust proxy', true)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser(config.server.secret))
-app.use(csrfMiddleware)
+app.use(doubleCsrfProtection)
+app.use((req, res, next) => {
+  req.csrfToken = () => generateToken(req, res)
+  next()
+})
 app.use(session({
   store: new PGStore({
     pool: pool,

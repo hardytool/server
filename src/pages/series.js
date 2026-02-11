@@ -514,11 +514,11 @@ module.exports = (templates, season, team, series, pairings, division) => {
       handler: remove.bind(null, series)
     },
     standings: {
-      route: '/seasons/:season_id/divisions/:division_id/standings/:round?',
+      route: '/seasons/:season_id/divisions/:division_id/standings{/:round}',
       handler: standings.bind(null, templates, season, team, series, pairings, division)
     },
     matchups: {
-      route: '/seasons/:season_id/divisions/:division_id/matchups/:round?',
+      route: '/seasons/:season_id/divisions/:division_id/matchups{/:round}',
       handler: matchups.bind(null, templates, season, team, series, pairings, division)
     },
     editRound: {
