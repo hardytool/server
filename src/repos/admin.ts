@@ -1,6 +1,8 @@
-const sql = require('pg-sql').sql
+import { sql } from 'pg-sql'
+import type { Pool } from 'pg'
+import type { Admin, AdminRow, DivisionAdminRow } from '../types/db'
 
-function isAdmin(db, id) {
+async function isAdmin(db: Pool, id: string): Promise<boolean> {
   const select = sql`
   SELECT
     COUNT(*) > 0 AS is_admin
@@ -9,31 +11,11 @@ function isAdmin(db, id) {
   WHERE
     steam_id = ${id.toString()}
   `
-  return db.query(select).then(result => {
-    return result.rows[0].is_admin
-  })
+  const result = await db.query(select)
+  return result.rows[0].is_admin
 }
 
-function saveAdmin(db, admin) {
-  const upsert = sql`
-  INSERT INTO admin (
-    steam_id,
-    group_id,
-    division_id
-  ) VALUES (
-    ${admin.steam_id},
-    ${admin.group_id},
-    ${admin.division_id}
-  ) ON CONFLICT (
-    steam_id
-  ) DO UPDATE SET
-    group_id = ${admin.group_id},
-    division_id = ${admin.division_id}
-  `
-  return db.query(upsert)
-}
-
-function getAdmins(db, criteria) {
+async function getAdmins(db: Pool, criteria?: { steam_id?: string }): Promise<AdminRow[]> {
   let select = sql`
   SELECT
     steam_user.steam_id,
@@ -64,13 +46,11 @@ function getAdmins(db, criteria) {
       `])
     }
   }
-
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function getDivisionAdmins(db, id) {
+async function getDivisionAdmins(db: Pool, id: number | string): Promise<DivisionAdminRow[]> {
   const select = sql`
   SELECT
     steam_user.steam_id,
@@ -86,13 +66,30 @@ function getDivisionAdmins(db, id) {
     steam_user.steam_id = profile.steam_id
   WHERE admin.division_id = ${id}
   `
-
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function deleteAdmin(db, id) {
+async function saveAdmin(db: Pool, admin: Pick<Admin, 'steam_id' | 'group_id'> & { division_id?: number | null }): Promise<unknown> {
+  const upsert = sql`
+  INSERT INTO admin (
+    steam_id,
+    group_id,
+    division_id
+  ) VALUES (
+    ${admin.steam_id},
+    ${admin.group_id},
+    ${admin.division_id}
+  ) ON CONFLICT (
+    steam_id
+  ) DO UPDATE SET
+    group_id = ${admin.group_id},
+    division_id = ${admin.division_id}
+  `
+  return db.query(upsert)
+}
+
+async function deleteAdmin(db: Pool, id: string): Promise<unknown> {
   const query = sql`
       DELETE FROM
         admin
@@ -102,12 +99,12 @@ function deleteAdmin(db, id) {
   return db.query(query)
 }
 
-module.exports = db => {
+export = function(db: Pool) {
   return {
-    saveAdmin: saveAdmin.bind(null, db),
     isAdmin: isAdmin.bind(null, db),
     getAdmins: getAdmins.bind(null, db),
     getDivisionAdmins: getDivisionAdmins.bind(null, db),
+    saveAdmin: saveAdmin.bind(null, db),
     deleteAdmin: deleteAdmin.bind(null, db)
   }
 }

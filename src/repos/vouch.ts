@@ -1,6 +1,8 @@
-const sql = require('pg-sql').sql
+import { sql } from 'pg-sql'
+import type { Pool } from 'pg'
+import type { VouchStatus } from '../types/db'
 
-function isVouched(db, steam_id) {
+async function isVouched(db: Pool, steam_id: string): Promise<VouchStatus | undefined> {
   const select = sql`
   SELECT
     CASE
@@ -15,12 +17,11 @@ function isVouched(db, steam_id) {
   WHERE
     steam_user.steam_id = ${steam_id}
   `
-  return db.query(select).then(result => {
-    return result.rows[0]
-  })
+  const result = await db.query(select)
+  return result.rows[0]
 }
 
-function vouch(db, voucher_id, vouchee_id) {
+async function vouch(db: Pool, voucher_id: string, vouchee_id: string): Promise<unknown> {
   const upsert = sql`
   INSERT INTO vouch (
     vouched_id,
@@ -36,7 +37,7 @@ function vouch(db, voucher_id, vouchee_id) {
   return db.query(upsert)
 }
 
-function unvouch(db, steam_id) {
+async function unvouch(db: Pool, steam_id: string): Promise<unknown> {
   const query = sql`
   DELETE FROM
     vouch
@@ -46,7 +47,7 @@ function unvouch(db, steam_id) {
   return db.query(query)
 }
 
-module.exports = db => {
+export = function(db: Pool) {
   return {
     isVouched: isVouched.bind(null, db),
     vouch: vouch.bind(null, db),

@@ -1,6 +1,8 @@
-const sql = require('pg-sql').sql
+import { sql } from 'pg-sql'
+import type { Pool } from 'pg'
+import type { SteamUser } from '../types/db'
 
-function getSteamUsers(db) {
+async function getSteamUsers(db: Pool): Promise<SteamUser[]> {
   const select = sql`
   SELECT
     steam_user.steam_id,
@@ -13,12 +15,11 @@ function getSteamUsers(db) {
   FROM
     steam_user
   `
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function getSteamUsersMissingMMR(db, season_id) {
+async function getSteamUsersMissingMMR(db: Pool, season_id: number | string): Promise<SteamUser[]> {
   const select = sql`
   SELECT
     steam_user.steam_id,
@@ -39,12 +40,11 @@ function getSteamUsersMissingMMR(db, season_id) {
   AND
     steam_user.party_mmr = 0
   `
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function getNonPlayerSteamUsers(db, season_id, division_id) {
+async function getNonPlayerSteamUsers(db: Pool, season_id: number | string, division_id: number | string): Promise<SteamUser[]> {
   const select = sql`
   SELECT
     steam_user.steam_id,
@@ -73,12 +73,11 @@ function getNonPlayerSteamUsers(db, season_id, division_id) {
     steam_user.name ASC,
     steam_user.steam_id ASC
   `
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function getSteamUser(db, steamId) {
+async function getSteamUser(db: Pool, steamId: string): Promise<SteamUser | undefined> {
   const select = sql`
   SELECT
     steam_user.steam_id,
@@ -93,12 +92,11 @@ function getSteamUser(db, steamId) {
   WHERE
     steam_user.steam_id = ${steamId}
   `
-  return db.query(select).then(result => {
-    return result.rows[0]
-  })
+  const result = await db.query(select)
+  return result.rows[0]
 }
 
-function saveSteamUser(db, user) {
+async function saveSteamUser(db: Pool, user: SteamUser): Promise<unknown> {
   const upsert = sql`
   INSERT INTO steam_user (
     steam_id,
@@ -138,7 +136,7 @@ function saveSteamUser(db, user) {
   return db.query(upsert)
 }
 
-function deleteSteamUser(db, id) {
+async function deleteSteamUser(db: Pool, id: string): Promise<unknown> {
   const query = sql`
   DELETE FROM
     steam_user
@@ -148,7 +146,7 @@ function deleteSteamUser(db, id) {
   return db.query(query)
 }
 
-module.exports = db => {
+export = function(db: Pool) {
   return {
     getSteamUsers: getSteamUsers.bind(null, db),
     getSteamUsersMissingMMR: getSteamUsersMissingMMR.bind(null, db),

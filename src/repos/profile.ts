@@ -1,6 +1,9 @@
-const sql = require('pg-sql').sql
+import { sql } from 'pg-sql'
+import type { Pool } from 'pg'
+import type { Profile, ActivityCheck } from '../types/db'
+import type { ProfileInput } from '../types/repos'
 
-function getProfile(db, steamId) {
+async function getProfile(db: Pool, steamId: string): Promise<Profile | undefined> {
   const select = sql`
   SELECT
     steam_user.steam_id,
@@ -35,12 +38,11 @@ function getProfile(db, steamId) {
   WHERE
     steam_user.steam_id = ${steamId}
   `
-  return db.query(select).then(result => {
-    return result.rows[0]
-  })
+  const result = await db.query(select)
+  return result.rows[0]
 }
 
-function getActivityCheck(db, steamId) {
+async function getActivityCheck(db: Pool, steamId: string): Promise<ActivityCheck | undefined> {
   const select = sql`
   SELECT
     player.steam_id,
@@ -54,12 +56,11 @@ function getActivityCheck(db, steamId) {
     AND season.active = TRUE
     AND season.activity_check = TRUE;
   `
-  return db.query(select).then(result => {
-    return result.rows[0]
-  })
+  const result = await db.query(select)
+  return result.rows[0]
 }
 
-function saveProfile(db, profile) {
+async function saveProfile(db: Pool, profile: ProfileInput): Promise<unknown> {
   const upsert = sql`
   INSERT INTO profile (
     steam_id,
@@ -99,7 +100,7 @@ function saveProfile(db, profile) {
   return db.query(upsert)
 }
 
-module.exports = db => {
+export = function(db: Pool) {
   return {
     getProfile: getProfile.bind(null, db),
     getActivityCheck: getActivityCheck.bind(null, db),

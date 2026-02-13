@@ -1,6 +1,8 @@
-const sql = require('pg-sql').sql
+import { sql } from 'pg-sql'
+import type { Pool } from 'pg'
+import type { Season } from '../types/db'
 
-function getSeasons(db) {
+async function getSeasons(db: Pool): Promise<Season[]> {
   const select = sql`
   SELECT
     id,
@@ -14,12 +16,11 @@ function getSeasons(db) {
   ORDER BY
     number ASC
   `
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function getSeason(db, id) {
+async function getSeason(db: Pool, id: number | string): Promise<Season> {
   const select = sql`
   SELECT
     id,
@@ -33,12 +34,11 @@ function getSeason(db, id) {
   WHERE
     id = ${id}
   `
-  return db.query(select).then(result => {
-    return result.rows[0]
-  })
+  const result = await db.query(select)
+  return result.rows[0]
 }
 
-function getActiveSeason(db) {
+async function getActiveSeason(db: Pool): Promise<Season | undefined> {
   const select = sql`
   SELECT
     id,
@@ -52,12 +52,11 @@ function getActiveSeason(db) {
   WHERE
     active
   `
-  return db.query(select).then(result => {
-    return result.rows[0]
-  })
+  const result = await db.query(select)
+  return result.rows[0]
 }
 
-function saveSeason(db, season) {
+async function saveSeason(db: Pool, season: Partial<Season>): Promise<unknown> {
   const upsert = sql`
   INSERT INTO
     season (
@@ -93,7 +92,7 @@ function saveSeason(db, season) {
   return db.query(upsert)
 }
 
-function deleteSeason(db, id) {
+async function deleteSeason(db: Pool, id: number | string): Promise<unknown> {
   const query = sql`
   DELETE FROM
     season
@@ -103,7 +102,7 @@ function deleteSeason(db, id) {
   return db.query(query)
 }
 
-function startSeason(db, divisionIds, seasonId) {
+async function startSeason(db: Pool, divisionIds: string[], seasonId: number | string): Promise<unknown> {
   const query = sql`
   INSERT INTO round(season_id, current_round, division_id)
   values(${seasonId}, 0, unnest(${divisionIds}::text[]))
@@ -111,7 +110,7 @@ function startSeason(db, divisionIds, seasonId) {
   return db.query(query)
 }
 
-module.exports = db => {
+export = function(db: Pool) {
   return {
     getSeasons: getSeasons.bind(null, db),
     getSeason: getSeason.bind(null, db),

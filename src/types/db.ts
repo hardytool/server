@@ -123,6 +123,7 @@ export interface PlayerCriteria {
 // Sort options for player.getPlayers
 export interface PlayerSort {
   by_mmr?: boolean
+  by_name?: boolean
   by_reverse_mmr?: boolean
 }
 

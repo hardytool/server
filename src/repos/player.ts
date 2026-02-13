@@ -1,6 +1,10 @@
-const sql = require('pg-sql').sql
+import { sql } from 'pg-sql'
+import type { Pool } from 'pg'
+import type { Player, PlayerRow, DraftSheetRow, PlayerCountRow } from '../types/db'
+import type { FullPlayerCriteria } from '../types/repos'
+import type { PlayerSort } from '../types/db'
 
-function getPlayers(db, criteria, sort) {
+async function getPlayers(db: Pool, criteria?: FullPlayerCriteria, sort?: PlayerSort): Promise<PlayerRow[]> {
   let select = sql`
   SELECT
     player.id,
@@ -109,42 +113,6 @@ function getPlayers(db, criteria, sort) {
         player.captain_approved = ${criteria.captain_approved}
       `])
     }
-    if (criteria.is_captain === true) {
-      select = sql.join([select, sql`
-      AND (
-        player.captain_approved = true
-        AND
-          player.will_captain = 'yes'
-        AND (
-          is_vouched.is_vouched = true
-          OR
-          has_played.has_played = true
-        )
-        AND
-          player.is_draftable
-      )
-      `])
-    } else {
-      if (criteria.hide_captains) {
-        select = sql.join([select, sql`
-        AND (
-          player.captain_approved = false
-          OR (
-            player.will_captain = 'no'
-            OR
-              player.will_captain = 'maybe'
-          )
-          OR (
-            is_vouched.is_vouched = false
-            AND
-              has_played.has_played = false
-          )
-          OR
-            NOT player.is_draftable
-        )
-        `])
-      }
-    }
     if (criteria.is_standin === true) {
       select = sql.join([select, sql`
       AND (
@@ -192,12 +160,11 @@ function getPlayers(db, criteria, sort) {
     }
   }
   select = sql.join([select, orderBy])
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function getPlayer(db, id) {
+async function getPlayer(db: Pool, id: number | string): Promise<PlayerRow | undefined> {
   const select = sql`
   SELECT
     player.id,
@@ -238,12 +205,11 @@ function getPlayer(db, id) {
   WHERE
     player.id = ${id}
   `
-  return db.query(select).then(result => {
-    return result.rows[0]
-  })
+  const result = await db.query(select)
+  return result.rows[0]
 }
 
-function savePlayer(db, player) {
+async function savePlayer(db: Pool, player: Partial<Player> & { steam_id: string; season_id: number }): Promise<unknown> {
   const upsert = sql`
   INSERT INTO
     player (
@@ -293,7 +259,7 @@ function savePlayer(db, player) {
   return db.query(upsert)
 }
 
-function deletePlayer(db, id) {
+async function deletePlayer(db: Pool, id: number | string): Promise<unknown> {
   const query = sql`
   DELETE FROM
     player
@@ -303,7 +269,7 @@ function deletePlayer(db, id) {
   return db.query(query)
 }
 
-function unregisterPlayer(db, seasonId, divisionId, steamId) {
+async function unregisterPlayer(db: Pool, seasonId: number | string, divisionId: number | string, steamId: string): Promise<unknown> {
   const query = sql`
   DELETE FROM
     player
@@ -317,7 +283,7 @@ function unregisterPlayer(db, seasonId, divisionId, steamId) {
   return db.query(query)
 }
 
-function getDraftSheet(db, criteria, sort) {
+async function getDraftSheet(db: Pool, criteria?: FullPlayerCriteria, sort?: PlayerSort): Promise<DraftSheetRow[]> {
   let select = sql`
   SELECT
     player.id,
@@ -390,39 +356,22 @@ function getDraftSheet(db, criteria, sort) {
         player.division_id = ${criteria.division_id}
       `])
     }
-    if (criteria.is_captain !== undefined) {
-      if (criteria.is_captain) {
-        select = sql.join([select, sql`
-        AND (
-          player.captain_approved = true
-          AND
-            player.will_captain = 'yes'
-          AND (
-            is_vouched.is_vouched = true
-            OR
-              has_played.has_played = true
-          )
+    if (criteria.hide_captains) {
+      select = sql.join([select, sql`
+      AND (
+        player.captain_approved = false
+        OR (
+          player.will_captain = 'no'
+          OR
+            player.will_captain = 'maybe'
         )
-        `])
-      } else {
-        if (criteria.hide_captains) {
-          select = sql.join([select, sql`
-          AND (
-            player.captain_approved = false
-            OR (
-              player.will_captain = 'no'
-              OR
-                player.will_captain = 'maybe'
-            )
-            OR (
-              is_vouched.is_vouched = false
-              AND
-                has_played.has_played = false
-            )
-          )
-          `])
-        }
-      }
+        OR (
+          is_vouched.is_vouched = false
+          AND
+            has_played.has_played = false
+        )
+      )
+      `])
     }
   }
   let orderBy = sql`
@@ -439,12 +388,11 @@ function getDraftSheet(db, criteria, sort) {
     }
   }
   select = sql.join([select, orderBy])
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function activityCheck(db, season_id, steam_id) {
+async function activityCheck(db: Pool, season_id: number | string, steam_id: string): Promise<unknown> {
   const query = sql`
     UPDATE player
     SET
@@ -457,11 +405,11 @@ function activityCheck(db, season_id, steam_id) {
   return db.query(query)
 }
 
-function hasFalseActivity(db, season_id, steam_id) {
+async function hasFalseActivity(db: Pool, season_id: number | string, steam_id: string): Promise<{ count: string }> {
   const select = sql`
-  SELECT 
+  SELECT
     count(id)
-  FROM 
+  FROM
     player
   WHERE
     steam_id = ${steam_id}
@@ -470,13 +418,11 @@ function hasFalseActivity(db, season_id, steam_id) {
   AND
     activity_check = FALSE
   `
-  return db.query(select).then(result => {
-    return result.rows[0]
-  })
-
+  const result = await db.query(select)
+  return result.rows[0]
 }
 
-function getCurrentPlayerCount(db, season_id) {
+async function getCurrentPlayerCount(db: Pool, season_id: number | string): Promise<PlayerCountRow[]> {
   const select = sql`
   SELECT division.name, count(player.id)
     FROM public.player
@@ -486,12 +432,11 @@ function getCurrentPlayerCount(db, season_id) {
       player.season_id = ${season_id}
     GROUP BY division.name
   `
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-module.exports = db => {
+export = function(db: Pool) {
   return {
     getPlayers: getPlayers.bind(null, db),
     getPlayer: getPlayer.bind(null, db),

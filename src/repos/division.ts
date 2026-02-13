@@ -1,6 +1,8 @@
-const sql = require('pg-sql').sql
+import { sql } from 'pg-sql'
+import type { Pool } from 'pg'
+import type { Division } from '../types/db'
 
-function getDivisions(db, criteria) {
+async function getDivisions(db: Pool, criteria?: { active?: boolean }): Promise<Division[]> {
   let select = sql`
   SELECT
     division.id,
@@ -26,12 +28,11 @@ function getDivisions(db, criteria) {
   ORDER BY
     name ASC
   `])
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function getDivision(db, id) {
+async function getDivision(db: Pool, id: number | string): Promise<Division> {
   const select = sql`
   SELECT
     division.id,
@@ -45,12 +46,11 @@ function getDivision(db, id) {
   WHERE
     division.id = ${id}
   `
-  return db.query(select).then(result => {
-    return result.rows[0]
-  })
+  const result = await db.query(select)
+  return result.rows[0]
 }
 
-function saveDivision(db, division) {
+async function saveDivision(db: Pool, division: Partial<Division>): Promise<unknown> {
   const upsert = sql`
   INSERT INTO
     division(
@@ -86,7 +86,7 @@ function saveDivision(db, division) {
   return db.query(upsert)
 }
 
-function deleteDivision(db, id) {
+async function deleteDivision(db: Pool, id: number | string): Promise<unknown> {
   const query = sql`
   DELETE FROM
     division
@@ -96,7 +96,7 @@ function deleteDivision(db, id) {
   return db.query(query)
 }
 
-module.exports = db => {
+export = function(db: Pool) {
   return {
     getDivisions: getDivisions.bind(null, db),
     getDivision: getDivision.bind(null, db),

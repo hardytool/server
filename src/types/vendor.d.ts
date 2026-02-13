@@ -60,12 +60,14 @@ declare module 'pg-sql' {
     text: string
     values: unknown[]
   }
-  function sql(strings: TemplateStringsArray, ...values: unknown[]): SqlQuery
-  namespace sql {
-    function join(parts: SqlQuery[], separator?: string): SqlQuery
-    function raw(text: string): SqlQuery
+  // The package exports { sql } — usage: require('pg-sql').sql or import { sql }
+  type SqlTag = {
+    (strings: TemplateStringsArray, ...values: unknown[]): SqlQuery
+    join(parts: SqlQuery[], separator?: string): SqlQuery
+    raw(text: string): SqlQuery
   }
-  export = sql
+  const sql: SqlTag
+  export { sql }
 }
 
 declare module 'connect-pg-simple' {

@@ -1,6 +1,8 @@
-const sql = require('pg-sql').sql
+import { sql } from 'pg-sql'
+import type { Pool } from 'pg'
+import type { UnassignedPlayer, TeamPlayer, PlayerTeam } from '../types/db'
 
-function getUnassignedPlayers(db, season_id, division_id) {
+async function getUnassignedPlayers(db: Pool, season_id: number | string, division_id: number | string): Promise<UnassignedPlayer[]> {
   const select = sql`
   SELECT
     player.id,
@@ -37,47 +39,50 @@ function getUnassignedPlayers(db, season_id, division_id) {
     steam_user.name ASC,
     steam_user.steam_id ASC
   `
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function addPlayerToTeam(db, team_id, player_id, is_captain) {
-  const upsert = sql`
-  INSERT INTO team_player (
-    team_id,
-    player_id,
-    is_captain
-  ) VALUES (
-    ${team_id},
-    ${player_id},
-    ${is_captain}
-  ) ON CONFLICT (
-    player_id
-  ) DO UPDATE SET (
-    team_id,
-    is_captain
-  ) = (
-    ${team_id},
-    ${is_captain}
-  )
-  `
-  return db.query(upsert)
-}
-
-function removePlayerFromTeam(db, team_id, player_id) {
-  const query = sql`
-  DELETE FROM
-    team_player
+async function getRoster(db: Pool, team_id: number | string): Promise<TeamPlayer[]> {
+  const select = sql`
+  SELECT
+    player.id,
+    steam_user.steam_id,
+    COALESCE(profile.name, steam_user.name) AS name,
+    steam_user.avatar,
+    steam_user.solo_mmr,
+    steam_user.party_mmr,
+    steam_user.rank,
+    steam_user.previous_rank,
+    CASE
+      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
+      THEN profile.adjusted_mmr
+      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
+    END AS adjusted_mmr,
+    team_player.is_captain
+  FROM
+    team
+  JOIN team_player ON
+    team.id = team_player.team_id
+  JOIN player ON
+    team_player.player_id = player.id
+  JOIN steam_user ON
+    player.steam_id = steam_user.steam_id
+  LEFT JOIN profile ON
+    steam_user.steam_id = profile.steam_id
   WHERE
-    team_id = ${team_id}
-  AND
-    player_id = ${player_id}
+    team.id = ${team_id}
+  ORDER BY
+    adjusted_mmr DESC,
+    steam_user.solo_mmr DESC,
+    steam_user.party_mmr DESC,
+    steam_user.name ASC
   `
-  return db.query(query)
+  const result = await db.query(select)
+  return result.rows
 }
 
-function getPlayerTeams(db, steam_id, season_id, division_id) {
+async function getPlayerTeams(db: Pool, steam_id: string, season_id?: number | string, division_id?: number | string): Promise<PlayerTeam[]> {
   let select = sql`
   SELECT
     team.id,
@@ -124,52 +129,46 @@ function getPlayerTeams(db, steam_id, season_id, division_id) {
   select = sql.join([select, sql`
   ORDER BY season.number DESC, division.name ASC
   `])
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function getRoster(db, team_id) {
-  const select = sql`
-  SELECT
-    player.id,
-    steam_user.steam_id,
-    COALESCE(profile.name, steam_user.name) AS name,
-    steam_user.avatar,
-    steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank,
-    CASE
-      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
-      THEN profile.adjusted_mmr
-      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
-    END AS adjusted_mmr,
-    team_player.is_captain
-  FROM
-    team
-  JOIN team_player ON
-    team.id = team_player.team_id
-  JOIN player ON
-    team_player.player_id = player.id
-  JOIN steam_user ON
-    player.steam_id = steam_user.steam_id
-  LEFT JOIN profile ON
-    steam_user.steam_id = profile.steam_id
-  WHERE
-    team.id = ${team_id}
-  ORDER BY
-    adjusted_mmr DESC,
-    steam_user.solo_mmr DESC,
-    steam_user.party_mmr DESC,
-    steam_user.name ASC
+async function addPlayerToTeam(db: Pool, team_id: number | string, player_id: number | string, is_captain: boolean): Promise<unknown> {
+  const upsert = sql`
+  INSERT INTO team_player (
+    team_id,
+    player_id,
+    is_captain
+  ) VALUES (
+    ${team_id},
+    ${player_id},
+    ${is_captain}
+  ) ON CONFLICT (
+    player_id
+  ) DO UPDATE SET (
+    team_id,
+    is_captain
+  ) = (
+    ${team_id},
+    ${is_captain}
+  )
   `
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  return db.query(upsert)
 }
 
-function isCaptainAutoApproved(db, steam_id) {
+async function removePlayerFromTeam(db: Pool, team_id: number | string, player_id: number | string): Promise<unknown> {
+  const query = sql`
+  DELETE FROM
+    team_player
+  WHERE
+    team_id = ${team_id}
+  AND
+    player_id = ${player_id}
+  `
+  return db.query(query)
+}
+
+async function isCaptainAutoApproved(db: Pool, steam_id: string): Promise<{ allowed: boolean }> {
   const select = sql`
   SELECT
     NOT disbanded AND captained AS allowed
@@ -191,12 +190,11 @@ function isCaptainAutoApproved(db, steam_id) {
       team_player.is_captain = true
   ) can_captain
   `
-  return db.query(select).then(result => {
-    return result.rows[0]
-  })
+  const result = await db.query(select)
+  return result.rows[0]
 }
 
-function hasPlayed(db, steam_id) {
+async function hasPlayed(db: Pool, steam_id: string): Promise<{ has_played: boolean }> {
   const select = sql`
   SELECT
     COUNT(1) > 0 AS has_played
@@ -207,18 +205,17 @@ function hasPlayed(db, steam_id) {
   WHERE
     player.steam_id = ${steam_id}
   `
-  return db.query(select).then(result => {
-    return result.rows[0]
-  })
+  const result = await db.query(select)
+  return result.rows[0]
 }
 
-module.exports = db => {
+export = function(db: Pool) {
   return {
     getUnassignedPlayers: getUnassignedPlayers.bind(null, db),
+    getRoster: getRoster.bind(null, db),
+    getPlayerTeams: getPlayerTeams.bind(null, db),
     addPlayerToTeam: addPlayerToTeam.bind(null, db),
     removePlayerFromTeam: removePlayerFromTeam.bind(null, db),
-    getPlayerTeams: getPlayerTeams.bind(null, db),
-    getRoster: getRoster.bind(null, db),
     isCaptainAutoApproved: isCaptainAutoApproved.bind(null, db),
     hasPlayed: hasPlayed.bind(null, db)
   }

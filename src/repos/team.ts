@@ -1,6 +1,8 @@
-const sql = require('pg-sql').sql
+import { sql } from 'pg-sql'
+import type { Pool } from 'pg'
+import type { Team, TeamRow } from '../types/db'
 
-function getTeams(db, season_id, division_id) {
+async function getTeams(db: Pool, season_id: number | string, division_id?: number | string): Promise<TeamRow[]> {
   let select = sql`
   SELECT
     team.id,
@@ -49,34 +51,11 @@ function getTeams(db, season_id, division_id) {
     team.seed DESC
   `])
 
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function getTeam(db, id) {
-  const select = sql`
-  SELECT
-    id,
-    season_id,
-    division_id,
-    name,
-    logo,
-    team_number,
-    seed,
-    disbanded,
-    standin_count
-  FROM
-    team
-  WHERE
-    id = ${id}
-  `
-  return db.query(select).then(result => {
-    return result.rows[0]
-  })
-}
-
-function getAllSeasonTeams(db, season_id) {
+async function getAllSeasonTeams(db: Pool, season_id: number | string): Promise<TeamRow[]> {
   const select = sql`
       SELECT
         team.id,
@@ -115,12 +94,32 @@ function getAllSeasonTeams(db, season_id) {
         team.name ASC,
         team.seed DESC
       `
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function saveTeam(db, team) {
+async function getTeam(db: Pool, id: number | string): Promise<Team | undefined> {
+  const select = sql`
+  SELECT
+    id,
+    season_id,
+    division_id,
+    name,
+    logo,
+    team_number,
+    seed,
+    disbanded,
+    standin_count
+  FROM
+    team
+  WHERE
+    id = ${id}
+  `
+  const result = await db.query(select)
+  return result.rows[0]
+}
+
+async function saveTeam(db: Pool, team: Partial<Team>): Promise<unknown> {
   const upsert = sql`
   INSERT INTO
     team (
@@ -168,7 +167,7 @@ function saveTeam(db, team) {
   return db.query(upsert)
 }
 
-function deleteTeam(db, id) {
+async function deleteTeam(db: Pool, id: number | string): Promise<unknown> {
   const query = sql`
   DELETE FROM
     team
@@ -178,11 +177,11 @@ function deleteTeam(db, id) {
   return db.query(query)
 }
 
-module.exports = db => {
+export = function(db: Pool) {
   return {
     getTeams: getTeams.bind(null, db),
-    getTeam: getTeam.bind(null, db),
     getAllSeasonTeams: getAllSeasonTeams.bind(null, db),
+    getTeam: getTeam.bind(null, db),
     saveTeam: saveTeam.bind(null, db),
     deleteTeam: deleteTeam.bind(null, db)
   }

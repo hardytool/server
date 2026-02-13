@@ -1,6 +1,9 @@
-const sql = require('pg-sql').sql
+import { sql } from 'pg-sql'
+import type { Pool } from 'pg'
+import type { Series, SeriesRow, Standing } from '../types/db'
+import type { SeriesCriteria } from '../types/db'
 
-function getSeries(db, criteria) {
+async function getSeries(db: Pool, criteria: SeriesCriteria & { series_id?: number | string; team_id?: number | string }): Promise<SeriesRow[]> {
   let select = sql`
   SELECT
     series.id,
@@ -105,12 +108,11 @@ function getSeries(db, criteria) {
     ])
   }
 
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function saveSeries(db, series) {
+async function saveSeries(db: Pool, series: Partial<Series>): Promise<unknown> {
   const upsert = sql`
   INSERT INTO
     series (
@@ -186,7 +188,7 @@ function saveSeries(db, series) {
   return db.query(upsert)
 }
 
-function deleteSeries(db, id) {
+async function deleteSeries(db: Pool, id: number | string): Promise<unknown> {
   const query = sql`
   DELETE FROM
     series
@@ -196,33 +198,28 @@ function deleteSeries(db, id) {
   return db.query(query)
 }
 
-function getCurrentRound(db, season_id, division_id, round) {
-  return Promise.resolve(round).then(round => {
-    if (Number.isInteger(round)) {
-      return Promise.resolve(round)
-    } else {
-      const query = sql`
-      SELECT
-        current_round as round
-      FROM
-        round
-      WHERE
-        season_id = ${season_id}
-      AND
-        division_id = ${division_id}
-      `
-      return db.query(query).then(result => {
-        if (result.rows[0]) {
-          return result.rows[0].round
-        } else {
-          return 0
-        }
-      })
-    }
-  })
+async function getCurrentRound(db: Pool, season_id: number | string, division_id: number | string, round?: number | string): Promise<number> {
+  if (typeof round === 'number' && Number.isInteger(round)) {
+    return round
+  }
+  const query = sql`
+  SELECT
+    current_round as round
+  FROM
+    round
+  WHERE
+    season_id = ${season_id}
+  AND
+    division_id = ${division_id}
+  `
+  const result = await db.query(query)
+  if (result.rows[0]) {
+    return result.rows[0].round as number
+  }
+  return 0
 }
 
-function saveCurrentRound(db, season_id, division_id, round) {
+async function saveCurrentRound(db: Pool, season_id: number | string, division_id: number | string, round: number | string): Promise<unknown> {
   const upsert = sql`
   INSERT INTO
     round (
@@ -242,9 +239,9 @@ function saveCurrentRound(db, season_id, division_id, round) {
   return db.query(upsert)
 }
 
-function getStandings(db, season_id, division_id, round) {
-  return getCurrentRound(db, season_id, division_id, round).then(round => {
-    const query = sql`
+async function getStandings(db: Pool, season_id: number | string, division_id: number | string, round?: number | string): Promise<Standing[]> {
+  const resolvedRound = await getCurrentRound(db, season_id, division_id, round)
+  const query = sql`
     SELECT
       team.id,
       team.name,
@@ -270,7 +267,7 @@ function getStandings(db, season_id, division_id, round) {
         FROM
           series
         WHERE
-          round < ${round}
+          round < ${resolvedRound}
         AND
           season_id = ${season_id}
         AND
@@ -285,7 +282,7 @@ function getStandings(db, season_id, division_id, round) {
         FROM
           series
         WHERE
-          round < ${round}
+          round < ${resolvedRound}
         AND
           season_id = ${season_id}
         AND
@@ -319,13 +316,11 @@ function getStandings(db, season_id, division_id, round) {
       (2 * standings.wins - standings.losses) DESC,
       team.seed DESC
     `
-    return db.query(query).then(result => {
-      return result.rows
-    })
-  })
+  const result = await db.query(query)
+  return result.rows
 }
 
-module.exports = db => {
+export = function(db: Pool) {
   return {
     getSeries: getSeries.bind(null, db),
     saveSeries: saveSeries.bind(null, db),

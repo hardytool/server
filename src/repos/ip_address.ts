@@ -1,6 +1,8 @@
-const sql = require('pg-sql').sql
+import { sql } from 'pg-sql'
+import type { Pool } from 'pg'
+import type { IpAddress } from '../types/db'
 
-function getIPAddresses(db) {
+async function getIPAddresses(db: Pool): Promise<IpAddress[]> {
   const select = sql`
   SELECT
     ip_address.steam_id,
@@ -16,12 +18,11 @@ function getIPAddresses(db) {
   JOIN profile ON
     profile.steam_id = ip_address.steam_id
   `
-  return db.query(select).then(result => {
-    return result.rows
-  })
+  const result = await db.query(select)
+  return result.rows
 }
 
-function saveIPAddress(db, ip, steamId) {
+async function saveIPAddress(db: Pool, ip: string, steamId: string): Promise<unknown> {
   const insert = sql`
   INSERT INTO ip_address (
     ip,
@@ -37,9 +38,9 @@ function saveIPAddress(db, ip, steamId) {
   return db.query(insert)
 }
 
-module.exports = db => {
+export = function(db: Pool) {
   return {
     getIPAddresses: getIPAddresses.bind(null, db),
-    saveIPAddress: saveIPAddress.bind(null, db),
+    saveIPAddress: saveIPAddress.bind(null, db)
   }
 }
