@@ -117,3 +117,15 @@ declare module 'markdown-it-classy' {
   const plugin: MarkdownIt.PluginSimple
   export = plugin
 }
+
+declare module 'json2csv' {
+  interface ParseOptions {
+    fields?: string[]
+    delimiter?: string
+    quote?: string
+    header?: boolean
+    [key: string]: unknown
+  }
+  function parse(data: unknown[], opts?: ParseOptions): string
+  export { parse }
+}

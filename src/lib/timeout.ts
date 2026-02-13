@@ -1,6 +1,4 @@
-const Promise = require('bluebird')
-
-module.exports = delay => {
+export default function timeout(delay: number): Promise<void> {
   return new Promise(resolve => {
     setTimeout(resolve, delay)
   })
