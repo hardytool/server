@@ -7,10 +7,10 @@ WORKDIR /src
 
 COPY package.json /src/
 
-RUN npm install --production
+RUN npm install
 
 COPY . /src
 
 ENTRYPOINT ["./wait.sh"]
 
-CMD ["db", "npm", "start"]
+CMD ["db", "npm", "run", "dev"]

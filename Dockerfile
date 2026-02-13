@@ -1,6 +1,19 @@
+# Build stage
+FROM library/node:latest AS builder
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY tsconfig.json ./
+COPY src ./src
+RUN npm run build
+
+# Run stage
 FROM library/node:latest
-WORKDIR /src
-COPY package.json package-lock.json /src/
+WORKDIR /app
+COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
-COPY . /src
+COPY --from=builder /app/dist ./dist
+COPY src/assets ./dist/assets
+COPY src/templates ./dist/templates
+COPY src/migrations ./dist/migrations
 CMD ["npm", "start"]
