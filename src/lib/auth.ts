@@ -88,7 +88,7 @@ async function inflateUser(
   return user
 }
 
-export default function createAuth(
+function createAuth(
   admin: AdminRepo,
   steam_user: SteamUserRepo,
   profile: ProfileRepo,
@@ -100,3 +100,7 @@ export default function createAuth(
     getAvatar,
   }
 }
+
+// export = so that require('./lib/auth') returns the factory directly,
+// matching how server.js calls: require('./lib/auth')(admin, ...)
+export = createAuth
