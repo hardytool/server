@@ -22,7 +22,9 @@ declare module 'passport-steam' {
 
   type VerifyCallback = (
     err: Error | null,
-    user?: Express.User | false,
+    // The user object passed here is serialized directly into the session;
+    // it does not need to conform to Express.User until after inflation.
+    user?: object | false,
     info?: object
   ) => void
 
@@ -75,6 +77,7 @@ declare module 'connect-pg-simple' {
     schemaName?: string
     ttl?: number
     disableTouch?: boolean
+    createTableIfMissing?: boolean
     [key: string]: unknown
   }
   function connectPgSimple(session: typeof import('express-session')): new (options: PgSessionOptions) => session.Store
@@ -98,17 +101,14 @@ declare module 'edmonds-blossom' {
 }
 
 declare module 'swiss-pairing' {
-  interface Player {
-    id: number | string
-    score: number
+  interface SwissPairingOptions {
+    maxPerRound?: number
     [key: string]: unknown
   }
-  interface PairingOptions {
-    players: Player[]
-    rounds?: number
-    [key: string]: unknown
-  }
-  function swissPairing(options: PairingOptions): Array<[Player, Player]>
+  // swiss-pairing is called as a factory: swissPairing({ maxPerRound: 2 })
+  // and returns a pairing manager object whose specific API is consumed
+  // by pages/series.js and pages/playoffSeries.js.
+  function swissPairing(options: SwissPairingOptions): unknown
   export = swissPairing
 }
 

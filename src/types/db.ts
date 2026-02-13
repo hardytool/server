@@ -51,10 +51,12 @@ export interface SteamUser {
 
 // ---- Profile ---------------------------------------------------------------
 
+// getProfile returns COALESCE(profile.name, steam_user.name) as name,
+// so all SteamUser fields are present plus profile-specific ones.
 export interface Profile extends SteamUser {
-  steam_name: string
-  faceit_name: string
-  discord_name: string
+  steam_name: string              // raw steam_user.name (before custom override)
+  faceit_name: string | null
+  discord_name: string | null
   theme: string
   adjusted_mmr: number
   draft_mmr: number
@@ -93,7 +95,7 @@ export interface PlayerRow extends Player {
   party_mmr: number
   rank: number
   previous_rank: number
-  discord_name: string
+  discord_name: string | null
   has_played?: boolean
   is_vouched?: boolean
 }
@@ -106,8 +108,22 @@ export interface DraftSheetRow extends PlayerRow {
 }
 
 export interface PlayerCountRow {
-  name: string
-  count: string
+  name: string    // division name
+  count: string   // pg returns numeric aggregates as strings
+}
+
+// Criteria accepted by player.getPlayers / player.getDraftSheet
+export interface PlayerCriteria {
+  season_id?: number | string
+  division_id?: number | string
+  is_captain?: boolean
+  steam_id?: string
+}
+
+// Sort options for player.getPlayers
+export interface PlayerSort {
+  by_mmr?: boolean
+  by_reverse_mmr?: boolean
 }
 
 // ---- Team ------------------------------------------------------------------
@@ -216,14 +232,24 @@ export interface Standing {
   losses: number
 }
 
+// Criteria accepted by series.getSeries
+export interface SeriesCriteria {
+  season_id?: number | string
+  division_id?: number | string
+  round?: number | string
+  is_playoff?: boolean
+}
+
 // ---- Admin -----------------------------------------------------------------
 
 export interface Admin {
   steam_id: string
-  group_id: number
-  division_id: number
+  // group_id can be the sentinel value '_' when creating the very first admin
+  group_id: number | string
+  division_id: number | null
 }
 
+// getAdmins returns the full joined row with group/division names
 export interface AdminRow extends Admin {
   avatar: string
   name: string
@@ -231,10 +257,19 @@ export interface AdminRow extends Admin {
   admin_group_name: string
 }
 
+// getDivisionAdmins returns a narrower shape (no cross-table names)
+export interface DivisionAdminRow {
+  steam_id: string
+  avatar: string
+  name: string
+  group_id: number | string
+  division_id: number | null
+}
+
 export interface AdminGroup {
   id: number
   name: string
-  owner_id: string
+  owner_id: string | null
 }
 
 // ---- Banned player ---------------------------------------------------------
@@ -244,7 +279,7 @@ export interface BannedPlayer {
   steam_id: string
   name: string
   reason: string
-  banned_until: string
+  banned_until: string | null   // null means permanently banned
   still_banned: boolean
 }
 
@@ -255,7 +290,7 @@ export interface IpAddress {
   ip: string
   avatar: string
   steam_name: string
-  discord_name: string
+  discord_name: string | null
   name: string
 }
 
@@ -268,11 +303,13 @@ export interface VouchStatus {
 
 // ---- Migration -------------------------------------------------------------
 
+// Filesystem-loaded migration file (not a DB row)
 export interface Migration {
   name: string
   contents: string
 }
 
+// DB row returned after a migration is applied
 export interface MigrationVersion {
   version: string
 }
