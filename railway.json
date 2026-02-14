@@ -10,6 +10,6 @@
     "restartPolicyType": "ALWAYS",
     "healthcheckTimeout": 30,
     "startCommand": "npm start",
-    "preDeploy": ["npm run migrate"]
+    "preDeployCommand": "npm run migrate"
   }
 }
