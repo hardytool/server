@@ -116,7 +116,7 @@ function getRandomInt(max: number): number {
 }
 
 async function importTeams(
-  team: TeamRepo, season: SeasonRepo, division: DivisionRepo, player: PlayerRepo,
+  team: TeamRepo, _season: SeasonRepo, _division: DivisionRepo, player: PlayerRepo,
   req: Request, res: Response
 ): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }

@@ -89,7 +89,7 @@ async function create(templates: Templates, season: SeasonRepo, division: Divisi
   }
 }
 
-async function edit(templates: Templates, season: SeasonRepo, division: DivisionRepo, player: PlayerRepo, steam_user: SteamUserRepo, req: Request, res: Response): Promise<void> {
+async function edit(templates: Templates, season: SeasonRepo, division: DivisionRepo, player: PlayerRepo, _steam_user: SteamUserRepo, req: Request, res: Response): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const season_id = req.params.season_id as string
   const division_id = req.params.division_id as string

@@ -96,7 +96,7 @@ async function post(steam_user: SteamUserRepo, profile: ProfileRepo, req: Reques
   }
 }
 
-async function vouch(templates: Templates, steam_user: SteamUserRepo, profile: ProfileRepo, team_player: TeamPlayerRepo, req: Request, res: Response): Promise<void> {
+async function vouch(templates: Templates, _steam_user: SteamUserRepo, profile: ProfileRepo, team_player: TeamPlayerRepo, req: Request, res: Response): Promise<void> {
   if (!req.user) { res.sendStatus(403); return }
   try {
     const voucher = await profile.getProfile(req.user.steamId)
@@ -115,7 +115,7 @@ async function vouch(templates: Templates, steam_user: SteamUserRepo, profile: P
   }
 }
 
-async function confirm(steam_user: SteamUserRepo, profile: ProfileRepo, _vouch: VouchRepo, team_player: TeamPlayerRepo, req: Request, res: Response): Promise<void> {
+async function confirm(_steam_user: SteamUserRepo, profile: ProfileRepo, _vouch: VouchRepo, team_player: TeamPlayerRepo, req: Request, res: Response): Promise<void> {
   if (!req.user) { res.sendStatus(403); return }
   try {
     const voucher = await profile.getProfile(req.user.steamId)

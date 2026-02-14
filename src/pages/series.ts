@@ -220,7 +220,7 @@ async function matchups(
 }
 
 async function editRound(
-  templates: Templates, season: SeasonRepo, division: DivisionRepo, series: SeriesRepo,
+  templates: Templates, _season: SeasonRepo, _division: DivisionRepo, series: SeriesRepo,
   req: Request, res: Response
 ): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }

@@ -1,26 +1,4 @@
-interface Config {
-  server: {
-    host: string
-    port: number | string
-    https_port: number | string
-    steam_api_key: string | false
-    website_url: string | false
-    secret: string | false
-  }
-  db: {
-    user: string | false
-    password: string | false
-    database: string | false
-    host: string
-    port: number | string
-    ssl: boolean
-    max: number | string
-    idleTimeoutMillis: number | string
-  }
-  templates: {
-    title: string
-  }
-}
+import type { Config } from './types/config'
 
 function config(env: NodeJS.ProcessEnv): Config {
   return {

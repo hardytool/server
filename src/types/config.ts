@@ -24,6 +24,7 @@ export interface DbConfig {
 
 export interface TemplatesConfig {
   title: string
+  [key: string]: unknown
 }
 
 export interface Config {

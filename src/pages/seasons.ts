@@ -34,7 +34,7 @@ async function edit(templates: Templates, season: SeasonRepo, req: Request, res:
   }
 }
 
-async function start(templates: Templates, season: SeasonRepo, division: DivisionRepo, req: Request, res: Response): Promise<void> {
+async function start(_templates: Templates, season: SeasonRepo, division: DivisionRepo, req: Request, res: Response): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const season_id = req.params.id as string
   try {
