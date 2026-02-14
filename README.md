@@ -110,20 +110,20 @@ npm run seed
 ```bash
 ├── src
 │   ├── api
-│   │   └── *.js       # API-oriented controllers
+│   │   └── *.ts       # API-oriented controllers
 │   ├── assets
 │   │   └── **/*       # Static files (including images, markdown, etc.)
 │   ├── lib
-│   │   └── *.js       # Common utilities/shared libraries
+│   │   └── *.ts       # Common utilities/shared libraries
 │   ├── migrations
 │   │   └── *.sql      # Database migration files applied in order (001.sql first)
 │   ├── seed-data.ts   # Seed data definitions (seasons, divisions, teams, users)
 │   ├── seed-cli.ts    # Standalone CLI entry point for running seeds
 │   ├── migrate-cli.ts # Standalone CLI entry point for running migrations
 │   ├── pages
-│   │   └── *.js       # Page content controllers
+│   │   └── *.ts       # Page content controllers
 │   ├── repos
-│   │   └── *.js       # Database model repositories
+│   │   └── *.ts       # Database model repositories
 │   ├── templates
 │   │   └── **/*.pug   # Template files structured as a hierarchical tree
 ├── Dockerfile
