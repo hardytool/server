@@ -30,12 +30,10 @@ async function createUser(
     existingUser = null
   }
 
-  if (!existingUser) {
-    const admins = await admin.getAdmins()
-    if (admins.length === 0) {
-      await admin.saveAdmin({ steam_id: id, group_id: '_' })
-      console.log('Created first admin')
-    }
+  const admins = await admin.getAdmins()
+  if (admins.length === 0) {
+    await admin.saveAdmin({ steam_id: id, group_id: '_' })
+    console.log('Created first admin')
   }
 
   const user: SteamUser = {
