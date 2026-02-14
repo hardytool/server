@@ -23,4 +23,4 @@ jobs:
     - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
     - uses: sourcemeta/jsonschema@1988b2bbc5c53b5c2b3791ea445a3ab41dd92b55
     - name: Validate railway.json against schema
-      run: jsonschema metaschema railway.json --resolve --verbose --http
+      run: jsonschema metaschema railway.json --verbose --http
