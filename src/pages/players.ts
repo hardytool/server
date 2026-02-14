@@ -155,7 +155,7 @@ async function getCSV(player: PlayerRepo, player_role: PlayerRoleRepo, role: Rol
   const division_id = req.params.division_id as string
   const season_id = req.params.season_id as string
   try {
-    let players = await player.getDraftSheet({
+    const players = await player.getDraftSheet({
       season_id, division_id,
       is_captain: isCaptains,
       hide_captains: hideCaptains && !isCaptains
@@ -170,7 +170,8 @@ async function getCSV(player: PlayerRepo, player_role: PlayerRoleRepo, role: Rol
         acc['Role: ' + r.name] = playerRoleRanks[r.id]
         return acc
       }, {})
-      const { id: _id, ...rest } = p
+      const rest = { ...(p as unknown as Record<string, unknown>) }
+      delete rest.id
       return { ...rest, ...o }
     })
     const csvData = await csv.toCSV(playerRecords as Record<string, unknown>[])

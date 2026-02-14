@@ -19,7 +19,7 @@ async function list(
     const t = await team.getTeam(team_id)
     if (!t) { res.sendStatus(404); return }
     let players = await team_player.getRoster(t.id)
-    let seriesList = await series.getSeries({ team_id: t.id })
+    const seriesList = await series.getSeries({ team_id: t.id })
     const captain = players.filter(player => player.is_captain)[0]
     players = players.filter(player => !captain || player.id != captain.id)
     const mappedSeries = seriesList.map((_series: Record<string, unknown>) => {
