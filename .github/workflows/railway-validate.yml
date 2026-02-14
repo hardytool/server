@@ -6,9 +6,11 @@ on:
   push:
     paths:
       - 'railway.json'
+      - '.github/workflows/railway-validate.yml'
   pull_request:
     paths:
       - 'railway.json'
+      - '.github/workflows/railway-validate.yml'
 
 jobs:
   validate:
