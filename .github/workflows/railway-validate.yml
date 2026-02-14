@@ -15,7 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
-    - name: Install check-jsonschema
-      run: pip install check-jsonschema
+    - uses: sourcemeta/jsonschema@1988b2bbc5c53b5c2b3791ea445a3ab41dd92b55
     - name: Validate railway.json against schema
-      run: check-jsonschema --schemafile https://railway.app/railway.schema.json railway.json
+      run: jsonschema metaschema railway.json
