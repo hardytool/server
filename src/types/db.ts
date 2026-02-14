@@ -142,6 +142,7 @@ export interface Team {
 }
 
 export interface TeamRow extends Team {
+  [key: string]: unknown
   captain_id: string
   captain_name: string
   season_number: number
@@ -211,6 +212,7 @@ export interface Series {
 }
 
 export interface SeriesRow extends Series {
+  [key: string]: unknown
   home_team_name: string
   away_team_name: string
   home_team_logo: string

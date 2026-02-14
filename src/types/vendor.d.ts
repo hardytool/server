@@ -107,10 +107,17 @@ declare module 'swiss-pairing' {
     maxPerRound?: number
     [key: string]: unknown
   }
+  interface MappedSeriesEntry {
+    round: number
+    home: { id: string | number | null; points: number | null }
+    away: { id: string | number | null; points: number | null }
+  }
+  interface Pairings {
+    getMatchups(round: number, teams: unknown[], series: MappedSeriesEntry[]): unknown[]
+    getStandings(round: number, teams: unknown[], series: MappedSeriesEntry[]): unknown[]
+  }
   // swiss-pairing is called as a factory: swissPairing({ maxPerRound: 2 })
-  // and returns a pairing manager object whose specific API is consumed
-  // by pages/series.js and pages/playoffSeries.js.
-  function swissPairing(options: SwissPairingOptions): unknown
+  function swissPairing(options: SwissPairingOptions): Pairings
   export = swissPairing
 }
 

@@ -150,7 +150,7 @@ export interface SeasonRepo {
   getActiveSeason(): Promise<Season | undefined>
   saveSeason(season: Partial<Season>): Promise<unknown>
   deleteSeason(id: number | string): Promise<unknown>
-  startSeason(divisionIds: string[], seasonId: number | string): Promise<unknown>
+  startSeason(divisionIds: (string | number)[], seasonId: number | string): Promise<unknown>
 }
 
 // ---- Series ----------------------------------------------------------------
