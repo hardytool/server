@@ -36,8 +36,13 @@ const STEAM_USERS = Array.from({ length: 40 }, (_, i) => {
   }
 })
 
-// Team names cycle through this list (8 per (season, division) tuple)
-const TEAM_NAMES = ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot', 'Golf', 'Hotel']
+// Team names per division index (8 per division). Names must be unique within
+// a season because the DB constraint is on (season_id, name), not
+// (season_id, division_id, name). Each division gets its own distinct slice.
+const TEAM_NAMES_PER_DIVISION = [
+  ['Alpha',  'Bravo',    'Charlie', 'Delta',    'Echo',   'Foxtrot', 'Golf',  'Hotel'],
+  ['India',  'Juliet',   'Kilo',    'Lima',     'Mike',   'November','Oscar', 'Papa' ],
+]
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -88,14 +93,16 @@ export async function seedData(pool: Pool): Promise<void> {
   let playerId = 1
 
   for (const s of SEASONS) {
-    for (const d of DIVISIONS) {
-      for (let t = 0; t < TEAM_NAMES.length; t++) {
+    for (let di = 0; di < DIVISIONS.length; di++) {
+      const d = DIVISIONS[di]
+      const teamNames = TEAM_NAMES_PER_DIVISION[di]
+      for (let t = 0; t < teamNames.length; t++) {
         // Team
         await team.saveTeam({
           id:           teamId,
           season_id:    s.id,
           division_id:  d.id,
-          name:         TEAM_NAMES[t],
+          name:         teamNames[t],
           logo:         '',
           team_number:  t + 1,
           seed:         t + 1,
@@ -134,7 +141,7 @@ export async function seedData(pool: Pool): Promise<void> {
     }
   }
 
-  const teamCount   = SEASONS.length * DIVISIONS.length * TEAM_NAMES.length
+  const teamCount   = SEASONS.length * DIVISIONS.length * TEAM_NAMES_PER_DIVISION[0].length
   const playerCount = teamCount * 5
   console.log(`Seeded ${teamCount} teams and ${playerCount} player registrations`)
 }
