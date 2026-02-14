@@ -78,6 +78,33 @@ Running in docker requires environment variables, not .env variables.
 Additionally, and unsurprisingly, it requires docker to be installed and
 running.
 
+## Database migrations
+
+Migrations are SQL files in `src/migrations/` and run in filename order
+(e.g. `001.sql` before `002.sql`). They are applied automatically on startup
+when running via docker compose.
+
+To run migrations manually:
+
+```sh
+npm run migrate
+```
+
+## Seed data
+
+Seed data populates the database with sample content for local development and
+testing. It includes seasons, divisions, teams, and users. Seeding is
+idempotent — running it multiple times is safe and will not create duplicates.
+
+When using docker compose, seeds are applied automatically after migrations on
+every `docker compose up`.
+
+To run seeds manually (after building):
+
+```sh
+npm run seed
+```
+
 ## Project structure
 
 ```bash
@@ -89,7 +116,10 @@ running.
 │   ├── lib
 │   │   └── *.js       # Common utilities/shared libraries
 │   ├── migrations
-│   │   └── *.sql      # Database migration files run at startup in order starting from 001.sql
+│   │   └── *.sql      # Database migration files applied in order (001.sql first)
+│   ├── seed-data.ts   # Seed data definitions (seasons, divisions, teams, users)
+│   ├── seed-cli.ts    # Standalone CLI entry point for running seeds
+│   ├── migrate-cli.ts # Standalone CLI entry point for running migrations
 │   ├── pages
 │   │   └── *.js       # Page content controllers
 │   ├── repos
