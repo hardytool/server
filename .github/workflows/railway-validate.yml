@@ -1,0 +1,21 @@
+name: Validate railway.json
+permissions:
+  contents: read
+
+on:
+  push:
+    paths:
+      - 'railway.json'
+  pull_request:
+    paths:
+      - 'railway.json'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+    - name: Install check-jsonschema
+      run: pip install check-jsonschema
+    - name: Validate railway.json against schema
+      run: check-jsonschema --schemafile https://railway.app/railway.schema.json railway.json
