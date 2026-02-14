@@ -8,6 +8,8 @@
     "numReplicas": 1,
     "healthcheckPath": "/",
     "restartPolicyType": "ALWAYS",
-    "healthcheckTimeout": 30
+    "healthcheckTimeout": 30,
+    "startCommand": "npm start",
+    "preDeploy": "node dist/migrate-cli.js"
   }
 }

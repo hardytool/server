@@ -36,7 +36,6 @@ import adminGroupRepo from './repos/admin_group'
 import bannedPlayerRepo from './repos/banned_player'
 import divisionRepo from './repos/division'
 import ipAddressRepo from './repos/ip_address'
-import migrationRepo from './repos/migration'
 import playerRepo from './repos/player'
 import playerRoleRepo from './repos/player_role'
 import profileRepo from './repos/profile'
@@ -52,7 +51,6 @@ const admin_group = adminGroupRepo(pool)
 const banned_player = bannedPlayerRepo(pool)
 const division = divisionRepo(pool)
 const ip_address = ipAddressRepo(pool)
-const migration = migrationRepo(pool)
 const player = playerRepo(pool)
 const player_role = playerRoleRepo(pool)
 const profile = profileRepo(pool)
@@ -330,17 +328,8 @@ app.post(bannedPlayerPages.remove.route, bannedPlayerPages.remove.handler)
 
 app.get(ipPages.list.route, ipPages.list.handler)
 
-migration.migrateIfNeeded(
-  migration.getMigrations(path.join(__dirname, 'migrations')))
-  .then(versions => {
-    console.log(
-      `RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)
-    http.createServer(app).listen(config.server.port, () => {
-      console.log('Listening to HTTP connections on port ' +
-        config.server.port)
-    })
-  }).catch(err => {
-    console.error(err)
-  })
+http.createServer(app).listen(config.server.port, () => {
+  console.log('Listening to HTTP connections on port ' + config.server.port)
+})
 
 // Application end
