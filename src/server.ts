@@ -1,128 +1,129 @@
 // Configuration
-const env = require('./env')
-const config = require('./config')(env)
+import env from './env'
+import configFactory from './config'
+const config = configFactory(env)
 
 // Node & NPM
-const path = require('path')
-const http = require('http')
-const express = require('express')
-const { doubleCsrf } = require('csrf-csrf')
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
-const session = require('express-session')
-const passport = require('passport')
-const passportSteam = require('passport-steam')
-const pg = require('pg')
-const pool = new pg.Pool(config.db)
-const PGStore = require('connect-pg-simple')(session)
-const templates = require('pug-tree')(
-  path.join(__dirname, 'templates'), config.templates)
-const pairings = require('swiss-pairing')({ maxPerRound: 2 })
+import path from 'path'
+import http from 'http'
+import express from 'express'
+import { doubleCsrf } from 'csrf-csrf'
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
+import session from 'express-session'
+import passport from 'passport'
+import passportSteam from 'passport-steam'
+import pg from 'pg'
+const pool = new pg.Pool({
+  ...config.db,
+  user: config.db.user || undefined,
+  password: config.db.password || undefined,
+  database: config.db.database || undefined,
+  port: Number(config.db.port),
+  max: Number(config.db.max),
+  idleTimeoutMillis: Number(config.db.idleTimeoutMillis),
+})
+import connectPgSimple from 'connect-pg-simple'
+const PGStore = connectPgSimple(session)
+import pugTree from 'pug-tree'
+const templates = pugTree(path.join(__dirname, 'templates'), config.templates)
+import swissPairing from 'swiss-pairing'
+const pairings = swissPairing({ maxPerRound: 2 })
 
 // repositories
-const admin = require('./repos/admin')(pool)
-const admin_group = require('./repos/admin_group')(pool)
-const banned_player = require('./repos/banned_player')(pool)
-const division = require('./repos/division')(pool)
-const ip_address = require('./repos/ip_address')(pool)
-const migration = require('./repos/migration')(pool)
-const player = require('./repos/player')(pool)
-const player_role = require('./repos/player_role')(pool)
-const profile = require('./repos/profile')(pool)
-const role = require('./repos/role')(pool)
-const season = require('./repos/season')(pool)
-const series = require('./repos/series')(pool)
-const steam_user = require('./repos/steam_user')(pool)
-const team = require('./repos/team')(pool)
-const team_player = require('./repos/team_player')(pool)
-const vouch = require('./repos/vouch')(pool)
+import adminRepo from './repos/admin'
+import adminGroupRepo from './repos/admin_group'
+import bannedPlayerRepo from './repos/banned_player'
+import divisionRepo from './repos/division'
+import ipAddressRepo from './repos/ip_address'
+import migrationRepo from './repos/migration'
+import playerRepo from './repos/player'
+import playerRoleRepo from './repos/player_role'
+import profileRepo from './repos/profile'
+import roleRepo from './repos/role'
+import seasonRepo from './repos/season'
+import seriesRepo from './repos/series'
+import steamUserRepo from './repos/steam_user'
+import teamRepo from './repos/team'
+import teamPlayerRepo from './repos/team_player'
+import vouchRepo from './repos/vouch'
+const admin = adminRepo(pool)
+const admin_group = adminGroupRepo(pool)
+const banned_player = bannedPlayerRepo(pool)
+const division = divisionRepo(pool)
+const ip_address = ipAddressRepo(pool)
+const migration = migrationRepo(pool)
+const player = playerRepo(pool)
+const player_role = playerRoleRepo(pool)
+const profile = profileRepo(pool)
+const role = roleRepo(pool)
+const season = seasonRepo(pool)
+const series = seriesRepo(pool)
+const steam_user = steamUserRepo(pool)
+const team = teamRepo(pool)
+const team_player = teamPlayerRepo(pool)
+const vouch = vouchRepo(pool)
 
 // lib
-const steamId = require('./lib/steamId')
-const auth = require('./lib/auth')(admin, steam_user, profile, steamId)
+import * as steamId from './lib/steamId'
+import authFactory from './lib/auth'
+const auth = authFactory(admin, steam_user, profile, steamId)
 
 // Auth controller
-const openid = require('./api/openid')(config)
+import openidFactory from './api/openid'
+const openid = openidFactory(config)
 
 // API controllers
-const apiDivisions = require('./api/divisions')(division, admin)
-const apiSeasons = require('./api/seasons')(season)
-const apiPlayers = require('./api/players')(season, division, player, player_role, role)
+import apiDivisionsFactory from './api/divisions'
+import apiSeasonsFactory from './api/seasons'
+import apiPlayersFactory from './api/players'
+const apiDivisions = apiDivisionsFactory(division, admin)
+const apiSeasons = apiSeasonsFactory(season)
+const apiPlayers = apiPlayersFactory(season, division, player, player_role, role)
 
 // Page controllers
-const adminPages = require('./pages/admins')(templates,
-  admin,
-  division,
-  admin_group)
-const adminGroupPages = require('./pages/admin_groups')(templates, admin_group)
-const bannedPlayerPages = require('./pages/banned_players')(templates, banned_player)
-const divisionPages = require('./pages/divisions')(templates,
-  season,
-  division,
-  admin)
-const indexPages = require('./pages/index')(templates,
+import adminsFactory from './pages/admins'
+import adminGroupsFactory from './pages/admin_groups'
+import bannedPlayersFactory from './pages/banned_players'
+import divisionsFactory from './pages/divisions'
+import indexFactory from './pages/index'
+import ipsFactory from './pages/ips'
+import playersFactory from './pages/players'
+import playoffSeriesFactory from './pages/playoffSeries'
+import profileFactory from './pages/profile'
+import registrationFactory from './pages/registration'
+import rosterFactory from './pages/roster'
+import rolesFactory from './pages/roles'
+import seasonsFactory from './pages/seasons'
+import seriesPageFactory from './pages/series'
+import teamsFactory from './pages/teams'
+
+const adminPages = adminsFactory(templates, admin, division, admin_group)
+const adminGroupPages = adminGroupsFactory(templates, admin_group)
+const bannedPlayerPages = bannedPlayersFactory(templates, banned_player)
+const divisionPages = divisionsFactory(templates, season, division, admin)
+const indexPages = indexFactory(
+  templates,
   path.join(__dirname, 'assets', 'rules.md'),
   path.join(__dirname, 'assets', 'inhouserules.md'))
-const ipPages = require('./pages/ips')(templates, steam_user, ip_address, steamId)
-const playerPages = require('./pages/players')(templates,
-  season,
-  division,
-  player,
-  player_role,
-  role,
-  steam_user)
-const playoffSeriesPages = require('./pages/playoffSeries')(templates,
-  season,
-  team,
-  series,
-  pairings)
-const profilePages = require('./pages/profile')(templates,
-  steam_user,
-  profile,
-  season,
-  team_player,
-  vouch,
-  steamId,
-  player)
-const registrationPages = require('./pages/registration')(templates,
-  season,
-  division,
-  steam_user,
-  team_player,
-  player,
-  role,
-  player_role,
-  profile)
-const rosterPages = require('./pages/roster')(templates,
-  season,
-  division,
-  team,
-  team_player,
-  series)
-const rolePages = require('./pages/roles')(templates, role)
-const seasonPages = require('./pages/seasons')(templates, season, division)
-const seriesPages = require('./pages/series')(templates,
-  season,
-  team,
-  series,
-  pairings,
-  division)
-const teamPages = require('./pages/teams')(templates,
-  season,
-  division,
-  team,
-  team_player,
-  player)
+const ipPages = ipsFactory(templates, steam_user, ip_address, steamId)
+const playerPages = playersFactory(templates, season, division, player, player_role, role, steam_user)
+const playoffSeriesPages = playoffSeriesFactory(templates, season, team, series, pairings)
+const profilePages = profileFactory(templates, steam_user, profile, season, team_player, vouch, steamId, player)
+const registrationPages = registrationFactory(
+  templates, season, division, steam_user, team_player, player, role, player_role, profile)
+const rosterPages = rosterFactory(templates, season, division, team, team_player, series)
+const rolePages = rolesFactory(templates, role)
+const seasonPages = seasonsFactory(templates, season, division)
+const seriesPages = seriesPageFactory(templates, season, team, series, pairings, division)
+const teamPages = teamsFactory(templates, season, division, team, team_player, player)
 
 // Application start
-
-// Uncomment this line if debugging configuration issues
-// console.dir(config, { depth: null })
 
 const app = express()
 
 const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => config.server.secret,
+  getSecret: () => config.server.secret as string,
   getSessionIdentifier: (req) => req.session.id,
   cookieName: '_csrf',
   cookieOptions: {
@@ -138,10 +139,10 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser((user, done) => {
-  auth.inflateUser(user).then(user => {
-    done(null, user)
+  auth.inflateUser(user as Express.User).then(inflated => {
+    done(null, inflated)
   }).catch(err => {
-    done(err, null)
+    done(err, false)
   })
 })
 
@@ -149,19 +150,19 @@ const realm = 'http' + (config.server.host === 'localhost' ? '' : 's') + '://' +
 passport.use('steam', new passportSteam.Strategy({
   returnURL: realm + '/auth/steam/return',
   realm: realm,
-  apiKey: config.server.steam_api_key
-}, (identifier, profile, done) =>  {
+  apiKey: config.server.steam_api_key as string
+}, (identifier, profile, done) => {
   auth.createUser(profile).then(() => {
     done(null, { id: identifier, profile: profile })
   }).catch(err => {
-    done(err, null)
+    done(err, false)
   })
 }))
 
 app.set('trust proxy', true)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(cookieParser(config.server.secret))
+app.use(cookieParser(config.server.secret as string))
 app.use(session({
   store: new PGStore({
     pool: pool,
@@ -171,7 +172,7 @@ app.use(session({
     secure: true,
     maxAge: 1000 * 60 * 60 * 24 * 7
   },
-  secret: config.server.secret,
+  secret: config.server.secret as string,
   resave: true,
   saveUninitialized: true
 }))
@@ -195,7 +196,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')))
 app.get('/auth/steam', passport.authenticate('steam'))
 app.get('/auth/steam/return',
   passport.authenticate('steam', {
-    failureRedirect: config.server.website_url ? config.server.website_url : '/'
+    failureRedirect: config.server.website_url ? config.server.website_url as string : '/'
   }),
   openid.steamIdReturn)
 app.get('/logout', openid.logout)
@@ -276,7 +277,6 @@ app.get(playerPages.countJson.route, playerPages.countJson.handler)
 
 app.post(playerPages.post.route, playerPages.post.handler)
 app.post(playerPages.remove.route, playerPages.remove.handler)
-
 
 app.get(rosterPages.list.route, rosterPages.list.handler)
 app.get(rosterPages.add.route, rosterPages.add.handler)

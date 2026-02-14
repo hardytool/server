@@ -49,9 +49,8 @@ declare module 'passport-steam' {
 }
 
 declare module 'pug-tree' {
-  import { Options } from 'pug'
   type TemplateMap = Record<string, (locals?: object) => string>
-  function pugTree(dir: string, options?: Options): TemplateMap
+  function pugTree(dir: string, options?: Record<string, unknown>): TemplateMap
   export = pugTree
 }
 

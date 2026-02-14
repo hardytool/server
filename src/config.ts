@@ -1,4 +1,28 @@
-function config(env) {
+interface Config {
+  server: {
+    host: string
+    port: number | string
+    https_port: number | string
+    steam_api_key: string | false
+    website_url: string | false
+    secret: string | false
+  }
+  db: {
+    user: string | false
+    password: string | false
+    database: string | false
+    host: string
+    port: number | string
+    ssl: boolean
+    max: number | string
+    idleTimeoutMillis: number | string
+  }
+  templates: {
+    title: string
+  }
+}
+
+function config(env: NodeJS.ProcessEnv): Config {
   return {
     server: {
       host: env.HOST || 'localhost',
@@ -15,9 +39,7 @@ function config(env) {
       host: env.POSTGRES_HOST || 'db',
       port: env.POSTGRES_PORT || 5432,
       ssl: (!env.POSTGRES_SSL) ? false : true,
-      // maximum number of clients in client pool
       max: env.POSTGRES_POOL_MAX || 10,
-      // duration that clients are kept open while idle
       idleTimeoutMillis: env.POSTGRES_TIMEOUT || 30000
     },
     templates: {
@@ -26,4 +48,4 @@ function config(env) {
   }
 }
 
-module.exports = config
+export = config
