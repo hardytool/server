@@ -47,6 +47,7 @@ import steamUserRepo from './repos/steam_user'
 import teamRepo from './repos/team'
 import teamPlayerRepo from './repos/team_player'
 import vouchRepo from './repos/vouch'
+import { seedData } from './seed-data'
 const admin = adminRepo(pool)
 const admin_group = adminGroupRepo(pool)
 const banned_player = bannedPlayerRepo(pool)
@@ -332,9 +333,14 @@ app.get(ipPages.list.route, ipPages.list.handler)
 
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))
-  .then(versions => {
+  .then(async versions => {
     console.log(
       `RUN ${versions.filter(version => version !== false).length} MIGRATIONS`)
+    if (process.env.SEED_DATA === 'true') {
+      console.log('SEED_DATA=true: running seed import')
+      await seedData(pool)
+      console.log('Seed import complete')
+    }
     http.createServer(app).listen(config.server.port, () => {
       console.log('Listening to HTTP connections on port ' +
         config.server.port)
