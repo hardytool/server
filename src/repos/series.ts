@@ -1,0 +1,332 @@
+import { sql } from 'pg-sql'
+import type { Pool } from 'pg'
+import type { Series, SeriesRow, Standing } from '../types/db'
+import type { SeriesCriteria } from '../types/db'
+
+async function getSeries(db: Pool, criteria: SeriesCriteria & { series_id?: number | string; team_id?: number | string }): Promise<SeriesRow[]> {
+  let select = sql`
+  SELECT
+    series.id,
+    series.round,
+    series.season_id,
+    series.home_team_id,
+    series.away_team_id,
+    series.home_points,
+    series.away_points,
+    series.match_1_url,
+    series.match_2_url,
+    series.match_1_forfeit_home,
+    series.match_2_forfeit_home,
+    series.match_number,
+    series.is_playoff,
+    series.series_url,
+    series.home_seed,
+    series.away_seed,
+    home_team.name as home_team_name,
+    away_team.name as away_team_name,
+    home_team.logo as home_team_logo,
+    away_team.logo as away_team_logo,
+    home_team.division_id as home_team_division_id,
+    away_team.division_id as away_team_division_id,
+    home_team_captain.captain_name as home_team_captain_name,
+    away_team_captain.captain_name as away_team_captain_name
+  FROM
+    series
+  FULL OUTER JOIN team AS home_team ON
+    home_team.id = series.home_team_id
+  LEFT JOIN team_captain_name AS home_team_captain ON
+    home_team.id = home_team_captain.team_id
+  FULL OUTER JOIN team AS away_team ON
+    away_team.id = series.away_team_id
+  LEFT JOIN team_captain_name AS away_team_captain ON
+    away_team.id = away_team_captain.team_id
+  JOIN season ON
+    season.id = series.season_id
+  WHERE
+    1 = 1
+  `
+  if (criteria) {
+    if (criteria.season_id) {
+      select = sql.join([select, sql`
+      AND
+        series.season_id = ${criteria.season_id}
+      `])
+      if (criteria.round) {
+        select = sql.join([select, sql`
+        AND
+          series.round < ${criteria.round}
+        `])
+      }
+    }
+    if (criteria.division_id) {
+      select = sql.join([select, sql`
+        AND (
+          home_team.division_id = ${criteria.division_id}
+          OR
+          away_team.division_id = ${criteria.division_id}
+        )`
+      ])
+    }
+    if (criteria.series_id) {
+      select = sql.join([select, sql`
+      AND
+        series.id = ${criteria.series_id}
+      `])
+    }
+    if (criteria.team_id) {
+      select = sql.join([select, sql`
+      AND (
+        series.home_team_id = ${criteria.team_id}
+        OR
+        series.away_team_id = ${criteria.team_id}
+      )
+      `])
+    }
+  }
+
+  const isPlayoff = criteria.is_playoff ? 'TRUE' : 'FALSE'
+  select = sql.join([select, sql`
+    AND (
+      series.is_playoff = ${isPlayoff}
+    )`
+  ])
+
+  if (criteria.is_playoff) {
+    select = sql.join([select, sql`
+      ORDER BY match_number`
+    ])
+  } else {
+    select = sql.join([select, sql`
+      ORDER BY
+        series.round DESC,
+        (series.home_points + series.away_points) DESC,
+        (home_team.seed + away_team.seed) DESC,
+        home_team.name ASC,
+        away_team.name ASC,
+        series.home_points DESC
+      `
+    ])
+  }
+
+  const result = await db.query(select)
+  return result.rows
+}
+
+async function saveSeries(db: Pool, series: Partial<Series>): Promise<unknown> {
+  const upsert = sql`
+  INSERT INTO
+    series (
+      id,
+      round,
+      season_id,
+      home_team_id,
+      away_team_id,
+      home_points,
+      away_points,
+      match_1_url,
+      match_2_url,
+      match_1_forfeit_home,
+      match_2_forfeit_home,
+      match_number,
+      is_playoff,
+      series_url,
+      home_seed,
+      away_seed
+    ) VALUES (
+      ${series.id},
+      ${series.round},
+      ${series.season_id},
+      ${series.home_team_id},
+      ${series.away_team_id},
+      ${series.home_points},
+      ${series.away_points},
+      ${series.match_1_url},
+      ${series.match_2_url},
+      ${series.match_1_forfeit_home},
+      ${series.match_2_forfeit_home},
+      ${series.match_number},
+      ${series.is_playoff},
+      ${series.series_url},
+      ${series.home_seed},
+      ${series.away_seed}
+    ) ON CONFLICT (
+      id
+    ) DO UPDATE SET (
+      round,
+      season_id,
+      home_team_id,
+      away_team_id,
+      home_points,
+      away_points,
+      match_1_url,
+      match_2_url,
+      match_1_forfeit_home,
+      match_2_forfeit_home,
+      match_number,
+      is_playoff,
+      series_url,
+      home_seed,
+      away_seed
+    ) = (
+      ${series.round},
+      ${series.season_id},
+      ${series.home_team_id},
+      ${series.away_team_id},
+      ${series.home_points},
+      ${series.away_points},
+      ${series.match_1_url},
+      ${series.match_2_url},
+      ${series.match_1_forfeit_home},
+      ${series.match_2_forfeit_home},
+      ${series.match_number},
+      ${series.is_playoff},
+      ${series.series_url},
+      ${series.home_seed},
+      ${series.away_seed}
+    )
+  `
+  return db.query(upsert)
+}
+
+async function deleteSeries(db: Pool, id: number | string): Promise<unknown> {
+  const query = sql`
+  DELETE FROM
+    series
+  WHERE
+    id = ${id}
+  `
+  return db.query(query)
+}
+
+async function getCurrentRound(db: Pool, season_id: number | string, division_id: number | string, round?: number | string): Promise<number> {
+  if (typeof round === 'number' && Number.isInteger(round)) {
+    return round
+  }
+  const query = sql`
+  SELECT
+    current_round as round
+  FROM
+    round
+  WHERE
+    season_id = ${season_id}
+  AND
+    division_id = ${division_id}
+  `
+  const result = await db.query(query)
+  if (result.rows[0]) {
+    return result.rows[0].round as number
+  }
+  return 0
+}
+
+async function saveCurrentRound(db: Pool, season_id: number | string, division_id: number | string, round: number | string): Promise<unknown> {
+  const upsert = sql`
+  INSERT INTO
+    round (
+      season_id,
+      division_id,
+      current_round
+    ) VALUES (
+      ${season_id},
+      ${division_id},
+      ${round}
+    ) ON CONFLICT (
+      season_id,
+      division_id
+    ) DO UPDATE SET
+      current_round = ${round}
+  `
+  return db.query(upsert)
+}
+
+async function getStandings(db: Pool, season_id: number | string, division_id: number | string, round?: number | string): Promise<Standing[]> {
+  const resolvedRound = await getCurrentRound(db, season_id, division_id, round)
+  const query = sql`
+    SELECT
+      team.id,
+      team.name,
+      team.logo,
+      team.seed,
+      team.disbanded,
+      steam_user.steam_id as captain_id,
+      steam_user.name as captain_name,
+      COALESCE(standings.wins, 0) as wins,
+      COALESCE(standings.losses, 0) as losses
+    FROM (
+      SELECT
+        team_id,
+        SUM(standings.win) wins,
+        SUM(standings.loss) losses
+      FROM (
+        SELECT
+          season_id,
+          division_id,
+          home_team_id team_id,
+          home_points win,
+          away_points loss
+        FROM
+          series
+        WHERE
+          round < ${resolvedRound}
+        AND
+          season_id = ${season_id}
+        AND
+          division_id = ${division_id}
+        UNION ALL
+        SELECT
+          season_id,
+          division_id,
+          away_team_id team_id,
+          away_points win,
+          home_points loss
+        FROM
+          series
+        WHERE
+          round < ${resolvedRound}
+        AND
+          season_id = ${season_id}
+        AND
+          division_id = ${division_id}
+      ) standings
+      WHERE
+        season_id = ${season_id}
+      AND
+        division_id = ${division_id}
+      AND
+        team_id IS NOT NULL
+      GROUP BY
+        team_id
+    ) standings
+    FULL OUTER JOIN team ON
+      team.id = standings.team_id
+    LEFT JOIN team_player ON
+      team.id = team_player.team_id
+    AND
+      team_player.is_captain
+    LEFT JOIN player ON
+      team_player.player_id = player.id
+    LEFT JOIN steam_user ON
+      player.steam_id = steam_user.steam_id
+    WHERE
+      team.season_id = ${season_id}
+    AND
+      team.division_id = ${division_id}
+    ORDER BY
+      standings.wins DESC,
+      (2 * standings.wins - standings.losses) DESC,
+      team.seed DESC
+    `
+  const result = await db.query(query)
+  return result.rows
+}
+
+export = function(db: Pool) {
+  return {
+    getSeries: getSeries.bind(null, db),
+    saveSeries: saveSeries.bind(null, db),
+    deleteSeries: deleteSeries.bind(null, db),
+    getCurrentRound: getCurrentRound.bind(null, db),
+    saveCurrentRound: saveCurrentRound.bind(null, db),
+    getStandings: getStandings.bind(null, db)
+  }
+}
