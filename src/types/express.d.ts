@@ -42,10 +42,10 @@ declare global {
   }
 }
 
-declare module 'express' {
+declare module 'express-serve-static-core' {
   interface Request {
     // Added by the csrf-csrf middleware in server.js
-    csrfToken(): string
+    csrfToken?(): string
   }
 }
 

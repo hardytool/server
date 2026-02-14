@@ -91,6 +91,7 @@ export interface MigrationRepo {
 export interface FullPlayerCriteria extends PlayerCriteria {
   will_captain?: boolean
   captain_approved?: boolean
+  is_captain?: boolean
   is_standin?: boolean
   hide_captains?: boolean
   hide_standins?: boolean
