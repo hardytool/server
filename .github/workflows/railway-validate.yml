@@ -4,10 +4,14 @@ permissions:
 
 on:
   push:
+    branches:
+      - 'trunk'
     paths:
       - 'railway.json'
       - '.github/workflows/railway-validate.yml'
   pull_request:
+    branches:
+      - 'trunk'
     paths:
       - 'railway.json'
       - '.github/workflows/railway-validate.yml'
