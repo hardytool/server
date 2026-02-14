@@ -15,7 +15,7 @@ services:
       - "POSTGRES_DB=seal"
       - "POSTGRES_USER"
       - "POSTGRES_PASSWORD"
-      - "SEED_DATA=true"
+    command: sh -c "node dist/migrate-cli.js && node dist/seed-cli.js && npm start"
     depends_on:
       db:
         condition: service_healthy

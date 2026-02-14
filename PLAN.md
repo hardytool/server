@@ -104,37 +104,37 @@ The simplest approach that avoids modifying `server.ts` significantly is:
 - Run `npm start` (which runs migrations then starts HTTP server) **and** separately invoke `node dist/seeds.js` after the server is listening.
 - But we can't wait for the HTTP server to be ready from within the compose command easily without a health check on the server itself.
 
-**Best approach:** Add seed execution to `server.ts` after `migrateIfNeeded` resolves, guarded by an environment variable `SEED_DATA=true`. When `SEED_DATA` is set, the seed function runs after migrations and before (or in parallel with) the HTTP listen call.
+**Final approach:** Keep `server.ts` untouched. Extract migrations into a standalone `migrate-cli.ts` and chain all three steps in the docker-compose `command:` override:
 
-This means:
-- `src/seeds.ts` becomes a module that exports a `seedData(pool)` function
-- `server.ts` imports and calls it when `process.env.SEED_DATA === 'true'`
-- The standalone `src/seeds.ts` entry point (or a separate `src/seed-cli.ts`) also calls `seedData` directly for use as `npm run seed`
-- `docker-compose.yml` adds `SEED_DATA=true` to the server environment
+```
+node dist/migrate-cli.js && node dist/seed-cli.js && npm start
+```
 
-### Revised File Plan
+When the server starts via `npm start`, its internal `migrateIfNeeded` call becomes a no-op (all migrations already applied). Seeds and migrations are purely CLI concerns — the server has no knowledge of either.
+
+### Final File Plan
 
 #### `src/seed-data.ts` (the seed logic module)
 - Exports `seedData(pool: Pool): Promise<void>`
 - Contains all seed constants and upsert calls
-- Used by both the CLI script and optionally `server.ts`
 
 #### `src/seed-cli.ts` (the standalone CLI entry point)
 - Creates its own pool from config
-- Calls `seedData(pool)`
-- Exits cleanly
+- Calls `seedData(pool)` and exits cleanly
 
-#### `server.ts` change
-After `migrateIfNeeded(...)`, if `process.env.SEED_DATA === 'true'`, call `seedData(pool)` before or alongside `http.createServer(app).listen(...)`.
+#### `src/migrate-cli.ts` (the standalone migration entry point)
+- Creates its own pool from config
+- Calls `migration.migrateIfNeeded(...)` and exits cleanly
 
 #### `package.json`
-Add: `"seed": "node dist/seed-cli.js"`
+Add: `"migrate": "node dist/migrate-cli.js"` and `"seed": "node dist/seed-cli.js"`
 
 #### `docker-compose.yml`
-Add to server environment: `SEED_DATA=true`
+Override the default `CMD` with:
+`command: sh -c "node dist/migrate-cli.js && node dist/seed-cli.js && npm start"`
 
-#### `Dockerfile`
-No changes needed (tsc compiles all `.ts` files in `src/`).
+#### `Dockerfile` / `server.ts`
+No changes needed.
 
 ---
 
@@ -144,9 +144,9 @@ No changes needed (tsc compiles all `.ts` files in `src/`).
 |------|--------|
 | `src/seed-data.ts` | **Create** — exports `seedData(pool)` with all seed upserts |
 | `src/seed-cli.ts` | **Create** — CLI entry point that calls `seedData` and exits |
-| `src/server.ts` | **Edit** — call `seedData(pool)` after migrations when `SEED_DATA=true` |
-| `package.json` | **Edit** — add `"seed": "node dist/seed-cli.js"` script |
-| `docker-compose.yml` | **Edit** — add `SEED_DATA=true` to server environment |
+| `src/migrate-cli.ts` | **Create** — CLI entry point that runs migrations and exits |
+| `package.json` | **Edit** — add `"migrate"` and `"seed"` npm scripts |
+| `docker-compose.yml` | **Edit** — override command to chain migrate → seed → start |
 
 ---
 
