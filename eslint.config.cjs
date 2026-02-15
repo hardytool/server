@@ -3,16 +3,6 @@ const js = require('@eslint/js')
 const tsPlugin = require('@typescript-eslint/eslint-plugin')
 const tsParser = require('@typescript-eslint/parser')
 
-const {
-  FlatCompat,
-} = require('@eslint/eslintrc')
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
-})
-
 const baseRules = {
   'no-console': 'off',
   'no-var': 'error',
@@ -26,7 +16,7 @@ const baseRules = {
 
 module.exports = [
   // JavaScript files
-  ...compat.extends('eslint:recommended'),
+  js.configs.recommended,
   {
     files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
     languageOptions: {
