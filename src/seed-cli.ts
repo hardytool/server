@@ -1,9 +1,8 @@
-import env from './env'
 import configFactory from './config'
 import pg from 'pg'
 import { seedData } from './seed-data'
 
-const config = configFactory(env)
+const config = configFactory()
 
 const pool = new pg.Pool({
   ...config.db,
