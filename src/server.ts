@@ -1,7 +1,6 @@
 // Configuration
-import env from './env'
 import configFactory from './config'
-const config = configFactory(env)
+const config = configFactory()
 
 // Node & NPM
 import path from 'path'
