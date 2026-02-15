@@ -25,7 +25,7 @@
     "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.7",
     "csrf-csrf": "^4.0.3",
-"edmonds-blossom": "^1.0.0",
+    "edmonds-blossom": "^1.0.0",
     "express": "^5.0.0",
     "express-session": "^1.19.0",
     "got": "^14.6.6",
