@@ -17,7 +17,7 @@ npm ci
 
 ## Environment
 
-Copy `.env.example` or create a `.env` file with the following variables:
+Create a `.env` file with the following variables:
 
 ```bash
 # Required
@@ -67,7 +67,7 @@ make build
 make run
 ```
 
-`make run` requires `STEAM_API_KEY` and `SECRET` to be set in the environment. Running with Docker Compose does not use `.env` files — pass environment variables directly.
+`make run` requires `STEAM_API_KEY` and `SECRET` to be set. Docker Compose reads `.env` automatically, so you can use the same file for both local and Compose workflows.
 
 ## Database migrations
 
