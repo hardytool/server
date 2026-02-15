@@ -23,7 +23,7 @@ async function createUser(
   const name = user_profile.displayName
   const avatar = getAvatar(user_profile)
 
-  let existingUser: SteamUser | null = null
+  let existingUser: SteamUser | null
   try {
     existingUser = await steam_user.getSteamUser(id) ?? null
   } catch {
