@@ -57,6 +57,7 @@ This project uses [Conventional Commits](https://www.conventionalcommits.org/en/
 - Keep the first line at or under **72 characters**
 - Reference GitHub issues in the footer: `Closes #123`
 - Mark breaking changes with `!` after the type/scope or a `BREAKING CHANGE:` footer
+- **PR titles** must also follow the conventional commit format — they are used as the squash merge commit message
 
 ### Examples
 
