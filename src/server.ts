@@ -189,6 +189,12 @@ app.use((req, _, next) => {
 })
 app.use('/assets', express.static(path.join(__dirname, 'assets')))
 
+// SPA — served at /app and all /app/* sub-paths.
+// The built client assets land in dist/public/ after `npm run build:client`.
+// This block must come before the page routes so the static middleware runs
+// first, but the catch-all is registered at the bottom after all SSR routes.
+app.use('/app', express.static(path.join(__dirname, 'public')))
+
 app.get('/auth/steam', passport.authenticate('steam'))
 app.get('/auth/steam/return',
   passport.authenticate('steam', {
@@ -325,6 +331,13 @@ app.post(bannedPlayerPages.post.route, bannedPlayerPages.post.handler)
 app.post(bannedPlayerPages.remove.route, bannedPlayerPages.remove.handler)
 
 app.get(ipPages.list.route, ipPages.list.handler)
+
+// Catch-all for the Vue SPA: any /app/* path that wasn't matched by the
+// static middleware above (i.e. client-side routes) should return index.html
+// so Vue Router can handle navigation on the client.
+app.get('/app/*splat', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
 
 http.createServer(app).listen(config.server.port, () => {
   console.log('Listening to HTTP connections on port ' + config.server.port)
