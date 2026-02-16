@@ -1,15 +1,21 @@
 /* eslint-disable no-process-env */
 import type { Config } from './types/config'
 
+function requireEnv(name: string): string {
+  const value = process.env[name]
+  if (!value) throw new Error(`Missing required environment variable: ${name}`)
+  return value
+}
+
 function config(): Config {
   return {
     server: {
       host: process.env.HOST || 'localhost',
       port: process.env.PORT || 80,
       https_port: process.env.HTTPS_PORT || 443,
-      steam_api_key: process.env.STEAM_API_KEY || false,
+      steam_api_key: requireEnv('STEAM_API_KEY'),
       website_url: (!process.env.WEBSITE_URL) ? false : ('//' + process.env.WEBSITE_URL),
-      secret: process.env.SECRET || false,
+      secret: requireEnv('SECRET'),
     },
     db: {
       user: process.env.POSTGRES_USER || process.env.PGUSER || false,

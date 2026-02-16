@@ -8,7 +8,9 @@
     "start": "node dist/server.js",
     "build": "tsc",
     "migrate": "node dist/migrate-cli.js",
-    "seed": "node dist/seed-cli.js"
+    "seed": "node dist/seed-cli.js",
+    "docker:build": "docker compose build",
+    "docker:run": "node scripts/docker-run.js"
   },
   "repository": {
     "type": "git",
