@@ -6,9 +6,9 @@ export interface ServerConfig {
   host: string
   port: number | string
   https_port: number | string
-  steam_api_key: string | false
+  steam_api_key: string
   website_url: string | false
-  secret: string | false
+  secret: string
 }
 
 export interface DbConfig {

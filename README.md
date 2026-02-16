@@ -63,11 +63,11 @@ npm start
 To run with Docker Compose (automatically handles migrations and seeds):
 
 ```sh
-make build
-make run
+npm run docker:build
+npm run docker:run
 ```
 
-`make run` requires `STEAM_API_KEY` and `SECRET` to be set. Docker Compose reads `.env` automatically, so you can use the same file for both local and Compose workflows.
+`npm run docker:run` requires `STEAM_API_KEY` and `SECRET` to be set. Docker Compose reads `.env` automatically, so you can use the same file for both local and Compose workflows.
 
 ## Database migrations
 
@@ -113,9 +113,9 @@ src/
   seed-cli.ts    # CLI entry point for seeding
   seed-data.ts   # Seed data definitions
   server.ts      # Application entry point
+scripts/            # Node.js helper scripts for npm run commands
 Dockerfile
 docker-compose.yml  # Development-oriented quickstart compose file
-Makefile            # Docker Compose wrapper
 package.json
 package-lock.json
 ```

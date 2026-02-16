@@ -120,7 +120,7 @@ const teamPages = teamsFactory(templates, season, division, team, team_player, p
 const app = express()
 
 const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => config.server.secret as string,
+  getSecret: () => config.server.secret,
   getSessionIdentifier: (req) => req.session.id,
   cookieName: '_csrf',
   cookieOptions: {
@@ -147,7 +147,7 @@ const realm = 'http' + (config.server.host === 'localhost' ? '' : 's') + '://' +
 passport.use('steam', new passportSteam.Strategy({
   returnURL: realm + '/auth/steam/return',
   realm: realm,
-  apiKey: config.server.steam_api_key as string
+  apiKey: config.server.steam_api_key
 }, (identifier, profile, done) => {
   auth.createUser(profile).then(() => {
     done(null, { id: identifier, profile: profile })
@@ -159,7 +159,7 @@ passport.use('steam', new passportSteam.Strategy({
 app.set('trust proxy', true)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(cookieParser(config.server.secret as string))
+app.use(cookieParser(config.server.secret))
 app.use(session({
   store: new PGStore({
     pool: pool,
@@ -169,7 +169,7 @@ app.use(session({
     secure: true,
     maxAge: 1000 * 60 * 60 * 24 * 7
   },
-  secret: config.server.secret as string,
+  secret: config.server.secret,
   resave: true,
   saveUninitialized: true
 }))
