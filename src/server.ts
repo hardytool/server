@@ -6,6 +6,7 @@ const config = configFactory()
 import path from 'path'
 import http from 'http'
 import express from 'express'
+import rateLimit from 'express-rate-limit'
 import { doubleCsrf } from 'csrf-csrf'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
@@ -335,7 +336,14 @@ app.get(ipPages.list.route, ipPages.list.handler)
 // Catch-all for the Vue SPA: any /app/* path that wasn't matched by the
 // static middleware above (i.e. client-side routes) should return index.html
 // so Vue Router can handle navigation on the client.
-app.get('/app/*splat', (_req, res) => {
+// Rate-limited because sendFile performs a file system read on every request.
+const spaIndexLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 120,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+})
+app.get('/app/*splat', spaIndexLimiter, (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
 
