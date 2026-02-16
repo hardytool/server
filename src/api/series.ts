@@ -220,11 +220,19 @@ export = function(
       handler: remove.bind(null, series),
     },
     standings: {
-      route: '/api/v1/seasons/:season_id/divisions/:division_id/standings/:round?',
+      route: '/api/v1/seasons/:season_id/divisions/:division_id/standings',
+      handler: standings.bind(null, season, team, series, pairings),
+    },
+    standingsByRound: {
+      route: '/api/v1/seasons/:season_id/divisions/:division_id/standings/:round',
       handler: standings.bind(null, season, team, series, pairings),
     },
     matchups: {
-      route: '/api/v1/seasons/:season_id/divisions/:division_id/matchups/:round?',
+      route: '/api/v1/seasons/:season_id/divisions/:division_id/matchups',
+      handler: matchups.bind(null, season, team, series, pairings),
+    },
+    matchupsByRound: {
+      route: '/api/v1/seasons/:season_id/divisions/:division_id/matchups/:round',
       handler: matchups.bind(null, season, team, series, pairings),
     },
     getCurrentRound: {
