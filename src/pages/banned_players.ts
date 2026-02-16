@@ -1,4 +1,4 @@
-import shortid from 'shortid'
+import { nanoid } from 'nanoid'
 import type { Request, Response } from 'express'
 import type { Templates } from '../types/templates'
 import type { BannedPlayerRepo } from '../types/repos'
@@ -58,7 +58,7 @@ async function post(banned_player: BannedPlayerRepo, req: Request, res: Response
     res.sendStatus(403)
     return
   }
-  const id = req.body.id ? req.body.id : shortid.generate()
+  const id = req.body.id ? req.body.id : nanoid()
   if (req.body.still_banned == null) {
     req.body.still_banned = false
   }

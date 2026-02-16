@@ -1,4 +1,4 @@
-import shortid from 'shortid'
+import { nanoid } from 'nanoid'
 import type { Request, Response } from 'express'
 import type { Templates } from '../types/templates'
 import type { RoleRepo } from '../types/repos'
@@ -37,7 +37,7 @@ async function edit(templates: Templates, role: RoleRepo, req: Request, res: Res
 
 async function post(role: RoleRepo, req: Request, res: Response): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
-  const id = req.body.id ? req.body.id : shortid.generate()
+  const id = req.body.id ? req.body.id : nanoid()
   const r = req.body
   r.id = id
   try {

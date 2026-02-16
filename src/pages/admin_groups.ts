@@ -1,4 +1,4 @@
-import shortid from 'shortid'
+import { nanoid } from 'nanoid'
 import type { Request, Response } from 'express'
 import type { Templates } from '../types/templates'
 import type { AdminGroupRepo } from '../types/repos'
@@ -62,7 +62,7 @@ async function post(admin_group: AdminGroupRepo, req: Request, res: Response): P
     res.sendStatus(403)
     return
   }
-  const id = req.body.id ? req.body.id : shortid.generate()
+  const id = req.body.id ? req.body.id : nanoid()
   const r = req.body
   r.id = id
   if (req.body.owner_id === '') {

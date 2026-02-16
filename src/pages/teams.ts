@@ -1,4 +1,4 @@
-import shortid from 'shortid'
+import { nanoid } from 'nanoid'
 import type { Request, Response } from 'express'
 import type { Templates } from '../types/templates'
 import type { SeasonRepo, DivisionRepo, TeamRepo, TeamPlayerRepo, PlayerRepo } from '../types/repos'
@@ -68,7 +68,7 @@ async function post(team: TeamRepo, req: Request, res: Response): Promise<void> 
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const season_id = req.body.season_id
   const division_id = req.body.division_id
-  const id = req.body.id ? req.body.id : shortid.generate()
+  const id = req.body.id ? req.body.id : nanoid()
   const t = req.body
   t.id = id
   t.disbanded = t.disbanded == 'on' ? true : false
@@ -126,7 +126,7 @@ async function importTeams(
     const captains = await player.getPlayers({ season_id, division_id, is_captain: true })
     const promises = captains.map(_captain => {
       const toSave: Record<string, unknown> = {
-        id: shortid.generate(),
+        id: nanoid(),
         season_id,
         division_id,
         name: _captain.name,

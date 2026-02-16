@@ -85,16 +85,6 @@ declare module 'connect-pg-simple' {
   export = connectPgSimple
 }
 
-declare module 'redirect-https' {
-  import { RequestHandler } from 'express'
-  interface RedirectOptions {
-    port?: number
-    [key: string]: unknown
-  }
-  function redirectHttps(options?: RedirectOptions): RequestHandler
-  export = redirectHttps
-}
-
 declare module 'edmonds-blossom' {
   type Edge = [number, number, number]
   function blossom(edges: Edge[], check?: boolean): number[]
@@ -126,14 +116,3 @@ declare module 'markdown-it-classy' {
   export = plugin
 }
 
-declare module 'json2csv' {
-  interface ParseOptions {
-    fields?: string[]
-    delimiter?: string
-    quote?: string
-    header?: boolean
-    [key: string]: unknown
-  }
-  function parse(data: unknown[], opts?: ParseOptions): string
-  export { parse }
-}

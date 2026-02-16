@@ -1,4 +1,4 @@
-import shortid from 'shortid'
+import { nanoid } from 'nanoid'
 import type { Request, Response } from 'express'
 import type { Templates } from '../types/templates'
 import type { SeasonRepo, TeamRepo, SeriesRepo } from '../types/repos'
@@ -55,7 +55,7 @@ async function edit(templates: Templates, _season: SeasonRepo, _team: TeamRepo, 
 async function post(_series: SeriesRepo, _team: TeamRepo, req: Request, res: Response): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const season_id = req.body.season_id
-  const id = req.body.id ? req.body.id : shortid.generate()
+  const id = req.body.id ? req.body.id : nanoid()
   const series = req.body
   series.id = id
   if (series.home_team_id === '') series.home_team_id = null
