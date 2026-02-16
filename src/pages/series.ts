@@ -1,4 +1,4 @@
-import shortid from 'shortid'
+import { nanoid } from 'nanoid'
 import type { Request, Response } from 'express'
 import type { Templates } from '../types/templates'
 import type { SeasonRepo, TeamRepo, SeriesRepo, DivisionRepo } from '../types/repos'
@@ -105,7 +105,7 @@ async function post(series: SeriesRepo, req: Request, res: Response): Promise<vo
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const season_id = req.body.season_id
   const division_id = req.body.division_id
-  const id = req.body.id ? req.body.id : shortid.generate()
+  const id = req.body.id ? req.body.id : nanoid()
   const s = req.body
   s.id = id
   if (s.home_team_id === '') s.home_team_id = null
@@ -300,7 +300,7 @@ async function importSeries(
     })
     const promises = matchupsList.map((_matchup: Record<string, unknown>) => {
       const toSave: Record<string, unknown> = {
-        id: shortid.generate(),
+        id: nanoid(),
         round: currentRound,
         season_id,
         division_id,

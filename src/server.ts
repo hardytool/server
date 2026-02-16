@@ -7,7 +7,6 @@ import path from 'path'
 import http from 'http'
 import express from 'express'
 import { doubleCsrf } from 'csrf-csrf'
-import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import passport from 'passport'
@@ -157,8 +156,8 @@ passport.use('steam', new passportSteam.Strategy({
 }))
 
 app.set('trust proxy', true)
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(config.server.secret as string))
 app.use(session({
   store: new PGStore({

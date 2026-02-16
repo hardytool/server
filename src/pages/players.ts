@@ -1,4 +1,4 @@
-import shortid from 'shortid'
+import { nanoid } from 'nanoid'
 import * as csv from '../lib/csv'
 import type { Request, Response } from 'express'
 import type { Templates } from '../types/templates'
@@ -113,7 +113,7 @@ async function post(player: PlayerRepo, steam_user: SteamUserRepo, req: Request,
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const season_id = req.body.season_id
   const division_id = req.body.division_id
-  const id = req.body.id ? req.body.id : shortid.generate()
+  const id = req.body.id ? req.body.id : nanoid()
   const p = req.body
   p.id = id
   p.captain_approved = p.captain_approved === 'on'

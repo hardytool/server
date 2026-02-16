@@ -1,4 +1,4 @@
-import shortid from 'shortid'
+import { nanoid } from 'nanoid'
 import type { Request, Response } from 'express'
 import type { Templates } from '../types/templates'
 import type { DivisionRepo, SeasonRepo, AdminRepo } from '../types/repos'
@@ -102,7 +102,7 @@ async function post(division: DivisionRepo, req: Request, res: Response): Promis
     return
   }
   const d = req.body
-  const id = d.id ? d.id : shortid.generate()
+  const id = d.id ? d.id : nanoid()
   d.id = id
   d.active = d.active === 'on'
   try {

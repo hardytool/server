@@ -1,4 +1,4 @@
-import shortid from 'shortid'
+import { nanoid } from 'nanoid'
 import type { Request, Response } from 'express'
 import type { Templates } from '../types/templates'
 import type { SeasonRepo, DivisionRepo } from '../types/repos'
@@ -51,7 +51,7 @@ async function start(_templates: Templates, season: SeasonRepo, division: Divisi
 async function post(season: SeasonRepo, req: Request, res: Response): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const s = req.body
-  const id = s.id ? s.id : shortid.generate()
+  const id = s.id ? s.id : nanoid()
   s.id = id
   s.active = s.active == 'on' ? true : false
   s.registration_open = s.registration_open == 'on' ? true : false

@@ -1,4 +1,4 @@
-import { parse } from 'json2csv'
+import { Parser } from '@json2csv/plainjs'
 
 export function toCSV(records: Record<string, unknown>[]): Promise<string | null> {
   if (!records.length) {
@@ -9,7 +9,7 @@ export function toCSV(records: Record<string, unknown>[]): Promise<string | null
 
   return new Promise((resolve, reject) => {
     try {
-      const csv = parse(records, { fields })
+      const csv = new Parser({ fields }).parse(records)
       resolve(csv)
     } catch (err) {
       reject(err)
