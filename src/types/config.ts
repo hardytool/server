@@ -22,13 +22,7 @@ export interface DbConfig {
   idleTimeoutMillis: number | string
 }
 
-export interface TemplatesConfig {
-  title: string
-  [key: string]: unknown
-}
-
 export interface Config {
   server: ServerConfig
   db: DbConfig
-  templates: TemplatesConfig
 }

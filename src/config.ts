@@ -26,9 +26,6 @@ function config(): Config {
       ssl: (!process.env.POSTGRES_SSL) ? false : true,
       max: process.env.POSTGRES_POOL_MAX || 10,
       idleTimeoutMillis: process.env.POSTGRES_TIMEOUT || 30000
-    },
-    templates: {
-      title: 'RD2L'
     }
   }
 }

@@ -48,12 +48,6 @@ declare module 'passport-steam' {
   }
 }
 
-declare module 'pug-tree' {
-  type TemplateMap = Record<string, (locals?: object) => string>
-  function pugTree(dir: string, options?: Record<string, unknown>): TemplateMap
-  export = pugTree
-}
-
 declare module 'pg-sql' {
   interface SqlQuery {
     text: string

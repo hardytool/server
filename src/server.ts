@@ -23,8 +23,6 @@ const pool = new pg.Pool({
 })
 import connectPgSimple from 'connect-pg-simple'
 const PGStore = connectPgSimple(session)
-import pugTree from 'pug-tree'
-const templates = pugTree(path.join(__dirname, 'templates'), config.templates)
 import swissPairing from 'swiss-pairing'
 const pairings = swissPairing({ maxPerRound: 2 })
 
@@ -98,44 +96,7 @@ const apiRegistration = apiRegistrationFactory(season, division, player, player_
 const apiAdminApi = apiAdminFactory(admin, admin_group, banned_player, role, ip_address)
 const apiSeasonsAdmin = apiSeasonsAdminFactory(season)
 const apiDivisionsAdmin = apiDivisionsAdminFactory(division)
-const apiPlayersAdmin = apiPlayersAdminFactory(season, division, player)
-
-// Page controllers
-import adminsFactory from './pages/admins'
-import adminGroupsFactory from './pages/admin_groups'
-import bannedPlayersFactory from './pages/banned_players'
-import divisionsFactory from './pages/divisions'
-import indexFactory from './pages/index'
-import ipsFactory from './pages/ips'
-import playersFactory from './pages/players'
-import playoffSeriesFactory from './pages/playoffSeries'
-import profileFactory from './pages/profile'
-import registrationFactory from './pages/registration'
-import rosterFactory from './pages/roster'
-import rolesFactory from './pages/roles'
-import seasonsFactory from './pages/seasons'
-import seriesPageFactory from './pages/series'
-import teamsFactory from './pages/teams'
-
-const adminPages = adminsFactory(templates, admin, division, admin_group)
-const adminGroupPages = adminGroupsFactory(templates, admin_group)
-const bannedPlayerPages = bannedPlayersFactory(templates, banned_player)
-const divisionPages = divisionsFactory(templates, season, division, admin)
-const indexPages = indexFactory(
-  templates,
-  path.join(__dirname, 'assets', 'rules.md'),
-  path.join(__dirname, 'assets', 'inhouserules.md'))
-const ipPages = ipsFactory(templates, steam_user, ip_address, steamId)
-const playerPages = playersFactory(templates, season, division, player, player_role, role, steam_user)
-const playoffSeriesPages = playoffSeriesFactory(templates, season, team, series, pairings)
-const profilePages = profileFactory(templates, steam_user, profile, season, team_player, vouch, steamId, player)
-const registrationPages = registrationFactory(
-  templates, season, division, steam_user, team_player, player, role, player_role, profile)
-const rosterPages = rosterFactory(templates, season, division, team, team_player, series)
-const rolePages = rolesFactory(templates, role)
-const seasonPages = seasonsFactory(templates, season, division)
-const seriesPages = seriesPageFactory(templates, season, team, series, pairings, division)
-const teamPages = teamsFactory(templates, season, division, team, team_player, player)
+const apiPlayersAdmin = apiPlayersAdminFactory(season, division, player, role, player_role)
 
 // Application start
 
@@ -293,126 +254,8 @@ app.get(apiPlayersAdmin.standins.route, apiPlayersAdmin.standins.handler)
 app.delete(apiPlayersAdmin.remove.route, apiPlayersAdmin.remove.handler)
 app.post(apiPlayersAdmin.activityCheck.route, apiPlayersAdmin.activityCheck.handler)
 app.post(apiPlayersAdmin.activityCheckAdmin.route, apiPlayersAdmin.activityCheckAdmin.handler)
+app.get(apiPlayersAdmin.draftsheetCsv.route, apiPlayersAdmin.draftsheetCsv.handler)
 
-app.get(indexPages.home.route, indexPages.home.handler)
-app.get(indexPages.complaint.route, indexPages.complaint.handler)
-app.get(indexPages.rules.route, indexPages.rules.handler)
-app.get(indexPages.irules.route, indexPages.irules.handler)
-app.get(indexPages.playoffs.route, indexPages.playoffs.handler)
-
-app.get(seasonPages.list.route, seasonPages.list.handler)
-app.get(seasonPages.create.route, seasonPages.create.handler)
-app.get(seasonPages.edit.route, seasonPages.edit.handler)
-app.get(seasonPages.start.route, seasonPages.start.handler)
-
-app.post(seasonPages.post.route, seasonPages.post.handler)
-app.post(seasonPages.remove.route, seasonPages.remove.handler)
-
-app.get(divisionPages.list.route, divisionPages.list.handler)
-app.get(divisionPages.listAll.route, divisionPages.listAll.handler)
-app.get(divisionPages.create.route, divisionPages.create.handler)
-app.get(divisionPages.edit.route, divisionPages.edit.handler)
-app.get(divisionPages.nav.route, divisionPages.nav.handler)
-app.get(divisionPages.all_seasons.route, divisionPages.all_seasons.handler)
-
-app.post(divisionPages.post.route, divisionPages.post.handler)
-app.post(divisionPages.remove.route, divisionPages.remove.handler)
-
-app.get(teamPages.list.route, teamPages.list.handler)
-app.get(teamPages.create.route, teamPages.create.handler)
-app.get(teamPages.edit.route, teamPages.edit.handler)
-app.get(teamPages.json.route, teamPages.json.handler)
-app.get(teamPages.importTeams.route, teamPages.importTeams.handler)
-
-app.post(teamPages.post.route, teamPages.post.handler)
-app.post(teamPages.remove.route, teamPages.remove.handler)
-
-app.get(seriesPages.list.route, seriesPages.list.handler)
-app.get(seriesPages.create.route, seriesPages.create.handler)
-app.get(seriesPages.edit.route, seriesPages.edit.handler)
-app.get(seriesPages.standings.route, seriesPages.standings.handler)
-app.get(seriesPages.matchups.route, seriesPages.matchups.handler)
-app.get(seriesPages.importSeries.route, seriesPages.importSeries.handler)
-app.get(seriesPages.editRound.route, seriesPages.editRound.handler)
-app.get(seriesPages.newRound.route, seriesPages.newRound.handler)
-
-app.post(seriesPages.post.route, seriesPages.post.handler)
-app.post(seriesPages.remove.route, seriesPages.remove.handler)
-app.post(seriesPages.saveRound.route, seriesPages.saveRound.handler)
-
-app.get(playoffSeriesPages.list.route, playoffSeriesPages.list.handler)
-app.get(playoffSeriesPages.create.route, playoffSeriesPages.create.handler)
-app.get(playoffSeriesPages.edit.route, playoffSeriesPages.edit.handler)
-app.get(playoffSeriesPages.bracket.route, playoffSeriesPages.bracket.handler)
-
-app.post(playoffSeriesPages.post.route, playoffSeriesPages.post.handler)
-app.post(playoffSeriesPages.remove.route, playoffSeriesPages.remove.handler)
-
-app.get(playerPages.list.route, playerPages.list.handler)
-app.get(playerPages.captains.route, playerPages.captains.handler)
-app.get(playerPages.standins.route, playerPages.standins.handler)
-app.get(playerPages.create.route, playerPages.create.handler)
-app.get(playerPages.edit.route, playerPages.edit.handler)
-app.get(playerPages.csv.route, playerPages.csv.handler)
-app.get(playerPages.activityCheck.route, playerPages.activityCheck.handler)
-app.get(playerPages.activityCheckAdmin.route, playerPages.activityCheckAdmin.handler)
-app.get(playerPages.json.route, playerPages.json.handler)
-app.get(playerPages.countJson.route, playerPages.countJson.handler)
-
-app.post(playerPages.post.route, playerPages.post.handler)
-app.post(playerPages.remove.route, playerPages.remove.handler)
-
-app.get(rosterPages.list.route, rosterPages.list.handler)
-app.get(rosterPages.add.route, rosterPages.add.handler)
-
-app.post(rosterPages.post.route, rosterPages.post.handler)
-app.post(rosterPages.remove.route, rosterPages.remove.handler)
-
-app.get(profilePages.view.route, profilePages.view.handler)
-app.get(profilePages.edit.route, profilePages.edit.handler)
-app.get(profilePages.vouch.route, profilePages.vouch.handler)
-app.get(profilePages.confirm.route, profilePages.confirm.handler)
-app.get(profilePages.unvouch.route, profilePages.unvouch.handler)
-
-app.post(profilePages.post.route, profilePages.post.handler)
-
-app.get(registrationPages.view.route, registrationPages.view.handler)
-app.get(registrationPages.shortcut.route, registrationPages.shortcut.handler)
-app.get(registrationPages.directory.route, registrationPages.directory.handler)
-app.get(registrationPages.directoryShortcut.route, registrationPages.directoryShortcut.handler)
-
-app.post(registrationPages.post.route, registrationPages.post.handler)
-app.post(registrationPages.unregister.route, registrationPages.unregister.handler)
-
-app.get(rolePages.list.route, rolePages.list.handler)
-app.get(rolePages.create.route, rolePages.create.handler)
-app.get(rolePages.edit.route, rolePages.edit.handler)
-
-app.post(rolePages.post.route, rolePages.post.handler)
-app.post(rolePages.remove.route, rolePages.remove.handler)
-
-app.get(adminPages.list.route, adminPages.list.handler)
-app.get(adminPages.create.route, adminPages.create.handler)
-app.get(adminPages.edit.route, adminPages.edit.handler)
-
-app.post(adminPages.post.route, adminPages.post.handler)
-app.post(adminPages.remove.route, adminPages.remove.handler)
-
-app.get(adminGroupPages.list.route, adminGroupPages.list.handler)
-app.get(adminGroupPages.create.route, adminGroupPages.create.handler)
-app.get(adminGroupPages.edit.route, adminGroupPages.edit.handler)
-
-app.post(adminGroupPages.post.route, adminGroupPages.post.handler)
-app.post(adminGroupPages.remove.route, adminGroupPages.remove.handler)
-
-app.get(bannedPlayerPages.list.route, bannedPlayerPages.list.handler)
-app.get(bannedPlayerPages.create.route, bannedPlayerPages.create.handler)
-app.get(bannedPlayerPages.edit.route, bannedPlayerPages.edit.handler)
-
-app.post(bannedPlayerPages.post.route, bannedPlayerPages.post.handler)
-app.post(bannedPlayerPages.remove.route, bannedPlayerPages.remove.handler)
-
-app.get(ipPages.list.route, ipPages.list.handler)
 
 // Serve the Vue SPA for all non-API, non-asset routes
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')))

@@ -39,8 +39,8 @@
     "passport-steam": "^1.0.18",
     "pg": "^8.17.2",
     "pg-sql": "^1.1.0",
-    "pug": "^3.0.3",
-    "pug-tree": "^1.0.4",
+    "redirect-https": "^1.3.1",
+    "shortid": "^2.2.17",
     "swiss-pairing": "^1.4.3"
   },
   "devDependencies": {
@@ -52,7 +52,7 @@
     "@types/node": "^25.2.3",
     "@types/passport": "^1.0.17",
     "@types/pg": "^8.16.0",
-    "@types/pug": "^2.0.10",
+    "@types/shortid": "^2.2.0",
     "@typescript-eslint/eslint-plugin": "8.55.1-alpha.4",
     "@typescript-eslint/parser": "8.55.1-alpha.4",
     "eslint": "^10.0.0",
