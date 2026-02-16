@@ -73,9 +73,32 @@ const openid = openidFactory(config)
 import apiDivisionsFactory from './api/divisions'
 import apiSeasonsFactory from './api/seasons'
 import apiPlayersFactory from './api/players'
+import apiMeFactory from './api/me'
+import apiCsrfFactory from './api/csrf'
+import apiRulesFactory from './api/rules'
+import apiProfilesFactory from './api/profiles'
+import apiTeamsFactory from './api/teams'
+import apiSeriesApiFactory from './api/series'
+import apiRegistrationFactory from './api/registration'
+import apiAdminFactory from './api/admin'
+import apiSeasonsAdminFactory from './api/seasons-admin'
+import apiDivisionsAdminFactory from './api/divisions-admin'
+import apiPlayersAdminFactory from './api/players-admin'
 const apiDivisions = apiDivisionsFactory(division, admin)
 const apiSeasons = apiSeasonsFactory(season)
 const apiPlayers = apiPlayersFactory(season, division, player, player_role, role)
+const apiMe = apiMeFactory()
+const apiRules = apiRulesFactory(
+  path.join(__dirname, 'assets', 'rules.md'),
+  path.join(__dirname, 'assets', 'inhouserules.md'))
+const apiProfiles = apiProfilesFactory(profile, steam_user, team_player, vouch)
+const apiTeams = apiTeamsFactory(team, team_player)
+const apiSeriesApi = apiSeriesApiFactory(season, team, series, division, pairings)
+const apiRegistration = apiRegistrationFactory(season, division, player, player_role)
+const apiAdminApi = apiAdminFactory(admin, admin_group, banned_player, role, ip_address)
+const apiSeasonsAdmin = apiSeasonsAdminFactory(season)
+const apiDivisionsAdmin = apiDivisionsAdminFactory(division)
+const apiPlayersAdmin = apiPlayersAdminFactory(season, division, player)
 
 // Page controllers
 import adminsFactory from './pages/admins'
@@ -127,7 +150,7 @@ const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
     sameSite: 'strict',
     secure: config.server.host !== 'localhost',
   },
-  getCsrfTokenFromRequest: (req) => req.body && req.body._csrf,
+  getCsrfTokenFromRequest: (req) => (req.headers['x-csrf-token'] as string) || (req.body && req.body._csrf),
 })
 
 passport.serializeUser((user, done) => {
@@ -177,6 +200,8 @@ app.use((req, res, next) => {
   req.csrfToken = () => generateCsrfToken(req, res)
   next()
 })
+
+const apiCsrf = apiCsrfFactory(generateCsrfToken)
 app.use(passport.initialize())
 app.use(passport.session())
 app.use((req, _, next) => {
@@ -205,6 +230,69 @@ app.get(apiSeasons.view.route, apiSeasons.view.handler)
 
 app.get(apiPlayers.list.route, apiPlayers.list.handler)
 app.get(apiPlayers.captains.route, apiPlayers.captains.handler)
+
+// New JSON API endpoints for SPA
+app.get(apiMe.me.route, apiMe.me.handler)
+app.get(apiCsrf.csrfToken.route, apiCsrf.csrfToken.handler)
+
+app.get(apiRules.rules.route, apiRules.rules.handler)
+app.get(apiRules.inhouseRules.route, apiRules.inhouseRules.handler)
+
+app.get(apiProfiles.view.route, apiProfiles.view.handler)
+app.put(apiProfiles.update.route, apiProfiles.update.handler)
+app.post(apiProfiles.addVouch.route, apiProfiles.addVouch.handler)
+app.delete(apiProfiles.removeVouch.route, apiProfiles.removeVouch.handler)
+
+app.get(apiTeams.listByDivision.route, apiTeams.listByDivision.handler)
+app.get(apiTeams.view.route, apiTeams.view.handler)
+app.post(apiTeams.save.route, apiTeams.save.handler)
+app.delete(apiTeams.remove.route, apiTeams.remove.handler)
+app.get(apiTeams.getRoster.route, apiTeams.getRoster.handler)
+app.post(apiTeams.addToRoster.route, apiTeams.addToRoster.handler)
+app.delete(apiTeams.removeFromRoster.route, apiTeams.removeFromRoster.handler)
+app.get(apiTeams.getUnassigned.route, apiTeams.getUnassigned.handler)
+
+app.get(apiSeriesApi.list.route, apiSeriesApi.list.handler)
+app.post(apiSeriesApi.save.route, apiSeriesApi.save.handler)
+app.delete(apiSeriesApi.remove.route, apiSeriesApi.remove.handler)
+app.get(apiSeriesApi.standings.route, apiSeriesApi.standings.handler)
+app.get(apiSeriesApi.matchups.route, apiSeriesApi.matchups.handler)
+app.get(apiSeriesApi.getCurrentRound.route, apiSeriesApi.getCurrentRound.handler)
+app.post(apiSeriesApi.saveRound.route, apiSeriesApi.saveRound.handler)
+app.get(apiSeriesApi.listPlayoff.route, apiSeriesApi.listPlayoff.handler)
+app.post(apiSeriesApi.savePlayoff.route, apiSeriesApi.savePlayoff.handler)
+app.delete(apiSeriesApi.removePlayoff.route, apiSeriesApi.removePlayoff.handler)
+app.get(apiSeriesApi.bracket.route, apiSeriesApi.bracket.handler)
+
+app.get(apiRegistration.getRegistration.route, apiRegistration.getRegistration.handler)
+app.post(apiRegistration.register.route, apiRegistration.register.handler)
+app.delete(apiRegistration.unregister.route, apiRegistration.unregister.handler)
+
+app.get(apiAdminApi.listAdmins.route, apiAdminApi.listAdmins.handler)
+app.post(apiAdminApi.saveAdmin.route, apiAdminApi.saveAdmin.handler)
+app.delete(apiAdminApi.deleteAdmin.route, apiAdminApi.deleteAdmin.handler)
+app.get(apiAdminApi.listAdminGroups.route, apiAdminApi.listAdminGroups.handler)
+app.post(apiAdminApi.saveAdminGroup.route, apiAdminApi.saveAdminGroup.handler)
+app.delete(apiAdminApi.deleteAdminGroup.route, apiAdminApi.deleteAdminGroup.handler)
+app.get(apiAdminApi.listBanned.route, apiAdminApi.listBanned.handler)
+app.post(apiAdminApi.saveBanned.route, apiAdminApi.saveBanned.handler)
+app.delete(apiAdminApi.deleteBanned.route, apiAdminApi.deleteBanned.handler)
+app.get(apiAdminApi.listRoles.route, apiAdminApi.listRoles.handler)
+app.post(apiAdminApi.saveRole.route, apiAdminApi.saveRole.handler)
+app.delete(apiAdminApi.deleteRole.route, apiAdminApi.deleteRole.handler)
+app.get(apiAdminApi.listIps.route, apiAdminApi.listIps.handler)
+
+app.post(apiSeasonsAdmin.save.route, apiSeasonsAdmin.save.handler)
+app.delete(apiSeasonsAdmin.remove.route, apiSeasonsAdmin.remove.handler)
+
+app.get(apiDivisionsAdmin.listAll.route, apiDivisionsAdmin.listAll.handler)
+app.post(apiDivisionsAdmin.save.route, apiDivisionsAdmin.save.handler)
+app.delete(apiDivisionsAdmin.remove.route, apiDivisionsAdmin.remove.handler)
+
+app.get(apiPlayersAdmin.standins.route, apiPlayersAdmin.standins.handler)
+app.delete(apiPlayersAdmin.remove.route, apiPlayersAdmin.remove.handler)
+app.post(apiPlayersAdmin.activityCheck.route, apiPlayersAdmin.activityCheck.handler)
+app.post(apiPlayersAdmin.activityCheckAdmin.route, apiPlayersAdmin.activityCheckAdmin.handler)
 
 app.get(indexPages.home.route, indexPages.home.handler)
 app.get(indexPages.complaint.route, indexPages.complaint.handler)
@@ -325,6 +413,12 @@ app.post(bannedPlayerPages.post.route, bannedPlayerPages.post.handler)
 app.post(bannedPlayerPages.remove.route, bannedPlayerPages.remove.handler)
 
 app.get(ipPages.list.route, ipPages.list.handler)
+
+// Serve the Vue SPA for all non-API, non-asset routes
+app.use(express.static(path.join(__dirname, '..', 'client', 'dist')))
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'))
+})
 
 http.createServer(app).listen(config.server.port, () => {
   console.log('Listening to HTTP connections on port ' + config.server.port)

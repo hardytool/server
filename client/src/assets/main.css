@@ -1,0 +1,59 @@
+/* Custom RD2L styles */
+
+.rank-image {
+  height: 32px;
+  vertical-align: middle;
+}
+
+.disbanded {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  background-color: hsl(0, 0%, 21%);
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 4px 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 0.85rem;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+}
+
+/* Bracket styles */
+.bracket-round {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  min-width: 200px;
+}
+
+.bracket-match {
+  border: 1px solid hsl(0, 0%, 86%);
+  border-radius: 4px;
+  margin: 4px 8px;
+  padding: 4px;
+}
+
+.bracket-team {
+  padding: 2px 6px;
+}
+
+.bracket-team.winner {
+  font-weight: bold;
+}

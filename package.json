@@ -6,7 +6,10 @@
   "scripts": {
     "test": "tsc --noEmit && eslint src",
     "start": "node dist/server.js",
-    "build": "tsc",
+    "dev": "nodemon --exec 'ts-node src/server.ts' -e ts",
+    "dev:client": "cd client && npm run dev",
+    "build": "tsc && npm run build:client",
+    "build:client": "cd client && npm install && npm run build",
     "migrate": "node dist/migrate-cli.js",
     "seed": "node dist/seed-cli.js",
     "docker:build": "docker compose build",
