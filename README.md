@@ -113,7 +113,7 @@ src/
   seed-cli.ts    # CLI entry point for seeding
   seed-data.ts   # Seed data definitions
   server.ts      # Application entry point
-scripts/            # Node.js helper scripts for npm run commands
+scripts/         # Node.js helper scripts for npm run commands
 Dockerfile
 docker-compose.yml  # Development-oriented quickstart compose file
 package.json
