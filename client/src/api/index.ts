@@ -35,13 +35,41 @@ export interface Captain {
   adjusted_mmr: number
 }
 
+export type MeResponse =
+  | { loggedIn: false }
+  | {
+      loggedIn: true
+      steamId: string
+      displayName: string
+      avatar: string
+      isAdmin: boolean
+      activityCheckRequired: boolean
+    }
+
 async function get<T>(url: string): Promise<T> {
   const res = await fetch(url)
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
   return res.json() as Promise<T>
 }
 
+// Fetches a fresh CSRF token then performs a JSON POST.
+// The server accepts the token via the x-csrf-token header.
+async function post<T>(url: string, body: Record<string, unknown>): Promise<T> {
+  const { token } = await get<{ token: string }>('/api/v1/csrf')
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-csrf-token': token,
+    },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+  return res.json() as Promise<T>
+}
+
 export const api = {
+  me: () => get<MeResponse>('/api/v1/me'),
   seasons: {
     list: () => get<Season[]>('/api/v1/seasons'),
     get: (id: number) => get<Season>(`/api/v1/seasons/${id}`),
@@ -54,4 +82,5 @@ export const api = {
     captains: (seasonId: number, divisionId: number) =>
       get<Captain[]>(`/api/v1/seasons/${seasonId}/divisions/${divisionId}/captains`),
   },
+  post,
 }

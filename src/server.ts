@@ -74,9 +74,13 @@ const openid = openidFactory(config)
 import apiDivisionsFactory from './api/divisions'
 import apiSeasonsFactory from './api/seasons'
 import apiPlayersFactory from './api/players'
+import apiMeFactory from './api/me'
+import apiCsrfFactory from './api/csrf'
 const apiDivisions = apiDivisionsFactory(division, admin)
 const apiSeasons = apiSeasonsFactory(season)
 const apiPlayers = apiPlayersFactory(season, division, player, player_role, role)
+const apiMe = apiMeFactory()
+const apiCsrf = apiCsrfFactory()
 
 // Page controllers
 import adminsFactory from './pages/admins'
@@ -128,7 +132,8 @@ const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
     sameSite: 'strict',
     secure: config.server.host !== 'localhost',
   },
-  getCsrfTokenFromRequest: (req) => req.body && req.body._csrf,
+  getCsrfTokenFromRequest: (req) =>
+    (req.headers['x-csrf-token'] as string | undefined) ?? (req.body && req.body._csrf),
 })
 
 passport.serializeUser((user, done) => {
@@ -211,6 +216,9 @@ app.get('/auth/steam/return',
   }),
   openid.steamIdReturn)
 app.get('/logout', openid.logout)
+
+app.get(apiMe.me.route, apiMe.me.handler)
+app.get(apiCsrf.csrf.route, apiCsrf.csrf.handler)
 
 app.get(apiDivisions.list.route, apiDivisions.list.handler)
 app.get(apiDivisions.view.route, apiDivisions.view.handler)

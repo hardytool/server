@@ -29,10 +29,22 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-light is-small" href="/auth/steam">
-              <span class="icon"><i class="fas fa-sign-in-alt"></i></span>
-              <span>Sign in with Steam</span>
-            </a>
+            <template v-if="me?.loggedIn">
+              <a class="button is-light is-small" :href="`/profile/${me.steamId}`">
+                <span class="icon"><img :src="me.avatar" alt="" width="20" height="20" /></span>
+                <span>{{ me.displayName }}</span>
+              </a>
+              <a class="button is-light is-small" href="/logout">
+                <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
+                <span>Sign out</span>
+              </a>
+            </template>
+            <template v-else-if="me">
+              <a class="button is-light is-small" href="/auth/steam">
+                <span class="icon"><i class="fas fa-sign-in-alt"></i></span>
+                <span>Sign in with Steam</span>
+              </a>
+            </template>
           </div>
         </div>
       </div>
@@ -41,9 +53,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { api, type MeResponse } from '../api'
 
 const menuOpen = ref(false)
+const me = ref<MeResponse | null>(null)
 // This image is served by the Express static middleware, not bundled by Vite.
 const logoSrc = '/assets/notext.png'
+
+onMounted(async () => {
+  try {
+    me.value = await api.me()
+  } catch {
+    // Leave me as null — buttons stay hidden until the response arrives.
+    // A network error here should not break the rest of the page.
+  }
+})
 </script>

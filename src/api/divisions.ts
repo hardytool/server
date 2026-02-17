@@ -20,7 +20,7 @@ async function view(division: DivisionRepo, admin: AdminRepo, req: Request, res:
     const divisionAdmins = await admin.getDivisionAdmins(division_id)
     res.json({
       ...div,
-      divisionAdmins
+      admins: divisionAdmins
     })
   } catch (err) {
     console.error(err)
