@@ -196,8 +196,16 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')))
 // first, but the catch-all is registered at the bottom after all SSR routes.
 app.use('/app', express.static(path.join(__dirname, 'public')))
 
-app.get('/auth/steam', passport.authenticate('steam'))
+// Auth endpoints trigger external Steam API calls — apply a strict limiter.
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+})
+app.get('/auth/steam', authLimiter, passport.authenticate('steam'))
 app.get('/auth/steam/return',
+  authLimiter,
   passport.authenticate('steam', {
     failureRedirect: config.server.website_url ? config.server.website_url as string : '/'
   }),
@@ -213,10 +221,17 @@ app.get(apiSeasons.view.route, apiSeasons.view.handler)
 app.get(apiPlayers.list.route, apiPlayers.list.handler)
 app.get(apiPlayers.captains.route, apiPlayers.captains.handler)
 
+// Rules pages read a markdown file from disk on every request.
+const staticFileLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 60,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+})
 app.get(indexPages.home.route, indexPages.home.handler)
 app.get(indexPages.complaint.route, indexPages.complaint.handler)
-app.get(indexPages.rules.route, indexPages.rules.handler)
-app.get(indexPages.irules.route, indexPages.irules.handler)
+app.get(indexPages.rules.route, staticFileLimiter, indexPages.rules.handler)
+app.get(indexPages.irules.route, staticFileLimiter, indexPages.irules.handler)
 app.get(indexPages.playoffs.route, indexPages.playoffs.handler)
 
 app.get(seasonPages.list.route, seasonPages.list.handler)
