@@ -44,7 +44,7 @@ jobs:
         STEAM_API_KEY: test
         HOST: localhost
     - name: Check site is available
-      run: curl --fail --silent --show-error --max-time 5 --retry 5 --retry-delay 0 --retry-max-time 30 --retry-all-errors "http://localhost:3000/" || exit 1
+      run: curl --fail --silent --show-error --max-time 5 --retry 5 --retry-delay 0 --retry-max-time 30 --retry-all-errors "http://localhost:3000/seasons" || exit 1
     - name: Show server logs on failure
       if: failure()
       run: |
