@@ -6,7 +6,7 @@
   },
   "deploy": {
     "numReplicas": 1,
-    "healthcheckPath": "/",
+    "healthcheckPath": "/seasons",
     "restartPolicyType": "ALWAYS",
     "healthcheckTimeout": 30,
     "startCommand": "npm start",
