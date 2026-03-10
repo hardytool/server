@@ -1,4 +1,4 @@
-name: Validate railway.json
+name: Railway CI
 permissions:
   contents: read
 
