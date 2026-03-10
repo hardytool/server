@@ -3,10 +3,19 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     include: ['tests/**/*.test.ts'],
+    testTimeout: 30000,
     coverage: {
       provider: 'v8',
-      include: ['src/lib/**/*.ts'],
-      exclude: ['src/lib/auth.ts'],
+      include: [
+        'src/lib/**/*.ts',
+        'src/repos/**/*.ts',
+        'src/api/**/*.ts',
+        'src/config.ts',
+        'src/seed-data.ts',
+      ],
+      exclude: [
+        'src/repos/migration.ts',
+      ],
       thresholds: {
         'src/lib/steamId.ts': {
           statements: 100,
