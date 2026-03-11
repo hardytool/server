@@ -4,6 +4,7 @@
 name: Node.js CI
 permissions:
   contents: read
+  pull-requests: write
 
 on:
   push:
@@ -33,16 +34,44 @@ jobs:
       run: npm run lint
     - name: Tests with coverage
       run: npm run test:coverage
+    - name: Restore trunk coverage baseline
+      uses: actions/cache/restore@v4
+      with:
+        path: trunk-baseline.json
+        key: trunk-baseline-
+        restore-keys: trunk-baseline-
     - name: Restore coverage history
       uses: actions/cache@v4
       with:
         path: coverage-history.json
-        key: coverage-history-${{ github.ref_name }}
+        key: coverage-history-${{ github.ref_name }}-${{ github.sha }}
         restore-keys: |
-          coverage-history-trunk
-          coverage-history-
+          coverage-history-${{ github.ref_name }}-
+          coverage-history-trunk-
     - name: Update coverage trend
       run: npm run test:update-trend
+      env:
+        TRUNK_BASELINE: trunk-baseline.json
+        GITHUB_REF_NAME: ${{ github.ref_name }}
+    - name: Save trunk baseline
+      if: github.ref_name == 'trunk'
+      uses: actions/cache/save@v4
+      with:
+        path: trunk-baseline.json
+        key: trunk-baseline-${{ github.sha }}
+    - name: Comment on PR
+      if: github.event_name == 'pull_request'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        COMMENT_MARKER="<!-- coverage-report -->"
+        BODY="$(cat coverage-report.md)"$'\n'"$COMMENT_MARKER"
+        EXISTING=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq ".comments[] | select(.body | contains(\"$COMMENT_MARKER\")) | .id" | tail -1)
+        if [ -n "$EXISTING" ]; then
+          gh api repos/${{ github.repository }}/issues/comments/$EXISTING -X PATCH -f body="$BODY"
+        else
+          gh pr comment ${{ github.event.pull_request.number }} --body "$BODY"
+        fi
 
   compose:
     runs-on: ubuntu-latest

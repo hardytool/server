@@ -8,6 +8,9 @@ const path = require('path')
 const MAX_ENTRIES = 100
 const HISTORY_PATH = path.resolve('coverage-history.json')
 const SUMMARY_PATH = path.resolve('coverage', 'coverage-summary.json')
+const BASELINE_PATH = path.resolve(process.env.TRUNK_BASELINE || 'trunk-baseline.json')
+const REPORT_PATH = path.resolve('coverage-report.md')
+const IS_TRUNK = process.env.GITHUB_REF_NAME === 'trunk'
 
 function getCommitSha() {
   try {
@@ -17,11 +20,11 @@ function getCommitSha() {
   }
 }
 
-function readHistory() {
+function readJson(filePath) {
   try {
-    return JSON.parse(fs.readFileSync(HISTORY_PATH, 'utf-8'))
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'))
   } catch {
-    return []
+    return null
   }
 }
 
@@ -35,10 +38,10 @@ function readSummary() {
 }
 
 function formatDelta(current, previous) {
-  if (previous === undefined) return ''
+  if (previous === undefined || previous === null) return '—'
   const delta = current - previous
   const sign = delta >= 0 ? '+' : ''
-  return ` (${sign}${delta.toFixed(1)}%)`
+  return `${sign}${delta.toFixed(1)}%`
 }
 
 // Main
@@ -54,32 +57,38 @@ const entry = {
   functions: total.functions.pct,
 }
 
-const history = readHistory()
-history.push(entry)
+// Read trunk baseline for delta comparison
+const baseline = readJson(BASELINE_PATH)
 
-// Trim to last MAX_ENTRIES
+// Append to branch/trunk history
+const history = readJson(HISTORY_PATH) || []
+history.push(entry)
 const trimmed = history.slice(-MAX_ENTRIES)
 fs.writeFileSync(HISTORY_PATH, JSON.stringify(trimmed, null, 2) + '\n')
 
-// Build summary output
-const prev = history.length >= 2 ? history[history.length - 2] : null
+// On trunk, update the baseline file for future PR comparisons
+if (IS_TRUNK) {
+  fs.writeFileSync(BASELINE_PATH, JSON.stringify(entry, null, 2) + '\n')
+}
 
+// Build report
 const lines = [
   '## Coverage Report',
   '',
-  '| Metric | Coverage | Delta |',
-  '|--------|----------|-------|',
-  `| Lines | ${entry.lines.toFixed(1)}% | ${prev ? formatDelta(entry.lines, prev.lines) : '—'} |`,
-  `| Statements | ${entry.statements.toFixed(1)}% | ${prev ? formatDelta(entry.statements, prev.statements) : '—'} |`,
-  `| Branches | ${entry.branches.toFixed(1)}% | ${prev ? formatDelta(entry.branches, prev.branches) : '—'} |`,
-  `| Functions | ${entry.functions.toFixed(1)}% | ${prev ? formatDelta(entry.functions, prev.functions) : '—'} |`,
+  '| Metric | Coverage | vs trunk |',
+  '|--------|----------|----------|',
+  `| Lines | ${entry.lines.toFixed(1)}% | ${formatDelta(entry.lines, baseline?.lines)} |`,
+  `| Statements | ${entry.statements.toFixed(1)}% | ${formatDelta(entry.statements, baseline?.statements)} |`,
+  `| Branches | ${entry.branches.toFixed(1)}% | ${formatDelta(entry.branches, baseline?.branches)} |`,
+  `| Functions | ${entry.functions.toFixed(1)}% | ${formatDelta(entry.functions, baseline?.functions)} |`,
   '',
 ]
 
 // Recent history table (last 10 runs)
 const recent = trimmed.slice(-10)
 if (recent.length > 1) {
-  lines.push('### Recent Trend (last 10 runs)')
+  lines.push('<details>')
+  lines.push('<summary>Recent trend (last 10 runs)</summary>')
   lines.push('')
   lines.push('| Date | Commit | Lines | Stmts | Branch | Funcs |')
   lines.push('|------|--------|-------|-------|--------|-------|')
@@ -89,6 +98,8 @@ if (recent.length > 1) {
     )
   }
   lines.push('')
+  lines.push('</details>')
+  lines.push('')
 }
 
 const output = lines.join('\n')
@@ -96,9 +107,11 @@ const output = lines.join('\n')
 // Print to console
 console.log(output)
 
+// Write report file for PR comment step
+fs.writeFileSync(REPORT_PATH, output)
+
 // Write to GitHub Actions step summary if available
 const summaryFile = process.env.GITHUB_STEP_SUMMARY
 if (summaryFile) {
   fs.appendFileSync(summaryFile, output + '\n')
-  console.log('Coverage summary written to GitHub Actions step summary.')
 }
