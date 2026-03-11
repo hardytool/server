@@ -4,7 +4,12 @@
   "description": "This is RD2L's backend.",
   "main": "dist/server.js",
   "scripts": {
-    "test": "tsc --noEmit && eslint src",
+    "test": "tsc --noEmit && eslint src && vitest run",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
     "start": "node dist/server.js",
     "build": "tsc",
     "migrate": "node dist/migrate-cli.js",
@@ -42,6 +47,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",
+    "@testcontainers/postgresql": "^11.12.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/express-session": "^1.18.2",
@@ -50,12 +56,17 @@
     "@types/passport": "^1.0.17",
     "@types/pg": "^8.18.0",
     "@types/pug": "^2.0.10",
+    "@types/supertest": "^7.2.0",
     "@typescript-eslint/eslint-plugin": "8.56.0",
     "@typescript-eslint/parser": "8.56.0",
+    "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^10.0.2",
     "globals": "^17.4.0",
+    "supertest": "^7.2.2",
+    "testcontainers": "^11.12.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   },
   "overrides": {
     "axios": "^1.13.5",

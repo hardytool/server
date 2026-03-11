@@ -6,3 +6,4 @@ dist
 .vscode
 .project
 *.sublime-*
+coverage
