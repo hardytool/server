@@ -77,7 +77,7 @@ import apiSeasonsFactory from './api/seasons'
 import apiPlayersFactory from './api/players'
 const apiDivisions = apiDivisionsFactory(division, admin)
 const apiSeasons = apiSeasonsFactory(season)
-const apiPlayers = apiPlayersFactory(season, division, player, player_role, role, steam_user, bot)
+const apiPlayers = apiPlayersFactory(season, division, player, player_role, role)
 
 // Page controllers
 import adminsFactory from './pages/admins'
@@ -207,7 +207,6 @@ app.get(apiSeasons.view.route, apiSeasons.view.handler)
 
 app.get(apiPlayers.list.route, apiPlayers.list.handler)
 app.get(apiPlayers.captains.route, apiPlayers.captains.handler)
-app.post(apiPlayers.refreshMmr.route, apiPlayers.refreshMmr.handler)
 
 app.get(indexPages.home.route, indexPages.home.handler)
 app.get(indexPages.complaint.route, indexPages.complaint.handler)
