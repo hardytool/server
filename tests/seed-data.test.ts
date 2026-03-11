@@ -18,8 +18,9 @@ describe.runIf(isDockerAvailable())('seed data', () => {
     const seasons = await pool.query('SELECT count(*) FROM season')
     expect(Number(seasons.rows[0].count)).toBe(2)
 
+    // 2 from seed + 1 default division from migration 015.sql
     const divisions = await pool.query('SELECT count(*) FROM division')
-    expect(Number(divisions.rows[0].count)).toBe(2)
+    expect(Number(divisions.rows[0].count)).toBe(3)
 
     const steamUsers = await pool.query('SELECT count(*) FROM steam_user')
     expect(Number(steamUsers.rows[0].count)).toBe(40)

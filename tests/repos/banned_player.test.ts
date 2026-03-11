@@ -27,7 +27,7 @@ describe.runIf(isDockerAvailable())('banned_player repo', () => {
     })
 
     it('returns banned players', async () => {
-      await bannedPlayer.saveBannedPlayer({ id: 1, steam_id: 'toxic1', name: 'Toxic Player', reason: 'Being toxic', banned_until: null })
+      await bannedPlayer.saveBannedPlayer({ id: 1, steam_id: 'toxic1', name: 'Toxic Player', reason: 'Being toxic', banned_until: '2030-01-01', still_banned: true })
       const result = await bannedPlayer.getBannedPlayers()
       expect(result).toHaveLength(1)
       expect(result[0].name).toBe('Toxic Player')
@@ -36,7 +36,7 @@ describe.runIf(isDockerAvailable())('banned_player repo', () => {
 
   describe('saveBannedPlayer + deleteBannedPlayer', () => {
     it('creates and deletes a ban', async () => {
-      await bannedPlayer.saveBannedPlayer({ id: 1, steam_id: 'toxic1', name: 'Toxic', reason: 'Bad', banned_until: null })
+      await bannedPlayer.saveBannedPlayer({ id: 1, steam_id: 'toxic1', name: 'Toxic', reason: 'Bad', banned_until: '2030-01-01', still_banned: true })
 
       let result = await bannedPlayer.getBannedPlayers()
       expect(result).toHaveLength(1)

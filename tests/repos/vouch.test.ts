@@ -52,7 +52,7 @@ describe.runIf(isDockerAvailable())('vouch repo', () => {
       await vouch.unvouch('vouchee')
 
       const result = await vouch.isVouched('vouchee')
-      expect(result).toBeUndefined()
+      expect(result).toEqual({ is_vouched: false, voucher_id: null })
     })
   })
 })

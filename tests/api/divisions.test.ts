@@ -54,8 +54,8 @@ describe.runIf(isDockerAvailable())('API: divisions', () => {
 
       const res = await request(app).get('/api/v1/divisions/1')
       expect(res.status).toBe(200)
-      expect(res.body.division.name).toBe('Test Div')
-      expect(res.body.admins).toHaveLength(1)
+      expect(res.body.name).toBe('Test Div')
+      expect(res.body.divisionAdmins).toHaveLength(1)
     })
   })
 })
