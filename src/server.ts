@@ -328,8 +328,23 @@ app.post(bannedPlayerPages.remove.route, bannedPlayerPages.remove.handler)
 
 app.get(ipPages.list.route, ipPages.list.handler)
 
-http.createServer(app).listen(config.server.port, () => {
+const server = http.createServer(app)
+
+server.listen(config.server.port, () => {
   console.log('Listening to HTTP connections on port ' + config.server.port)
 })
+
+function shutdown() {
+  console.log('Shutting down gracefully...')
+  server.close(() => {
+    pool.end(() => {
+      console.log('Shutdown complete')
+      process.exit(0)
+    })
+  })
+}
+
+process.on('SIGTERM', shutdown)
+process.on('SIGINT', shutdown)
 
 // Application end
