@@ -8,10 +8,8 @@ async function getSteamUsers(db: Pool): Promise<SteamUser[]> {
     steam_user.steam_id,
     steam_user.name,
     steam_user.avatar,
-    steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank
+    steam_user.mmr,
+    steam_user.rank_tier
   FROM
     steam_user
   `
@@ -25,10 +23,8 @@ async function getSteamUsersMissingMMR(db: Pool, season_id: number | string): Pr
     steam_user.steam_id,
     steam_user.name,
     steam_user.avatar,
-    steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank
+    steam_user.mmr,
+    steam_user.rank_tier
   FROM
     steam_user
   JOIN player ON
@@ -36,9 +32,7 @@ async function getSteamUsersMissingMMR(db: Pool, season_id: number | string): Pr
   WHERE
     player.season_id = ${season_id}
   AND
-    steam_user.solo_mmr = 0
-  AND
-    steam_user.party_mmr = 0
+    steam_user.mmr = 0
   `
   const result = await db.query(select)
   return result.rows
@@ -50,10 +44,8 @@ async function getNonPlayerSteamUsers(db: Pool, season_id: number | string, divi
     steam_user.steam_id,
     steam_user.name,
     steam_user.avatar,
-    steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank
+    steam_user.mmr,
+    steam_user.rank_tier
   FROM
     steam_user
   WHERE
@@ -83,10 +75,8 @@ async function getSteamUser(db: Pool, steamId: string): Promise<SteamUser | unde
     steam_user.steam_id,
     steam_user.name,
     steam_user.avatar,
-    steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank
+    steam_user.mmr,
+    steam_user.rank_tier
   FROM
     steam_user
   WHERE
@@ -102,35 +92,27 @@ async function saveSteamUser(db: Pool, user: SteamUser): Promise<unknown> {
     steam_id,
     name,
     avatar,
-    solo_mmr,
-    party_mmr,
-    rank,
-    previous_rank
+    mmr,
+    rank_tier
   ) VALUES (
     ${user.steam_id},
     ${user.name},
     ${user.avatar},
-    ${user.solo_mmr},
-    ${user.party_mmr},
-    ${user.rank},
-    ${user.previous_rank}
+    ${user.mmr},
+    ${user.rank_tier}
   )
   ON CONFLICT (
     steam_id
   ) DO UPDATE SET (
     name,
     avatar,
-    solo_mmr,
-    party_mmr,
-    rank,
-    previous_rank
+    mmr,
+    rank_tier
   ) = (
     ${user.name},
     ${user.avatar},
-    ${user.solo_mmr},
-    ${user.party_mmr},
-    ${user.rank},
-    ${user.previous_rank}
+    ${user.mmr},
+    ${user.rank_tier}
   )
   `
   return db.query(upsert)

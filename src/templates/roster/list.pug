@@ -54,7 +54,7 @@ block content
                     a(href='/profile/' + captain.steam_id)
                       strong= captain.name
                   div.column
-                    img.image.rank.is-48x48(src=`/assets/medals/${captain.rank}.png` alt=captain.rank)
+                    img.image.rank.is-48x48(src=`/assets/medals/${captain.rank_tier}.png` alt=captain.rank_tier)
                   div.column
                     if user && user.isAdmin
                       nav.level.is-mobile
@@ -89,7 +89,7 @@ block content
                 figure.image.is-roster.hide-overflow
                   img(src=player.avatar)
               td
-                img.image.rank.is-48x48(src=`/assets/medals/${player.rank}.png` alt=player.rank)
+                img.image.rank.is-48x48(src=`/assets/medals/${player.rank_tier}.png` alt=player.rank_tier)
               if user && user.isAdmin
                 td
                   form

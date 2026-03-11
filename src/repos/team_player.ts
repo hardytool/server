@@ -9,14 +9,12 @@ async function getUnassignedPlayers(db: Pool, season_id: number | string, divisi
     steam_user.steam_id,
     steam_user.avatar,
     COALESCE(profile.name, steam_user.name) AS name,
-    steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank,
+    steam_user.mmr,
+    steam_user.rank_tier,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr
-      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
+      ELSE steam_user.mmr
     END AS adjusted_mmr
   FROM
     player
@@ -50,14 +48,12 @@ async function getRoster(db: Pool, team_id: number | string): Promise<TeamPlayer
     steam_user.steam_id,
     COALESCE(profile.name, steam_user.name) AS name,
     steam_user.avatar,
-    steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank,
+    steam_user.mmr,
+    steam_user.rank_tier,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr
-      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
+      ELSE steam_user.mmr
     END AS adjusted_mmr,
     team_player.is_captain
   FROM
@@ -74,8 +70,7 @@ async function getRoster(db: Pool, team_id: number | string): Promise<TeamPlayer
     team.id = ${team_id}
   ORDER BY
     adjusted_mmr DESC,
-    steam_user.solo_mmr DESC,
-    steam_user.party_mmr DESC,
+    steam_user.mmr DESC,
     steam_user.name ASC
   `
   const result = await db.query(select)

@@ -31,7 +31,7 @@ async function view(
     const vouchResult = await vouch.isVouched(_profile.steam_id)
     const teamsPlayed = await team_player.getPlayerTeams(_profile.steam_id)
     const voucher = vouchResult?.voucher_id ? await profile.getProfile(vouchResult.voucher_id) : null
-    const description = `RD2L Player ${_profile.name}\nCurrent Rank: ${_profile.rank}\nPlayed on team(s): ${teamsPlayed.map(x => x.name).join(', ')}.`
+    const description = `RD2L Player ${_profile.name}\nMMR: ${_profile.draft_mmr}\nPlayed on team(s): ${teamsPlayed.map(x => x.name).join(', ')}.`
     const html = templates.profile.view({
       description, user: req.user, profile: profileWithId64,
       active_season, vouched: vouchResult?.is_vouched ?? false, voucher,

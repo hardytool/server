@@ -64,6 +64,8 @@ const vouch = vouchRepo(pool)
 import * as steamId from './lib/steamId'
 import authFactory from './lib/auth'
 const auth = authFactory(admin, steam_user, profile, steamId)
+import createDotaBot from './lib/dota-bot'
+const bot = createDotaBot(config.server)
 
 // Auth controller
 import openidFactory from './api/openid'
@@ -75,7 +77,7 @@ import apiSeasonsFactory from './api/seasons'
 import apiPlayersFactory from './api/players'
 const apiDivisions = apiDivisionsFactory(division, admin)
 const apiSeasons = apiSeasonsFactory(season)
-const apiPlayers = apiPlayersFactory(season, division, player, player_role, role)
+const apiPlayers = apiPlayersFactory(season, division, player, player_role, role, steam_user, bot)
 
 // Page controllers
 import adminsFactory from './pages/admins'
@@ -107,7 +109,7 @@ const playerPages = playersFactory(templates, season, division, player, player_r
 const playoffSeriesPages = playoffSeriesFactory(templates, season, team, series, pairings)
 const profilePages = profileFactory(templates, steam_user, profile, season, team_player, vouch, steamId, player)
 const registrationPages = registrationFactory(
-  templates, season, division, steam_user, team_player, player, role, player_role, profile)
+  templates, season, division, steam_user, team_player, player, role, player_role, profile, bot)
 const rosterPages = rosterFactory(templates, season, division, team, team_player, series)
 const rolePages = rolesFactory(templates, role)
 const seasonPages = seasonsFactory(templates, season, division)
@@ -205,6 +207,7 @@ app.get(apiSeasons.view.route, apiSeasons.view.handler)
 
 app.get(apiPlayers.list.route, apiPlayers.list.handler)
 app.get(apiPlayers.captains.route, apiPlayers.captains.handler)
+app.post(apiPlayers.refreshMmr.route, apiPlayers.refreshMmr.handler)
 
 app.get(indexPages.home.route, indexPages.home.handler)
 app.get(indexPages.complaint.route, indexPages.complaint.handler)

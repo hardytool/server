@@ -16,22 +16,13 @@ block content
           input(type='hidden' name='season_id' value=season.id)
           input(type='hidden' name='division_id' value=division.id)
           input(type='hidden' name='adjusted_mmr' value=0)
-          input(type='hidden' name='party_mmr' value=0)
-          input(type='hidden' name='solo_mmr' value=0)
+          input(type='hidden' name='mmr' value=0)
           if player
             input(type='hidden' name='id' value=player.id)
           div.field
             label.label(for='name') Name:
             p.control
               input.input#name(type='text' value=player.name disabled)
-          div.field
-            label.label(for='rank') Rank:
-            p.control
-              input.input#rank(type='text' value=steamUser.rank disabled)
-          div.field
-            label.label(for='previous_rank') Previous Rank:
-            p.control
-              input.input#previous_rank(type='text' value=steamUser.previous_rank disabled)
           div.field
             label.label(for='mmr_screenshot') MMR Screenshot:
             p.help Public match data must be exposed for signups.

@@ -123,8 +123,7 @@ async function post(player: PlayerRepo, steam_user: SteamUserRepo, req: Request,
     await player.savePlayer(p)
     const steamUser = await steam_user.getSteamUser(p.steam_id)
     if (steamUser) {
-      steamUser.party_mmr = req.body.party_mmr
-      steamUser.solo_mmr = req.body.solo_mmr
+      steamUser.mmr = Number(req.body.mmr)
       await steam_user.saveSteamUser(steamUser)
     }
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/players')

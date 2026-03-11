@@ -13,15 +13,13 @@ async function getProfile(db: Pool, steamId: string): Promise<Profile | undefine
     profile.faceit_name as faceit_name,
     profile.discord_name as discord_name,
     profile.theme,
-    steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank,
+    steam_user.mmr,
+    steam_user.rank_tier,
     COALESCE(profile.adjusted_mmr, 0) as adjusted_mmr,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr
-      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
+      ELSE steam_user.mmr
     END AS draft_mmr,
     COALESCE(profile.name_locked, false) AS name_locked,
     CASE

@@ -3,6 +3,8 @@ import type { Request, Response } from 'express'
 import type { Templates } from '../types/templates'
 import type { SeasonRepo, DivisionRepo, SteamUserRepo, TeamPlayerRepo, PlayerRepo, RoleRepo, PlayerRoleRepo, ProfileRepo, ProfileInput } from '../types/repos'
 import type { RouteDefinition } from '../types/routes'
+import type { DotaBot } from '../lib/dota-bot'
+import * as steamId from '../lib/steamId'
 
 async function view(
   templates: Templates, season: SeasonRepo, division: DivisionRepo,
@@ -64,10 +66,7 @@ async function view(
     await steam_user.saveSteamUser(steamUser)
     const p = (await profile.getProfile(steamUser.steam_id) || {}) as Record<string, unknown>
     p.name = p.name || steamUser.name
-    p.adjusted_mmr = p.adjusted_mmr
-      || (steamUser.solo_mmr > steamUser.party_mmr
-        ? steamUser.solo_mmr
-        : steamUser.party_mmr)
+    p.adjusted_mmr = p.adjusted_mmr || steamUser.mmr
     p.is_draftable = p.is_draftable === undefined ? true : p.is_draftable
     const html = templates.registration.edit({
       user: req.user,
@@ -174,6 +173,7 @@ async function post(
   templates: Templates, season: SeasonRepo, division: DivisionRepo,
   steam_user: SteamUserRepo, team_player: TeamPlayerRepo, player: PlayerRepo,
   role: RoleRepo, player_role: PlayerRoleRepo, profile: ProfileRepo,
+  bot: DotaBot | null,
   req: Request, res: Response
 ): Promise<void> {
   if (!req.user) { res.sendStatus(403); return }
@@ -196,8 +196,7 @@ async function post(
     }
     const steamUser = await steam_user.getSteamUser(req.user.steamId)
     if (!steamUser) { res.sendStatus(404); return }
-    steamUser.solo_mmr = p.solo_mmr
-    steamUser.party_mmr = p.party_mmr
+    steamUser.mmr = Number(p.mmr) || steamUser.mmr
     const _profile = await profile.getProfile(steamUser.steam_id)
     if (!_profile) { res.sendStatus(404); return }
     _profile.discord_name = req.body.discord_name
@@ -236,6 +235,18 @@ async function post(
       return acc
     }, [])
     await Promise.all(promises)
+    if (bot) {
+      const accountId = String(steamId.from64to32(steamUser.steam_id))
+      bot.fetchProfileCard(accountId).then(async (card) => {
+        if (card) {
+          steamUser.mmr = card.mmr || steamUser.mmr
+          steamUser.rank_tier = card.rank_tier || steamUser.rank_tier
+          await steam_user.saveSteamUser(steamUser)
+        }
+      }).catch((err) => {
+        console.error('Dota bot: failed to fetch profile card after registration:', err)
+      })
+    }
     const html = templates.registration.discord({
       user: req.user,
       season: s,
@@ -273,14 +284,15 @@ async function unregister(
 export = function(
   templates: Templates, season: SeasonRepo, division: DivisionRepo,
   steam_user: SteamUserRepo, team_player: TeamPlayerRepo, player: PlayerRepo,
-  role: RoleRepo, player_role: PlayerRoleRepo, profile: ProfileRepo
+  role: RoleRepo, player_role: PlayerRoleRepo, profile: ProfileRepo,
+  bot: DotaBot | null
 ): Record<string, RouteDefinition> {
   return {
     view:              { route: '/seasons/:season_id/divisions/:division_id/register', handler: view.bind(null, templates, season, division, steam_user, player, role, player_role, profile) },
     shortcut:          { route: '/divisions/:division_id/register',                   handler: shortcut.bind(null, templates, season, division, steam_user, player, role, player_role, profile) },
     directory:         { route: '/seasons/:season_id/register',                       handler: directory.bind(null, templates, season, division, steam_user, player) },
     directoryShortcut: { route: '/register',                                          handler: directoryShortcut.bind(null, templates, season, division, steam_user, player) },
-    post:              { route: '/register',                                          handler: post.bind(null, templates, season, division, steam_user, team_player, player, role, player_role, profile) },
+    post:              { route: '/register',                                          handler: post.bind(null, templates, season, division, steam_user, team_player, player, role, player_role, profile, bot) },
     unregister:        { route: '/register/delete',                                   handler: unregister.bind(null, season, division, steam_user, player) }
   }
 }

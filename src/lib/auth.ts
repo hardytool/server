@@ -42,10 +42,8 @@ async function createUser(
     steam_id: id,
     name,
     avatar,
-    solo_mmr: existingUser?.solo_mmr ?? 0,
-    party_mmr: existingUser?.party_mmr ?? 0,
-    rank: existingUser?.rank ?? 0,
-    previous_rank: existingUser?.previous_rank ?? 0,
+    mmr: existingUser?.mmr ?? 0,
+    rank_tier: existingUser?.rank_tier ?? 0,
   }
 
   await steam_user.saveSteamUser(user)

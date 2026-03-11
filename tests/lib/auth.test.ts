@@ -80,7 +80,7 @@ describe('auth', () => {
         mocks: { getSteamUser: undefined, getAdmins: [] },
         assertions: (admin: AdminRepo, steamUser: SteamUserRepo) => {
           expect(admin.saveAdmin).toHaveBeenCalledWith({ steam_id: '117939789', group_id: '_' })
-          expect(steamUser.saveSteamUser).toHaveBeenCalledWith(expect.objectContaining({ solo_mmr: 0, party_mmr: 0 }))
+          expect(steamUser.saveSteamUser).toHaveBeenCalledWith(expect.objectContaining({ mmr: 0, rank_tier: 0 }))
         },
       },
       {
@@ -93,15 +93,13 @@ describe('auth', () => {
       {
         name: 'existing user preserves MMR values',
         mocks: {
-          getSteamUser: { steam_id: '117939789', name: 'Old', avatar: 'old.jpg', solo_mmr: 3000, party_mmr: 2500, rank: 5, previous_rank: 4 },
+          getSteamUser: { steam_id: '117939789', name: 'Old', avatar: 'old.jpg', mmr: 3000, rank_tier: 50 },
           getAdmins: [{ steam_id: 'admin' }],
         },
         assertions: (_admin: AdminRepo, steamUser: SteamUserRepo) => {
           expect(steamUser.saveSteamUser).toHaveBeenCalledWith(expect.objectContaining({
-            solo_mmr: 3000,
-            party_mmr: 2500,
-            rank: 5,
-            previous_rank: 4,
+            mmr: 3000,
+            rank_tier: 50,
           }))
         },
       },
