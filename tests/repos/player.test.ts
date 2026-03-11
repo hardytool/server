@@ -24,8 +24,8 @@ describe.runIf(isDockerAvailable())('player repo', () => {
     const pool = getPool()
     const s = await insertSeason(pool, { id: 1, number: 1, name: 'S1', active: true })
     const d = await insertDivision(pool, { id: 1, name: 'D1' })
-    const u1 = await insertSteamUser(pool, { steam_id: 'p1', name: 'Alice', solo_mmr: 4000, party_mmr: 3500, rank: 6 })
-    const u2 = await insertSteamUser(pool, { steam_id: 'p2', name: 'Bob', solo_mmr: 3000, party_mmr: 2500, rank: 4 })
+    const u1 = await insertSteamUser(pool, { steam_id: 'p1', name: 'Alice', mmr: 4000, rank_tier: 60 })
+    const u2 = await insertSteamUser(pool, { steam_id: 'p2', name: 'Bob', mmr: 3000, rank_tier: 40 })
     return { pool, s, d, u1, u2 }
   }
 

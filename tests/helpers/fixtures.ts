@@ -52,15 +52,13 @@ export async function insertSteamUser(pool: pg.Pool, overrides?: Record<string, 
     steam_id: id,
     name: `Player ${id}`,
     avatar: '',
-    solo_mmr: 3000,
-    party_mmr: 2500,
-    rank: 5,
-    previous_rank: 4,
+    mmr: 3000,
+    rank_tier: 50,
   }
   const u = { ...defaults, ...overrides }
   await pool.query(
-    'INSERT INTO steam_user (steam_id, name, avatar, solo_mmr, party_mmr, rank, previous_rank) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (steam_id) DO NOTHING',
-    [u.steam_id, u.name, u.avatar, u.solo_mmr, u.party_mmr, u.rank, u.previous_rank]
+    'INSERT INTO steam_user (steam_id, name, avatar, mmr, rank_tier) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (steam_id) DO NOTHING',
+    [u.steam_id, u.name, u.avatar, u.mmr, u.rank_tier]
   )
   return u
 }
