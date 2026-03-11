@@ -66,12 +66,13 @@ jobs:
       run: |
         COMMENT_MARKER="<!-- coverage-report -->"
         BODY="$(cat coverage-report.md)"$'\n'"$COMMENT_MARKER"
-        COMMENT_IDS=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq "[.comments[] | select(.body | contains(\"$COMMENT_MARKER\")) | .id]")
-        COUNT=$(echo "$COMMENT_IDS" | jq 'length')
+        COMMENT_IDS=$(gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments --paginate --jq "[.[] | select(.body | contains(\"$COMMENT_MARKER\")) | .id]")
+        COUNT=$(echo "$COMMENT_IDS" | jq -s 'add | length')
+        IDS=$(echo "$COMMENT_IDS" | jq -s 'add')
         if [ "$COUNT" -gt 0 ]; then
-          KEEP=$(echo "$COMMENT_IDS" | jq '.[-1]')
+          KEEP=$(echo "$IDS" | jq '.[-1]')
           gh api repos/${{ github.repository }}/issues/comments/$KEEP -X PATCH -f body="$BODY"
-          for STALE in $(echo "$COMMENT_IDS" | jq -r ".[] | select(. != $KEEP)"); do
+          for STALE in $(echo "$IDS" | jq -r ".[] | select(. != $KEEP)"); do
             gh api repos/${{ github.repository }}/issues/comments/$STALE -X DELETE
           done
         else
