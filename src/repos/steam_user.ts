@@ -9,9 +9,7 @@ async function getSteamUsers(db: Pool): Promise<SteamUser[]> {
     steam_user.name,
     steam_user.avatar,
     steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank
+    steam_user.party_mmr
   FROM
     steam_user
   `
@@ -26,9 +24,7 @@ async function getSteamUsersMissingMMR(db: Pool, season_id: number | string): Pr
     steam_user.name,
     steam_user.avatar,
     steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank
+    steam_user.party_mmr
   FROM
     steam_user
   JOIN player ON
@@ -51,9 +47,7 @@ async function getNonPlayerSteamUsers(db: Pool, season_id: number | string, divi
     steam_user.name,
     steam_user.avatar,
     steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank
+    steam_user.party_mmr
   FROM
     steam_user
   WHERE
@@ -84,9 +78,7 @@ async function getSteamUser(db: Pool, steamId: string): Promise<SteamUser | unde
     steam_user.name,
     steam_user.avatar,
     steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank
+    steam_user.party_mmr
   FROM
     steam_user
   WHERE
@@ -103,17 +95,13 @@ async function saveSteamUser(db: Pool, user: SteamUser): Promise<unknown> {
     name,
     avatar,
     solo_mmr,
-    party_mmr,
-    rank,
-    previous_rank
+    party_mmr
   ) VALUES (
     ${user.steam_id},
     ${user.name},
     ${user.avatar},
     ${user.solo_mmr},
-    ${user.party_mmr},
-    ${user.rank},
-    ${user.previous_rank}
+    ${user.party_mmr}
   )
   ON CONFLICT (
     steam_id
@@ -121,16 +109,12 @@ async function saveSteamUser(db: Pool, user: SteamUser): Promise<unknown> {
     name,
     avatar,
     solo_mmr,
-    party_mmr,
-    rank,
-    previous_rank
+    party_mmr
   ) = (
     ${user.name},
     ${user.avatar},
     ${user.solo_mmr},
-    ${user.party_mmr},
-    ${user.rank},
-    ${user.previous_rank}
+    ${user.party_mmr}
   )
   `
   return db.query(upsert)

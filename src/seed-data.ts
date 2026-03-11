@@ -24,15 +24,12 @@ const DIVISIONS = [
 const STEAM_USERS = Array.from({ length: 40 }, (_, i) => {
   const n = i + 1
   const mmr = 1000 + (i % 8) * 500   // 1000, 1500, 2000, … 4500 cycling
-  const rank = Math.min(8, Math.ceil(mmr / 700))
   return {
     steam_id:      `765611980000${String(n).padStart(4, '0')}`,
     name:          `SeedPlayer${String(n).padStart(2, '0')}`,
     avatar:        '',
     solo_mmr:      mmr,
     party_mmr:     mmr - 100,
-    rank,
-    previous_rank: rank,
   }
 })
 

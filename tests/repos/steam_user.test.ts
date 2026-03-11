@@ -55,8 +55,8 @@ describe.runIf(isDockerAvailable())('steam_user repo', () => {
 
   describe('saveSteamUser', () => {
     it('upserts a steam user', async () => {
-      await steamUser.saveSteamUser({ steam_id: 'u1', name: 'Original', avatar: '', solo_mmr: 1000, party_mmr: 900, rank: 2, previous_rank: 1 })
-      await steamUser.saveSteamUser({ steam_id: 'u1', name: 'Updated', avatar: 'new.jpg', solo_mmr: 2000, party_mmr: 1800, rank: 3, previous_rank: 2 })
+      await steamUser.saveSteamUser({ steam_id: 'u1', name: 'Original', avatar: '', solo_mmr: 1000, party_mmr: 900 })
+      await steamUser.saveSteamUser({ steam_id: 'u1', name: 'Updated', avatar: 'new.jpg', solo_mmr: 2000, party_mmr: 1800 })
 
       const result = await steamUser.getSteamUser('u1')
       expect(result!.name).toBe('Updated')

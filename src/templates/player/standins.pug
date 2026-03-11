@@ -57,7 +57,6 @@ block content
             th #
             th Name
             th Avatar
-            th Rank
             th Dotabuff&nbsp;/ Opendota
             th Statement
             if user && user.isAdmin
@@ -76,8 +75,6 @@ block content
               td
                 figure.image.is-32x32.hide-overflow
                   img(src=player.avatar)
-              td
-                img.image.rank.is-32x32(src=`/assets/medals/${player.rank}.png` alt=player.rank)
               td
                 a(href='https://www.dotabuff.com/players/' + player.steam_id) Dotabuff
                 span

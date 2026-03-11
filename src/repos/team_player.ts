@@ -11,8 +11,6 @@ async function getUnassignedPlayers(db: Pool, season_id: number | string, divisi
     COALESCE(profile.name, steam_user.name) AS name,
     steam_user.solo_mmr,
     steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr
@@ -52,8 +50,6 @@ async function getRoster(db: Pool, team_id: number | string): Promise<TeamPlayer
     steam_user.avatar,
     steam_user.solo_mmr,
     steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr

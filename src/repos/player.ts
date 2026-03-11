@@ -28,15 +28,8 @@ async function getPlayers(db: Pool, criteria?: FullPlayerCriteria, sort?: Player
       THEN profile.adjusted_mmr
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
     END AS adjusted_mmr,
-    CASE
-      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
-      THEN steam_user.rank
-      ELSE GREATEST(steam_user.rank)
-    END AS adjusted_rank,
     steam_user.solo_mmr,
     steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank,
     has_played.has_played,
     is_vouched.is_vouched
   FROM
@@ -178,7 +171,7 @@ async function getPlayers(db: Pool, criteria?: FullPlayerCriteria, sort?: Player
     if (sort.by_mmr) {
       orderBy = sql`
       ORDER BY
-        adjusted_rank DESC,
+        adjusted_mmr DESC,
         name ASC
       `
     } else if (sort.by_name) {
@@ -190,7 +183,7 @@ async function getPlayers(db: Pool, criteria?: FullPlayerCriteria, sort?: Player
     } else if (sort.by_reverse_mmr) {
       orderBy = sql`
       ORDER BY
-        adjusted_rank ASC,
+        adjusted_mmr ASC,
         name ASC
       `
     }
@@ -225,9 +218,7 @@ async function getPlayer(db: Pool, id: number | string): Promise<PlayerRow | und
       ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
     END AS adjusted_mmr,
     steam_user.solo_mmr,
-    steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank
+    steam_user.party_mmr
   FROM
     player
   JOIN steam_user ON
@@ -324,7 +315,6 @@ async function getDraftSheet(db: Pool, criteria?: FullPlayerCriteria, sort?: Pla
   SELECT
     player.id,
     COALESCE(profile.name, steam_user.name) AS name,
-    steam_user.rank AS rank,
     CASE
       WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
       THEN profile.adjusted_mmr
