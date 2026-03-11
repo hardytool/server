@@ -66,9 +66,14 @@ jobs:
       run: |
         COMMENT_MARKER="<!-- coverage-report -->"
         BODY="$(cat coverage-report.md)"$'\n'"$COMMENT_MARKER"
-        EXISTING=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq ".comments[] | select(.body | contains(\"$COMMENT_MARKER\")) | .id" | tail -1)
-        if [ -n "$EXISTING" ]; then
-          gh api repos/${{ github.repository }}/issues/comments/$EXISTING -X PATCH -f body="$BODY"
+        COMMENT_IDS=$(gh pr view ${{ github.event.pull_request.number }} --json comments --jq "[.comments[] | select(.body | contains(\"$COMMENT_MARKER\")) | .id]")
+        COUNT=$(echo "$COMMENT_IDS" | jq 'length')
+        if [ "$COUNT" -gt 0 ]; then
+          KEEP=$(echo "$COMMENT_IDS" | jq '.[-1]')
+          gh api repos/${{ github.repository }}/issues/comments/$KEEP -X PATCH -f body="$BODY"
+          for STALE in $(echo "$COMMENT_IDS" | jq -r ".[] | select(. != $KEEP)"); do
+            gh api repos/${{ github.repository }}/issues/comments/$STALE -X DELETE
+          done
         else
           gh pr comment ${{ github.event.pull_request.number }} --body "$BODY"
         fi
