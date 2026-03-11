@@ -8,6 +8,8 @@
     "test:unit": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
     "start": "node dist/server.js",
     "build": "tsc",
     "migrate": "node dist/migrate-cli.js",
