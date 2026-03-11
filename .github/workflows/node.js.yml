@@ -4,6 +4,7 @@
 name: Node.js CI
 permissions:
   contents: read
+  pull-requests: write
 
 on:
   push:
@@ -18,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      with:
+        fetch-depth: 0
     - name: Use Node.js latest
       uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
       with:
@@ -31,6 +34,50 @@ jobs:
       run: npm run lint
     - name: Tests with coverage
       run: npm run test:coverage
+    - name: Restore trunk coverage baseline
+      uses: actions/cache/restore@v4
+      with:
+        path: trunk-baseline.json
+        key: trunk-baseline-
+        restore-keys: trunk-baseline-
+    - name: Restore coverage history
+      uses: actions/cache@v4
+      with:
+        path: coverage-history.json
+        key: coverage-history-${{ github.ref_name }}-${{ github.sha }}
+        restore-keys: |
+          coverage-history-${{ github.ref_name }}-
+          coverage-history-trunk-
+    - name: Update coverage trend
+      run: npm run test:update-trend
+      env:
+        TRUNK_BASELINE: trunk-baseline.json
+        GITHUB_REF_NAME: ${{ github.ref_name }}
+    - name: Save trunk baseline
+      if: github.ref_name == 'trunk'
+      uses: actions/cache/save@v4
+      with:
+        path: trunk-baseline.json
+        key: trunk-baseline-${{ github.sha }}
+    - name: Comment on PR
+      if: github.event_name == 'pull_request'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        COMMENT_MARKER="<!-- coverage-report -->"
+        BODY="$(cat coverage-report.md)"$'\n'"$COMMENT_MARKER"
+        COMMENT_IDS=$(gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments --paginate --jq "[.[] | select(.body | contains(\"$COMMENT_MARKER\")) | .id]")
+        COUNT=$(echo "$COMMENT_IDS" | jq -s 'add | length')
+        IDS=$(echo "$COMMENT_IDS" | jq -s 'add')
+        if [ "$COUNT" -gt 0 ]; then
+          KEEP=$(echo "$IDS" | jq '.[-1]')
+          gh api repos/${{ github.repository }}/issues/comments/$KEEP -X PATCH -f body="$BODY"
+          for STALE in $(echo "$IDS" | jq -r ".[] | select(. != $KEEP)"); do
+            gh api repos/${{ github.repository }}/issues/comments/$STALE -X DELETE
+          done
+        else
+          gh pr comment ${{ github.event.pull_request.number }} --body "$BODY"
+        fi
 
   compose:
     runs-on: ubuntu-latest
