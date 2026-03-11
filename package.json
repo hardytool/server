@@ -8,7 +8,6 @@
     "test:unit": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:diff-coverage": "node scripts/check-diff-coverage.js",
     "test:update-trend": "node scripts/update-coverage-trend.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
