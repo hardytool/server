@@ -6,6 +6,7 @@ export default defineConfig({
     testTimeout: 30000,
     coverage: {
       provider: 'v8',
+      reporter: ['text', 'json', 'json-summary'],
       include: [
         'src/lib/**/*.ts',
         'src/repos/**/*.ts',
