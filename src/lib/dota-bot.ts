@@ -13,6 +13,7 @@ export interface ProfileCardResult {
 export interface DotaBot {
   fetchProfileCard(accountId: string): Promise<ProfileCardResult | null>
   isConnected(): boolean
+  disconnect(): void
 }
 
 interface QueueItem {
@@ -119,9 +120,17 @@ function createDotaBot(config: ServerConfig): DotaBot | null {
     })
   }
 
+  function disconnect(): void {
+    connected = false
+    queue.length = 0
+    steam.logOff()
+    console.log('Dota bot: logged off')
+  }
+
   return {
     fetchProfileCard,
     isConnected: () => connected,
+    disconnect,
   }
 }
 

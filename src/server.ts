@@ -336,6 +336,7 @@ server.listen(config.server.port, () => {
 
 function shutdown() {
   console.log('Shutting down gracefully...')
+  if (bot) bot.disconnect()
   server.close(() => {
     pool.end(() => {
       console.log('Shutdown complete')
