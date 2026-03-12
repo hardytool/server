@@ -54,10 +54,10 @@ async function createUser(
 
   if (dota) {
     try {
-      const rankTier = await dota.fetchMedal(id)
-      if (rankTier !== null && rankTier !== user.rank) {
-        user.previous_rank = user.rank
-        user.rank = rankTier
+      const medal = await dota.fetchMedal(id)
+      if (medal !== null) {
+        user.previous_rank = medal.previousRankTier ?? user.rank
+        user.rank = medal.rankTier
         await steam_user.saveSteamUser(user)
       }
     } catch (err) {

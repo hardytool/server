@@ -2,6 +2,12 @@ import SteamUser from 'steam-user'
 import { Dota2User } from 'dota2-user'
 import { EDOTAGCMsg } from 'dota2-user/protobufs'
 import type { CMsgDOTAProfileCard } from 'dota2-user/protobufs/generated/dota_gcmessages_common'
+import { CMsgDOTAProfileCard_EStatID } from 'dota2-user/protobufs/generated/dota_gcmessages_common'
+
+interface MedalResult {
+  rankTier: number
+  previousRankTier: number | null
+}
 
 interface DotaConfig {
   username: string
@@ -54,19 +60,25 @@ function createDota(config: DotaConfig) {
     })
   }
 
-  function fetchMedal(accountId32: string): Promise<number | null> {
+  function fetchMedal(accountId32: string): Promise<MedalResult | null> {
     if (!connected) {
       return Promise.resolve(null)
     }
 
     const timeout = createTimeout(5000)
 
-    const result = new Promise<number | null>((resolve) => {
+    const result = new Promise<MedalResult | null>((resolve) => {
       dota2.router.once(
         EDOTAGCMsg.k_EMsgClientToGCGetProfileCardResponse,
         (data: CMsgDOTAProfileCard) => {
           timeout.cancel()
-          resolve(data.rankTier)
+          const prevSlot = data.slots.find(
+            s => s.stat?.statId === CMsgDOTAProfileCard_EStatID.k_eStat_PreviousSeasonRank
+          )
+          resolve({
+            rankTier: data.rankTier,
+            previousRankTier: prevSlot?.stat?.statScore ?? null,
+          })
         },
       )
 

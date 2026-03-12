@@ -46,7 +46,11 @@ vi.mock('dota2-user/protobufs', () => ({
   },
 }))
 
-vi.mock('dota2-user/protobufs/generated/dota_gcmessages_common', () => ({}))
+vi.mock('dota2-user/protobufs/generated/dota_gcmessages_common', () => ({
+  CMsgDOTAProfileCard_EStatID: {
+    k_eStat_PreviousSeasonRank: 7,
+  },
+}))
 
 vi.spyOn(console, 'log').mockImplementation(() => {})
 vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -91,7 +95,7 @@ describe('dota', () => {
       expect(result).toBeNull()
     })
 
-    it('sends GC message and returns rank tier', async () => {
+    it('sends GC message and returns rank tier with previous rank', async () => {
       const dota = createDota({ username: 'bot', password: 'pass' })
 
       const connectPromise = dota.connect()
@@ -103,10 +107,34 @@ describe('dota', () => {
 
       expect(lastDota2Client.send).toHaveBeenCalledWith(7534, { accountId: 12345 })
 
-      lastDota2Client.router.emit(7535, { rankTier: 53 })
+      lastDota2Client.router.emit(7535, {
+        rankTier: 53,
+        slots: [
+          { stat: { statId: 7, statScore: 42 } },
+        ],
+      })
 
       const result = await medalPromise
-      expect(result).toBe(53)
+      expect(result).toEqual({ rankTier: 53, previousRankTier: 42 })
+    })
+
+    it('returns null previousRankTier when slot is missing', async () => {
+      const dota = createDota({ username: 'bot', password: 'pass' })
+
+      const connectPromise = dota.connect()
+      lastSteamClient.emit('loggedOn')
+      lastDota2Client.emit('connectedToGC')
+      await connectPromise
+
+      const medalPromise = dota.fetchMedal('12345')
+
+      lastDota2Client.router.emit(7535, {
+        rankTier: 53,
+        slots: [],
+      })
+
+      const result = await medalPromise
+      expect(result).toEqual({ rankTier: 53, previousRankTier: null })
     })
 
     it('returns null on timeout', async () => {

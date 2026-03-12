@@ -230,10 +230,10 @@ async function post(
     await steam_user.saveSteamUser(steamUser)
     if (dota) {
       try {
-        const rankTier = await dota.fetchMedal(steamUser.steam_id)
-        if (rankTier !== null && rankTier !== steamUser.rank) {
-          steamUser.previous_rank = steamUser.rank
-          steamUser.rank = rankTier
+        const medal = await dota.fetchMedal(steamUser.steam_id)
+        if (medal !== null) {
+          steamUser.previous_rank = medal.previousRankTier ?? steamUser.rank
+          steamUser.rank = medal.rankTier
           await steam_user.saveSteamUser(steamUser)
         }
       } catch (err) {
