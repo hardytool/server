@@ -230,7 +230,6 @@ async function post(
     try {
       const medal = await getMedal(steamUser.steam_id)
       if (medal > 0) {
-        steamUser.previous_rank = steamUser.rank
         steamUser.rank = medal
         await steam_user.saveSteamUser(steamUser)
       }

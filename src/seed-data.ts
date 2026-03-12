@@ -32,7 +32,6 @@ const STEAM_USERS = Array.from({ length: 40 }, (_, i) => {
     solo_mmr:      mmr,
     party_mmr:     mmr - 100,
     rank,
-    previous_rank: rank,
   }
 })
 

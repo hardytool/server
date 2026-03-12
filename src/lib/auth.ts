@@ -40,11 +40,9 @@ async function createUser(
   }
 
   let rank = existingUser?.rank ?? 0
-  let previous_rank = existingUser?.previous_rank ?? 0
   try {
     const medal = await getMedal(id)
     if (medal > 0) {
-      previous_rank = rank
       rank = medal
     }
   } catch {
@@ -58,7 +56,6 @@ async function createUser(
     solo_mmr: existingUser?.solo_mmr ?? 0,
     party_mmr: existingUser?.party_mmr ?? 0,
     rank,
-    previous_rank,
   }
 
   await steam_user.saveSteamUser(user)

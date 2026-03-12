@@ -46,7 +46,6 @@ export interface SteamUser {
   solo_mmr: number
   party_mmr: number
   rank: number
-  previous_rank: number
 }
 
 // ---- Profile ---------------------------------------------------------------
@@ -94,7 +93,6 @@ export interface PlayerRow extends Player {
   solo_mmr: number
   party_mmr: number
   rank: number
-  previous_rank: number
   discord_name: string | null
   has_played?: boolean
   is_vouched?: boolean
@@ -160,7 +158,6 @@ export interface TeamPlayer {
   solo_mmr: number
   party_mmr: number
   rank: number
-  previous_rank: number
   adjusted_mmr: number
   is_captain: boolean
 }
@@ -186,7 +183,6 @@ export interface UnassignedPlayer {
   solo_mmr: number
   party_mmr: number
   rank: number
-  previous_rank: number
   adjusted_mmr: number
 }
 

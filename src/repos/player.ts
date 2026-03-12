@@ -36,7 +36,6 @@ async function getPlayers(db: Pool, criteria?: FullPlayerCriteria, sort?: Player
     steam_user.solo_mmr,
     steam_user.party_mmr,
     steam_user.rank,
-    steam_user.previous_rank,
     has_played.has_played,
     is_vouched.is_vouched
   FROM
@@ -226,8 +225,7 @@ async function getPlayer(db: Pool, id: number | string): Promise<PlayerRow | und
     END AS adjusted_mmr,
     steam_user.solo_mmr,
     steam_user.party_mmr,
-    steam_user.rank,
-    steam_user.previous_rank
+    steam_user.rank
   FROM
     player
   JOIN steam_user ON

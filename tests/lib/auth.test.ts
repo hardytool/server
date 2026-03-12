@@ -93,7 +93,7 @@ describe('auth', () => {
       {
         name: 'existing user preserves MMR values',
         mocks: {
-          getSteamUser: { steam_id: '117939789', name: 'Old', avatar: 'old.jpg', solo_mmr: 3000, party_mmr: 2500, rank: 5, previous_rank: 4 },
+          getSteamUser: { steam_id: '117939789', name: 'Old', avatar: 'old.jpg', solo_mmr: 3000, party_mmr: 2500, rank: 5 },
           getAdmins: [{ steam_id: 'admin' }],
         },
         assertions: (_admin: AdminRepo, steamUser: SteamUserRepo) => {
@@ -101,7 +101,6 @@ describe('auth', () => {
             solo_mmr: 3000,
             party_mmr: 2500,
             rank: 5,
-            previous_rank: 4,
           }))
         },
       },
