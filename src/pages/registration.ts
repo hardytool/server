@@ -3,6 +3,7 @@ import type { Request, Response } from 'express'
 import type { Templates } from '../types/templates'
 import type { SeasonRepo, DivisionRepo, SteamUserRepo, TeamPlayerRepo, PlayerRepo, RoleRepo, PlayerRoleRepo, ProfileRepo, ProfileInput } from '../types/repos'
 import type { RouteDefinition } from '../types/routes'
+import { getMedal } from '../lib/opendota'
 
 async function view(
   templates: Templates, season: SeasonRepo, division: DivisionRepo,
@@ -226,6 +227,16 @@ async function post(
       p.activity_check = true
     }
     await steam_user.saveSteamUser(steamUser)
+    try {
+      const medal = await getMedal(steamUser.steam_id)
+      if (medal > 0) {
+        steamUser.previous_rank = steamUser.rank
+        steamUser.rank = medal
+        await steam_user.saveSteamUser(steamUser)
+      }
+    } catch {
+      // OpenDota unavailable — keep existing rank
+    }
     await player.savePlayer(p)
     await profile.saveProfile(_profile as unknown as ProfileInput)
     const roles = await role.getRoles()

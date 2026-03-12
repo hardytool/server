@@ -2,6 +2,7 @@ import type { SteamProfile } from 'passport-steam'
 import type { SteamUser } from '../types/db'
 import type { AdminRepo, ProfileRepo, ProfileInput, SteamUserRepo } from '../types/repos'
 import type { from64to32, from32to64 } from './steamId'
+import { getMedal } from './opendota'
 
 type SteamIdLib = {
   from64to32: typeof from64to32
@@ -38,14 +39,26 @@ async function createUser(
     }
   }
 
+  let rank = existingUser?.rank ?? 0
+  let previous_rank = existingUser?.previous_rank ?? 0
+  try {
+    const medal = await getMedal(id)
+    if (medal > 0) {
+      previous_rank = rank
+      rank = medal
+    }
+  } catch {
+    // OpenDota unavailable — keep existing rank
+  }
+
   const user: SteamUser = {
     steam_id: id,
     name,
     avatar,
     solo_mmr: existingUser?.solo_mmr ?? 0,
     party_mmr: existingUser?.party_mmr ?? 0,
-    rank: existingUser?.rank ?? 0,
-    previous_rank: existingUser?.previous_rank ?? 0,
+    rank,
+    previous_rank,
   }
 
   await steam_user.saveSteamUser(user)
