@@ -2,6 +2,7 @@ import type { SteamProfile } from 'passport-steam'
 import type { SteamUser } from '../types/db'
 import type { AdminRepo, ProfileRepo, ProfileInput, SteamUserRepo } from '../types/repos'
 import type { from64to32, from32to64 } from './steamId'
+import type { DotaClient } from '../types/dota'
 
 type SteamIdLib = {
   from64to32: typeof from64to32
@@ -17,6 +18,7 @@ async function createUser(
   admin: AdminRepo,
   profile: ProfileRepo,
   steamId: SteamIdLib,
+  dota: DotaClient | null,
   user_profile: SteamProfile
 ): Promise<SteamUser> {
   const id = steamId.from64to32(user_profile.id).toString()
@@ -49,6 +51,19 @@ async function createUser(
   }
 
   await steam_user.saveSteamUser(user)
+
+  if (dota) {
+    try {
+      const rankTier = await dota.fetchMedal(id)
+      if (rankTier !== null && rankTier !== user.rank) {
+        user.previous_rank = user.rank
+        user.rank = rankTier
+        await steam_user.saveSteamUser(user)
+      }
+    } catch (err) {
+      console.error('Failed to fetch medal for user', id, err)
+    }
+  }
 
   const _profile = await profile.getProfile(user.steam_id)
   const profileData: ProfileInput = {
@@ -92,10 +107,11 @@ function createAuth(
   admin: AdminRepo,
   steam_user: SteamUserRepo,
   profile: ProfileRepo,
-  steamId: SteamIdLib
+  steamId: SteamIdLib,
+  dota: DotaClient | null = null
 ) {
   return {
-    createUser: createUser.bind(null, steam_user, admin, profile, steamId),
+    createUser: createUser.bind(null, steam_user, admin, profile, steamId, dota),
     inflateUser: inflateUser.bind(null, admin, profile, steamId),
     getAvatar,
   }

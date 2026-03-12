@@ -62,8 +62,20 @@ const vouch = vouchRepo(pool)
 
 // lib
 import * as steamId from './lib/steamId'
+import createDota from './lib/dota'
+import type { DotaClient } from './types/dota'
+let dota: DotaClient | null = null
+if (config.server.steam_bot_username && config.server.steam_bot_password) {
+  dota = createDota({
+    username: config.server.steam_bot_username,
+    password: config.server.steam_bot_password,
+  })
+  dota.connect().catch((err: unknown) => {
+    console.error('Failed to connect Dota 2 GC bot:', err)
+  })
+}
 import authFactory from './lib/auth'
-const auth = authFactory(admin, steam_user, profile, steamId)
+const auth = authFactory(admin, steam_user, profile, steamId, dota)
 
 // Auth controller
 import openidFactory from './api/openid'
@@ -107,7 +119,7 @@ const playerPages = playersFactory(templates, season, division, player, player_r
 const playoffSeriesPages = playoffSeriesFactory(templates, season, team, series, pairings)
 const profilePages = profileFactory(templates, steam_user, profile, season, team_player, vouch, steamId, player)
 const registrationPages = registrationFactory(
-  templates, season, division, steam_user, team_player, player, role, player_role, profile)
+  templates, season, division, steam_user, team_player, player, role, player_role, profile, dota)
 const rosterPages = rosterFactory(templates, season, division, team, team_player, series)
 const rolePages = rolesFactory(templates, role)
 const seasonPages = seasonsFactory(templates, season, division)
@@ -329,5 +341,14 @@ app.get(ipPages.list.route, ipPages.list.handler)
 http.createServer(app).listen(config.server.port, () => {
   console.log('Listening to HTTP connections on port ' + config.server.port)
 })
+
+function shutdown() {
+  if (dota) {
+    dota.disconnect()
+  }
+  process.exit(0)
+}
+process.on('SIGTERM', shutdown)
+process.on('SIGINT', shutdown)
 
 // Application end

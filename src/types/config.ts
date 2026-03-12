@@ -9,6 +9,8 @@ export interface ServerConfig {
   steam_api_key: string
   website_url: string | false
   secret: string
+  steam_bot_username: string | false
+  steam_bot_password: string | false
 }
 
 export interface DbConfig {

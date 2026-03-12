@@ -3,6 +3,7 @@ import type { Request, Response } from 'express'
 import type { Templates } from '../types/templates'
 import type { SeasonRepo, DivisionRepo, SteamUserRepo, TeamPlayerRepo, PlayerRepo, RoleRepo, PlayerRoleRepo, ProfileRepo, ProfileInput } from '../types/repos'
 import type { RouteDefinition } from '../types/routes'
+import type { DotaClient } from '../types/dota'
 
 async function view(
   templates: Templates, season: SeasonRepo, division: DivisionRepo,
@@ -174,6 +175,7 @@ async function post(
   templates: Templates, season: SeasonRepo, division: DivisionRepo,
   steam_user: SteamUserRepo, team_player: TeamPlayerRepo, player: PlayerRepo,
   role: RoleRepo, player_role: PlayerRoleRepo, profile: ProfileRepo,
+  dota: DotaClient | null,
   req: Request, res: Response
 ): Promise<void> {
   if (!req.user) { res.sendStatus(403); return }
@@ -226,6 +228,18 @@ async function post(
       p.activity_check = true
     }
     await steam_user.saveSteamUser(steamUser)
+    if (dota) {
+      try {
+        const rankTier = await dota.fetchMedal(steamUser.steam_id)
+        if (rankTier !== null && rankTier !== steamUser.rank) {
+          steamUser.previous_rank = steamUser.rank
+          steamUser.rank = rankTier
+          await steam_user.saveSteamUser(steamUser)
+        }
+      } catch (err) {
+        console.error('Failed to fetch medal during registration', err)
+      }
+    }
     await player.savePlayer(p)
     await profile.saveProfile(_profile as unknown as ProfileInput)
     const roles = await role.getRoles()
@@ -273,14 +287,15 @@ async function unregister(
 export = function(
   templates: Templates, season: SeasonRepo, division: DivisionRepo,
   steam_user: SteamUserRepo, team_player: TeamPlayerRepo, player: PlayerRepo,
-  role: RoleRepo, player_role: PlayerRoleRepo, profile: ProfileRepo
+  role: RoleRepo, player_role: PlayerRoleRepo, profile: ProfileRepo,
+  dota: DotaClient | null = null
 ): Record<string, RouteDefinition> {
   return {
     view:              { route: '/seasons/:season_id/divisions/:division_id/register', handler: view.bind(null, templates, season, division, steam_user, player, role, player_role, profile) },
     shortcut:          { route: '/divisions/:division_id/register',                   handler: shortcut.bind(null, templates, season, division, steam_user, player, role, player_role, profile) },
     directory:         { route: '/seasons/:season_id/register',                       handler: directory.bind(null, templates, season, division, steam_user, player) },
     directoryShortcut: { route: '/register',                                          handler: directoryShortcut.bind(null, templates, season, division, steam_user, player) },
-    post:              { route: '/register',                                          handler: post.bind(null, templates, season, division, steam_user, team_player, player, role, player_role, profile) },
+    post:              { route: '/register',                                          handler: post.bind(null, templates, season, division, steam_user, team_player, player, role, player_role, profile, dota) },
     unregister:        { route: '/register/delete',                                   handler: unregister.bind(null, season, division, steam_user, player) }
   }
 }

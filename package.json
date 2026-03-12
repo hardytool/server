@@ -30,6 +30,7 @@
     "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.7",
     "csrf-csrf": "^4.0.3",
+    "dota2-user": "^2.1.1",
     "edmonds-blossom": "^1.0.0",
     "express": "^5.0.0",
     "express-session": "^1.19.0",
@@ -44,6 +45,7 @@
     "pg-sql": "^1.1.0",
     "pug": "^3.0.3",
     "pug-tree": "^1.0.4",
+    "steam-user": "^5.3.0",
     "swiss-pairing": "^1.4.3"
   },
   "devDependencies": {

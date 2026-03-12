@@ -16,6 +16,8 @@ function config(): Config {
       steam_api_key: requireEnv('STEAM_API_KEY'),
       website_url: (!process.env.WEBSITE_URL) ? false : ('//' + process.env.WEBSITE_URL),
       secret: requireEnv('SECRET'),
+      steam_bot_username: process.env.STEAM_BOT_USERNAME || false,
+      steam_bot_password: process.env.STEAM_BOT_PASSWORD || false,
     },
     db: {
       user: process.env.POSTGRES_USER || process.env.PGUSER || false,

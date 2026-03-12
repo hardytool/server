@@ -116,3 +116,29 @@ declare module 'markdown-it-classy' {
   export = plugin
 }
 
+declare module 'steam-user' {
+  import { EventEmitter } from 'events'
+
+  interface LogOnDetails {
+    anonymous?: boolean
+    refreshToken?: string
+    accountName?: string
+    password?: string
+    authCode?: string
+    twoFactorCode?: string
+    logonID?: number
+    machineName?: string
+    clientOS?: number
+  }
+
+  class SteamUser extends EventEmitter {
+    steamID: unknown
+    logOn(details?: LogOnDetails): void
+    logOff(): void
+    gamesPlayed(apps: number | number[]): void
+    setPersona(state: number): void
+  }
+
+  export = SteamUser
+}
+
