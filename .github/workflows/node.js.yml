@@ -35,13 +35,13 @@ jobs:
     - name: Tests with coverage
       run: npm run test:coverage
     - name: Restore trunk coverage baseline
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: trunk-baseline.json
         key: trunk-baseline-
         restore-keys: trunk-baseline-
     - name: Restore coverage history
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: coverage-history.json
         key: coverage-history-${{ github.ref_name }}-${{ github.sha }}
@@ -55,7 +55,7 @@ jobs:
         GITHUB_REF_NAME: ${{ github.ref_name }}
     - name: Save trunk baseline
       if: github.ref_name == 'trunk'
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@v5
       with:
         path: trunk-baseline.json
         key: trunk-baseline-${{ github.sha }}
