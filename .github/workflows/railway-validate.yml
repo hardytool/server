@@ -21,6 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-    - uses: sourcemeta/jsonschema@4ec76f672eee4ba0e066d92ad1dd76ae079195e8
+    - uses: sourcemeta/jsonschema@6393abde8a2927f74a90f18f433b6ef427553adc
     - name: Validate railway.json against schema
       run: jsonschema metaschema railway.json --verbose --http
