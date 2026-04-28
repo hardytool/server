@@ -72,12 +72,17 @@ block content
         each _series in series
           tr
             td= _series.round
-            td
-              a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.home.id)= _series.home.name
-            td
-              figure.image.is-team-logo.hide-overflow
-                img(src=_series.home.logo)
-            td= _series.home.points
+            if _series.home
+              td
+                a(href='/seasons/' + season.id + '/divisions/' + division.id + '/teams/' + _series.home.id)= _series.home.name
+              td
+                figure.image.is-team-logo.hide-overflow
+                  img(src=_series.home.logo)
+              td= _series.home.points
+            else
+              td BYE
+              td BYE
+              td 0
             if _series.away
               td= _series.away.points
               td
