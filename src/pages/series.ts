@@ -110,6 +110,10 @@ async function post(series: SeriesRepo, req: Request, res: Response): Promise<vo
   s.id = id
   if (s.home_team_id === '') s.home_team_id = null
   if (s.away_team_id === '') s.away_team_id = null
+  if (s.home_team_id === null && s.away_team_id === null) {
+    res.status(400).send('A series must have at least one team — both teams cannot be BYE.')
+    return
+  }
   if (!s.match_1_url) s.match_1_url = null
   if (!s.match_2_url) s.match_2_url = null
   const forfeit1 = s.match_1_forfeit_home
