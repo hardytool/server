@@ -10,10 +10,12 @@ block content
         span.icon.is-medium
           i.fa.fa-edit
         span #{verb} Playoff Series #{series ? ' - Round ' + series.round + ' - ' + (series.home ? series.home.name : 'Undecided') + ' v ' + (series.away ? series.away.name : 'Undecided') : ''}
+      if error
+        div.notification.is-danger= error
       div
         form(method='post' action='/playoff-series/edit')
           input(type='hidden' name="_csrf" value=csrfToken)
-          if series.id
+          if verb === 'Edit'
             input(type='hidden' name='id' value=series.id)
           input(type='hidden' name='season_id' value=season.id)
           div.field
@@ -72,6 +74,6 @@ block content
           div.field.is-grouped
             p.control
               button.button.is-primary Submit
-            if series.id
+            if verb === 'Edit'
               p.control
                 button.button.is-danger(formaction='/playoff-series/delete') Delete

@@ -105,7 +105,11 @@ async function add(
   }
 }
 
-async function post(team_player: TeamPlayerRepo, req: Request, res: Response): Promise<void> {
+async function post(
+  templates: Templates, season: SeasonRepo, division: DivisionRepo,
+  team: TeamRepo, team_player: TeamPlayerRepo,
+  req: Request, res: Response
+): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const season_id = req.body.season_id
   const division_id = req.body.division_id
@@ -117,7 +121,26 @@ async function post(team_player: TeamPlayerRepo, req: Request, res: Response): P
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/teams/' + team_id)
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    try {
+      const s = await season.getSeason(season_id)
+      const d = await division.getDivision(division_id)
+      const t = await team.getTeam(team_id)
+      const players = await team_player.getUnassignedPlayers(s.id, d.id)
+      const html = templates.roster.edit({
+        verb: 'Add',
+        user: req.user,
+        season: s,
+        division: d,
+        team: t,
+        players,
+        csrfToken: req.csrfToken?.(),
+        error: err instanceof Error ? err.message : 'Failed to add player to roster'
+      })
+      res.status(400).send(html)
+    } catch (renderErr) {
+      console.error(renderErr)
+      res.sendStatus(500)
+    }
   }
 }
 
@@ -143,7 +166,7 @@ export = function(
   return {
     list:   { route: '/seasons/:season_id/divisions/:division_id/teams/:team_id',      handler: list.bind(null, templates, season, division, team, team_player, series) },
     add:    { route: '/seasons/:season_id/divisions/:division_id/teams/:team_id/add',  handler: add.bind(null, templates, season, division, team, team_player) },
-    post:   { route: '/roster/edit',                                                   handler: post.bind(null, team_player) },
+    post:   { route: '/roster/edit',                                                   handler: post.bind(null, templates, season, division, team, team_player) },
     remove: { route: '/roster/delete',                                                 handler: remove.bind(null, team_player) }
   }
 }

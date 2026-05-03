@@ -244,7 +244,34 @@ async function post(
     res.send(html)
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    try {
+      const s = await season.getSeason(season_id)
+      const d = await division.getDivision(division_id)
+      const steamUser = await steam_user.getSteamUser(req.user.steamId)
+      if (!steamUser) { res.sendStatus(500); return }
+      const roles = await role.getRoles()
+      const ranks = roles.reduce<Record<string, number>>((acc, r) => {
+        if (p[r.id] !== undefined) {
+          acc[r.id] = Number(p[r.id])
+        }
+        return acc
+      }, {})
+      const html = templates.registration.edit({
+        user: req.user,
+        steamUser,
+        season: s,
+        division: d,
+        player: p,
+        roles,
+        ranks,
+        csrfToken: req.csrfToken?.(),
+        error: err instanceof Error ? err.message : 'Failed to register'
+      })
+      res.status(400).send(html)
+    } catch (renderErr) {
+      console.error(renderErr)
+      res.sendStatus(500)
+    }
   }
 }
 

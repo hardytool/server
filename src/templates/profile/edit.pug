@@ -10,6 +10,8 @@ block content
         span.icon.is-medium
           i.fa.fa-pencil
         span Edit #{steamUser.name}
+      if error
+        div.notification.is-danger= error
       div
         if !profile || (profile && !profile.name_locked) || user.isAdmin
           form(method='post' action='/profile/edit')

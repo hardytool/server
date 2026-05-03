@@ -64,10 +64,14 @@ async function edit(
   }
 }
 
-async function post(team: TeamRepo, req: Request, res: Response): Promise<void> {
+async function post(
+  templates: Templates, season: SeasonRepo, division: DivisionRepo, team: TeamRepo,
+  req: Request, res: Response
+): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const season_id = req.body.season_id
   const division_id = req.body.division_id
+  const verb = req.body.id ? 'Edit' : 'Create'
   const id = req.body.id ? req.body.id : nanoid()
   const t = req.body
   t.id = id
@@ -78,7 +82,23 @@ async function post(team: TeamRepo, req: Request, res: Response): Promise<void> 
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/teams/' + t.id)
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    try {
+      const s = await season.getSeason(season_id)
+      const d = await division.getDivision(division_id)
+      const html = templates.team.edit({
+        user: req.user,
+        verb,
+        team: t,
+        season: s,
+        division: d,
+        csrfToken: req.csrfToken?.(),
+        error: err instanceof Error ? err.message : 'Failed to save team'
+      })
+      res.status(400).send(html)
+    } catch (renderErr) {
+      console.error(renderErr)
+      res.sendStatus(500)
+    }
   }
 }
 
@@ -154,7 +174,7 @@ export = function(
     list:        { route: '/seasons/:season_id/divisions/:division_id/teams',         handler: list.bind(null, templates, season, division, team) },
     create:      { route: '/seasons/:season_id/divisions/:division_id/teams/create',  handler: create.bind(null, templates, season, division) },
     edit:        { route: '/seasons/:season_id/divisions/:division_id/teams/:id/edit', handler: edit.bind(null, templates, season, division, team) },
-    post:        { route: '/teams/edit',                                              handler: post.bind(null, team) },
+    post:        { route: '/teams/edit',                                              handler: post.bind(null, templates, season, division, team) },
     remove:      { route: '/teams/delete',                                            handler: remove.bind(null, team) },
     json:        { route: '/teams/json',                                              handler: json.bind(null, team, season, team_player) },
     importTeams: { route: '/seasons/:season_id/divisions/:division_id/teams/import',  handler: importTeams.bind(null, team, season, division, player) }
