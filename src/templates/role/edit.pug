@@ -10,10 +10,12 @@ block content
         span.icon.is-medium
           i.fas.fa-edit
         span #{verb} Role #{role ? role.name : ''}
+      if error
+        div.notification.is-danger= error
       div
         form(method='post' action='/roles/edit')
           input(type='hidden' name="_csrf" value=csrfToken)
-          if role
+          if verb === 'Edit'
             input(type='hidden' name='id' value=role.id)
           div.field
             label.label(for='name') Name:
@@ -22,6 +24,6 @@ block content
           div.field.is-grouped
             p.control
               button.button.is-primary Submit
-            if role
+            if verb === 'Edit'
               p.control
                 button.button.is-danger(formaction='/roles/delete') Delete

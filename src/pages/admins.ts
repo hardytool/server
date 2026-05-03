@@ -60,11 +60,15 @@ async function edit(templates: Templates, admin: AdminRepo, division: DivisionRe
   }
 }
 
-async function post(admin: AdminRepo, req: Request, res: Response): Promise<void> {
+async function post(
+  templates: Templates, admin: AdminRepo, division: DivisionRepo, admin_group: AdminGroupRepo,
+  req: Request, res: Response
+): Promise<void> {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
     return
   }
+  const verb = req.body._verb === 'Edit' ? 'Edit' : 'Create'
   if (req.body.division_id === '') {
     req.body.division_id = null
   }
@@ -73,7 +77,23 @@ async function post(admin: AdminRepo, req: Request, res: Response): Promise<void
     res.redirect('/admins')
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    try {
+      const divisions = await division.getDivisions()
+      const admin_groups = await admin_group.getAdminGroups()
+      const html = templates.admin.edit({
+        user: req.user,
+        verb,
+        admin: req.body,
+        divisions,
+        admin_groups,
+        csrfToken: req.csrfToken?.(),
+        error: err instanceof Error ? err.message : 'Failed to save admin'
+      })
+      res.status(400).send(html)
+    } catch (renderErr) {
+      console.error(renderErr)
+      res.sendStatus(500)
+    }
   }
 }
 
@@ -96,7 +116,7 @@ export = function(templates: Templates, admin: AdminRepo, division: DivisionRepo
     create: { route: '/admins/create',         handler: create.bind(null, templates, division, admin_group) },
     list:   { route: '/admins',                handler: list.bind(null, templates, admin) },
     edit:   { route: '/admins/:admin_id/edit', handler: edit.bind(null, templates, admin, division, admin_group) },
-    post:   { route: '/admins/edit',           handler: post.bind(null, admin) },
+    post:   { route: '/admins/edit',           handler: post.bind(null, templates, admin, division, admin_group) },
     remove: { route: '/admins/delete',         handler: remove.bind(null, admin) }
   }
 }

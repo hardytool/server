@@ -109,10 +109,15 @@ async function edit(templates: Templates, season: SeasonRepo, division: Division
   }
 }
 
-async function post(player: PlayerRepo, steam_user: SteamUserRepo, req: Request, res: Response): Promise<void> {
+async function post(
+  templates: Templates, season: SeasonRepo, division: DivisionRepo,
+  player: PlayerRepo, steam_user: SteamUserRepo,
+  req: Request, res: Response
+): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const season_id = req.body.season_id
   const division_id = req.body.division_id
+  const verb = req.body.id ? 'Edit' : 'Create'
   const id = req.body.id ? req.body.id : nanoid()
   const p = req.body
   p.id = id
@@ -130,7 +135,27 @@ async function post(player: PlayerRepo, steam_user: SteamUserRepo, req: Request,
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/players')
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    try {
+      const s = await season.getSeason(season_id)
+      const divisions = await division.getDivisions()
+      const d = await division.getDivision(division_id)
+      const steamUsers = verb === 'Edit' ? [] : await steam_user.getNonPlayerSteamUsers(s.id, division_id)
+      const html = templates.player.edit({
+        user: req.user,
+        verb,
+        player: p,
+        season: s,
+        division: d,
+        divisions,
+        steamUsers,
+        csrfToken: req.csrfToken?.(),
+        error: err instanceof Error ? err.message : 'Failed to save player'
+      })
+      res.status(400).send(html)
+    } catch (renderErr) {
+      console.error(renderErr)
+      res.sendStatus(500)
+    }
   }
 }
 
@@ -227,7 +252,7 @@ export = function(templates: Templates, season: SeasonRepo, division: DivisionRe
     standins:           { route: '/seasons/:season_id/divisions/:division_id/stand-ins',            handler: standins.bind(null, templates, season, division, player) },
     create:             { route: '/seasons/:season_id/divisions/:division_id/players/create',       handler: create.bind(null, templates, season, division, steam_user) },
     edit:               { route: '/seasons/:season_id/divisions/:division_id/players/:id/edit',     handler: edit.bind(null, templates, season, division, player, steam_user) },
-    post:               { route: '/players/edit',                                                   handler: post.bind(null, player, steam_user) },
+    post:               { route: '/players/edit',                                                   handler: post.bind(null, templates, season, division, player, steam_user) },
     remove:             { route: '/players/delete',                                                 handler: remove.bind(null, player) },
     csv:                { route: '/seasons/:season_id/divisions/:division_id/draftsheet',           handler: getCSV.bind(null, player, player_role, role, division) },
     activityCheck:      { route: '/players/activityCheck',                                          handler: activityCheck.bind(null, player, season) },

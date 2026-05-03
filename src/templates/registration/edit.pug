@@ -10,6 +10,8 @@ block content
         span.icon.is-medium
           i.far.fa-check-square
         span #{season.name} #{division.name} Registration
+      if error
+        div.notification.is-danger= error
       div
         form(method='post' action='/register')
           input(type='hidden' name="_csrf" value=csrfToken)

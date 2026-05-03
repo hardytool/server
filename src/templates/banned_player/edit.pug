@@ -10,10 +10,12 @@ block content
         span.icon.is-medium
           i.fas.fa-edit
         span #{verb} Banned Player #{banned_players ? banned_players.name : ''}
+      if error
+        div.notification.is-danger= error
       div
         form(method='post' action='/banned_players/edit')
           input(type='hidden' name="_csrf" value=csrfToken)
-          if banned_players
+          if verb === 'Edit'
             input(type='hidden' name='id' value=banned_players.id)
           div.field
             label.label(for='steam_id') Steam ID:
@@ -42,6 +44,6 @@ block content
           div.field.is-grouped
             p.control
               button.button.is-primary Submit
-            if banned_players
+            if verb === 'Edit'
               p.control
                 button.button.is-danger(formaction='/banned_players/delete') Delete

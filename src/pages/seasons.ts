@@ -48,8 +48,9 @@ async function start(_templates: Templates, season: SeasonRepo, division: Divisi
   }
 }
 
-async function post(season: SeasonRepo, req: Request, res: Response): Promise<void> {
+async function post(templates: Templates, season: SeasonRepo, req: Request, res: Response): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
+  const verb = req.body.id ? 'Edit' : 'Create'
   const s = req.body
   const id = s.id ? s.id : nanoid()
   s.id = id
@@ -61,7 +62,14 @@ async function post(season: SeasonRepo, req: Request, res: Response): Promise<vo
     res.redirect('/seasons')
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    const html = templates.season.edit({
+      user: req.user,
+      verb,
+      season: s,
+      csrfToken: req.csrfToken?.(),
+      error: err instanceof Error ? err.message : 'Failed to save season'
+    })
+    res.status(400).send(html)
   }
 }
 
@@ -81,7 +89,7 @@ export = function(templates: Templates, season: SeasonRepo, division: DivisionRe
     list:   { route: '/seasons',          handler: list.bind(null, templates, season) },
     create: { route: '/seasons/create',   handler: create.bind(null, templates) },
     edit:   { route: '/seasons/:id/edit', handler: edit.bind(null, templates, season) },
-    post:   { route: '/seasons/edit',     handler: post.bind(null, season) },
+    post:   { route: '/seasons/edit',     handler: post.bind(null, templates, season) },
     remove: { route: '/seasons/delete',   handler: remove.bind(null, season) },
     start:  { route: '/seasons/:id/start', handler: start.bind(null, templates, season, division) }
   }

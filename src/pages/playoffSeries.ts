@@ -52,9 +52,13 @@ async function edit(templates: Templates, _season: SeasonRepo, _team: TeamRepo, 
   res.send(html)
 }
 
-async function post(_series: SeriesRepo, _team: TeamRepo, req: Request, res: Response): Promise<void> {
+async function post(
+  templates: Templates, _season: SeasonRepo, _series: SeriesRepo, _team: TeamRepo,
+  req: Request, res: Response
+): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const season_id = req.body.season_id
+  const verb = req.body.id ? 'Edit' : 'Create'
   const id = req.body.id ? req.body.id : nanoid()
   const series = req.body
   series.id = id
@@ -71,7 +75,26 @@ async function post(_series: SeriesRepo, _team: TeamRepo, req: Request, res: Res
     res.redirect('/bracket?season=' + season_id)
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    try {
+      const season = await _season.getSeason(season_id)
+      const teams = await _team.getTeams(season.id)
+      const seriesForView = { ...series } as Record<string, unknown>
+      seriesForView.home = { id: series.home_team_id, points: series.home_points }
+      seriesForView.away = { id: series.away_team_id, points: series.away_points }
+      const html = templates.playoffSeries.edit({
+        user: req.user,
+        verb,
+        season,
+        teams,
+        series: seriesForView,
+        csrfToken: req.csrfToken?.(),
+        error: err instanceof Error ? err.message : 'Failed to save playoff series'
+      })
+      res.status(400).send(html)
+    } catch (renderErr) {
+      console.error(renderErr)
+      res.sendStatus(500)
+    }
   }
 }
 
@@ -128,7 +151,7 @@ export = function(templates: Templates, season: SeasonRepo, team: TeamRepo, seri
     list:    { route: '/seasons/:season_id/playoff-series',          handler: list.bind(null, templates, season, series) },
     create:  { route: '/seasons/:season_id/playoff-series/create',   handler: create.bind(null, templates, season, team) },
     edit:    { route: '/seasons/:season_id/playoff-series/:id/edit', handler: edit.bind(null, templates, season, team, series) },
-    post:    { route: '/playoff-series/edit',                        handler: post.bind(null, series, team) },
+    post:    { route: '/playoff-series/edit',                        handler: post.bind(null, templates, season, series, team) },
     remove:  { route: '/playoff-series/delete',                      handler: remove.bind(null, series) },
     bracket: { route: '/bracket',                                    handler: bracket.bind(null, templates, season, team, series, pairings) }
   }

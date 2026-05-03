@@ -10,10 +10,12 @@ block content
         span.icon.is-medium
           i.fas.fa-edit
         span #{verb} Admin Group #{selected_admin_group ? selected_admin_group.name : ''}
+      if error
+        div.notification.is-danger= error
       div
         form(method='post' action='/admin_groups/edit')
           input(type='hidden' name="_csrf" value=csrfToken)
-          if selected_admin_group
+          if verb === 'Edit'
             input(type='hidden' name='id' value=selected_admin_group.id)
           div.field
             label.label(for='name') Name:
@@ -21,21 +23,14 @@ block content
               input.input(id='name' type='text' name='name' placeholder='Name' value=(selected_admin_group ? selected_admin_group.name : '') required)
           div.field
             label.label(for='selected_admin_group.owner_id') Owner ID:
-            if selected_admin_group
-              p.control
-                select.form-control.input-lg(name='owner_id')
-                  option(value='', selected= true) No Owner
-                  each admin_group in admin_groups
-                    option(value=admin_group.id, selected= admin_group.id == selected_admin_group.owner_id) #{admin_group.name}
-            else
-              p.control
-                select.form-control.input-lg(name='owner_id')
-                  option(value='', selected= true) No Owner
-                  each admin_group in admin_groups
-                    option(value=admin_group.id) #{admin_group.name}
+            p.control
+              select.form-control.input-lg(name='owner_id')
+                option(value='', selected= !selected_admin_group || !selected_admin_group.owner_id) No Owner
+                each admin_group in admin_groups
+                  option(value=admin_group.id, selected= selected_admin_group && admin_group.id == selected_admin_group.owner_id) #{admin_group.name}
           div.field.is-grouped
             p.control
               button.button.is-primary Submit
-            if selected_admin_group
+            if verb === 'Edit'
               p.control
                 button.button.is-danger(formaction='/admin_groups/delete') Delete

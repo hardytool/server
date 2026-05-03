@@ -65,7 +65,7 @@ async function edit(templates: Templates, steam_user: SteamUserRepo, profile: Pr
   }
 }
 
-async function post(steam_user: SteamUserRepo, profile: ProfileRepo, req: Request, res: Response): Promise<void> {
+async function post(templates: Templates, steam_user: SteamUserRepo, profile: ProfileRepo, req: Request, res: Response): Promise<void> {
   if (!req.user) { res.sendStatus(403); return }
   const p = {
     steam_id: req.body.steam_id,
@@ -76,6 +76,7 @@ async function post(steam_user: SteamUserRepo, profile: ProfileRepo, req: Reques
     name_locked: req.body.name_locked === 'on',
     theme: req.body.theme
   }
+  const themes = ['default', 'darkly', 'pulse', 'superhero', 'solar']
   try {
     const steamUser = await steam_user.getSteamUser(p.steam_id)
     if (!steamUser) { res.sendStatus(404); return }
@@ -92,7 +93,22 @@ async function post(steam_user: SteamUserRepo, profile: ProfileRepo, req: Reques
     res.redirect('/profile/' + p.steam_id)
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    try {
+      const steamUser = await steam_user.getSteamUser(p.steam_id)
+      if (!steamUser) { res.sendStatus(500); return }
+      const html = templates.profile.edit({
+        user: req.user,
+        steamUser,
+        profile: p,
+        themes,
+        csrfToken: req.csrfToken?.(),
+        error: err instanceof Error ? err.message : 'Failed to save profile'
+      })
+      res.status(400).send(html)
+    } catch (renderErr) {
+      console.error(renderErr)
+      res.sendStatus(500)
+    }
   }
 }
 
@@ -155,7 +171,7 @@ export = function(
   return {
     view:    { route: '/profile/:steam_id',         handler: view.bind(null, templates, steam_user, profile, season, _vouch, team_player, steamId, player) },
     edit:    { route: '/profile/:steam_id/edit',    handler: edit.bind(null, templates, steam_user, profile) },
-    post:    { route: '/profile/edit',              handler: post.bind(null, steam_user, profile) },
+    post:    { route: '/profile/edit',              handler: post.bind(null, templates, steam_user, profile) },
     vouch:   { route: '/profile/:steam_id/vouch',   handler: vouch.bind(null, templates, steam_user, profile, team_player) },
     confirm: { route: '/profile/:steam_id/confirm', handler: confirm.bind(null, steam_user, profile, _vouch, team_player) },
     unvouch: { route: '/profile/:steam_id/unvouch', handler: unvouch.bind(null, profile, _vouch) }

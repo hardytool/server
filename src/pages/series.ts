@@ -101,19 +101,19 @@ async function edit(
   }
 }
 
-async function post(series: SeriesRepo, req: Request, res: Response): Promise<void> {
+async function post(
+  templates: Templates, season: SeasonRepo, team: TeamRepo, division: DivisionRepo, series: SeriesRepo,
+  req: Request, res: Response
+): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const season_id = req.body.season_id
   const division_id = req.body.division_id
+  const verb = req.body.id ? 'Edit' : 'Create'
   const id = req.body.id ? req.body.id : nanoid()
   const s = req.body
   s.id = id
   if (s.home_team_id === '') s.home_team_id = null
   if (s.away_team_id === '') s.away_team_id = null
-  if (s.home_team_id === null && s.away_team_id === null) {
-    res.status(400).send('A series must have at least one team — both teams cannot be BYE.')
-    return
-  }
   if (!s.match_1_url) s.match_1_url = null
   if (!s.match_2_url) s.match_2_url = null
   const forfeit1 = s.match_1_forfeit_home
@@ -121,12 +121,40 @@ async function post(series: SeriesRepo, req: Request, res: Response): Promise<vo
   s.match_1_forfeit_home = forfeit1 === 'home' ? true : forfeit1 === 'away' ? false : null
   s.match_2_forfeit_home = forfeit2 === 'home' ? true : forfeit2 === 'away' ? false : null
   if (!s.is_playoff) s.is_playoff = false
+  const renderError = async (message: string): Promise<void> => {
+    try {
+      const seasonRow = await season.getSeason(season_id)
+      const divisionRow = await division.getDivision(division_id)
+      const teams = await team.getTeams(seasonRow.id, divisionRow.id)
+      const seriesForView = { ...s } as Record<string, unknown>
+      seriesForView.home = { id: s.home_team_id, points: s.home_points }
+      seriesForView.away = { id: s.away_team_id, points: s.away_points }
+      const html = templates.series.edit({
+        user: req.user,
+        verb,
+        season: seasonRow,
+        division: divisionRow,
+        teams,
+        series: seriesForView,
+        csrfToken: req.csrfToken?.(),
+        error: message
+      })
+      res.status(400).send(html)
+    } catch (renderErr) {
+      console.error(renderErr)
+      res.sendStatus(500)
+    }
+  }
+  if (s.home_team_id === null && s.away_team_id === null) {
+    await renderError('A series must have at least one team — both teams cannot be BYE.')
+    return
+  }
   try {
     await series.saveSeries(s)
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    await renderError(err instanceof Error ? err.message : 'Failed to save series')
   }
 }
 
@@ -242,7 +270,7 @@ async function editRound(
   }
 }
 
-async function saveRound(series: SeriesRepo, req: Request, res: Response): Promise<void> {
+async function saveRound(templates: Templates, series: SeriesRepo, req: Request, res: Response): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
   const season_id = req.body.season_id
   const division_id = req.body.division_id
@@ -252,7 +280,15 @@ async function saveRound(series: SeriesRepo, req: Request, res: Response): Promi
     res.redirect('/seasons/' + season_id + '/divisions/' + division_id + '/series')
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    const html = templates.series.round({
+      user: req.user,
+      season_id,
+      division_id,
+      round,
+      csrfToken: req.csrfToken?.(),
+      error: err instanceof Error ? err.message : 'Failed to save round'
+    })
+    res.status(400).send(html)
   }
 }
 
@@ -336,12 +372,12 @@ export = function(
     list:         { route: '/seasons/:season_id/divisions/:division_id/series',                      handler: list.bind(null, templates, season, series, division) },
     create:       { route: '/seasons/:season_id/divisions/:division_id/series/create',               handler: create.bind(null, templates, season, team, division) },
     edit:         { route: '/seasons/:season_id/divisions/:division_id/series/:id/edit',             handler: edit.bind(null, templates, season, team, series, division) },
-    post:         { route: '/series/edit',                                                           handler: post.bind(null, series) },
+    post:         { route: '/series/edit',                                                           handler: post.bind(null, templates, season, team, division, series) },
     remove:       { route: '/series/delete',                                                         handler: remove.bind(null, series) },
     standings:    { route: '/seasons/:season_id/divisions/:division_id/standings{/:round}',          handler: standings.bind(null, templates, season, team, series, pairings, division) },
     matchups:     { route: '/seasons/:season_id/divisions/:division_id/matchups{/:round}',           handler: matchups.bind(null, templates, season, team, series, pairings, division) },
     editRound:    { route: '/seasons/:season_id/divisions/:division_id/round/edit',                  handler: editRound.bind(null, templates, season, division, series) },
-    saveRound:    { route: '/round/edit',                                                            handler: saveRound.bind(null, series) },
+    saveRound:    { route: '/round/edit',                                                            handler: saveRound.bind(null, templates, series) },
     newRound:     { route: '/seasons/:season_id/divisions/:division_id/round/newRound',              handler: newRound.bind(null, series) },
     importSeries: { route: '/seasons/:season_id/divisions/:division_id/week/:round/importSeries',    handler: importSeries.bind(null, series, season, team, pairings, division) }
   }

@@ -35,8 +35,9 @@ async function edit(templates: Templates, role: RoleRepo, req: Request, res: Res
   }
 }
 
-async function post(role: RoleRepo, req: Request, res: Response): Promise<void> {
+async function post(templates: Templates, role: RoleRepo, req: Request, res: Response): Promise<void> {
   if (!req.user || !req.user.isAdmin) { res.sendStatus(403); return }
+  const verb = req.body.id ? 'Edit' : 'Create'
   const id = req.body.id ? req.body.id : nanoid()
   const r = req.body
   r.id = id
@@ -45,7 +46,14 @@ async function post(role: RoleRepo, req: Request, res: Response): Promise<void> 
     res.redirect('/roles')
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    const html = templates.role.edit({
+      user: req.user,
+      verb,
+      role: r,
+      csrfToken: req.csrfToken?.(),
+      error: err instanceof Error ? err.message : 'Failed to save role'
+    })
+    res.status(400).send(html)
   }
 }
 
@@ -66,7 +74,7 @@ export = function(templates: Templates, role: RoleRepo): Record<string, RouteDef
     list:   { route: '/roles',           handler: list.bind(null, templates, role) },
     create: { route: '/roles/create',    handler: create.bind(null, templates) },
     edit:   { route: '/roles/:role_id/edit', handler: edit.bind(null, templates, role) },
-    post:   { route: '/roles/edit',      handler: post.bind(null, role) },
+    post:   { route: '/roles/edit',      handler: post.bind(null, templates, role) },
     remove: { route: '/roles/delete',    handler: remove.bind(null, role) }
   }
 }

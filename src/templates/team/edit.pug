@@ -10,10 +10,12 @@ block content
         span.icon.is-medium
           i.fas.fa-edit
         span #{verb} Team - #{season.name} #{team ? ' - ' + team.name : ''}
+      if error
+        div.notification.is-danger= error
       div
         form(method='post' action='/teams/edit')
           input(type='hidden' name="_csrf" value=csrfToken)
-          if team
+          if verb === 'Edit'
             input(type='hidden' name='id' value=team.id)
           input(type='hidden' name='season_id' value=season.id)
           input(type='hidden' name='division_id' value=division.id)
@@ -49,6 +51,6 @@ block content
           div.field.is-grouped
             p.control
               button.button.is-primary Submit
-            if team
+            if verb === 'Edit'
               p.control
                 button.button.is-danger(formaction='/teams/delete') Delete

@@ -53,11 +53,12 @@ async function edit(templates: Templates, banned_player: BannedPlayerRepo, req: 
   }
 }
 
-async function post(banned_player: BannedPlayerRepo, req: Request, res: Response): Promise<void> {
+async function post(templates: Templates, banned_player: BannedPlayerRepo, req: Request, res: Response): Promise<void> {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
     return
   }
+  const verb = req.body.id ? 'Edit' : 'Create'
   const id = req.body.id ? req.body.id : nanoid()
   if (req.body.still_banned == null) {
     req.body.still_banned = false
@@ -68,7 +69,14 @@ async function post(banned_player: BannedPlayerRepo, req: Request, res: Response
     res.redirect('/banned_players')
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    const html = templates.banned_player.edit({
+      user: req.user,
+      verb,
+      banned_players: req.body,
+      csrfToken: req.csrfToken?.(),
+      error: err instanceof Error ? err.message : 'Failed to save banned player'
+    })
+    res.status(400).send(html)
   }
 }
 
@@ -91,7 +99,7 @@ export = function(templates: Templates, banned_player: BannedPlayerRepo): Record
     create: { route: '/banned_players/create',      handler: create.bind(null, templates) },
     list:   { route: '/banned_players',             handler: list.bind(null, templates, banned_player) },
     edit:   { route: '/banned_players/:id/edit',    handler: edit.bind(null, templates, banned_player) },
-    post:   { route: '/banned_players/edit',        handler: post.bind(null, banned_player) },
+    post:   { route: '/banned_players/edit',        handler: post.bind(null, templates, banned_player) },
     remove: { route: '/banned_players/delete',      handler: remove.bind(null, banned_player) }
   }
 }

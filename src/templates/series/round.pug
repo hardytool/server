@@ -10,6 +10,8 @@ block content
         span.icon.is-medium
           i.fa.fa-edit
         span Edit round
+      if error
+        div.notification.is-danger= error
       div
         form(method='post' action='/round/edit')
           input(type='hidden' name="_csrf" value=csrfToken)

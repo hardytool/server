@@ -96,11 +96,12 @@ async function edit(templates: Templates, division: DivisionRepo, req: Request, 
   }
 }
 
-async function post(division: DivisionRepo, req: Request, res: Response): Promise<void> {
+async function post(templates: Templates, division: DivisionRepo, req: Request, res: Response): Promise<void> {
   if (!req.user || !req.user.isAdmin) {
     res.sendStatus(403)
     return
   }
+  const verb = req.body.id ? 'Edit' : 'Create'
   const d = req.body
   const id = d.id ? d.id : nanoid()
   d.id = id
@@ -110,7 +111,14 @@ async function post(division: DivisionRepo, req: Request, res: Response): Promis
     res.redirect('/divisions')
   } catch (err) {
     console.error(err)
-    res.sendStatus(500)
+    const html = templates.division.edit({
+      user: req.user,
+      verb,
+      division: d,
+      csrfToken: req.csrfToken?.(),
+      error: err instanceof Error ? err.message : 'Failed to save division'
+    })
+    res.status(400).send(html)
   }
 }
 
@@ -136,7 +144,7 @@ export = function(templates: Templates, season: SeasonRepo, division: DivisionRe
     all_seasons:{ route: '/divisions/:division_id/all_seasons', handler: all_seasons.bind(null, templates, season, division) },
     create:     { route: '/divisions/create',               handler: create.bind(null, templates) },
     edit:       { route: '/divisions/:id/edit',             handler: edit.bind(null, templates, division) },
-    post:       { route: '/divisions/edit',                 handler: post.bind(null, division) },
+    post:       { route: '/divisions/edit',                 handler: post.bind(null, templates, division) },
     remove:     { route: '/divisions/delete',               handler: remove.bind(null, division) }
   }
 }

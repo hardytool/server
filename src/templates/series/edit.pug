@@ -10,10 +10,12 @@ block content
         span.icon.is-medium
           i.fa.fa-edit
         span #{verb} Series #{series ? ' - Week ' + series.round + ' - ' + series.home.name + ' v ' + series.away.name : ''}
+      if error
+        div.notification.is-danger= error
       div
         form(method='post' action='/series/edit')
           input(type='hidden' name="_csrf" value=csrfToken)
-          if series
+          if verb === 'Edit'
             input(type='hidden' name='id' value=series.id)
           input(type='hidden' name='season_id' value=season.id)
           input(type='hidden' name='division_id' value=division.id)
@@ -115,6 +117,6 @@ block content
           div.field.is-grouped
             p.control
               button.button.is-primary Submit
-            if series
+            if verb === 'Edit'
               p.control
                 button.button.is-danger(formaction='/series/delete') Delete
