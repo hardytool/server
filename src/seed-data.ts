@@ -36,9 +36,8 @@ const STEAM_USERS = Array.from({ length: 40 }, (_, i) => {
   }
 })
 
-// Team names per division index (8 per division). Names must be unique within
-// a season because the DB constraint is on (season_id, name), not
-// (season_id, division_id, name). Each division gets its own distinct slice.
+// Team names per division index (8 per division). Each division gets its own
+// distinct slice so seeded teams are easy to tell apart in the UI.
 const TEAM_NAMES_PER_DIVISION = [
   ['Alpha',  'Bravo',    'Charlie', 'Delta',    'Echo',   'Foxtrot', 'Golf',  'Hotel'],
   ['India',  'Juliet',   'Kilo',    'Lima',     'Mike',   'November','Oscar', 'Papa' ],
