@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
 import { setupDatabase, teardownDatabase, getPool, cleanTables, isDockerAvailable } from '../helpers/db'
-import { resetIds, insertSeason, insertDivision, insertSteamUser, insertPlayer, insertTeam, insertTeamPlayer, insertProfile } from '../helpers/fixtures'
+import { resetIds, insertSeason, insertDivision, insertSteamUser, insertPlayer } from '../helpers/fixtures'
 import playerRepo from '../../src/repos/player'
 
 describe.runIf(isDockerAvailable())('player repo', () => {
