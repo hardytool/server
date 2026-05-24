@@ -48,7 +48,7 @@ describe.runIf(isDockerAvailable())('team_player repo', () => {
 
   describe('getUnassignedPlayers', () => {
     it('returns only unassigned players', async () => {
-      const { s, d, pl1, pl2, t } = await setupData()
+      const { s, d, pl1, t } = await setupData()
 
       await teamPlayer.addPlayerToTeam(t.id, pl1.id, true)
 
