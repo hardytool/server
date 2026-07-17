@@ -26,7 +26,7 @@
   "license": "ISC",
   "dependencies": {
     "@json2csv/plainjs": "^7.0.6",
-    "bignumber.js": "^11.1.4",
+    "bignumber.js": "^11.1.5",
     "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.7",
     "csrf-csrf": "^4.0.3",
@@ -37,7 +37,7 @@
     "helmet": "^8.2.0",
     "markdown-it": "^14.3.0",
     "markdown-it-classy": "^0.2.0",
-    "nanoid": "^5.1.11",
+    "nanoid": "^5.1.16",
     "passport": "^0.7.0",
     "passport-steam": "^1.0.18",
     "pg": "^8.22.0",
@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",
-    "@testcontainers/postgresql": "^12.0.3",
+    "@testcontainers/postgresql": "^12.0.4",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/express-session": "^1.19.0",
@@ -60,14 +60,14 @@
     "@types/supertest": "^7.2.0",
     "@typescript-eslint/eslint-plugin": "8.62.1",
     "@typescript-eslint/parser": "8.62.1",
-    "@vitest/coverage-v8": "^4.1.9",
+    "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^10.6.0",
     "globals": "^17.7.0",
     "supertest": "^7.2.2",
-    "testcontainers": "^12.0.3",
+    "testcontainers": "^12.0.4",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   },
   "overrides": {
     "axios": "^1.13.5",
