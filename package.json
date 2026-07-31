@@ -33,7 +33,7 @@
     "edmonds-blossom": "^1.0.0",
     "express": "^5.0.0",
     "express-session": "^1.19.0",
-    "got": "^15.0.7",
+    "got": "^15.1.0",
     "helmet": "^8.3.0",
     "markdown-it": "^14.3.0",
     "markdown-it-classy": "^0.2.0",
