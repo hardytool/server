@@ -55,7 +55,7 @@ jobs:
         GITHUB_REF_NAME: ${{ github.ref_name }}
     - name: Save trunk baseline
       if: github.ref_name == 'trunk'
-      uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
         path: trunk-baseline.json
         key: trunk-baseline-${{ github.sha }}
