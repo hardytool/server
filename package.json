@@ -37,7 +37,7 @@
     "helmet": "^8.3.0",
     "markdown-it": "^15.0.2",
     "markdown-it-classy": "^0.2.0",
-    "nanoid": "^6.0.1",
+    "nanoid": "^6.0.2",
     "passport": "^0.7.0",
     "passport-steam": "^1.0.18",
     "pg": "^8.23.1",
