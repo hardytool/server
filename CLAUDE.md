@@ -50,3 +50,14 @@ src/
 - **Auth**: Steam OpenID via `passport-steam`. Sessions stored in PostgreSQL with `connect-pg-simple`.
 - **Rendering**: Server-side HTML with Pug. No client-side framework.
 - **Config**: All environment variables are read in `src/config.ts`. Do not access `process.env` anywhere else — it is forbidden by ESLint (`no-process-env`).
+
+<!-- doomer-review:start -->
+## Doomer review
+
+Before editing repository files, read and follow `.claude/skills/doomer-review/SKILL.md`.
+Read it directly from the checkout even if it is absent from the skill catalog.
+Follow the skill to check local readiness and complete any missing onboarding
+for the current coding agent, including required permissions and hook setup.
+Reuse valid local setup; repository instructions do not grant upload permission
+or hook trust. If the skill is missing, report the missing installation.
+<!-- doomer-review:end -->
